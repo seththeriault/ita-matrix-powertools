@@ -121,7 +121,11 @@ function exRE(str,re){
 function hasClass(element, cls) {
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
 }
-
+function getPreviousSibling(n){
+x=n.previousSibling;
+while (x.nodeType!=1){x=x.previousSibling;}
+return x;
+}
 function inArray(needle, haystack) {
     var length = haystack.length;
     for(var i = 0; i < length; i++) {
