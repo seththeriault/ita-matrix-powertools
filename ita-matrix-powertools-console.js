@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace http://matrix.itasoftware.com
 // @description Builds fare purchase links
-// @version 0.5
+// @version 0.6
 // @grant none
 // @include http://matrix.itasoftware.com/view/details*
 // @include http://matrix.itasoftware.com/view/calendar*
@@ -12,17 +12,22 @@
 // ==/UserScript==
 
 /*
- The CONSOLE version is designed to maintain minify support for execution in the command line of browsers
- (Thus may have special unicode restrictions for OS which do not support copying outside of 7-8bit ASCII)
+The CONSOLE version is designed to maintain minify support for execution in the command line of browsers
+(Thus may have special unicode restrictions for OS which do not support copying outside of 7-8bit ASCII)
 */
 
 /*
  Written by paul21 & Steppo of FlyerTalk.com
- Includes improvmenets by 18sas
  http://www.flyertalk.com/forum/members/paul21.html
+ Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 
 *********** Changelog **************
+**** Version 0.6 ****
+# 2014-11-12 Edited by Steppo (added quicklinks for currency (USD & EUR),
+                               added quicklinks for selecting flexible dates,
+                               rewrote initial call-function to start the script)
+
 **** Version 0.5 ****
 # 2014-11-11 Edited by Steppo (Fixed bug causing close of advanced routing on searchpage,
                                 moved extraction and linkgenerating to seperate functions,
@@ -61,13 +66,13 @@
 // Get language first but do not use itaLocale
 var itaLanguage="en";
 
-
-
 // global retrycount for setup
 var retrycount=1;
 
 // execute language detection and afterwards functions for current page
-   setTimeout(function(){getPageLang();}, 100);  
+
+setTimeout(function(){getPageLang();}, 100);
+
 
 /**************************************** Get Language *****************************************/
 
@@ -118,7 +123,11 @@ function exRE(str,re){
 function hasClass(element, cls) {
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
 }
-
+function getPreviousSibling(n){
+x=n.previousSibling;
+while (x.nodeType!=1){x=x.previousSibling;}
+return x;
+}
 function inArray(needle, haystack) {
     var length = haystack.length;
     for(var i = 0; i < length; i++) {
@@ -195,10 +204,77 @@ function buildmain(){
           && document.getElementById("ita_layout_CollapsiblePane_1").style.display=="none") {
       document.getElementById('sites_matrix_layout_RouteLanguageToggleLink_0').click();
     }
+   createquickcur();
+   nodes=document.getElementById('ita_layout_TabContainer_0_tablist').querySelectorAll("div.dijitTabListWrapper div.dijitTab");
+   var target=null;
+   for (var i = 0; i<nodes.length; i++){
+      switch(i) {
+          case 0:
+              if (hasClass(nodes[0], 'dijitTabChecked') ) target=0;
+              nodes[0].addEventListener('click',function(){searchtabclicked(0)}, false);
+              break;
+          case 1:
+              if (hasClass(nodes[1], 'dijitTabChecked') ) target=1;
+              nodes[1].addEventListener('click',function(){searchtabclicked(1)}, false);
+              break;
+          case 2:
+              nodes[2].addEventListener('click',function(){searchtabclicked(2)}, false);
+              break;
+      }
+    }
+    if (target!=null) createflexiblelinks(target);
 }
-
-
-
+function searchtabclicked(tab){
+  switch(tab){
+    case 0:
+      // return
+      createflexiblelinks(tab);
+      break;
+    case 1:
+      // oneway
+      createflexiblelinks(tab);
+      break;
+    case 2:
+      // multi
+      break;  
+  }
+}
+function changeflexibledates(targets,val){
+  for (i=0;i<targets.length;i++){
+     dijit.byId(targets[i]).attr( 'value', val );  
+  }   
+}
+function createflexiblelinks(tab) {
+  if (document.getElementById('onedayselect'+tab)!=null) {
+  //quicklinks created!
+    return false;
+  }
+  // build datelinks
+  nodes=document.getElementById('ita_form_SliceForm_'+tab).querySelectorAll("div.itaExactDates div.dijitInputField span");
+  var targets=new Array();
+  for (i=0;i<nodes.length;i+=4){
+    targets.push(nodes[i+2].id.replace("_label",""));   
+  }
+  var newdiv = document.createElement('div');
+  newdiv.setAttribute('id','quickselectcontainer'+tab);
+  newdiv.setAttribute('class','dijitInline');
+  newdiv.setAttribute('style','margin-left:90px;');
+  nodes=document.getElementById('ita_form_SliceForm_'+tab).querySelectorAll("div.dijitStackContainer");
+  getPreviousSibling(document.getElementById(nodes[0].id)).appendChild(newdiv);
+  document.getElementById('quickselectcontainer'+tab).innerHTML = '<a id="onedayselect'+tab+'" href="#"class="itaToggleLink">+/- 1</a><div class="clearer"></div><a id="twodayselect'+tab+'" href="#" class="itaToggleLink">+/- 2</a>';  
+  document.getElementById('onedayselect'+tab).onclick=function(){changeflexibledates(targets,"1,1");return false;};
+  document.getElementById('twodayselect'+tab).onclick=function(){changeflexibledates(targets,"2,2");return false;};
+}
+function createquickcur(){
+  // build curlinks
+  var newdiv = document.createElement('div');
+  newdiv.setAttribute('id','curquickselectcontainer');
+  newdiv.setAttribute('class','dijitInline');
+  document.getElementById("widget_ita_form_CurrencySuggester_0").parentNode.appendChild(newdiv);
+  document.getElementById('curquickselectcontainer').innerHTML = '<a id="usdselect" href="#"class="itaToggleLink">USD</a> <a id="eurselect" href="#" class="itaToggleLink">EUR</a>';  
+  document.getElementById('usdselect').onclick=function(){dijit.byId('ita_form_CurrencySuggester_0').attr('value','USD');return false;};
+  document.getElementById('eurselect').onclick=function(){dijit.byId('ita_form_CurrencySuggester_0').attr('value','EUR');return false;};
+}
 /********************************************* Calendar *********************************************/
 function makenavigationvisible() {  
   document.getElementById("calendarUpdateForm2").style.display='';
@@ -208,7 +284,7 @@ function createmonthlinks() {
   linktoimages="http://matrix.itasoftware.com/js/ita/themes/ita/images/";  
   newtd = document.createElement('td');
   newtd.setAttribute('id','goprevmonth');
-  newtd.setAttribute('style','padding-right:10px;');
+  newtd.setAttribute('style','padding-right:10px;cursor:pointer;');
   newimg = document.createElement('img');
   newimg.setAttribute('src',linktoimages+'arrowbtn_prev.png');
   newtd.appendChild(newimg);
@@ -217,7 +293,7 @@ function createmonthlinks() {
 
   newtd = document.createElement('td');
   newtd.setAttribute('id','gonextmonth');
-  newtd.setAttribute('style','padding-right:10px;');
+  newtd.setAttribute('style','padding-right:10px;cursor:pointer;');
   newimg = document.createElement('img');
   newimg.setAttribute('src',linktoimages+'arrowbtn_next.png');
   newtd.appendChild(newimg);
@@ -804,10 +880,10 @@ function printUS(data){
       // walks each leg
        for (var j=0;j<data["itin"][i]["seg"].length;j++) {
          //walks each segment of leg
-          var segstr = (i+1).toString()+(j+1).toString();
-          usUrl += "&o"+segstr+"=" + data["itin"][i]["seg"][j]["orig"] + "&d"+segstr+"=" + data["itin"][i]["seg"][j]["dest"] + "&f"+segstr+"=" + data["itin"][i]["seg"][j]["fnr"];
-          usUrl += "&t"+segstr+"=" + data["itin"][i]["seg"][j]["dep"]["year"] + (data["itin"][i]["seg"][j]["dep"]["month"] < 10 ? "0":"" )+ data["itin"][i]["seg"][j]["dep"]["month"] +(data["itin"][i]["seg"][j]["dep"]["day"] < 10 ? "0":"" ) + data["itin"][i]["seg"][j]["dep"]["day"] + "0000";
-          usUrl += "&x"+segstr+"=" + data["itin"][i]["seg"][j]["farebase"];
+        var segstr = (i+1).toString()+(j+1).toString();
+        usUrl += "&o"+segstr+"=" + data["itin"][i]["seg"][j]["orig"] + "&d"+segstr+"=" + data["itin"][i]["seg"][j]["dest"] + "&f"+segstr+"=" + data["itin"][i]["seg"][j]["fnr"];
+        usUrl += "&t"+segstr+"=" + data["itin"][i]["seg"][j]["dep"]["year"] + (data["itin"][i]["seg"][j]["dep"]["month"] < 10 ? "0":"" )+ data["itin"][i]["seg"][j]["dep"]["month"] +(data["itin"][i]["seg"][j]["dep"]["day"] < 10 ? "0":"" ) + data["itin"][i]["seg"][j]["dep"]["day"] + "0000";
+        usUrl += "&x"+segstr+"=" + data["itin"][i]["seg"][j]["farebase"];
       }
     }
     printUrl(usUrl,"US","");
