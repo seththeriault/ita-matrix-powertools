@@ -56,15 +56,21 @@
 // Get language first but do not use itaLocale
 var itaLanguage="en";
 
-
-
 // global retrycount for setup
 var retrycount=1;
 
 // execute language detection and afterwards functions for current page
-window.addEventListener('load', function() {  
-   setTimeout(function(){getPageLang();}, 100);  
-}, false); 
+if (window.addEventListener){
+      window.addEventListener('load', startcript, false);   
+} else if (window.attachEvent) 
+     window.attachEvent("onload", startcript);
+else {
+     window.onload = startcript;  
+} 
+function startcript(){ 
+       setTimeout(function(){getPageLang();}, 100);
+}
+
 
 /**************************************** Get Language *****************************************/
 
@@ -192,10 +198,77 @@ function buildmain(){
           && document.getElementById("ita_layout_CollapsiblePane_1").style.display=="none") {
       document.getElementById('sites_matrix_layout_RouteLanguageToggleLink_0').click();
     }
+   createquickcur();
+   nodes=document.getElementById('ita_layout_TabContainer_0_tablist').querySelectorAll("div.dijitTabListWrapper div.dijitTab");
+   var target=null;
+   for (var i = 0; i<nodes.length; i++){
+      switch(i) {
+          case 0:
+              if (hasClass(nodes[0], 'dijitTabChecked') ) target=0;
+              nodes[0].addEventListener('click',function(){searchtabclicked(0)}, false);
+              break;
+          case 1:
+              if (hasClass(nodes[1], 'dijitTabChecked') ) target=1;
+              nodes[1].addEventListener('click',function(){searchtabclicked(1)}, false);
+              break;
+          case 2:
+              nodes[2].addEventListener('click',function(){searchtabclicked(2)}, false);
+              break;
+      }
+    }
+    if (target!=null) createflexiblelinks(target);
 }
-
-
-
+function searchtabclicked(tab){
+  switch(tab){
+    case 0:
+      // return
+      createflexiblelinks(tab);
+      break;
+    case 1:
+      // oneway
+      createflexiblelinks(tab);
+      break;
+    case 2:
+      // multi
+      break;  
+  }
+}
+function changeflexibledates(targets,val){
+  for (i=0;i<targets.length;i++){
+     dijit.byId(targets[i]).attr( 'value', val );  
+  }   
+}
+function createflexiblelinks(tab) {
+  if (document.getElementById('onedayselect'+tab)!=null) {
+  //quicklinks created!
+    return false;
+  }
+  // build datelinks
+  nodes=document.getElementById('ita_form_SliceForm_'+tab).querySelectorAll("div.itaExactDates div.dijitInputField span");
+  var targets=new Array();
+  for (i=0;i<nodes.length;i+=4){
+    targets.push(nodes[i+2].id.replace("_label",""));   
+  }
+  var newdiv = document.createElement('div');
+  newdiv.setAttribute('id','quickselectcontainer'+tab);
+  newdiv.setAttribute('class','dijitInline');
+  newdiv.setAttribute('style','margin-left:90px;');
+  nodes=document.getElementById('ita_form_SliceForm_'+tab).querySelectorAll("div.dijitStackContainer");
+  getPreviousSibling(document.getElementById(nodes[0].id)).appendChild(newdiv);
+  document.getElementById('quickselectcontainer'+tab).innerHTML = '<a id="onedayselect'+tab+'" href="#"class="itaToggleLink">+/- 1</a><div class="clearer"></div><a id="twodayselect'+tab+'" href="#" class="itaToggleLink">+/- 2</a>';  
+  document.getElementById('onedayselect'+tab).onclick=function(){changeflexibledates(targets,"1,1");return false;};
+  document.getElementById('twodayselect'+tab).onclick=function(){changeflexibledates(targets,"2,2");return false;};
+}
+function createquickcur(){
+  // build curlinks
+  var newdiv = document.createElement('div');
+  newdiv.setAttribute('id','curquickselectcontainer');
+  newdiv.setAttribute('class','dijitInline');
+  document.getElementById("widget_ita_form_CurrencySuggester_0").parentNode.appendChild(newdiv);
+  document.getElementById('curquickselectcontainer').innerHTML = '<a id="usdselect" href="#"class="itaToggleLink">USD</a> <a id="eurselect" href="#" class="itaToggleLink">EUR</a>';  
+  document.getElementById('usdselect').onclick=function(){dijit.byId('ita_form_CurrencySuggester_0').attr('value','USD');return false;};
+  document.getElementById('eurselect').onclick=function(){dijit.byId('ita_form_CurrencySuggester_0').attr('value','EUR');return false;};
+}
 /********************************************* Calendar *********************************************/
 function makenavigationvisible() {  
   document.getElementById("calendarUpdateForm2").style.display='';
