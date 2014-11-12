@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace http://matrix.itasoftware.com
 // @description Builds fare purchase links
-// @version 0.5
+// @version 0.6
 // @grant none
 // @include http://matrix.itasoftware.com/view/details*
 // @include http://matrix.itasoftware.com/view/calendar*
@@ -18,6 +18,11 @@
  Copyright Reserved -- At least share with credit if you do
 
 *********** Changelog **************
+**** Version 0.6 ****
+# 2014-11-12 Edited by Steppo (added quicklinks for currency (USD & EUR),
+                               added quicklinks for selecting flexible dates,
+                               rewrote initial call-function to start the script)
+
 **** Version 0.5 ****
 # 2014-11-11 Edited by Steppo (Fixed bug causing close of advanced routing on searchpage,
                                 moved extraction and linkgenerating to seperate functions,
@@ -282,7 +287,7 @@ function createmonthlinks() {
   linktoimages="http://matrix.itasoftware.com/js/ita/themes/ita/images/";  
   newtd = document.createElement('td');
   newtd.setAttribute('id','goprevmonth');
-  newtd.setAttribute('style','padding-right:10px;');
+  newtd.setAttribute('style','padding-right:10px;cursor:pointer;');
   newimg = document.createElement('img');
   newimg.setAttribute('src',linktoimages+'arrowbtn_prev.png');
   newtd.appendChild(newimg);
@@ -291,7 +296,7 @@ function createmonthlinks() {
 
   newtd = document.createElement('td');
   newtd.setAttribute('id','gonextmonth');
-  newtd.setAttribute('style','padding-right:10px;');
+  newtd.setAttribute('style','padding-right:10px;cursor:pointer;');
   newimg = document.createElement('img');
   newimg.setAttribute('src',linktoimages+'arrowbtn_next.png');
   newtd.appendChild(newimg);
