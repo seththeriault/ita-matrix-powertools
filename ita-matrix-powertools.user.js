@@ -2,14 +2,15 @@
 // @name DL/ORB Itinary Builder
 // @namespace http://matrix.itasoftware.com
 // @description Builds fare purchase links
-// @version 0.6
+// @version 0.7n
 // @grant none
-// @include http://matrix.itasoftware.com/view/details*
-// @include http://matrix.itasoftware.com/view/calendar*
-// @include http://matrix.itasoftware.com/search.htm*
-// @include http://matrix.itasoftware.com/?*
-// @include http://matrix.itasoftware.com/
+// @include http://matrix.itasoftware.com/*
 // ==/UserScript==
+
+/*
+The CONSOLE version is designed to maintain minify support for execution in the command line of browsers
+(Thus may have special unicode restrictions for OS which do not support copying outside of 7-8bit ASCII)
+*/
 
 /*
  Written by paul21 & Steppo of FlyerTalk.com
@@ -18,6 +19,11 @@
  Copyright Reserved -- At least share with credit if you do
 
 *********** Changelog **************
+**** Version 0.7n ****
+# 2015-01-01 Edited by Steppo (Quickfix for Matrix 3.0,
+                               removed most content. Only linking at the moment,
+                               will do the cleanup ASAP)
+
 **** Version 0.6 ****
 # 2014-11-12 Edited by Steppo (added quicklinks for currency (USD & EUR),
                                added quicklinks for selecting flexible dates,
@@ -65,45 +71,52 @@ var itaLanguage="en";
 var retrycount=1;
 
 // execute language detection and afterwards functions for current page
+
 if (window.addEventListener){
-      window.addEventListener('load', startcript, false);   
-} else if (window.attachEvent) 
-     window.attachEvent("onload", startcript);
+window.addEventListener('load', startcript, false);
+} else if (window.attachEvent)
+window.attachEvent("onload", startcript);
 else {
-     window.onload = startcript;  
-} 
-function startcript(){ 
-       setTimeout(function(){getPageLang();}, 100);
+window.onload = startcript;
+}
+function startcript(){
+setTimeout(function(){getPageLang();}, 100);
 }
 
 
 /**************************************** Get Language *****************************************/
 
 function getPageLang(){
-    if (document.getElementById("localeSelect_label").innerHTML == "Deutsch") {
-    itaLanguage="de";
-    retrycount=1;
-   } else if (document.getElementById("localeSelect_label").innerHTML == "English") {
-    itaLanguage="en";
-    retrycount=1;
-   } else if (retrycount>=20) {
-    //set default and go ahead 
-    console.log("Unable to detect language: Falling back to EN"); 
-    itaLanguage="en";
-    retrycount=1; 
-   } else {
-    retrycount++; 
-    setTimeout(function(){getPageLang();}, 100);
-    return false; 
-   }
-    
-    if (window.location.href.indexOf("http://matrix.itasoftware.com/view/calendar") !=-1){
-      createmonthlinks();
-      setTimeout(function(){makenavigationvisible();}, 200); 
-    } else if (window.location.href.indexOf("http://matrix.itasoftware.com/view/details") !=-1) {
+    if (document.getElementById("localeSelect_label")== null ) {
+      console.log("Matrix 3.0: Falling back to EN"); 
+      itaLanguage="en";
+      retrycount=1;  
+    } else {      
+      if (document.getElementById("localeSelect_label").innerHTML == "Deutsch") {
+      itaLanguage="de";
+      retrycount=1;
+     } else if (document.getElementById("localeSelect_label").innerHTML == "English") {
+      itaLanguage="en";
+      retrycount=1;
+     } else if (retrycount>=20) {
+      //set default and go ahead 
+      console.log("Unable to detect language: Falling back to EN"); 
+      itaLanguage="en";
+      retrycount=1; 
+     } else {
+      retrycount++; 
+      setTimeout(function(){getPageLang();}, 100);
+      return false; 
+     }
+   }  
+      
+    if (window.location.href.indexOf("calendar:research") !=-1){
+      //createmonthlinks();
+      //setTimeout(function(){makenavigationvisible();}, 200); 
+    } else if (window.location.href.indexOf("view-details") !=-1) {
        setTimeout(function(){fePS();}, 200);   
-    } else if (window.location.href.indexOf("http://matrix.itasoftware.com/search.htm") !=-1 || window.location.href.indexOf("http://matrix.itasoftware.com/?") !=-1 || window.location.href == "http://matrix.itasoftware.com/") {
-       setTimeout(function(){buildmain();}, 200);   
+    } else if (window.location.href.indexOf("search:research") !=-1 || window.location.href.indexOf("http://matrix.itasoftware.com/?") !=-1 || window.location.href == "http://matrix.itasoftware.com/") {
+      // setTimeout(function(){buildmain();}, 200);   
     }   
 }
 
@@ -279,29 +292,42 @@ function createquickcur(){
   document.getElementById('eurselect').onclick=function(){dijit.byId('ita_form_CurrencySuggester_0').attr('value','EUR');return false;};
 }
 /********************************************* Calendar *********************************************/
-function makenavigationvisible() {  
-  document.getElementById("calendarUpdateForm2").style.display='';
+function makenavigationvisible() {
+   var elems = document.getElementsByTagName('*'), i;
+   for (i in elems) {
+        if((' ' + elems[i].className + ' ').indexOf(' GE-ODR-BFJ GE-ODR-BNJ ') > -1) {
+          var target=elems[i];
+          break;
+        }
+    }
+  target.style.display='';
 }
 
 function createmonthlinks() {
-  linktoimages="http://matrix.itasoftware.com/js/ita/themes/ita/images/";  
-  newtd = document.createElement('td');
+ 
+    var elems = document.getElementsByTagName('*'), i;
+    for (i in elems) {
+        if((' ' + elems[i].className + ' ').indexOf(' GE-ODR-BFJ GE-ODR-BNJ ') > -1) {
+          var target=elems[i];
+          break;
+        }
+    }
+  
+  newtd = document.createElement('div');
   newtd.setAttribute('id','goprevmonth');
   newtd.setAttribute('style','padding-right:10px;cursor:pointer;');
   newimg = document.createElement('img');
-  newimg.setAttribute('src',linktoimages+'arrowbtn_prev.png');
+  newimg.setAttribute('src',"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAAyElEQVQ4jWNgAALR+JUKQLzesGjLf9+2fQSxccmW90D180H6GGAGqGSuf7/n8ov/X379JRqD1IP0AfUbgAyZT6oByAaBfMAAcho5BsAwKAgYQH4kpPDG88//7Wt2YpUD6SdoyLpTj/8rZ64DOZs8Q8oXnwNrhmGSDIE5H9kAkg0BBRa6ASQbcuruW8pdAsLPPvz4nznzJGWGwPCCA/coix107+E0BBSIlKRYUIoH5Z31FOad+dTIxYjiAGQiyGnElCfQdLQeZgAA3xK3vyQjJfkAAAAASUVORK5CYII=");
   newtd.appendChild(newimg);
-  insert=document.getElementById("widget_monthSelect").parentNode;
-  insert.parentNode.insertBefore(newtd, insert);
+  target.appendChild(newtd);
 
-  newtd = document.createElement('td');
+  newtd = document.createElement('div');
   newtd.setAttribute('id','gonextmonth');
   newtd.setAttribute('style','padding-right:10px;cursor:pointer;');
   newimg = document.createElement('img');
-  newimg.setAttribute('src',linktoimages+'arrowbtn_next.png');
+  newimg.setAttribute('src',"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAAxklEQVQ4jWNgAALR+JUKQDzfuGTLe9+2ff8JYcOiLf+B6teD9DFADTBQyVz/fs/lF/+//PpLNAapB+kDGwQykVQDkA0C+YAB5DRyDIBhUBAwgPyITdK+Zuf/G88/EzQEpB+nIUBn/lfOXPd/3anHlBkCw+WLz1FuCAjj8h5JhoAwtkgg2SWn7r4l35DMmSf/P/vwg/zYWXDgHvmxg8v5WA0BpThKUiwosEF5Zz6FeWc9uBigOBcjlSfrQU4jpjwBBQHIBzADAD+qt79W5SFZAAAAAElFTkSuQmCC");
   newtd.appendChild(newimg);
-  insert=document.getElementById("widget_monthSelect").parentNode;
-  insert.parentNode.insertBefore(newtd, insert.nextSibling);
+  target.appendChild(newtd);
 
   document.getElementById('goprevmonth').onclick=function(){changemonth (-1);};
   document.getElementById('gonextmonth').onclick=function(){changemonth (1);};
@@ -316,7 +342,17 @@ if (itaLanguage=="de"){
   var sep="/";
   var mpos=0; 
 }
-var date =document.getElementById('monthSelect').value.split(sep);
+  
+  
+    var elems = document.getElementsByTagName('*'), i;
+    for (i in elems) {
+        if((' ' + elems[i].className + ' ').indexOf(' GE-ODR-BJQ ') > -1) {
+          var target=elems[i];
+          break;
+        }
+    }  
+  
+var date = target.value.split(sep);
 date[0]=parseInt(date[0]);
 date[1]=parseInt(date[1]);
 date[2]=parseInt(date[2]);
@@ -329,11 +365,11 @@ if (date[mpos]>=13) {
   date[mpos]+=(Math.abs(Math.floor(date[mpos]/12))*12);
   if (date[mpos]==0) date[mpos]=12;
 }
-if (date[0]<10 && itaLanguage=="de") {date[0]="0"+date[0]; }
-if (date[1]<10 && itaLanguage=="de") {date[1]="0"+date[1]; }
+if (date[0]<10) {date[0]="0"+date[0]; }
+if (date[1]<10) {date[1]="0"+date[1]; }
 date=date.toString().replace(/,/g, sep); 
-document.getElementById('monthSelect').value=date;
-document.getElementById('calendarUpdateButton').click();
+target.value=date;
+//target.parentNode.nextSibling.nextSibling.nextSibling.nextSibling.click();
 setTimeout(function(){makenavigationvisible();}, 200);
 }
 
@@ -341,7 +377,7 @@ setTimeout(function(){makenavigationvisible();}, 200);
 //Primary function for extracting flight data from ITA/Matrix
 function fePS() {
     // retry if itin not loaded    
-    if (document.getElementById("itineraryNode").innerHTML === "" ) { 
+    if (document.getElementById("contentwrapper").innerHTML === "" ) { 
       retrycount++;
       if (retrycount>20) {
         console.log("Error Content not found.");
@@ -374,27 +410,67 @@ function fePS() {
 
 
   //*** Readfunction ****//
+function readaddinfo(str){
+  var result=new Array();
+  var re=/<td>(.*?)<\/td>/g;
+  result=exRE(str,re);
+  for (i=result.length;i<5;i++) {
+  result.push("");
+  }
+  return result;
+}
+
 function readItinerary(){
       // the magical part! :-)
       var data= new Array();
       var carrieruarray= new Array();  
       //Searches through inner-html of div itineraryNode
-      var itinHTML = document.getElementById("itineraryNode").innerHTML;
+      var itinHTML = new Array();
+      // Seaerch for itin
+      var re=/GE-ODR-BNBB(.*?)GE-ODR-BOBB/g;
+      itinHTML = exRE(document.getElementById("contentwrapper").innerHTML,re);
+      itinHTML=itinHTML[0];
+  
+      // Lets split result into legs
+      var legs = new Array();
+      var re=/<tbody>(.*?)<\/tbody>/g;
+      legs = exRE(itinHTML,re);
+      // devide into tr
+      var re=/<tr>(.*?)<\/tr>/g;
+      var tmp_airarrdate=new Array();
+      var offset=0;
+  
+      for (i=0;i<legs.length;i++) {
+        legs[i]=exRE(legs[i],re);
+        
+        if (legs[i].length>3){
+          for (j=2;j<legs[i].length;j+=2) {
+           tmp_airarrdate=tmp_airarrdate.concat(readaddinfo(legs[i][j]));
+          }  
+        } else {
+           tmp_airarrdate=tmp_airarrdate.concat(readaddinfo(legs[i][1])); 
+        }
+        if (legs[i].length%2 == 0){
+            for (k=0;k<5;k++) {
+            tmp_airarrdate.push("");
+            }
+        }
+        
+      }
+      
       //Find carrier
       var re=/airline_logos\/35px\/(\w\w)\.png/g;
       var carriers = new Array();
       carriers = exRE(itinHTML,re);
-      //new code by 18sas 28-Oct-2014
-      var re = /airline_logos\/35px\/\w\w\.png\"\salt\=\"(.*?)\"\stitle/g;
+      var re = /airline_logos.*?gwt-Label\"\>(.*?)\s{1}[0-9]*\<\/div>/g;
       var airlineName = new Array();
       airlineName = exRE(itinHTML, re);
-      //end new code
+  
       // build the array of unique carriers  
       for (i=0;i<carriers.length;i++) {
         if (!inArray(carriers[i],carrieruarray)) {carrieruarray.push(carriers[i]);};
       }  
           
-        
       //Currency in EUR?
       var itinCur="";
       var re=/(€)/g;
@@ -407,19 +483,19 @@ function readItinerary(){
           speicher = exRE(itinHTML,re);
           if (speicher.length>1) itinCur="USD";
       }
-      
+      //console.log("Cur: "+itinCur);
+  
       //Find Airports
-      var re=/(strong)*\>[^\(\<]*\((\w{3})[^\(\<]*\((\w{3})/g;
+      var re=/(GE-ODR-BHR")*\>[^\(\<]*\(([A-Z]{3})[^\(\<]*\(([A-Z]{3})/g;
       var airports= new Array();
       var tmp_airports= new Array();
       var legNum = new Array();
       var legAirports = new Array();
       tmp_airports = exRE(itinHTML,re);
-      
       //Find Date
-      var re=/(strong)*\>[^\(\<]*\(\w{3}[^\(\<]*\(\w{3}[^\,]*\,\s*([a-zA-Z0-9]{1,3})\.?\s*([a-zA-Z0-9ä]{1,3})/g;
+      var re=/(strong)*\>[^\(\<]*\([A-Z]{3}[^\(\<]*\([A-Z]{3}[^\,]*\,\s*([a-zA-Z0-9]{1,3})\.?\s*([a-zA-Z0-9ä]{1,3})/g;
       var tmp_airdate= new Array();
-      tmp_airdate = exRE(itinHTML,re);      
+      tmp_airdate = exRE(itinHTML,re);
       // lets swap values if german language
       if (itaLanguage=="de"){
         for (var i = 0; i < tmp_airdate.length; i+=3) {
@@ -429,12 +505,8 @@ function readItinerary(){
           }
       }
       
-      
       // find information like codeshare layoverduration and timechange on arrival
-      var re=/itaGreyText\"\>\s*([^\n]*)\s*\<\/td\>/g;
-      var tmp_airarrdate = new Array();
-      tmp_airarrdate = exRE(itinHTML,re);
-     
+
       // lets see what we got
       var addinformations = Array();
       for (var i = 0; i < tmp_airarrdate.length; i+=5) {
@@ -468,14 +540,14 @@ function readItinerary(){
        }
       
       /* introduced in 0.5 */
-      //console.log(addinformations);
+
       
       //Find times
-      var re=/dijitReset departure\"\>[^0-9]+(.*?)\<\/td\>/g;
+      var re=/Dep:[^0-9]+(.*?)\<\/div\>/g;
       var deptimes= new Array();
       deptimes = exRE(itinHTML,re);
       
-      var re=/dijitReset arrival\"\>[^0-9]+(.*?)\<\/td\>/g;
+      var re=/Arr:[^0-9]+(.*?)\<\/div\>/g;
       var arrtimes= new Array();
       arrtimes = exRE(itinHTML,re);
       if (itaLanguage!="de"){
@@ -485,48 +557,36 @@ function readItinerary(){
           arrtimes[i]=return12htime(arrtimes[i]);
         }
       }
-      
+  
       // find flightduration
-      var re=/dijitReset duration\"\>([^\<]*)\<\/td\>/g;
+      var re=/([0-9]{1,2})h\s([0-9]{1,2})m[^\(]*\(\w\)/g; // we need [^\(]*\(\w\) to skip layovers
       var durations= new Array();
-      durations = exRE(itinHTML,re);
-      for (var i=0; i<durations.length;i++){
-        var re=/([0-9]{1,2})/g;
-        var speicher = new Array();
-        speicher = exRE(durations[i],re);
-        durations[i]=parseInt(speicher[0])*60 + parseInt(speicher[1]);         
-        
+      speicher = exRE(itinHTML,re);
+      for (var i=0; i<(speicher.length/2);i++){
+        durations[i]=parseInt(speicher[i*2])*60 + parseInt(speicher[(i*2)+1]);                 
       }
-        
-      //Find flight number
-      //next line modified by 18sas 28-Oct-2014
-      var re=/dijitReset carrier\"\>(.*?)\<\/td\>/g;
-      var flightnumStrs= new Array();
-      flightnumStrs = exRE(itinHTML,re);
+ 
+      //Find flight number      
+      var re = /airline_logos.*?gwt-Label.*?([0-9]*)\<\/div>/g;
       var flightnums = new Array();
-      //Code adopted from 18sas
-      for (i=0;i<flightnumStrs.length;i++) {
-      //new code by 18sas 28-Oct-2014
-      var flightNoRegExpString = airlineName[i].replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\s([0-9]*)';
-      var flightNoRegExp = new RegExp(flightNoRegExpString, 'g');
-      flightnums[i] = exRE(flightnumStrs[i], flightNoRegExp);
-      //end new code
-      }
-      
+      flightnums = exRE(itinHTML,re);
+  
       //Find Book Class
       var re = /\((\w)\)/g;
       var bookclass = new Array();
       bookclass = exRE(itinHTML,re);
+  
       //Find Class of Service
-      var re = /(\w)[\w]+\&nbsp\;\(\w\)/g;
+      var re = /(\w)[\w]+\s\(\w\)/g;
       var classofservice = new Array();
       classofservice = exRE(itinHTML,re);
-      
-      
+
+  
+      var basisHTML = document.getElementById("contentwrapper").innerHTML;
       // Find fare-price
-      var re=/farePrice\"\>[^0-9]*([0-9,.]+)/g;
+      var re=/GE-ODR-BOR"\>\<div[^0-9]*([0-9,.]+)/g;
       var farePrice = new Array();
-      farePrice = exRE(itinHTML,re);
+      farePrice = exRE(basisHTML,re);
       //total price will be the last one
       farePrice=farePrice[(farePrice.length-1)];
       if (itaLanguage=="de"){
@@ -542,11 +602,11 @@ function readItinerary(){
       var re=/Total\scost\sfor\s([0-9])\spassenger/g;
       }
       var numPax = new Array();
-      numPax = exRE(itinHTML,re);
-      
+      numPax = exRE(basisHTML,re);
+      //console.log(numPax+" pax with total fare of "+farePrice);
       
       //Find leg divider
-      var basisHTML = document.getElementById("ita_layout_RoundedPane_1").innerHTML;
+
       //find farecodes
       if (itaLanguage=="de"){
       var re=/Airline\s\w\w\s(\w+)\s[\w{3}]/g;
@@ -555,6 +615,7 @@ function readItinerary(){
       }
       var fareBasis=new Array();
       fareBasis=exRE(basisHTML,re);
+      
       
       //Find basis legs  => NEW
       if (itaLanguage=="de"){
@@ -571,7 +632,8 @@ function readItinerary(){
       }
       fareBaseLegs["fares"]=fareBasis;
       // We have an object now in which fares[i] covers coutes[i]
-      // console.log(fareBaseLegs)
+      
+      //console.log(fareBaseLegs)
       
       var dirtyFare= new Array();  
       // dirty but handy for later usage since there is no each function
@@ -586,7 +648,7 @@ function readItinerary(){
       var legobj={};
       // lets try to build an structured object
       for(i=0;i<tmp_airports.length;i+=3) {
-            if (tmp_airports[i] == "strong" ) //Matches the heading airport
+            if (tmp_airports[i] == 'GE-ODR-BHR"' ) //Matches the heading airport
             {
                 if (k>=0) {data.push(legobj);}
                 k++;
@@ -631,7 +693,7 @@ function readItinerary(){
                     speicher["duration"]=durations[datapointer];
                     speicher["carrier"]=carriers[datapointer];
                     speicher["bookingclass"]=bookclass[datapointer];
-                    speicher["fnr"]=flightnums[datapointer][0];
+                    speicher["fnr"]=flightnums[datapointer];
                     speicher["cabin"]=getcabincode(classofservice[datapointer]);
                     // find farecode for leg
                     for(var j=0;j<dirtyFare.length;j++) {
@@ -674,7 +736,7 @@ function readItinerary(){
                 speicher["duration"]=durations[datapointer];
                 speicher["carrier"]=carriers[datapointer];
                 speicher["bookingclass"]=bookclass[datapointer];
-                speicher["fnr"]=flightnums[datapointer][0];
+                speicher["fnr"]=flightnums[datapointer];
                 speicher["cabin"]=getcabincode(classofservice[datapointer]);
                 // find farecode for leg
                 for(var j=0;j<dirtyFare.length;j++) {
@@ -965,6 +1027,20 @@ function printGCM (data){
 }
 //ID sidebarNode
 function printUrl(url,name,desc) {
-var div = document.getElementById('sidebarNode');
+if (document.getElementById('powertoolslinkcontainer')==undefined){
+createUrlContainer();
+}
+var div = document.getElementById('powertoolslinkcontainer');
 div.innerHTML = div.innerHTML + "<br><br><font size=4><bold><a href=\""+url+ "\" target=_blank>Open with "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")" : "");
+}
+function createUrlContainer(){
+    var elems = document.getElementsByTagName('*'), i;
+    for (i in elems) {
+        if((' ' + elems[i].className + ' ').indexOf(' GE-ODR-BKEB ') > -1) {
+         var newdiv = document.createElement('div');
+          newdiv.setAttribute('id','powertoolslinkcontainer');
+          newdiv.setAttribute('style','margin-left:10px;');
+          elems[i].parentNode.parentNode.parentNode.appendChild(newdiv);
+        }
+    }
 }
