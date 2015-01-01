@@ -427,11 +427,15 @@ function readItinerary(){
       // devide into tr
       var re=/<tr>(.*?)<\/tr>/g;
       var tmp_airarrdate=new Array();
-      var offset=0;
-  
+      var offset=0; 
       for (i=0;i<legs.length;i++) {
-        legs[i]=exRE(legs[i],re);
-        
+        speicher = exRE(legs[i],re);
+        legs[i]=new Array();
+        for (j=0;j<speicher.length;j++) {
+            if(speicher[j].indexOf("This flight contains airport changes") ==-1){
+            legs[i].push(speicher[j]);
+            }
+        }            
         if (legs[i].length>3){
           for (j=2;j<legs[i].length;j+=2) {
            tmp_airarrdate=tmp_airarrdate.concat(readaddinfo(legs[i][j]));
@@ -573,7 +577,7 @@ function readItinerary(){
   
       var basisHTML = document.getElementById("contentwrapper").innerHTML;
       // Find fare-price
-      var re=/GE-ODR-BOR"\>\<div[^0-9]*([0-9,.]+)/g;
+      var re=/GE-ODR-BOR\"\>\<div[^0-9]*([0-9,.]+)/g;
       var farePrice = new Array();
       farePrice = exRE(basisHTML,re);
       //total price will be the last one
@@ -635,7 +639,7 @@ function readItinerary(){
       var k=-1;
       var datapointer=0;  
       var legobj={};
-      // lets try to build an structured object
+      // lets try to build a structured object
       for(i=0;i<tmp_airports.length;i+=3) {
             if (tmp_airports[i] == 'GE-ODR-BHR"' ) //Matches the heading airport
             {
