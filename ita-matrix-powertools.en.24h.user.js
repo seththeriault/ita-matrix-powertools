@@ -24,7 +24,7 @@ The CONSOLE version is designed to maintain minify support for execution in the 
                                added support to transform times to 24h-format
                                added german translation,
                                several other tweaks & fixes)
-                               
+
 # 2015-01-01 Edited by Steppo (Quickfix for Matrix 3.0,
                                removed most content. Only linking at the moment,
                                will do the cleanup ASAP)
