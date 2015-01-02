@@ -72,8 +72,8 @@ The CONSOLE version is designed to maintain minify support for execution in the 
 // Get language first but do not use itaLocale
 var itaLanguage="en";
 // Replacementsetting
-var timeformat="12h";  // replaces times on resultpage
-var userlang="en";     // de is the only supported at the moment
+var timeformat="24h";  // replaces times on resultpage
+var userlang="de";     // de is the only supported one at the moment
 // global retrycount for setup
 var retrycount=1;
 
