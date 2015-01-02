@@ -20,6 +20,11 @@ The CONSOLE version is designed to maintain minify support for execution in the 
 
 *********** Changelog **************
 **** Version 0.7n ****
+# 2015-01-02 Edited by Steppo (Added eventListener to handle switch to ajax,
+                               added support to transform times to 24h-format
+                               added german translation,
+                               several other tweaks & fixes)
+
 # 2015-01-01 Edited by Steppo (Quickfix for Matrix 3.0,
                                removed most content. Only linking at the moment,
                                will do the cleanup ASAP)
@@ -66,12 +71,28 @@ The CONSOLE version is designed to maintain minify support for execution in the 
 /**************************************** Start Script *****************************************/
 // Get language first but do not use itaLocale
 var itaLanguage="en";
-
+// Replacementsetting
+var timeformat="12h";  // replaces times on resultpage
+var userlang="en";     // de is the only supported one at the moment
 // global retrycount for setup
 var retrycount=1;
 
+// we need to detect pagechange 3.0 is using ajax only
+var laststatus = "";
+var scriptrunning = 1;
+
 // execute language detection and afterwards functions for current page
-setTimeout(function(){getPageLang();}, 100);
+
+startcript();
+function startcript(){
+  if (window.location.href!=laststatus){
+    setTimeout(function(){getPageLang();}, 100);
+    laststatus=window.location.href;
+  }
+  if (scriptrunning==1){
+   setTimeout(function(){startcript();}, 500); 
+  }
+}
 
 /**************************************** Get Language *****************************************/
 
@@ -101,7 +122,7 @@ function getPageLang(){
       
     if (window.location.href.indexOf("calendar:research") !=-1){
       //createmonthlinks();
-      //setTimeout(function(){makenavigationvisible();}, 200); 
+      setTimeout(function(){makenavigationvisible();}, 200); 
     } else if (window.location.href.indexOf("view-details") !=-1) {
        setTimeout(function(){fePS();}, 200);   
     } else if (window.location.href.indexOf("search:research") !=-1 || window.location.href.indexOf("http://matrix.itasoftware.com/?") !=-1 || window.location.href == "http://matrix.itasoftware.com/") {
@@ -365,8 +386,15 @@ setTimeout(function(){makenavigationvisible();}, 200);
 /********************************************* Link Creator *********************************************/
 //Primary function for extracting flight data from ITA/Matrix
 function fePS() {
-    // retry if itin not loaded    
-    if (document.getElementById("contentwrapper").innerHTML === "" ) { 
+    // retry if itin not loaded
+  var elems = document.getElementsByTagName('*'), i;
+  for (i in elems) {
+       if((' ' + elems[i].className + ' ').indexOf(' GE-ODR-BMBB ') > -1) {
+         var target=elems[i].firstChild.nextSibling;
+         break;
+       }
+   }  
+    if (target.style.display!="none") { 
       retrycount++;
       if (retrycount>20) {
         console.log("Error Content not found.");
@@ -376,7 +404,12 @@ function fePS() {
       setTimeout(function(){fePS();}, 500);   
       return false;
     };
-    
+  // empty outputcontainer
+  if (document.getElementById('powertoolslinkcontainer')!=undefined){
+      var div = document.getElementById('powertoolslinkcontainer');
+      div.innerHTML ="";
+  }
+
     var data = readItinerary();
     
     printDelta(data);
@@ -411,6 +444,59 @@ function readaddinfo(str){
 
 function readItinerary(){
       // the magical part! :-)
+      var replacementsold = new Array();
+      var replacementsnew = new Array();
+      if (userlang=="de"){
+       replacementsold.push("Dep:");
+       replacementsnew.push("Abflug:");
+       replacementsold.push("Arr:");
+       replacementsnew.push("Ankunft:");
+       replacementsold.push("Layover in");
+       replacementsnew.push("Umst. in");
+       replacementsold.push(" to ");
+       replacementsnew.push(" nach ");
+        replacementsold.push("Mon,");
+       replacementsnew.push("Mo.,");
+        replacementsold.push("Tue,");
+       replacementsnew.push("Di.,");
+        replacementsold.push("Wed,");
+       replacementsnew.push("Mi.,");
+        replacementsold.push("Thu,");
+       replacementsnew.push("Do.,");
+        replacementsold.push("Fri,");
+       replacementsnew.push("Fr.,");
+        replacementsold.push("Sat,");
+       replacementsnew.push("Sa.,");
+        replacementsold.push("Sun,");
+       replacementsnew.push("So.,");
+         replacementsold.push(" Jan ");
+       replacementsnew.push(" Januar ");
+         replacementsold.push(" Feb ");
+       replacementsnew.push(" Februar ");
+        replacementsold.push(" Mar ");
+       replacementsnew.push(" M&auml;rz ");
+        replacementsold.push(" Apr ");
+       replacementsnew.push(" April ");
+        replacementsold.push(" May ");
+       replacementsnew.push(" Mai ");
+        replacementsold.push(" Jun ");
+       replacementsnew.push(" Juni ");
+        replacementsold.push(" Jul ");
+       replacementsnew.push(" Juli ");
+        replacementsold.push(" Aug ");
+       replacementsnew.push(" August ");
+        replacementsold.push(" Sep ");
+       replacementsnew.push(" September ");
+        replacementsold.push(" Oct ");
+       replacementsnew.push(" Oktober ");
+        replacementsold.push(" Nov ");
+       replacementsnew.push(" November ");
+        replacementsold.push(" Dez ");
+       replacementsnew.push(" Dezember ");
+        replacementsold.push("OPERATED BY ");
+       replacementsnew.push("Durchgef&uuml;hrt von ");        
+      }
+  
       var data= new Array();
       var carrieruarray= new Array();  
       //Searches through inner-html of div itineraryNode
@@ -546,11 +632,18 @@ function readItinerary(){
       if (itaLanguage!="de"){
       // take care of 12h
         for (var i = 0; i < deptimes.length; i++) {
+          if (timeformat=="24h") {
+           replacementsold.push(deptimes[i]);
+           replacementsold.push(arrtimes[i]); 
+          }
           deptimes[i]=return12htime(deptimes[i]);
           arrtimes[i]=return12htime(arrtimes[i]);
+          if (timeformat=="24h") {          
+            replacementsnew.push((deptimes[i].length==4? "0":"")+deptimes[i]) ;
+            replacementsnew.push((arrtimes[i].length==4? "0":"")+arrtimes[i]);
+          }
         }
       }
-  
       // find flightduration
       var re=/([0-9]{1,2})h\s([0-9]{1,2})m[^\(]*\(\w\)/g; // we need [^\(]*\(\w\) to skip layovers
       var durations= new Array();
@@ -608,8 +701,7 @@ function readItinerary(){
       }
       var fareBasis=new Array();
       fareBasis=exRE(basisHTML,re);
-      
-      
+         
       //Find basis legs  => NEW
       if (itaLanguage=="de"){
       var re=/Strecke\(n\) ([\w\(\)\s\-,]+)/g;
@@ -625,8 +717,6 @@ function readItinerary(){
       }
       fareBaseLegs["fares"]=fareBasis;
       // We have an object now in which fares[i] covers coutes[i]
-      
-      //console.log(fareBaseLegs)
       
       var dirtyFare= new Array();  
       // dirty but handy for later usage since there is no each function
@@ -748,8 +838,23 @@ function readItinerary(){
       // add price and pax
       // a little bit unsure about multiple pax with different farebase
       data={itin:data, price: farePrice, numPax:numPax[0] , carriers:carrieruarray, cur : itinCur, farebases:fareBaseLegs["fares"]};
-          
+       
       //console.log(data); //Remove to see flightstructure
+  
+      // lets do the replacement
+     if(replacementsold.length>0) {
+       var elems = document.getElementsByTagName('*'), i;
+       for (i in elems) {
+            if((' ' + elems[i].className + ' ').indexOf(' GE-ODR-BNBB ') > -1) {
+              var target=elems[i].nextSibling.nextSibling;
+              break;
+            }
+        }
+       for(i=0;i<replacementsold.length;i++) {
+         re = new RegExp(replacementsold[i],"g");
+         target.innerHTML = target.innerHTML.replace(re, replacementsnew[i]);
+       }
+     }
       return data;
 }  
   //*** Printfunctions ****//
@@ -909,7 +1014,13 @@ uaUrl += ', \"trips\": [';
       uaUrl = uaUrl.substring(0,uaUrl.length-1)+'],\"cabin\": \"'+getUACabin(minCabin)+'\"},';
     }
     uaUrl = 'https://www.hipmunk.com/bookjs?booking_info=' + encodeURIComponent(uaUrl.substring(0,uaUrl.length-1) +']}, \"kind\": \"flight\", \"provider_code\": \"UA\" }');
-    printUrl(uaUrl,"UA","Copy Link in Text, via HPMNK");
+        if (userlang=="de"){
+        desc="Kopiere den Link bei Hipmunk";
+      } else {
+        desc="Copy Link in Text, via Hipmunk";
+      }  
+  
+     printUrl(uaUrl,"UA",desc);
 }
 
 function getUSCabin(cabin){
@@ -993,10 +1104,19 @@ function printFarefreaks (data,method){
     farefreaksurl += "&child=0&childage[]=&flexible=0";
     if (method==1){  
       farefreaksurl += "&nonstop=1";
-      desc="Based on "+segsize+" segments";
+      if (userlang=="de"){
+        desc="Benutze "+segsize+" Segment(e)";
+      } else {
+        desc="Based on "+segsize+" segment(s)";
+      }
+      
     } else {
       farefreaksurl += "&nonstop=0";  
-      desc="Based on "+segsize+" legs";
+      if (userlang=="de"){
+        desc="Benutze "+segsize+" Abschnitt(e)";
+      } else {
+        desc="Based on "+segsize+" segment(s)";
+      }
     }
     if (carrieruarray.length <= 3) {farefreaksurl += "&carrier="+ carrieruarray.toString();}
     if (segsize<=6) {printUrl(farefreaksurl,"FF",desc);};
@@ -1024,7 +1144,7 @@ if (document.getElementById('powertoolslinkcontainer')==undefined){
 createUrlContainer();
 }
 var div = document.getElementById('powertoolslinkcontainer');
-div.innerHTML = div.innerHTML + "<br><br><font size=4><bold><a href=\""+url+ "\" target=_blank>Open with "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")" : "");
+div.innerHTML = div.innerHTML + "<br><br><font size=4><bold><a href=\""+url+ "\" target=_blank>"+ (userlang=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")" : "");
 }
 function createUrlContainer(){
     var elems = document.getElementsByTagName('*'), i;
