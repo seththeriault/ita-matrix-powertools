@@ -20,11 +20,20 @@ The CONSOLE version is designed to maintain minify support for execution in the 
 
 *********** Changelog **************
 **** Version 0.7n ****
+# 2015-01-03 Edited by Steppo (Fixed double execution bug caused by iframe of google,
+                                removed searchpage & calendar,
+                                removed unused functions,
+                                serveral other cleanups
+                                               *** Note ***
+                                Started to rewrite the extraction-function but stopped.
+                                I think google will change some things in the near future.
+                                I am going to do only minimal maintenance to keep the script working.
+                                Let's see how google is going to develop our beloved matrix.)
 # 2015-01-02 Edited by Steppo (Added eventListener to handle switch to ajax,
                                added support to transform times to 24h-format
                                added german translation,
                                several other tweaks & fixes)
-
+                               
 # 2015-01-01 Edited by Steppo (Quickfix for Matrix 3.0,
                                removed most content. Only linking at the moment,
                                will do the cleanup ASAP)
@@ -53,14 +62,11 @@ The CONSOLE version is designed to maintain minify support for execution in the 
                                added support for german version of matrix)
 
 *********** About **************
- --- Searchpage ---
-  # opens advanced routing by default
- --- Calendar ---
-  # makes month-form visible 
-  # adding quicklinks to the next/previous months
  --- Resultpage ---
   # collecting a lot of information in data-var
   # based on gathered data-var: creating links to different OTAs and other pages
+  # able to transform timeformat into 24h format
+  # able to translate some things
 
  *********** Hints ***********
   Unsure about handling of different fares/pax. 
@@ -84,6 +90,7 @@ var scriptrunning = 1;
 // execute language detection and afterwards functions for current page
 
 startcript();
+
 function startcript(){
   if (window.location.href!=laststatus){
     setTimeout(function(){getPageLang();}, 100);
@@ -92,6 +99,7 @@ function startcript(){
   if (scriptrunning==1){
    setTimeout(function(){startcript();}, 500); 
   }
+  
 }
 
 /**************************************** Get Language *****************************************/
@@ -120,13 +128,8 @@ function getPageLang(){
      }
    }  
       
-    if (window.location.href.indexOf("calendar:research") !=-1){
-      //createmonthlinks();
-      setTimeout(function(){makenavigationvisible();}, 200); 
-    } else if (window.location.href.indexOf("view-details") !=-1) {
+    if (window.location.href.indexOf("view-details") !=-1) {
        setTimeout(function(){fePS();}, 200);   
-    } else if (window.location.href.indexOf("search:research") !=-1 || window.location.href.indexOf("http://matrix.itasoftware.com/?") !=-1 || window.location.href == "http://matrix.itasoftware.com/") {
-      // setTimeout(function(){buildmain();}, 200);   
     }   
 }
 
@@ -145,14 +148,6 @@ function exRE(str,re){
   }
   }
   return ret;
-}
-function hasClass(element, cls) {
-    return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
-}
-function getPreviousSibling(n){
-x=n.previousSibling;
-while (x.nodeType!=1){x=x.previousSibling;}
-return x;
 }
 function inArray(needle, haystack) {
     var length = haystack.length;
@@ -212,203 +207,37 @@ function getcabincode(cabin){
   }
   return cabin;
 }
-/******************************************* Search Page *******************************************/
-function buildmain(){
-    // retry if itin not loaded    
-    if (document.getElementById("searchFormsContainer") === undefined) { 
-      retrycount++;
-      if (retrycount>20) {
-        console.log("Error Content not found.");
-        return false;
-      };
-
-      setTimeout(function(){buildmain();}, 100);   
-      return false;
-    };
-    //open advanced routing fixed toggle-issue in 0.5
-    if ( !hasClass(document.getElementById("ita_form_SliceForm_0"),"dijitHidden") 
-          && document.getElementById("ita_layout_CollapsiblePane_1").style.display=="none") {
-      document.getElementById('sites_matrix_layout_RouteLanguageToggleLink_0').click();
-    }
-   createquickcur();
-   nodes=document.getElementById('ita_layout_TabContainer_0_tablist').querySelectorAll("div.dijitTabListWrapper div.dijitTab");
-   var target=null;
-   for (var i = 0; i<nodes.length; i++){
-      switch(i) {
-          case 0:
-              if (hasClass(nodes[0], 'dijitTabChecked') ) target=0;
-              nodes[0].addEventListener('click',function(){searchtabclicked(0)}, false);
-              break;
-          case 1:
-              if (hasClass(nodes[1], 'dijitTabChecked') ) target=1;
-              nodes[1].addEventListener('click',function(){searchtabclicked(1)}, false);
-              break;
-          case 2:
-              nodes[2].addEventListener('click',function(){searchtabclicked(2)}, false);
-              break;
-      }
-    }
-    if (target!=null) createflexiblelinks(target);
-}
-function searchtabclicked(tab){
-  switch(tab){
-    case 0:
-      // return
-      createflexiblelinks(tab);
-      break;
-    case 1:
-      // oneway
-      createflexiblelinks(tab);
-      break;
-    case 2:
-      // multi
-      break;  
-  }
-}
-function changeflexibledates(targets,val){
-  for (i=0;i<targets.length;i++){
-     dijit.byId(targets[i]).attr( 'value', val );  
-  }   
-}
-function createflexiblelinks(tab) {
-  if (document.getElementById('onedayselect'+tab)!=null) {
-  //quicklinks created!
-    return false;
-  }
-  // build datelinks
-  nodes=document.getElementById('ita_form_SliceForm_'+tab).querySelectorAll("div.itaExactDates div.dijitInputField span");
-  var targets=new Array();
-  for (i=0;i<nodes.length;i+=4){
-    targets.push(nodes[i+2].id.replace("_label",""));   
-  }
-  var newdiv = document.createElement('div');
-  newdiv.setAttribute('id','quickselectcontainer'+tab);
-  newdiv.setAttribute('class','dijitInline');
-  newdiv.setAttribute('style','margin-left:90px;');
-  nodes=document.getElementById('ita_form_SliceForm_'+tab).querySelectorAll("div.dijitStackContainer");
-  getPreviousSibling(document.getElementById(nodes[0].id)).appendChild(newdiv);
-  document.getElementById('quickselectcontainer'+tab).innerHTML = '<a id="onedayselect'+tab+'" href="#"class="itaToggleLink">+/- 1</a><div class="clearer"></div><a id="twodayselect'+tab+'" href="#" class="itaToggleLink">+/- 2</a>';  
-  document.getElementById('onedayselect'+tab).onclick=function(){changeflexibledates(targets,"1,1");return false;};
-  document.getElementById('twodayselect'+tab).onclick=function(){changeflexibledates(targets,"2,2");return false;};
-}
-function createquickcur(){
-  // build curlinks
-  var newdiv = document.createElement('div');
-  newdiv.setAttribute('id','curquickselectcontainer');
-  newdiv.setAttribute('class','dijitInline');
-  document.getElementById("widget_ita_form_CurrencySuggester_0").parentNode.appendChild(newdiv);
-  document.getElementById('curquickselectcontainer').innerHTML = '<a id="usdselect" href="#"class="itaToggleLink">USD</a> <a id="eurselect" href="#" class="itaToggleLink">EUR</a>';  
-  document.getElementById('usdselect').onclick=function(){dijit.byId('ita_form_CurrencySuggester_0').attr('value','USD');return false;};
-  document.getElementById('eurselect').onclick=function(){dijit.byId('ita_form_CurrencySuggester_0').attr('value','EUR');return false;};
-}
-/********************************************* Calendar *********************************************/
-function makenavigationvisible() {
-   var elems = document.getElementsByTagName('*'), i;
-   for (i in elems) {
-        if((' ' + elems[i].className + ' ').indexOf(' GE-ODR-BFJ GE-ODR-BNJ ') > -1) {
-          var target=elems[i];
-          break;
+function findtarget(tclass,nth){
+  var elems = document.getElementsByTagName('*'), i;
+  j=0;
+  for (i in elems) {
+       if((' ' + elems[i].className + ' ').indexOf(' '+tclass+' ') > -1) {
+        j++;
+        if (j==nth){
+         return elems[i];
+         break;
         }
-    }
-  target.style.display='';
+       }
+   }
 }
-
-function createmonthlinks() {
- 
-    var elems = document.getElementsByTagName('*'), i;
-    for (i in elems) {
-        if((' ' + elems[i].className + ' ').indexOf(' GE-ODR-BFJ GE-ODR-BNJ ') > -1) {
-          var target=elems[i];
-          break;
-        }
-    }
-  
-  newtd = document.createElement('div');
-  newtd.setAttribute('id','goprevmonth');
-  newtd.setAttribute('style','padding-right:10px;cursor:pointer;');
-  newimg = document.createElement('img');
-  newimg.setAttribute('src',"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAAyElEQVQ4jWNgAALR+JUKQLzesGjLf9+2fQSxccmW90D180H6GGAGqGSuf7/n8ov/X379JRqD1IP0AfUbgAyZT6oByAaBfMAAcho5BsAwKAgYQH4kpPDG88//7Wt2YpUD6SdoyLpTj/8rZ64DOZs8Q8oXnwNrhmGSDIE5H9kAkg0BBRa6ASQbcuruW8pdAsLPPvz4nznzJGWGwPCCA/coix107+E0BBSIlKRYUIoH5Z31FOad+dTIxYjiAGQiyGnElCfQdLQeZgAA3xK3vyQjJfkAAAAASUVORK5CYII=");
-  newtd.appendChild(newimg);
-  target.appendChild(newtd);
-
-  newtd = document.createElement('div');
-  newtd.setAttribute('id','gonextmonth');
-  newtd.setAttribute('style','padding-right:10px;cursor:pointer;');
-  newimg = document.createElement('img');
-  newimg.setAttribute('src',"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAAxklEQVQ4jWNgAALR+JUKQDzfuGTLe9+2ff8JYcOiLf+B6teD9DFADTBQyVz/fs/lF/+//PpLNAapB+kDGwQykVQDkA0C+YAB5DRyDIBhUBAwgPyITdK+Zuf/G88/EzQEpB+nIUBn/lfOXPd/3anHlBkCw+WLz1FuCAjj8h5JhoAwtkgg2SWn7r4l35DMmSf/P/vwg/zYWXDgHvmxg8v5WA0BpThKUiwosEF5Zz6FeWc9uBigOBcjlSfrQU4jpjwBBQHIBzADAD+qt79W5SFZAAAAAElFTkSuQmCC");
-  newtd.appendChild(newimg);
-  target.appendChild(newtd);
-
-  document.getElementById('goprevmonth').onclick=function(){changemonth (-1);};
-  document.getElementById('gonextmonth').onclick=function(){changemonth (1);};
-}
-
-
-function changemonth (change) {  
-if (itaLanguage=="de"){
-  var sep=".";
-  var mpos=1;  
-} else {
-  var sep="/";
-  var mpos=0; 
-}
-  
-  
-    var elems = document.getElementsByTagName('*'), i;
-    for (i in elems) {
-        if((' ' + elems[i].className + ' ').indexOf(' GE-ODR-BJQ ') > -1) {
-          var target=elems[i];
-          break;
-        }
-    }  
-  
-var date = target.value.split(sep);
-date[0]=parseInt(date[0]);
-date[1]=parseInt(date[1]);
-date[2]=parseInt(date[2]);
-date[mpos]+=change;
-if (date[mpos]>=13) {  
-  date[2]+=Math.floor(date[mpos]/12);
-  date[mpos]-=(Math.floor(date[mpos]/12)*12);
-} else if (date[mpos]<=0){
-  date[2]+=Math.floor((date[mpos]-1)/12);
-  date[mpos]+=(Math.abs(Math.floor(date[mpos]/12))*12);
-  if (date[mpos]==0) date[mpos]=12;
-}
-if (date[0]<10) {date[0]="0"+date[0]; }
-if (date[1]<10) {date[1]="0"+date[1]; }
-date=date.toString().replace(/,/g, sep); 
-target.value=date;
-//target.parentNode.nextSibling.nextSibling.nextSibling.nextSibling.click();
-setTimeout(function(){makenavigationvisible();}, 200);
-}
-
 /********************************************* Link Creator *********************************************/
 //Primary function for extracting flight data from ITA/Matrix
 function fePS() {
-    // retry if itin not loaded
-  var elems = document.getElementsByTagName('*'), i;
-  for (i in elems) {
-       if((' ' + elems[i].className + ' ').indexOf(' GE-ODR-BMBB ') > -1) {
-         var target=elems[i].firstChild.nextSibling;
-         break;
-       }
-   }  
-    if (target.style.display!="none") { 
+    // retry if itin not loaded  
+    if (findtarget("GE-ODR-BMBB",1).firstChild.nextSibling.style.display!="none") { 
       retrycount++;
       if (retrycount>20) {
         console.log("Error Content not found.");
         return false;
       };
-      
-      setTimeout(function(){fePS();}, 500);   
+      setTimeout(function(){fePS();}, 200);    
       return false;
     };
-  // empty outputcontainer
-  if (document.getElementById('powertoolslinkcontainer')!=undefined){
-      var div = document.getElementById('powertoolslinkcontainer');
-      div.innerHTML ="";
-  }
+    // empty outputcontainer
+    if (document.getElementById('powertoolslinkcontainer')!=undefined){
+        var div = document.getElementById('powertoolslinkcontainer');
+        div.innerHTML ="";
+    }
 
     var data = readItinerary();
     
@@ -429,7 +258,6 @@ function fePS() {
     //*** GCM ****//
     printGCM (data);  
 }
-
 
   //*** Readfunction ****//
 function readaddinfo(str){
@@ -550,20 +378,6 @@ function readItinerary(){
         if (!inArray(carriers[i],carrieruarray)) {carrieruarray.push(carriers[i]);};
       }  
           
-      //Currency in EUR?
-      var itinCur="";
-      var re=/(€)/g;
-      var speicher = new Array();
-      speicher = exRE(itinHTML,re);
-      if (speicher.length>1) itinCur="EUR";
-      if (itinCur==""){
-          var re=/($)/g;
-          var speicher = new Array();
-          speicher = exRE(itinHTML,re);
-          if (speicher.length>1) itinCur="USD";
-      }
-      //console.log("Cur: "+itinCur);
-  
       //Find Airports
       var re=/(GE-ODR-BHR")*\>[^\(\<]*\(([A-Z]{3})[^\(\<]*\(([A-Z]{3})/g;
       var airports= new Array();
@@ -618,9 +432,6 @@ function readItinerary(){
           addinformations.push(speicher);
        }
       
-      /* introduced in 0.5 */
-
-      
       //Find times
       var re=/Dep:[^0-9]+(.*?)\<\/div\>/g;
       var deptimes= new Array();
@@ -669,6 +480,20 @@ function readItinerary(){
 
   
       var basisHTML = document.getElementById("contentwrapper").innerHTML;
+      //Currency in EUR?
+      var itinCur="";
+      var re=/(€)/g;
+      var speicher = new Array();
+      speicher = exRE(basisHTML,re);
+      if (speicher.length>1) itinCur="EUR";
+      if (itinCur==""){
+          var re=/($)/g;
+          var speicher = new Array();
+          speicher = exRE(basisHTML,re);
+          if (speicher.length>1) itinCur="USD";
+      }
+      //console.log("Cur: "+itinCur);
+  
       // Find fare-price
       var re=/GE-ODR-BOR\"\>\<div[^0-9]*([0-9,.]+)/g;
       var farePrice = new Array();
@@ -690,8 +515,6 @@ function readItinerary(){
       var numPax = new Array();
       numPax = exRE(basisHTML,re);
       //console.log(numPax+" pax with total fare of "+farePrice);
-      
-      //Find leg divider
 
       //find farecodes
       if (itaLanguage=="de"){
@@ -843,13 +666,7 @@ function readItinerary(){
   
       // lets do the replacement
      if(replacementsold.length>0) {
-       var elems = document.getElementsByTagName('*'), i;
-       for (i in elems) {
-            if((' ' + elems[i].className + ' ').indexOf(' GE-ODR-BNBB ') > -1) {
-              var target=elems[i].nextSibling.nextSibling;
-              break;
-            }
-        }
+       target=findtarget("GE-ODR-BNBB",1).nextSibling.nextSibling;
        for(i=0;i<replacementsold.length;i++) {
          re = new RegExp(replacementsold[i],"g");
          target.innerHTML = target.innerHTML.replace(re, replacementsnew[i]);
@@ -1147,13 +964,8 @@ var div = document.getElementById('powertoolslinkcontainer');
 div.innerHTML = div.innerHTML + "<br><br><font size=4><bold><a href=\""+url+ "\" target=_blank>"+ (userlang=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")" : "");
 }
 function createUrlContainer(){
-    var elems = document.getElementsByTagName('*'), i;
-    for (i in elems) {
-        if((' ' + elems[i].className + ' ').indexOf(' GE-ODR-BKEB ') > -1) {
-         var newdiv = document.createElement('div');
-          newdiv.setAttribute('id','powertoolslinkcontainer');
-          newdiv.setAttribute('style','margin-left:10px;');
-          elems[i].parentNode.parentNode.parentNode.appendChild(newdiv);
-        }
-    }
+  var newdiv = document.createElement('div');
+  newdiv.setAttribute('id','powertoolslinkcontainer');
+  newdiv.setAttribute('style','margin-left:10px;');
+  findtarget('GE-ODR-BKEB',1).parentNode.parentNode.parentNode.appendChild(newdiv);
 }
