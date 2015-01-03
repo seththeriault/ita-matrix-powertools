@@ -26,3 +26,25 @@ ita-matrix-powertools.en.24h.console.js -- Console-execute supported version of 
 ita-matrix-powertools.de.24h.console.js -- Console-execute supported version of the script userscript in german with 24h
 
 script_minified.txt -- OUTDATED!!! Compact , pastable/single line version of the script for pasting in the debug console
+
+***** Latest Changes: *****
+
+2015-01-03 Edited by Steppo
+
+Fixed double execution bug caused by iframe of google,
+
+removed searchpage & calendar,
+
+removed unused functions,
+
+serveral other cleanups
+
+*** Note ***
+
+Started to rewrite the extraction-function but stopped.
+
+I think google will change some things in the near future.
+
+I am going to do only minimal maintenance to keep the script working.
+
+Let's see how google is going to develop our beloved matrix.
