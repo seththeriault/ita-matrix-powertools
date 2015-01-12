@@ -20,6 +20,8 @@ The CONSOLE version is designed to maintain minify support for execution in the 
 
 *********** Changelog **************
 **** Version 0.7n ****
+# 2015-01-12 Edited by Steppo (Added Hipmunk,
+                               fixed massive bug in leg detection)
 # 2015-01-03 Edited by Steppo (Fixed double execution bug caused by iframe of google,
                                 removed searchpage & calendar,
                                 removed unused functions,
@@ -246,6 +248,8 @@ function fePS() {
     printOrbitz(data);
     
     printUA(data);
+    //*** Hipmunk ****//
+    printHipmunk (data);
     
     // we print US if its only on US-flights
     if (data["carriers"].length==1 && data["carriers"][0]=="US"){
@@ -255,6 +259,7 @@ function fePS() {
     //*** Farefreaksstuff ****//
     printFarefreaks (data,0);
     printFarefreaks (data,1);
+
     //*** GCM ****//
     printGCM (data);  
 }
@@ -569,7 +574,7 @@ function readItinerary(){
                 legobj["dep"]["year"]=getFlightYear(legobj["dep"]["day"],legobj["dep"]["month"]);
                 legobj["dep"]["time"] = deptimes[datapointer];
                 legobj["seg"] = new Array();
-                if (tmp_airports.length <= i+3 || tmp_airports[i+3] == "strong") //Single flight in leg
+                if (tmp_airports.length <= i+3 || tmp_airports[i+3] == 'GE-ODR-BHR"') //Single flight in leg
                 {                       
                     speicher={};
                     speicher["orig"]=tmp_airports[i+1];
@@ -882,7 +887,7 @@ function printFarefreaks (data,method){
     var mincabin=3;
     var segsize=0;  
     var farefreaksurl = "https://www.farefreaks.com/landing/landing.php?";
-    if (itaLanguage=="de"){
+    if (itaLanguage=="de"||userlang=="de"){
     farefreaksurl +="lang=de";
     } else {
     farefreaksurl +="lang=us";
@@ -955,6 +960,50 @@ function printGCM (data){
     }
  printUrl(url,"GCM","");
 }
+function getHipmunkCabin(cabin){
+  // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
+  switch(cabin) {
+      case 2:
+          cabin="Business";
+          break;
+      case 3:
+          cabin="First";
+          break;
+      default:
+          cabin="";
+  }
+  return cabin;
+}
+function printHipmunk (data){
+    var url = "https://www.hipmunk.com/flights/";
+    var datestring="#!dates=";
+    var mincabin=3;
+    //Build multi-city search based on legs
+    for (var i=0;i<data["itin"].length;i++) {
+      // walks each leg
+            if (i>0) url +="-and-";
+            url += "" + data["itin"][i]["orig"];
+            datestring+= ( i>0 ? ",":"")+monthnumberToName(data["itin"][i]["dep"]["month"])+ data["itin"][i]["dep"]["day"].toString();      
+       for (var j=0;j<data["itin"][i]["seg"].length;j++) {
+         //walks each segment of leg
+                var k=0;
+                // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
+                while ((j+k)<data["itin"][i]["seg"].length-1){
+                 if (data["itin"][i]["seg"][j+k]["fnr"] != data["itin"][i]["seg"][j+k+1]["fnr"] || 
+                     data["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
+                 k++;
+                }               
+                url += ( j>0 ? "-"+data["itin"][i]["seg"][j]["orig"]+"-":"::")+data["itin"][i]["seg"][j]["carrier"] + data["itin"][i]["seg"][j]["fnr"];
+                if (data["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=data["itin"][i]["seg"][j]["cabin"];};  
+                j+=k;
+      }
+      url += "-to-" + data["itin"][i]["dest"];
+    }  
+    datestring += "&pax=" + data["numPax"]+(mincabin>0?"&cabin="+getHipmunkCabin(mincabin):"");
+  
+    printUrl(url+datestring,"Hipmunk","");
+}
+
 //ID sidebarNode
 function printUrl(url,name,desc) {
 if (document.getElementById('powertoolslinkcontainer')==undefined){
