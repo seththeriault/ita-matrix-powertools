@@ -20,8 +20,10 @@ The CONSOLE version is designed to maintain minify support for execution in the 
 
 *********** Changelog **************
 **** Version 0.7n ****
+# 2015-02-11 Edited by Steppo (Bugfix for Hipmunk,
+                                added Priceline)
 # 2015-01-12 Edited by Steppo (Added Hipmunk,
-                               fixed massive bug in leg detection)
+                                fixed massive bug in leg detection)
 # 2015-01-03 Edited by Steppo (Fixed double execution bug caused by iframe of google,
                                 removed searchpage & calendar,
                                 removed unused functions,
@@ -265,7 +267,8 @@ function fePS() {
     //*** Farefreaksstuff ****//
     printFarefreaks (data,0);
     printFarefreaks (data,1);
-
+    //*** Priceline ****//
+    printPriceline (data); 
     //*** GCM ****//
     printGCM (data);  
 }
@@ -701,7 +704,6 @@ function getDeltaCabin(cabin){
   }
   return cabin;
 }  
-  
 function printDelta(data){
 // Steppo: Cabincodefunction needs some care!?
 // Steppo: What about farebasis?
@@ -726,7 +728,6 @@ function printDelta(data){
     deltaURL += "&vendorRedirectFlag=true&vendorID=Google";  
     printUrl(deltaURL,"DL","");
 }
-
 function getOrbitzCabin(cabin){
 // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
 // C - Coach / B - Business / F - First on ORB
@@ -742,7 +743,6 @@ function getOrbitzCabin(cabin){
   }
   return cabin;
 }
-
 function printOrbitz(data){
     // Steppo: This should be fine
     var selectKey="";
@@ -771,8 +771,7 @@ function printOrbitz(data){
                 selectKey += "_";                      
                 j+=k;
       }
-    }
-    
+    }    
     orbitzUrl += "&ar.mc.numAdult=" + data["numPax"];
     orbitzUrl += "&ar.mc.numSenior=0&ar.mc.numChild=0&ar.mc.child[0]=&ar.mc.child[1]=&ar.mc.child[2]=&ar.mc.child[3]=&ar.mc.child[4]=&ar.mc.child[5]=&ar.mc.child[6]=&ar.mc.child[7]=&search=Search Flights&ar.mc.nonStop=true&_ar.mc.nonStop=0";
     //lets see if we can narrow the carriers  Orbitz supports up to 3
@@ -799,7 +798,6 @@ function printOrbitz(data){
     printUrl("http://www.orbitz.com"+orbitzUrl,"ORB","");
     
 }
-
 function getUACabin(cabin){
 // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
 // Coach - Coach / Business - Business / First - First on UA
@@ -815,9 +813,6 @@ function getUACabin(cabin){
   }
   return cabin;
 }
-
-
-
 function printUA(data){
 var uaUrl='{\"post\": {\"pax\": '+data["numPax"];
 uaUrl += ', \"trips\": [';
@@ -850,7 +845,6 @@ uaUrl += ', \"trips\": [';
   
      printUrl(uaUrl,"UA",desc);
 }
-
 function getUSCabin(cabin){
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
   switch(cabin) {
@@ -885,7 +879,6 @@ function printUS(data){
     }
     printUrl(usUrl,"US","");
 }
-
 function printFarefreaks (data,method){
 // Should be fine
 // method: 0 = based on leg; 1 = based on segment
@@ -989,7 +982,7 @@ function printHipmunk (data){
       // walks each leg
             if (i>0) url +="-and-";
             url += "" + data["itin"][i]["orig"];
-            datestring+= ( i>0 ? ",":"")+monthnumberToName(data["itin"][i]["dep"]["month"])+ data["itin"][i]["dep"]["day"].toString();      
+            datestring+= ( i>0 ? ",":"")+monthnumberToName(data["itin"][i]["dep"]["month"])+ ( Number(data["itin"][i]["dep"]["day"]) <= 9 ? "0":"") +data["itin"][i]["dep"]["day"].toString();      
        for (var j=0;j<data["itin"][i]["seg"].length;j++) {
          //walks each segment of leg
                 var k=0;
@@ -1006,9 +999,58 @@ function printHipmunk (data){
       url += "-to-" + data["itin"][i]["dest"];
     }  
     datestring += "&pax=" + data["numPax"]+(mincabin>0?"&cabin="+getHipmunkCabin(mincabin):"");
-  
     printUrl(url+datestring,"Hipmunk","");
 }
+function printPriceline (data){
+    var url = "https://www.priceline.com/airlines/landingServlet?userAction=search";
+    var pricelineurl="&TripType=MD&ProductID=1";
+    // outer params
+    pricelineurl+="&DepCity="+data["itin"][0]["orig"];
+    pricelineurl+="&ArrCity="+data["itin"][0]["dest"];
+    pricelineurl+="&DepartureDate="+(Number(data["itin"][0]["dep"]["month"]) <= 9 ? "0":"") +data["itin"][0]["dep"]["month"].toString()+"/"+(Number(data["itin"][0]["dep"]["day"]) <= 9 ? "0":"") +data["itin"][0]["dep"]["day"].toString()+"/"+data["itin"][0]["dep"]["year"].toString();
+    var legsize=1;
+    var segsize=1;
+    var searchparam="<externalSearch>";
+    for (var i=0;i<data["itin"].length;i++) {
+      // walks each leg
+      pricelineurl+="&MDCity_"+legsize.toString()+"="+data["itin"][i]["orig"];
+      pricelineurl+="&DepDateMD"+legsize.toString()+"="+(Number(data["itin"][i]["dep"]["month"]) <= 9 ? "0":"") +data["itin"][i]["dep"]["month"].toString()+"/"+(Number(data["itin"][i]["dep"]["day"]) <= 9 ? "0":"") +data["itin"][i]["dep"]["day"].toString()+"/"+data["itin"][i]["dep"]["year"].toString();
+      legsize++;
+      pricelineurl+="&MDCity_"+legsize.toString()+"="+data["itin"][i]["dest"];
+      pricelineurl+="&DepDateMD"+legsize.toString()+"="+(Number(data["itin"][i]["arr"]["month"]) <= 9 ? "0":"") +data["itin"][i]["arr"]["month"].toString()+"/"+(Number(data["itin"][i]["arr"]["day"]) <= 9 ? "0":"") +data["itin"][i]["arr"]["day"].toString()+"/"+data["itin"][i]["arr"]["year"].toString();
+      legsize++;
+      searchparam+="<slice>";    
+       for (var j=0;j<data["itin"][i]["seg"].length;j++) {
+         searchparam+="<segment>";  
+                //walks each segment of leg
+                var k=0;
+                // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
+                while ((j+k)<data["itin"][i]["seg"].length-1){
+                if (data["itin"][i]["seg"][j+k]["fnr"] != data["itin"][i]["seg"][j+k+1]["fnr"] || 
+                         data["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
+                       k++;
+                }
+                searchparam+="<number>"+segsize.toString()+"</number>";
+                searchparam+="<departDateTime>"+(Number(data["itin"][i]["seg"][j]["dep"]["month"]) <= 9 ? "0":"") +data["itin"][i]["seg"][j]["dep"]["month"].toString()+"/"+(Number(data["itin"][i]["seg"][j]["dep"]["day"]) <= 9 ? "0":"") +data["itin"][i]["seg"][j]["dep"]["day"].toString()+"/"+data["itin"][i]["seg"][j]["dep"]["year"].toString()+" "+data["itin"][i]["seg"][j]["dep"]["time"]+":00</departDateTime>";
+                searchparam+="<arrivalDateTime>"+(Number(data["itin"][i]["seg"][j+k]["arr"]["month"]) <= 9 ? "0":"") +data["itin"][i]["seg"][j+k]["arr"]["month"].toString()+"/"+(Number(data["itin"][i]["seg"][j+k]["arr"]["day"]) <= 9 ? "0":"") +data["itin"][i]["seg"][j+k]["arr"]["day"].toString()+"/"+data["itin"][i]["seg"][j+k]["arr"]["year"].toString()+" "+data["itin"][i]["seg"][j+k]["arr"]["time"]+":00</arrivalDateTime>";
+                searchparam+="<origAirportCode>"+data["itin"][i]["seg"][j]["orig"]+"</origAirportCode>";
+                searchparam+="<destAirportCode>"+data["itin"][i]["seg"][j+k]["dest"]+"</destAirportCode>";
+                searchparam+="<carrierCode>"+data["itin"][i]["seg"][j]["carrier"]+"</carrierCode>";
+                searchparam+="<flightNumber>"+data["itin"][i]["seg"][j]["fnr"]+"</flightNumber>";
+                searchparam+="<equipmentCode></equipmentCode>";
+                searchparam+="<bookingClass>"+data["itin"][i]["seg"][j]["bookingclass"]+"</bookingClass>";         
+                segsize++;
+                j+=k;
+         searchparam+="</segment>";
+      }
+      searchparam+="</slice>";
+    }
+   searchparam+="<numberOfTickets>"+data["numPax"]+"</numberOfTickets><cost><totalFare>0.00</totalFare><baseFare>0.00</baseFare><tax>0.00</tax><fee>0.00</fee></cost>";
+   searchparam+="</externalSearch>";
+   pricelineurl+="&NumTickets="+data["numPax"]+"&AirAffiliateSearch=";
+   printUrl(url+pricelineurl+encodeURIComponent(searchparam),"Priceline","");
+}
+
 
 //ID sidebarNode
 function printUrl(url,name,desc) {
