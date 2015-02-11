@@ -83,7 +83,7 @@ The CONSOLE version is designed to maintain minify support for execution in the 
 var itaLanguage="en";
 // Replacementsetting
 var timeformat="24h";  // replaces times on resultpage
-var userlang="en";     // de is the only supported one at the moment
+var userlang="de";     // de is the only supported one at the moment
 // global retrycount for setup
 var retrycount=1;
 
