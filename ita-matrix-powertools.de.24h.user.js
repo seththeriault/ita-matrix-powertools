@@ -1058,11 +1058,12 @@ if (document.getElementById('powertoolslinkcontainer')==undefined){
 createUrlContainer();
 }
 var div = document.getElementById('powertoolslinkcontainer');
-div.innerHTML = div.innerHTML + "<br><br><font size=4><bold><a href=\""+url+ "\" target=_blank>"+ (userlang=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")" : "");
+div.innerHTML = div.innerHTML + "<li><a href=\""+url+ "\" target=_blank>"+ (userlang=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a>"+(desc ? "<br/><small>("+desc+")</small>" : "")+"</li>";
 }
 function createUrlContainer(){
+  findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 3);
   var newdiv = document.createElement('div');
-  newdiv.setAttribute('id','powertoolslinkcontainer');
-  newdiv.setAttribute('style','margin-left:10px;');
-  findtarget('GE-ODR-BKEB',1).parentNode.parentNode.parentNode.appendChild(newdiv);
+  newdiv.setAttribute('class','GE-ODR-BDFB');
+  newdiv.innerHTML = '<div class="GE-ODR-BAFB">Powertools</div><ul id="powertoolslinkcontainer" class="GE-ODR-BBFB"></ul>';
+  findtarget('GE-ODR-BCFB',1).appendChild(newdiv);
 }
