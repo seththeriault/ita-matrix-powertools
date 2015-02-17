@@ -1078,6 +1078,7 @@ function printItem(text,desc,nth){
 }
 function createUrlContainer(){
   findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 3);
+  findtarget('GE-ODR-BET',1).setAttribute('class', 'GE-ODR-BBFB');
   var newdiv = document.createElement('div');
   newdiv.setAttribute('class','GE-ODR-BDFB');
   newdiv.innerHTML = '<div class="GE-ODR-BAFB">Powertools</div><ul id="powertoolslinkcontainer" class="GE-ODR-BBFB"></ul>';
