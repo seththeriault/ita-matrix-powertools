@@ -251,6 +251,8 @@ function fePS() {
 
     var data = readItinerary();
     
+	printCPM(data);
+    
     printDelta(data);
     
     printOrbitz(data);
@@ -519,6 +521,16 @@ function readItinerary(){
       } else {
       farePrice=farePrice.replace(/\,/g,"");
       }
+	  
+      // Find mileage
+      var re=/GE-ODR-BCT\"\>([0-9,.]+)/g;
+      var mileage = exRE(basisHTML,re);
+      //total mileage will be the first one
+      if (mileage.length){
+        mileage=mileage[0].replace(/\./g,"").replace(/\,/g,"");
+      } else {
+        mileage='0';
+      }
       
       // Get the number of Pax
       if (itaLanguage=="de"){
@@ -674,7 +686,7 @@ function readItinerary(){
       data.push(legobj); // push of last leg
       // add price and pax
       // a little bit unsure about multiple pax with different farebase
-      data={itin:data, price: farePrice, numPax:numPax[0] , carriers:carrieruarray, cur : itinCur, farebases:fareBaseLegs["fares"]};
+      data={itin:data, price: farePrice, numPax:numPax[0] , carriers:carrieruarray, cur : itinCur, farebases:fareBaseLegs["fares"], dist:mileage};
        
       //console.log(data); //Remove to see flightstructure
   
@@ -689,6 +701,9 @@ function readItinerary(){
       return data;
 }  
   //*** Printfunctions ****//
+function printCPM(data){
+  printItem((Number(data.price) / Number(data.dist)).toFixed(4) + ' cpm','',1);
+}
 function getDeltaCabin(cabin){
 // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
 // // B5-Coach / B2-Business on DL
@@ -1053,12 +1068,13 @@ function printPriceline (data){
 
 
 //ID sidebarNode
-function printUrl(url,name,desc) {
-if (document.getElementById('powertoolslinkcontainer')==undefined){
-createUrlContainer();
+function printUrl(url,text,desc,nth){
+  printItem('<a href="'+url+ '" target="_blank">'+(userlang=='de'?'&Ouml;ffne mit':'Open with') +' '+text+'</a>',desc,nth);
 }
-var div = document.getElementById('powertoolslinkcontainer');
-div.innerHTML = div.innerHTML + "<li><a href=\""+url+ "\" target=_blank>"+ (userlang=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a>"+(desc ? "<br/><small>("+desc+")</small>" : "")+"</li>";
+function printItem(text,desc,nth){
+  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkcontainer') : findtarget('GE-ODR-BBFB',nth);
+  div = div ||createUrlContainer();
+  div.innerHTML = div.innerHTML + '<li>'+text+(desc ? '<br/><small>('+desc+')</small>' : '')+'</li>';
 }
 function createUrlContainer(){
   findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 3);
@@ -1066,4 +1082,6 @@ function createUrlContainer(){
   newdiv.setAttribute('class','GE-ODR-BDFB');
   newdiv.innerHTML = '<div class="GE-ODR-BAFB">Powertools</div><ul id="powertoolslinkcontainer" class="GE-ODR-BBFB"></ul>';
   findtarget('GE-ODR-BCFB',1).appendChild(newdiv);
+  return document.getElementById('powertoolslinkcontainer');
 }
+
