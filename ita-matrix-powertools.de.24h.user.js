@@ -959,7 +959,7 @@ function printFarefreaks (data,method){
 }
 
 function printGCM (data){
-    var url = "http://www.gcmap.com/mapui?P=";
+    var url = '';
     // Build multi-city search based on segments
     // Keeping continous path as long as possible 
     for (var i=0;i<data["itin"].length;i++) {
@@ -972,7 +972,7 @@ function printGCM (data){
         }    
       }
     }
- printUrl(url,"GCM","");
+ printImage('http://www.gcmap.com/map?MR=900&MX=210x210&PM=*&P='+url, 'http://www.gcmap.com/mapui?P='+url, 3);
 }
 function getHipmunkCabin(cabin){
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
@@ -1072,9 +1072,16 @@ function printUrl(url,text,desc,nth){
   printItem('<a href="'+url+ '" target="_blank">'+(userlang=='de'?'&Ouml;ffne mit':'Open with') +' '+text+'</a>',desc,nth);
 }
 function printItem(text,desc,nth){
-  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkcontainer') : findtarget('GE-ODR-BBFB',nth);
-  div = div ||createUrlContainer();
+  div = getSidebarContainer(nth);
   div.innerHTML = div.innerHTML + '<li>'+text+(desc ? '<br/><small>('+desc+')</small>' : '')+'</li>';
+}
+function printImage(src,url,nth){
+  div = getSidebarContainer(nth).parentNode;
+  div.innerHTML = div.innerHTML + (url?'<a href="'+url+ '" target="_blank">':'')+'<img src="'+src+'" style="margin-top:10px;"/>'+(url?'</a>':'');
+}
+function getSidebarContainer(nth){
+  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkcontainer') : findtarget('GE-ODR-BBFB',nth);
+  return div ||createUrlContainer();
 }
 function createUrlContainer(){
   findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 3);
