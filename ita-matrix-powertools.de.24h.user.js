@@ -248,6 +248,16 @@ function fePS() {
         var div = document.getElementById('powertoolslinkcontainer');
         div.innerHTML ="";
     }
+	
+    // remove powertool items
+	var elems = document.getElementsByClassName('powertoolsitem');
+	for(var i = elems.length - 1; i >= 0; i--){
+		elems[i].parentNode.removeChild(elems[i]);
+	}
+
+    // configure sidebar
+    findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 3);
+    findtarget('GE-ODR-BET',1).setAttribute('class', 'GE-ODR-BBFB');
 
     var data = readItinerary();
     
@@ -1073,19 +1083,17 @@ function printUrl(url,text,desc,nth){
 }
 function printItem(text,desc,nth){
   div = getSidebarContainer(nth);
-  div.innerHTML = div.innerHTML + '<li>'+text+(desc ? '<br/><small>('+desc+')</small>' : '')+'</li>';
+  div.innerHTML = div.innerHTML + '<li class="powertoolsitem">'+text+(desc ? '<br/><small>('+desc+')</small>' : '')+'</li>';
 }
 function printImage(src,url,nth){
   div = getSidebarContainer(nth).parentNode;
-  div.innerHTML = div.innerHTML + (url?'<a href="'+url+ '" target="_blank">':'')+'<img src="'+src+'" style="margin-top:10px;"/>'+(url?'</a>':'');
+  div.innerHTML = div.innerHTML + (url?'<a href="'+url+ '" target="_blank" class="powertoolsitem">':'')+'<img src="'+src+'" style="margin-top:10px;"'+(!url?' class="powertoolsitem"':'')+'/>'+(url?'</a>':'');
 }
 function getSidebarContainer(nth){
   var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkcontainer') : findtarget('GE-ODR-BBFB',nth);
   return div ||createUrlContainer();
 }
 function createUrlContainer(){
-  findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 3);
-  findtarget('GE-ODR-BET',1).setAttribute('class', 'GE-ODR-BBFB');
   var newdiv = document.createElement('div');
   newdiv.setAttribute('class','GE-ODR-BDFB');
   newdiv.innerHTML = '<div class="GE-ODR-BAFB">Powertools</div><ul id="powertoolslinkcontainer" class="GE-ODR-BBFB"></ul>';
