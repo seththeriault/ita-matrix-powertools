@@ -267,6 +267,8 @@ function fePS() {
     
     printOrbitz(data);
     
+    printKL(data);
+    
     printUA(data);
     //*** Hipmunk ****//
     printHipmunk (data);
@@ -754,6 +756,37 @@ function printDelta(data){
     deltaURL += "&numOfSegments=" + segcounter.toString() + "&paxCount=" + data["numPax"];
     deltaURL += "&vendorRedirectFlag=true&vendorID=Google";  
     printUrl(deltaURL,"DL","");
+}
+function printKL(data) {
+  var klUrl = 'https://www.klm.com/travel/nl_en/apps/ebt/ebt_home.htm?lang=EN&chdQty=0&infQty=0&dev=5&cffcc=ECONOMY', fb = '', oper = '';
+  klUrl += '&adtQty=' + data["numPax"];
+  for (var i=0; i < data['itin'].length; i++) {
+    klUrl += '&c['+i+'].os='+data['itin'][i]['orig'];
+    klUrl += '&c['+i+'].ds='+data['itin'][i]['dest'];
+    klUrl += '&c['+i+'].dd='+data['itin'][i]['dep']['year']+'-'+('0'+data['itin'][i]['dep']['month']).slice(-2)+'-'+('0'+data['itin'][i]['dep']['day']).slice(-2);
+    
+    if (i > 0) oper += '..';
+    
+    for (var j=0; j < data['itin'][i]['seg'].length; j++) {
+      klUrl += '&c['+i+'].s['+j+'].os='+data['itin'][i]['seg'][j]['orig'];
+      klUrl += '&c['+i+'].s['+j+'].ds='+data['itin'][i]['seg'][j]['dest'];
+      klUrl += '&c['+i+'].s['+j+'].dd='+data['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+data['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+data['itin'][i]['seg'][j]['dep']['day']).slice(-2);
+      klUrl += '&c['+i+'].s['+j+'].dt='+('0'+data['itin'][i]['seg'][j]['dep']['time'].replace(':','')).slice(-4);
+      klUrl += '&c['+i+'].s['+j+'].mc='+data['itin'][i]['seg'][j]['carrier'];
+      klUrl += '&c['+i+'].s['+j+'].fn='+('000'+data['itin'][i]['seg'][j]['fnr']).slice(-4);
+      
+      if (j > 0) oper += '.';
+      oper += data['itin'][i]['seg'][j]['carrier'];
+    }
+  }
+  
+  for (var i=0; i < data['farebases'].length; i++) {
+    if (i > 0) fb += ',';
+    fb += data['farebases'][i];
+  }
+  
+  klUrl += '&ref=fb='+fb;//+',oper='+oper;
+  printUrl(klUrl, 'KL');
 }
 function getOrbitzCabin(cabin){
 // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
