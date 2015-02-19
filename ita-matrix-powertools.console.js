@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace http://matrix.itasoftware.com
 // @description Builds fare purchase links
-// @version 0.7n
+// @version 0.8
 // @grant none
 // @include http://matrix.itasoftware.com/*
 // ==/UserScript==
@@ -13,13 +13,25 @@ The CONSOLE version is designed to maintain minify support for execution in the 
 */
 
 /*
- Written by paul21 & Steppo of FlyerTalk.com
+ Written by paul21, Steppo & IAkH of FlyerTalk.com
  http://www.flyertalk.com/forum/members/paul21.html
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 
 *********** Changelog **************
+**** Version 0.8 ****
+# 2015-02-19 Edited by Steppo (Added settings menu,
+                                added price breakdown,
+                                added opening fare rules in new window,
+                                made modes switchable,
+                                added click to reveal images,
+                                several tweaks and cleanups)
+
 **** Version 0.7n ****
+# 2015-02-16 Edited by IAkH   (Introduced inline mode,
+                                added CPM,  
+                                added Air Canada,
+                                added KLM)
 # 2015-02-11 Edited by Steppo (Bugfix for Hipmunk,
                                 added Priceline)
 # 2015-01-12 Edited by Steppo (Added Hipmunk,
@@ -76,63 +88,147 @@ The CONSOLE version is designed to maintain minify support for execution in the 
   Unsure about handling of different fares/pax. 
   Unsure about correct usage of cabins while creating links.
   Unsure about correct usage of farebase-per-leg - usage in order of appearance.
-  Unsere about segment-skipping - should be fine bud needs heavy testing.
+  Unsere about segment-skipping - should be fine but needs heavy testing.
 */
 /**************************************** Start Script *****************************************/
-// Get language first but do not use itaLocale
-var itaLanguage="en";
-// Replacementsetting
-var timeformat="24h";  // replaces times on resultpage
-var userlang="en";     // de is the only supported one at the moment
-// global retrycount for setup
-var retrycount=1;
+// User settings
+var mptUsersettings = new Object();
+mptUsersettings["timeformat"] = "12h";       // replaces times on resultpage - valid: 12h / 24h
+mptUsersettings["language"] = "en";          // replaces several items on resultpage - valid: en / de
+mptUsersettings["enableInlinemode"] = 0;     // enables inline mode - valid: 0 / 1
+mptUsersettings["enableIMGautoload"] = 0;    // enables images to auto load - valid: 0 / 1
+mptUsersettings["enableFarerules"] = 1;      // enables fare rule opening in new window - valid: 0 / 1
+mptUsersettings["enablePricebreakdown"] = 1; // enables price breakdown - valid: 0 / 1
 
-// we need to detect pagechange 3.0 is using ajax only
-var laststatus = "";
-var scriptrunning = 1;
+
+// *** DO NOT CHANGE BELOW THIS LINE***/
+// General settings
+var mptSettings = new Object();
+mptSettings["itaLanguage"]="en";
+mptSettings["retrycount"]=1;
+mptSettings["laststatus"]="";
+mptSettings["scriptrunning"]=1;
 
 // execute language detection and afterwards functions for current page
-if (window.top != window.self) exit; //don't run on frames or iframes
+startcript();
 
-if (window.addEventListener){
-window.addEventListener('load', startcript, false);
-} else if (window.attachEvent)
-window.attachEvent("onload", startcript);
-else {
-window.onload = startcript;
-}
 function startcript(){
-  if (window.location.href!=laststatus){
+  if (window.location.href!=mptSettings["laststatus"]){
     setTimeout(function(){getPageLang();}, 100);
-    laststatus=window.location.href;
+    mptSettings["laststatus"]=window.location.href;
   }
-  if (scriptrunning==1){
+  if (mptSettings["scriptrunning"]==1){
    setTimeout(function(){startcript();}, 500); 
+  }  
+}
+
+function startcript(){
+  if (document.getElementById("mptSettingsContainer")== null ) {
+  createUsersettings();
   }
-  
+  if (window.location.href!=mptSettings["laststatus"]){
+    setTimeout(function(){getPageLang();}, 100);
+    mptSettings["laststatus"]=window.location.href;
+  }
+  if (mptSettings["scriptrunning"]==1){
+   setTimeout(function(){startcript();}, 500); 
+  }  
+}
+
+/**************************************** Settings Stuff *****************************************/
+function createUsersettings(){
+    var settingscontainer = document.createElement('div');
+    settingscontainer.setAttribute('id', 'mptSettingsContainer');
+    settingscontainer.setAttribute('style', 'border-bottom: 1px dashed grey;');
+    settingscontainer.innerHTML = '<div><span>Powertools running</span><span id="settingsvistoggler" style="float:right;cursor:pointer;">Show/Hide Settings</span><div id="mptSettings" class="invis" style="display:none;border-top: 1px dotted grey;"><div>';
+    var target=document.getElementById("contentwrapper");
+    target.parentNode.insertBefore(settingscontainer, target);
+    document.getElementById('settingsvistoggler').onclick=function(){toggleSettingsvis();};
+    target=document.getElementById("mptSettings");
+    target.innerHTML ='<span id="mpttimeformat" style="cursor:pointer;">Timeformat:<span>'+printSettingsvalue("timeformat")+'</span></span><br>';   
+    target.innerHTML +='<span id="mptlanguage" style="cursor:pointer;">Language:<span>'+printSettingsvalue("language")+'</span></span><br>';
+    target.innerHTML +='<span id="mptenableInlinemode" style="cursor:pointer;">Inlinemode:<span>'+printSettingsvalue("enableInlinemode")+'</span></span><br>';
+    target.innerHTML +='<span id="mptenableIMGautoload" style="cursor:pointer;">Images autoload:<span>'+printSettingsvalue("enableIMGautoload")+'</span></span><br>';
+    target.innerHTML +='<span id="mptenableFarerules" style="cursor:pointer;">Farerules in new window:<span>'+printSettingsvalue("enableFarerules")+'</span></span><br>';
+    target.innerHTML +='<span id="mptenablePricebreakdown" style="cursor:pointer;">Price breakdown:<span>'+printSettingsvalue("enablePricebreakdown")+'</span></span>';
+    document.getElementById('mpttimeformat').onclick=function(){toggleSettings("timeformat");};
+    document.getElementById('mptlanguage').onclick=function(){toggleSettings("language");};
+    document.getElementById('mptenableInlinemode').onclick=function(){toggleSettings("enableInlinemode");};
+    document.getElementById('mptenableIMGautoload').onclick=function(){toggleSettings("enableIMGautoload");};
+    document.getElementById('mptenableFarerules').onclick=function(){toggleSettings("enableFarerules");};
+    document.getElementById('mptenablePricebreakdown').onclick=function(){toggleSettings("enablePricebreakdown");};
+}
+function toggleSettingsvis(){
+  var target=document.getElementById("mptSettings");
+  if (hasClass(target,"vis")){
+    target.setAttribute('class', 'invis');
+    target.style.display="none"; 
+  } else {
+    target.setAttribute('class', 'vis');
+    target.style.display="block"; 
+  }
+}
+function toggleSettings(target){
+   switch(target) {
+      case "timeformat":
+         if (mptUsersettings["timeformat"]=="12h"){
+           mptUsersettings["timeformat"]="24h";
+         } else {
+           mptUsersettings["timeformat"]="12h";
+         }
+          break;
+      case "language":
+         if (mptUsersettings["language"]=="de"){
+           mptUsersettings["language"]="en";
+         } else {
+           mptUsersettings["language"]="de";
+         }
+          break;
+      default:
+        if (mptUsersettings[target]==1){
+           mptUsersettings[target]=0;
+         } else {
+           mptUsersettings[target]=1;
+         };
+  }
+  document.getElementById("mpt"+target).firstChild.nextSibling.innerHTML=printSettingsvalue(target); 
+}
+
+function printSettingsvalue(target){
+   var ret="";
+   switch(target) {
+      case "timeformat":
+          ret=mptUsersettings["timeformat"];
+          break;
+      case "language":
+          ret=mptUsersettings["language"];
+          break;
+      default:
+          ret=boolToEnabled(mptUsersettings[target]);
+  }
+  return ret; 
 }
 
 /**************************************** Get Language *****************************************/
-
 function getPageLang(){
     if (document.getElementById("localeSelect_label")== null ) {
       console.log("Matrix 3.0: Falling back to EN"); 
-      itaLanguage="en";
-      retrycount=1;  
+      mptSettings["itaLanguage"]="en";
+      mptSettings["retrycount"]=1;  
     } else {      
       if (document.getElementById("localeSelect_label").innerHTML == "Deutsch") {
-      itaLanguage="de";
-      retrycount=1;
+      mptSettings["itaLanguage"]="de";
+      mptSettings["retrycount"]=1;
      } else if (document.getElementById("localeSelect_label").innerHTML == "English") {
-      itaLanguage="en";
-      retrycount=1;
-     } else if (retrycount>=20) {
+      mptSettings["itaLanguage"]="en";
+      mptSettings["retrycount"]=1;
+     } else if (mptSettings["retrycount"]>=20) {
       //set default and go ahead 
       console.log("Unable to detect language: Falling back to EN"); 
-      itaLanguage="en";
-      retrycount=1; 
+      mptSettings["itaLanguage"]="en";
+      mptSettings["retrycount"]=1; 
      } else {
-      retrycount++; 
+      mptSettings["retrycount"]++; 
       setTimeout(function(){getPageLang();}, 100);
       return false; 
      }
@@ -198,6 +294,13 @@ function return12htime(match){
 function trimStr(x) {
     return x.replace(/^\s+|\s+$/gm,'');
 }
+function boolToEnabled(value){
+   if (value==1) {
+   return "enabled"
+   } else {
+   return "disabled"
+   }
+}
 function getcabincode(cabin){
   switch(cabin) {
       case "E":
@@ -230,19 +333,37 @@ function findtarget(tclass,nth){
        }
    }
 }
-/********************************************* Link Creator *********************************************/
+
+function findtargets(tclass){
+  var elems = document.getElementsByTagName('*'), i;
+  var ret = new Array();
+  for (i in elems) {
+       if((' ' + elems[i].className + ' ').indexOf(' '+tclass+' ') > -1) {
+         ret.push(elems[i]);
+       }
+   }
+  return ret;
+}
+
+function hasClass(element, cls) {
+  return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+}
+/********************************************* Result page *********************************************/
 //Primary function for extracting flight data from ITA/Matrix
 function fePS() {
     // retry if itin not loaded  
     if (findtarget("GE-ODR-BMBB",1).firstChild.nextSibling.style.display!="none") { 
-      retrycount++;
-      if (retrycount>20) {
+      mptSettings["retrycount"]++;
+      if (mptSettings["retrycount"]>20) {
         console.log("Error Content not found.");
         return false;
       };
       setTimeout(function(){fePS();}, 200);    
       return false;
     };
+    
+    if (mptUsersettings["enableFarerules"]==1) bindRulelinks();
+       
     // empty outputcontainer
     if (document.getElementById('powertoolslinkcontainer')!=undefined){
         var div = document.getElementById('powertoolslinkcontainer');
@@ -250,47 +371,171 @@ function fePS() {
     }
 	
     // remove powertool items
-	var elems = document.getElementsByClassName('powertoolsitem');
-	for(var i = elems.length - 1; i >= 0; i--){
-		elems[i].parentNode.removeChild(elems[i]);
-	}
-
+  	var elems = findtargets('powertoolsitem');
+  	for(var i = elems.length - 1; i >= 0; i--){
+  		elems[i].parentNode.removeChild(elems[i]);
+  	}
+    
     // configure sidebar
-    findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 3);
+    if (mptUsersettings["enableInlinemode"]==1) {
+    findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 10);
     findtarget('GE-ODR-BET',1).setAttribute('class', 'GE-ODR-BBFB');
-
+    } else if (mptUsersettings["enableInlinemode"]==0 && mptUsersettings["enablePricebreakdown"]==1) {
+      findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 3);
+    } else {
+      findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 2);
+    }
     var data = readItinerary();
     
-	printCPM(data);
-    
+    // Search - Remove - Add Pricebreakdown
+    var target=findtarget('pricebreakdown',1);
+    if (target!=undefined) target.parentNode.removeChild(target);
+    if (mptUsersettings["enablePricebreakdown"]==1) rearrangeprices(data.dist);
+    if (mptUsersettings["enableInlinemode"]==1) printCPM(data);
+	 
+    printAC(data);
+  
     printDelta(data);
     
     printAF(data);
     
     printKL(data);
     
-    printOrbitz(data);
-    
     printUA(data);
-    //*** Hipmunk ****//
-    printHipmunk (data);
-    
+  
     // we print US if its only on US-flights
     if (data["carriers"].length==1 && data["carriers"][0]=="US"){
       printUS(data);
-    } 
-       
-    printAC(data);
-       
+    }
+  
+    printOrbitz(data);
+
+    printHipmunk (data);
+
+    printPriceline (data);
+  
     //*** Farefreaksstuff ****//
     printFarefreaks (data,0);
     printFarefreaks (data,1);
-    //*** Priceline ****//
-    printPriceline (data); 
+
     //*** GCM ****//
     printGCM (data);  
 }
-
+    //*** Rulelinks ****//
+function bindRulelinks(){
+    var i = 0;
+    var j = 0;
+    var t = 1;
+    var target=findtarget('GE-ODR-BGS',t);
+    if (target!=undefined){
+      do {
+          var current=Number(target.firstChild.innerHTML.replace(/[^\d]/gi, ""));
+          if (i>current){
+            j++;
+            i=0;  
+          }
+          target=target.nextSibling.nextSibling.nextSibling;
+          var targeturl = window.location.href.replace(/view-details/, "view-rules")+";fare-key="+j+"/"+i;
+          var newlink = document.createElement('a');
+          newlink.setAttribute('class', 'gwt-Anchor');
+          newlink.setAttribute('href', targeturl);
+          newlink.setAttribute('target', "_blank");
+          var linkText = document.createTextNode("rules");
+          newlink.appendChild(linkText);
+          target.parentNode.replaceChild(newlink,target);    
+          i++;
+          t++;
+          target=findtarget('GE-ODR-BGS',t);
+      }
+      while (target!=undefined);  
+    }   
+}
+    //*** Price breackdown ****//
+function rearrangeprices(dist){
+    var basefares = 0;
+    var taxes = 0;
+    var surcharges =0;
+    var basefound=0;
+    var cur="";
+    // define serchpattern to detect carrier imposed surcharges
+    var surchpatt = new RegExp("\((YQ|YR)\)");
+    var t=1;
+    var target=findtarget('GE-ODR-BJS',t);
+    if (mptUsersettings["enableInlinemode"] == 0){
+     var output="";
+     var count=0;
+    }
+    if (target!=undefined){
+      do {    
+          var type = target.firstChild.firstChild.nodeType;
+          if (type == 1) {
+            basefound=1;
+            //it's a basefare
+            var price = Number(target.nextSibling.firstChild.innerHTML.replace(/[^\d]/gi, ""));
+            if (cur=="") cur=target.nextSibling.firstChild.innerHTML.replace(/[\d,.]/g, "");
+            basefares+=price;
+          } else if(basefound==1 && type == 3) {
+            //its a pricenode
+            var name  = target.firstChild.innerHTML;    
+            var price = Number(target.nextSibling.firstChild.innerHTML.replace(/[^\d]/gi, ""));            
+            if( hasClass(target.nextSibling, 'GE-ODR-BOS') == 1) {
+             //we are done for this container
+              //console.log( "Basefare: "+ basefares);    
+              //console.log( "Taxes: "+ taxes); 
+              //console.log( "Surcharges: "+ surcharges);
+              var sum=basefares+taxes+surcharges;
+              if (mptUsersettings["enableInlinemode"] == 1){
+                  var newtr = document.createElement('tr');
+                  newtr.innerHTML = '<td class="GE-ODR-BJS"><div class="gwt-Label">Basefare per passenger ('+((basefares/sum)*100).toFixed(2).toString()+'%)</div></td><td class="GE-ODR-BOS"><div class="gwt-Label">'+cur+(basefares/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  target.parentNode.parentNode.insertBefore(newtr, target.parentNode);  
+                  var newtr = document.createElement('tr');
+                  newtr.innerHTML = '<td class="GE-ODR-BJS"><div class="gwt-Label">Taxes per passenger ('+((taxes/sum)*100).toFixed(2).toString()+'%)</div></td><td class="GE-ODR-BIS"><div class="gwt-Label">'+cur+(taxes/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  target.parentNode.parentNode.insertBefore(newtr, target.parentNode); 
+                  var newtr = document.createElement('tr');
+                  newtr.innerHTML = '<td class="GE-ODR-BJS"><div class="gwt-Label">Surcharges per passenger ('+((surcharges/sum)*100).toFixed(2).toString()+'%)</div></td><td class="GE-ODR-BIS"><div class="gwt-Label">'+cur+(surcharges/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  target.parentNode.parentNode.insertBefore(newtr, target.parentNode);  
+                  var newtr = document.createElement('tr');
+                  newtr.innerHTML = '<td class="GE-ODR-BJS"><div class="gwt-Label">Basefare + Taxes per passenger ('+(((basefares+taxes)/sum)*100).toFixed(2).toString()+'%)</div></td><td class="GE-ODR-BOS"><div class="gwt-Label">'+cur+((basefares+taxes)/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  target.parentNode.parentNode.insertBefore(newtr, target.parentNode); 
+              } else {
+                 count++;
+                 output +='<table style="float:left; margin-right:15px;"><tbody>';
+                 output +='<tr><td colspan=3 style="text-align:center;">Price breakdown '+count+':</td></tr>';
+                 output +='<tr><td>CPM</td><td colspan=2 style="text-align:center;">'+((sum/dist)/100).toFixed(4).toString()+'</td></tr>';
+                 output +='<tr><td>Basefare</td><td style="padding:0px 3px;text-align:right;">'+((basefares/sum)*100).toFixed(1).toString()+'%</td><td style="text-align:right;">'+cur+(basefares/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td></tr>";
+                 output +='<tr><td>Tax</td><td style="padding:0px 3px;text-align:right;">'+((taxes/sum)*100).toFixed(1).toString()+'%</td><td style="text-align:right;">'+cur+(taxes/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td></tr>";
+                 output +='<tr><td>Surcharges</td><td style="padding:0px 3px;text-align:right;">'+((surcharges/sum)*100).toFixed(1).toString()+'%</td><td style="text-align:right;">'+cur+(surcharges/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td></tr>";
+                 output +='<tr><td style="border-top: 1px solid #878787;padding:2px 0">Bf+Tax</td><td style="border-top: 1px solid #878787;padding:2px 3px;text-align:right;">'+(((basefares+taxes)/sum)*100).toFixed(1).toString()+'%</td><td style="border-top: 1px solid #878787;padding:2px 0; text-align:right;">'+cur+((basefares+taxes)/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td></tr>";
+                 output +="</tbody></table>"; 
+              }
+      
+              // reset var
+              basefound=0;
+              basefares = 0;
+              taxes = 0;
+              surcharges =0;         
+            } else {
+              //Carrier surcharge?
+              if (surchpatt.test(name)===true){
+               surcharges+=price; 
+              } else {
+               taxes+=price; 
+              }           
+            }
+          }    
+          t++;
+          target=findtarget('GE-ODR-BJS',t);
+      }
+      while (target!=undefined);  
+    }
+    if (mptUsersettings["enableInlinemode"] == 0){
+      var printtarget=findtarget('GE-ODR-BKEB',1).parentNode.parentNode.parentNode;
+      var newtr = document.createElement('tr');
+      newtr.setAttribute('class','pricebreakdown');
+      newtr.innerHTML = '<td class="GE-ODR-BMBB"><div>'+output+'</div></td>';
+      printtarget.parentNode.insertBefore(newtr, printtarget); 
+    }
+}
   //*** Readfunction ****//
 function readaddinfo(str){
   var result=new Array();
@@ -306,7 +551,7 @@ function readItinerary(){
       // the magical part! :-)
       var replacementsold = new Array();
       var replacementsnew = new Array();
-      if (userlang=="de"){
+      if (mptUsersettings["language"]=="de"){
        replacementsold.push("Dep:");
        replacementsnew.push("Abflug:");
        replacementsold.push("Arr:");
@@ -422,16 +667,14 @@ function readItinerary(){
       var tmp_airdate= new Array();
       tmp_airdate = exRE(itinHTML,re);
       // lets swap values if german language
-      if (itaLanguage=="de"){
+      if (mptSettings["itaLanguage"]=="de"){
         for (var i = 0; i < tmp_airdate.length; i+=3) {
           var speicher=tmp_airdate[i+1];
           tmp_airdate[i+1]=tmp_airdate[i+2].replace(/ä/g, "a").replace(/i/g, "y").replace(/Dez/g, "Dec").replace(/Okt/g, "Oct");
           tmp_airdate[i+2]=speicher;
           }
-      }
-      
+      }     
       // find information like codeshare layoverduration and timechange on arrival
-
       // lets see what we got
       var addinformations = Array();
       for (var i = 0; i < tmp_airarrdate.length; i+=5) {
@@ -445,7 +688,7 @@ function readItinerary(){
             var speicher2= new Array();
             speicher2 = exRE(tmp_airarrdate[i+2],re);
             // lets swap values if german language
-            if (itaLanguage=="de"){
+            if (mptSettings["itaLanguage"]=="de"){
                 var speicher3=speicher2[0];
                 speicher2[0]=speicher2[1].replace(/ä/g, "a").replace(/i/g, "y").replace(/Dez/g, "Dec").replace(/Okt/g, "Oct");
                 speicher2[1]=speicher3;
@@ -472,16 +715,16 @@ function readItinerary(){
       var re=/Arr:[^0-9]+(.*?)\<\/div\>/g;
       var arrtimes= new Array();
       arrtimes = exRE(itinHTML,re);
-      if (itaLanguage!="de"){
+      if (mptSettings["itaLanguage"]!="de"){
       // take care of 12h
         for (var i = 0; i < deptimes.length; i++) {
-          if (timeformat=="24h") {
+          if (mptUsersettings["timeformat"]=="24h") {
            replacementsold.push(deptimes[i]);
            replacementsold.push(arrtimes[i]); 
           }
           deptimes[i]=return12htime(deptimes[i]);
           arrtimes[i]=return12htime(arrtimes[i]);
-          if (timeformat=="24h") {          
+          if (mptUsersettings["timeformat"]=="24h") {          
             replacementsnew.push((deptimes[i].length==4? "0":"")+deptimes[i]) ;
             replacementsnew.push((arrtimes[i].length==4? "0":"")+arrtimes[i]);
           }
@@ -524,20 +767,18 @@ function readItinerary(){
           speicher = exRE(basisHTML,re);
           if (speicher.length>1) itinCur="USD";
       }
-      //console.log("Cur: "+itinCur);
-  
+      //console.log("Cur: "+itinCur); 
       // Find fare-price
       var re=/GE-ODR-BOR\"\>\<div[^0-9]*([0-9,.]+)/g;
       var farePrice = new Array();
       farePrice = exRE(basisHTML,re);
       //total price will be the last one
       farePrice=farePrice[(farePrice.length-1)];
-      if (itaLanguage=="de"){
+      if (mptSettings["itaLanguage"]=="de"){
       farePrice=farePrice.replace(/\./g,"").replace(/\,/g,".");
       } else {
       farePrice=farePrice.replace(/\,/g,"");
-      }
-	  
+      }	  
       // Find mileage
       var re=/GE-ODR-BCT\"\>([0-9,.]+)/g;
       var mileage = exRE(basisHTML,re);
@@ -546,10 +787,9 @@ function readItinerary(){
         mileage=mileage[0].replace(/\./g,"").replace(/\,/g,"");
       } else {
         mileage='0';
-      }
-      
+      }    
       // Get the number of Pax
-      if (itaLanguage=="de"){
+      if (mptSettings["itaLanguage"]=="de"){
       var re=/Gesamtpreis\sfür\s([0-9])\sPassagier/g;
       } else {
       var re=/Total\scost\sfor\s([0-9])\spassenger/g;
@@ -559,7 +799,7 @@ function readItinerary(){
       //console.log(numPax+" pax with total fare of "+farePrice);
 
       //find farecodes
-      if (itaLanguage=="de"){
+      if (mptSettings["itaLanguage"]=="de"){
       var re=/Airline\s\w\w\s(\w+)\s[\w{3}]/g;
       } else {
       var re=/Carrier\s\w\w\s(\w+)\s[\w{3}]/g;
@@ -568,7 +808,7 @@ function readItinerary(){
       fareBasis=exRE(basisHTML,re);
          
       //Find basis legs  => NEW
-      if (itaLanguage=="de"){
+      if (mptSettings["itaLanguage"]=="de"){
       var re=/Strecke\(n\) ([\w\(\)\s\-,]+)/g;
       } else {
       var re=/Covers ([\w\(\)\s\-,]+)/g;
@@ -589,8 +829,7 @@ function readItinerary(){
         for(var j=0;j<fareBaseLegs["legs"][i].length;j++) {
          dirtyFare.push(fareBaseLegs["legs"][i][j]+"-"+fareBaseLegs["fares"][i]);
         }
-      }
-      
+      }    
       var k=-1;
       var datapointer=0;  
       var legobj={};
@@ -718,7 +957,7 @@ function readItinerary(){
 }  
   //*** Printfunctions ****//
 function printCPM(data){
-  printItem((Number(data.price) / Number(data.dist)).toFixed(4) + ' cpm','',1);
+  printItemInline((Number(data.price) / Number(data.dist)).toFixed(4) + ' cpm','',1);
 }
 function getDeltaCabin(cabin){
 // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
@@ -739,7 +978,7 @@ function printDelta(data){
 // Steppo: Cabincodefunction needs some care!?
 // Steppo: What about farebasis?
 // Steppo: What about segmentskipping?
-    var deltaURL ="http://"+(itaLanguage=="de" ? "de" : "www");
+    var deltaURL ="http://"+(mptSettings["itaLanguage"]=="de" ? "de" : "www");
     deltaURL +=".delta.com/booking/priceItin.do?dispatchMethod=priceItin&tripType=multiCity&cabin=B5-Coach";
     deltaURL +="&currencyCd=" + (data["cur"]=="EUR" ? "EUR" : "USD") + "&exitCountry=US";
     var segcounter=0;
@@ -756,8 +995,12 @@ function printDelta(data){
     deltaURL += "&fareBasis="+data["farebases"].toString().replace(/,/g, ":");
     deltaURL += "&price="+data["price"];
     deltaURL += "&numOfSegments=" + segcounter.toString() + "&paxCount=" + data["numPax"];
-    deltaURL += "&vendorRedirectFlag=true&vendorID=Google";  
-    printUrl(deltaURL,"DL","");
+    deltaURL += "&vendorRedirectFlag=true&vendorID=Google";      
+    if (mptUsersettings["enableInlinemode"]==1){
+     printUrlInline(deltaURL,"Delta","");
+    } else {
+     printUrl(deltaURL,"Delta","");
+    }    
 }
 function printAF(data) {
   var afUrl = 'https://www.airfrance.com/US/en/local/process/standardbooking/DisplayUpsellAction.do?cabin=Y&calendarSearch=1&listPaxTypo=ADT&subCabin=MCHER&typeTrip=2', flights;
@@ -791,15 +1034,21 @@ function printAF(data) {
   printUrl(afUrl, 'AF');
 }
 function printKL(data) {
-  var klUrl = 'https://www.klm.com/travel/nl_en/apps/ebt/ebt_home.htm?lang=EN&chdQty=0&infQty=0&dev=5&cffcc=ECONOMY', fb = '', oper = '';
+  var klUrl = 'https://www.klm.com/travel/';
+   if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
+    klUrl += 'de_de/apps/ebt/ebt_home.htm?lang=DE';
+    } else {
+    klUrl += 'us_en/apps/ebt/ebt_home.htm?lang=EN';
+    }
+  klUrl += '&chdQty=0&infQty=0&dev=5&cffcc=ECONOMY';
+  var fb = '';
+  var oper = '';
   klUrl += '&adtQty=' + data["numPax"];
   for (var i=0; i < data['itin'].length; i++) {
     klUrl += '&c['+i+'].os='+data['itin'][i]['orig'];
     klUrl += '&c['+i+'].ds='+data['itin'][i]['dest'];
-    klUrl += '&c['+i+'].dd='+data['itin'][i]['dep']['year']+'-'+('0'+data['itin'][i]['dep']['month']).slice(-2)+'-'+('0'+data['itin'][i]['dep']['day']).slice(-2);
-    
+    klUrl += '&c['+i+'].dd='+data['itin'][i]['dep']['year']+'-'+('0'+data['itin'][i]['dep']['month']).slice(-2)+'-'+('0'+data['itin'][i]['dep']['day']).slice(-2);   
     if (i > 0) oper += '..';
-    
     for (var j=0; j < data['itin'][i]['seg'].length; j++) {
       klUrl += '&c['+i+'].s['+j+'].os='+data['itin'][i]['seg'][j]['orig'];
       klUrl += '&c['+i+'].s['+j+'].ds='+data['itin'][i]['seg'][j]['dest'];
@@ -819,7 +1068,11 @@ function printKL(data) {
   }
   
   klUrl += '&ref=fb='+fb;//+',oper='+oper;
-  printUrl(klUrl, 'KL');
+    if (mptUsersettings["enableInlinemode"]==1){
+     printUrlInline(klUrl,"KLM","");
+    } else {
+     printUrl(klUrl,"KLM","");
+    } 
 }
 function getOrbitzCabin(cabin){
 // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
@@ -887,9 +1140,13 @@ function printOrbitz(data){
     var priceval = parseFloat(pricing) + 6.99;
     orbitzUrl += "&userRate.price=USD|" + priceval.toString();
     }
-    printUrl("http://www.cheaptickets.com"+orbitzUrl,"CHPTIX","");
-    printUrl("http://www.orbitz.com"+orbitzUrl,"ORB","");
-    
+    if (mptUsersettings["enableInlinemode"]==1){
+      printUrlInline("http://www.cheaptickets.com"+orbitzUrl,"Cheaptickets","");
+      printUrlInline("http://www.orbitz.com"+orbitzUrl,"Orbitz","");
+    } else {
+      printUrl("http://www.cheaptickets.com"+orbitzUrl,"Cheaptickets","");
+      printUrl("http://www.orbitz.com"+orbitzUrl,"Orbitz","");
+    }    
 }
 function getUACabin(cabin){
 // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
@@ -930,16 +1187,25 @@ uaUrl += ', \"trips\": [';
       uaUrl = uaUrl.substring(0,uaUrl.length-1)+'],\"cabin\": \"'+getUACabin(minCabin)+'\"},';
     }
     uaUrl = 'https://www.hipmunk.com/bookjs?booking_info=' + encodeURIComponent(uaUrl.substring(0,uaUrl.length-1) +']}, \"kind\": \"flight\", \"provider_code\": \"UA\" }');
-        if (userlang=="de"){
+        if (mptUsersettings["language"]=="de"){
         desc="Kopiere den Link bei Hipmunk";
       } else {
         desc="Copy Link in Text, via Hipmunk";
-      }  
-  
-     printUrl(uaUrl,"UA",desc);
+      }     
+    if (mptUsersettings["enableInlinemode"]==1){
+      printUrlInline(uaUrl,"United",desc);
+    } else {
+      printUrl(uaUrl,"United",desc);
+    }
 }
 function printAC(data){
-  var acUrl = 'http://www.aircanada.com/aco/flights.do?AH_IATA_NUMBER=0005118&AVAIL_EMMBEDDED_TRANSACTION=FlexPricerAvailabilityServlet&country=US&countryOfResidence=US&CREATION_MODE=30&EMBEDDED_TRANSACTION=FareServelet&FareRequest=YES&fromThirdParty=YES&HAS_INFANT_1=False&IS_PRIMARY_TRAVELLER_1=True&language=en&LANGUAGE=US&SITE=SAADSAAD&thirdPartyID=0005118&TRAVELER_TYPE_1=ADT&PRICING_MODE=0';
+  var acUrl = 'http://www.aircanada.com/aco/flights.do?AH_IATA_NUMBER=0005118&AVAIL_EMMBEDDED_TRANSACTION=FlexPricerAvailabilityServlet'
+    if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
+    acUrl += '&country=DE&countryOfResidence=DE&language=de&LANGUAGE=DE';
+    } else {
+    acUrl += '&country=US&countryOfResidence=US&language=en&LANGUAGE=US';
+    }
+  acUrl += '&CREATION_MODE=30&EMBEDDED_TRANSACTION=FareServelet&FareRequest=YES&fromThirdParty=YES&HAS_INFANT_1=False&IS_PRIMARY_TRAVELLER_1=True&SITE=SAADSAAD&thirdPartyID=0005118&TRAVELER_TYPE_1=ADT&PRICING_MODE=0';
   acUrl += '&numberOfChildren=0&numberOfInfants=0&numberOfYouth=0&numberOfAdults=' + data["numPax"];
   acUrl += '&tripType=' + (data['itin'].length > 1 ? 'R' : 'O');
   for (var i=0; i < data['itin'].length; i++) {
@@ -960,7 +1226,11 @@ function printAC(data){
       acUrl += '&RBD_'          +(i+1)+'_'+(j+1)+'='+data['itin'][i]['seg'][j]['bookingclass'];
     }
   }
-  printUrl(acUrl,"AC");
+    if (mptUsersettings["enableInlinemode"]==1){
+      printUrlInline(acUrl,"Air Canada","");
+    } else {
+      printUrl(acUrl,"Air Canada","");
+    }
 }
 function getUSCabin(cabin){
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
@@ -993,8 +1263,12 @@ function printUS(data){
         usUrl += "&t"+segstr+"=" + data["itin"][i]["seg"][j]["dep"]["year"] + (data["itin"][i]["seg"][j]["dep"]["month"] < 10 ? "0":"" )+ data["itin"][i]["seg"][j]["dep"]["month"] +(data["itin"][i]["seg"][j]["dep"]["day"] < 10 ? "0":"" ) + data["itin"][i]["seg"][j]["dep"]["day"] + "0000";
         usUrl += "&x"+segstr+"=" + data["itin"][i]["seg"][j]["farebase"];
       }
+    }   
+    if (mptUsersettings["enableInlinemode"]==1){
+      printUrlInline(usUrl,"US Airways","");
+    } else {
+      printUrl(usUrl,"US Airways","");
     }
-    printUrl(usUrl,"US","");
 }
 function printFarefreaks (data,method){
 // Should be fine
@@ -1003,10 +1277,10 @@ function printFarefreaks (data,method){
     var mincabin=3;
     var segsize=0;  
     var farefreaksurl = "https://www.farefreaks.com/landing/landing.php?";
-    if (itaLanguage=="de"||userlang=="de"){
+    if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
     farefreaksurl +="lang=de";
     } else {
-    farefreaksurl +="lang=us";
+    farefreaksurl +="lang=en";
     }
     farefreaksurl += "&target=flightsearch&referrer=matrix";
     for (var i=0;i<data["itin"].length;i++) {
@@ -1042,24 +1316,31 @@ function printFarefreaks (data,method){
     farefreaksurl += "&child=0&childage[]=&flexible=0";
     if (method==1){  
       farefreaksurl += "&nonstop=1";
-      if (userlang=="de"){
+      if (mptUsersettings["language"]=="de"){
         desc="Benutze "+segsize+" Segment(e)";
       } else {
         desc="Based on "+segsize+" segment(s)";
       }
       
     } else {
+      if (segsize==1) {
+        return false;
+      }
       farefreaksurl += "&nonstop=0";  
-      if (userlang=="de"){
+      if (mptUsersettings["language"]=="de"){
         desc="Benutze "+segsize+" Abschnitt(e)";
       } else {
         desc="Based on "+segsize+" segment(s)";
       }
     }
     if (carrieruarray.length <= 3) {farefreaksurl += "&carrier="+ carrieruarray.toString();}
-    if (segsize<=6) {printUrl(farefreaksurl,"FF",desc);};
+    
+    if (mptUsersettings["enableInlinemode"]==1 && segsize<=6){
+      printUrlInline(farefreaksurl,"Farefreaks",desc);
+    } else if (segsize<=6) {
+      printUrl(farefreaksurl,"Farefreaks",desc);
+    }    
 }
-
 function printGCM (data){
     var url = '';
     // Build multi-city search based on segments
@@ -1074,7 +1355,13 @@ function printGCM (data){
         }    
       }
     }
- printImage('http://www.gcmap.com/map?MR=900&MX=210x210&PM=*&P='+url, 'http://www.gcmap.com/mapui?P='+url, 3);
+  if (mptUsersettings["enableInlinemode"]==1){
+      printImageInline('http://www.gcmap.com/map?MR=900&MX=210x210&PM=*&P='+url, 'http://www.gcmap.com/mapui?P='+url, 3);
+  } else {
+      printUrl("http://www.gcmap.com/mapui?P="+url,"GCM","");
+  }
+ 
+ 
 }
 function getHipmunkCabin(cabin){
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
@@ -1115,8 +1402,12 @@ function printHipmunk (data){
       }
       url += "-to-" + data["itin"][i]["dest"];
     }  
-    datestring += "&pax=" + data["numPax"]+(mincabin>0?"&cabin="+getHipmunkCabin(mincabin):"");
-    printUrl(url+datestring,"Hipmunk","");
+    datestring += "&pax=" + data["numPax"]+(mincabin>0?"&cabin="+getHipmunkCabin(mincabin):"");    
+    if (mptUsersettings["enableInlinemode"]==1){
+      printUrlInline(url+datestring,"Hipmunk","");
+    } else {
+      printUrl(url+datestring,"Hipmunk","");
+    } 
 }
 function printPriceline (data){
     var url = "https://www.priceline.com/airlines/landingServlet?userAction=search";
@@ -1165,31 +1456,59 @@ function printPriceline (data){
    searchparam+="<numberOfTickets>"+data["numPax"]+"</numberOfTickets><cost><totalFare>0.00</totalFare><baseFare>0.00</baseFare><tax>0.00</tax><fee>0.00</fee></cost>";
    searchparam+="</externalSearch>";
    pricelineurl+="&NumTickets="+data["numPax"]+"&AirAffiliateSearch=";
-   printUrl(url+pricelineurl+encodeURIComponent(searchparam),"Priceline","");
+   
+    if (mptUsersettings["enableInlinemode"]==1){
+      printUrlInline(url+pricelineurl+encodeURIComponent(searchparam),"Priceline","");
+    } else {
+      printUrl(url+pricelineurl+encodeURIComponent(searchparam),"Priceline","");
+    }
 }
 
-
-//ID sidebarNode
-function printUrl(url,text,desc,nth){
-  printItem('<a href="'+url+ '" target="_blank">'+(userlang=='de'?'&Ouml;ffne mit':'Open with') +' '+text+'</a>',desc,nth);
+// Inline Stuff
+function printUrlInline(url,text,desc,nth){
+  printItemInline('<a href="'+url+ '" target="_blank">'+(mptUsersettings["language"]=='de'?'&Ouml;ffne mit':'Open with') +' '+text+'</a>',desc,nth);
 }
-function printItem(text,desc,nth){
+function printItemInline(text,desc,nth){
   div = getSidebarContainer(nth);
   div.innerHTML = div.innerHTML + '<li class="powertoolsitem">'+text+(desc ? '<br/><small>('+desc+')</small>' : '')+'</li>';
 }
-function printImage(src,url,nth){
+function printImageInline(src,url,nth){
   div = getSidebarContainer(nth).parentNode;
-  div.innerHTML = div.innerHTML + (url?'<a href="'+url+ '" target="_blank" class="powertoolsitem">':'')+'<img src="'+src+'" style="margin-top:10px;"'+(!url?' class="powertoolsitem"':'')+'/>'+(url?'</a>':'');
+   if (mptUsersettings["enableIMGautoload"] == 1) {
+    div.innerHTML = div.innerHTML + (url?'<a href="'+url+ '" target="_blank" class="powertoolsitem">':'')+'<img src="'+src+'" style="margin-top:10px;"'+(!url?' class="powertoolsitem"':'')+'/>'+(url?'</a>':'');      
+   } else {
+     var id=Math.random();
+     div.innerHTML = div.innerHTML + '<div id="'+id+'" class="powertoolsitem" style="width:200px;height:108px;background-color:white;cursor:pointer;text-align:center;margin-top:10px;padding-top:92px;"><span>Click</span></div>';
+     document.getElementById(id).onclick=function(){
+       var newdiv = document.createElement('div');
+       newdiv.setAttribute('class','powertoolsitem');
+       newdiv.innerHTML =(url?'<a href="'+url+ '" target="_blank">':'')+'<img src="'+src+'" style="margin-top:10px;"'+(!url?' class="powertoolsitem"':'')+'/>'+(url?'</a>':'');
+       document.getElementById(id).parentNode.replaceChild(newdiv,document.getElementById(id));
+      };   
+   } 
 }
 function getSidebarContainer(nth){
-  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkcontainer') : findtarget('GE-ODR-BBFB',nth);
-  return div ||createUrlContainer();
+  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget('GE-ODR-BBFB',nth);
+  return div ||createUrlContainerInline();
+}
+function createUrlContainerInline(){
+  var newdiv = document.createElement('div');
+  newdiv.setAttribute('class','GE-ODR-BDFB');
+  newdiv.innerHTML = '<div class="GE-ODR-BAFB">Powertools</div><ul id="powertoolslinkinlinecontainer" class="GE-ODR-BBFB"></ul>';
+  findtarget('GE-ODR-BCFB',1).appendChild(newdiv);
+  return document.getElementById('powertoolslinkinlinecontainer');
+}
+// Printing Stuff
+function printUrl(url,name,desc) {
+if (document.getElementById('powertoolslinkcontainer')==undefined){
+createUrlContainer();
+}
+var div = document.getElementById('powertoolslinkcontainer');
+div.innerHTML = div.innerHTML + "<br><br><font size=3><bold><a href=\""+url+ "\" target=_blank>"+ (mptUsersettings["language"]=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")" : "");
 }
 function createUrlContainer(){
   var newdiv = document.createElement('div');
-  newdiv.setAttribute('class','GE-ODR-BDFB');
-  newdiv.innerHTML = '<div class="GE-ODR-BAFB">Powertools</div><ul id="powertoolslinkcontainer" class="GE-ODR-BBFB"></ul>';
-  findtarget('GE-ODR-BCFB',1).appendChild(newdiv);
-  return document.getElementById('powertoolslinkcontainer');
+  newdiv.setAttribute('id','powertoolslinkcontainer');
+  newdiv.setAttribute('style','margin-left:10px;');
+  findtarget('GE-ODR-BKEB',1).parentNode.parentNode.parentNode.appendChild(newdiv);
 }
-
