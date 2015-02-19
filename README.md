@@ -12,32 +12,27 @@ Use either the installable user version or copy the the RAW-Text of your chosen 
 
 ***** Files: *****
 
-ita-matrix-powertools.en.12h.user.js -- Main userscript in english with 12h timeformat, install into Greasemonkey/etc.
+ita-matrix-powertools.user.js -- Main userscript, install into Greasemonkey/etc.
 
-ita-matrix-powertools.en.24h.user.js -- Main userscript in english with 24h timeformat, install into Greasemonkey/etc.
+ita-matrix-powertools.console.js -- Console-execute supported version of the script
 
-ita-matrix-powertools.de.24h.user.js -- Main userscript in german with 24h timeformat, install into Greasemonkey/etc.
-
-
-ita-matrix-powertools.en.12h.console.js -- Console-execute supported version of the script in english with 12h timeformat
-
-ita-matrix-powertools.en.24h.console.js -- Console-execute supported version of the script in english with 24h timeformat
-
-ita-matrix-powertools.de.24h.console.js -- Console-execute supported version of the script userscript in german with 24h
-
-script_minified.txt -- OUTDATED!!! Compact , pastable/single line version of the script for pasting in the debug console
+script_minified.txt --  Compact , pastable/single line version of the script for pasting in the debug console
 
 ***** Latest Changes: *****
 
-2015-01-03 Edited by Steppo
+**** Version 0.8 ****
+2015-02-19 Edited by Steppo (Added settings menu,
+                                added price breakdown,
+                                added opening fare rules in new window,
+                                made modes switchable,
+                                added click to reveal images,
+                                several tweaks and cleanups)
 
-Fixed double execution bug caused by iframe of google,
-
-removed searchpage & calendar,
-
-removed unused functions,
-
-serveral other cleanups
+**** Version 0.7n ****
+2015-02-16 Edited by IAkH   (Introduced inline mode,
+                                added CPM,  
+                                added Air Canada,
+                                added KLM)
 
 *** Note ***
 
