@@ -110,15 +110,8 @@ mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
 
 // execute language detection and afterwards functions for current page
-if (window.top != window.self) exit; //don't run on frames or iframes
+startcript();
 
-if (window.addEventListener){
-window.addEventListener('load', startcript, false);
-} else if (window.attachEvent)
-window.attachEvent("onload", startcript);
-else {
-window.onload = startcript;
-}
 function startcript(){
   if (window.location.href!=mptSettings["laststatus"]){
     setTimeout(function(){getPageLang();}, 100);
