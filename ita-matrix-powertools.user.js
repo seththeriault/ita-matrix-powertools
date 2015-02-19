@@ -96,7 +96,7 @@ var mptUsersettings = new Object();
 mptUsersettings["timeformat"] = "12h";       // replaces times on resultpage - valid: 12h / 24h
 mptUsersettings["language"] = "en";          // replaces several items on resultpage - valid: en / de
 mptUsersettings["enableInlinemode"] = 0;     // enables inline mode - valid: 0 / 1
-mptUsersettings["enableIMGautoload"] = 0;    // enables inline mode - valid: 0 / 1
+mptUsersettings["enableIMGautoload"] = 0;    // enables images to auto load - valid: 0 / 1
 mptUsersettings["enableFarerules"] = 1;      // enables fare rule opening in new window - valid: 0 / 1
 mptUsersettings["enablePricebreakdown"] = 1; // enables price breakdown - valid: 0 / 1
 
