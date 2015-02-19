@@ -394,6 +394,8 @@ function fePS() {
     if (mptUsersettings["enableInlinemode"]==1) printCPM(data);
 	 
     printAC(data);
+    
+    printAF(data);
   
     printDelta(data);
     
@@ -999,6 +1001,41 @@ function printDelta(data){
     } else {
      printUrl(deltaURL,"Delta","");
     }    
+}
+function printAF(data) {
+  var afUrl = 'https://www.airfrance.com/US/en/local/process/standardbooking/DisplayUpsellAction.do?cabin=Y&calendarSearch=1&listPaxTypo=ADT&subCabin=MCHER&typeTrip=2', flights;
+  afUrl += '&nbPax=' + data["numPax"];
+  for (var i=0; i < data['itin'].length; i++) {
+    if (i == 0) {
+      afUrl += '&from='+data['itin'][i]['orig'];
+      afUrl += '&to='+data['itin'][i]['dest'];
+      afUrl += '&outboundDate='+data['itin'][i]['dep']['year']+'-'+('0'+data['itin'][i]['dep']['month']).slice(-2)+'-'+('0'+data['itin'][i]['dep']['day']).slice(-2);
+      afUrl += '&firstOutboundHour='+('0'+data['itin'][i]['dep']['time']).slice(-5);
+      
+      flights = '';
+      for (var j=0; j < data['itin'][i]['seg'].length; j++) {
+        if (j > 0) flights += '|';
+        flights += data['itin'][i]['seg'][j]['carrier'] + ('000'+data['itin'][i]['seg'][j]['fnr']).slice(-4);
+      }
+      afUrl += '&flightOutbound=' + flights;
+    }
+    else if (i == 1) {
+      afUrl += '&inboundDate='+data['itin'][i]['dep']['year']+'-'+('0'+data['itin'][i]['dep']['month']).slice(-2)+'-'+('0'+data['itin'][i]['dep']['day']).slice(-2);
+      afUrl += '&firstInboundHour='+('0'+data['itin'][i]['dep']['time']).slice(-5);
+      
+      flights = '';
+      for (var j=0; j < data['itin'][i]['seg'].length; j++) {
+        if (j > 0) flights += '|';
+        flights += data['itin'][i]['seg'][j]['carrier'] + ('000'+data['itin'][i]['seg'][j]['fnr']).slice(-4);
+      }
+      afUrl += '&flightInbound=' + flights;
+    }
+  }
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(afUrl,"Air France","");
+  } else {
+    printUrl(afUrl,"Air France","");
+  }
 }
 function printKL(data) {
   var klUrl = 'https://www.klm.com/travel/';
