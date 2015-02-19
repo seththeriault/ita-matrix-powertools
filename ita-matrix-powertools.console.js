@@ -394,10 +394,10 @@ function fePS() {
     if (mptUsersettings["enableInlinemode"]==1) printCPM(data);
 	 
     printAC(data);
-  
-    printDelta(data);
     
     printAF(data);
+  
+    printDelta(data);
     
     printKL(data);
     
@@ -1031,7 +1031,11 @@ function printAF(data) {
       afUrl += '&flightInbound=' + flights;
     }
   }
-  printUrl(afUrl, 'AF');
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(afUrl,"Air France","");
+  } else {
+    printUrl(afUrl,"Air France","");
+  }
 }
 function printKL(data) {
   var klUrl = 'https://www.klm.com/travel/';
