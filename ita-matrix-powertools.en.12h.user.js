@@ -248,10 +248,24 @@ function fePS() {
         var div = document.getElementById('powertoolslinkcontainer');
         div.innerHTML ="";
     }
+	
+    // remove powertool items
+	var elems = document.getElementsByClassName('powertoolsitem');
+	for(var i = elems.length - 1; i >= 0; i--){
+		elems[i].parentNode.removeChild(elems[i]);
+	}
 
+    // configure sidebar
+    findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 3);
+    findtarget('GE-ODR-BET',1).setAttribute('class', 'GE-ODR-BBFB');
+  
     var data = readItinerary();
     
+	printCPM(data);
+	
     printDelta(data);
+    
+    printKL(data);
     
     printOrbitz(data);
     
@@ -264,6 +278,8 @@ function fePS() {
       printUS(data);
     } 
        
+    printAC(data);
+	   
     //*** Farefreaksstuff ****//
     printFarefreaks (data,0);
     printFarefreaks (data,1);
@@ -519,6 +535,16 @@ function readItinerary(){
       } else {
       farePrice=farePrice.replace(/\,/g,"");
       }
+	  
+      // Find mileage
+      var re=/GE-ODR-BCT\"\>([0-9,.]+)/g;
+      var mileage = exRE(basisHTML,re);
+      //total mileage will be the first one
+      if (mileage.length){
+        mileage=mileage[0].replace(/\./g,"").replace(/\,/g,"");
+      } else {
+        mileage='0';
+      }
       
       // Get the number of Pax
       if (itaLanguage=="de"){
@@ -674,7 +700,7 @@ function readItinerary(){
       data.push(legobj); // push of last leg
       // add price and pax
       // a little bit unsure about multiple pax with different farebase
-      data={itin:data, price: farePrice, numPax:numPax[0] , carriers:carrieruarray, cur : itinCur, farebases:fareBaseLegs["fares"]};
+      data={itin:data, price: farePrice, numPax:numPax[0] , carriers:carrieruarray, cur : itinCur, farebases:fareBaseLegs["fares"], dist:mileage};
        
       //console.log(data); //Remove to see flightstructure
   
@@ -689,6 +715,9 @@ function readItinerary(){
       return data;
 }  
   //*** Printfunctions ****//
+function printCPM(data){
+  printItem((Number(data.price) / Number(data.dist)).toFixed(4) + ' cpm','',1);
+}
 function getDeltaCabin(cabin){
 // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
 // // B5-Coach / B2-Business on DL
@@ -727,6 +756,37 @@ function printDelta(data){
     deltaURL += "&numOfSegments=" + segcounter.toString() + "&paxCount=" + data["numPax"];
     deltaURL += "&vendorRedirectFlag=true&vendorID=Google";  
     printUrl(deltaURL,"DL","");
+}
+function printKL(data) {
+  var klUrl = 'https://www.klm.com/travel/nl_en/apps/ebt/ebt_home.htm?lang=EN&chdQty=0&infQty=0&dev=5&cffcc=ECONOMY', fb = '', oper = '';
+  klUrl += '&adtQty=' + data["numPax"];
+  for (var i=0; i < data['itin'].length; i++) {
+    klUrl += '&c['+i+'].os='+data['itin'][i]['orig'];
+    klUrl += '&c['+i+'].ds='+data['itin'][i]['dest'];
+    klUrl += '&c['+i+'].dd='+data['itin'][i]['dep']['year']+'-'+('0'+data['itin'][i]['dep']['month']).slice(-2)+'-'+('0'+data['itin'][i]['dep']['day']).slice(-2);
+    
+    if (i > 0) oper += '..';
+    
+    for (var j=0; j < data['itin'][i]['seg'].length; j++) {
+      klUrl += '&c['+i+'].s['+j+'].os='+data['itin'][i]['seg'][j]['orig'];
+      klUrl += '&c['+i+'].s['+j+'].ds='+data['itin'][i]['seg'][j]['dest'];
+      klUrl += '&c['+i+'].s['+j+'].dd='+data['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+data['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+data['itin'][i]['seg'][j]['dep']['day']).slice(-2);
+      klUrl += '&c['+i+'].s['+j+'].dt='+('0'+data['itin'][i]['seg'][j]['dep']['time'].replace(':','')).slice(-4);
+      klUrl += '&c['+i+'].s['+j+'].mc='+data['itin'][i]['seg'][j]['carrier'];
+      klUrl += '&c['+i+'].s['+j+'].fn='+('000'+data['itin'][i]['seg'][j]['fnr']).slice(-4);
+      
+      if (j > 0) oper += '.';
+      oper += data['itin'][i]['seg'][j]['carrier'];
+    }
+  }
+  
+  for (var i=0; i < data['farebases'].length; i++) {
+    if (i > 0) fb += ',';
+    fb += data['farebases'][i];
+  }
+  
+  klUrl += '&ref=fb='+fb;//+',oper='+oper;
+  printUrl(klUrl, 'KL');
 }
 function getOrbitzCabin(cabin){
 // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
@@ -845,6 +905,30 @@ uaUrl += ', \"trips\": [';
   
      printUrl(uaUrl,"UA",desc);
 }
+function printAC(data){
+  var acUrl = 'http://www.aircanada.com/aco/flights.do?AH_IATA_NUMBER=0005118&AVAIL_EMMBEDDED_TRANSACTION=FlexPricerAvailabilityServlet&country=US&countryOfResidence=US&CREATION_MODE=30&EMBEDDED_TRANSACTION=FareServelet&FareRequest=YES&fromThirdParty=YES&HAS_INFANT_1=False&IS_PRIMARY_TRAVELLER_1=True&language=en&LANGUAGE=US&SITE=SAADSAAD&thirdPartyID=0005118&TRAVELER_TYPE_1=ADT&PRICING_MODE=0';
+  acUrl += '&numberOfChildren=0&numberOfInfants=0&numberOfYouth=0&numberOfAdults=' + data["numPax"];
+  acUrl += '&tripType=' + (data['itin'].length > 1 ? 'R' : 'O');
+  for (var i=0; i < data['itin'].length; i++) {
+    if (i == 0) {
+      acUrl += '&departure1='+('0'+data['itin'][i]['dep']['day']).slice(-2)+'/'+('0'+data['itin'][i]['dep']['month']).slice(-2)+'/'+data['itin'][i]['dep']['year']+'&org1='+data['itin'][i]['orig']+'&dest1='+data['itin'][i]['dest'];
+    }
+    else if (i == 1) {
+      acUrl += '&departure2='+('0'+data['itin'][i]['dep']['day']).slice(-2)+'/'+('0'+data['itin'][i]['dep']['month']).slice(-2)+'/'+data['itin'][i]['dep']['year'];
+    }
+    
+    for (var j=0; j < data['itin'][i]['seg'].length; j++) {
+      acUrl += '&AIRLINE_'      +(i+1)+'_'+(j+1)+'='+data['itin'][i]['seg'][j]['carrier'];
+      acUrl += '&B_DATE_'       +(i+1)+'_'+(j+1)+'='+data['itin'][i]['seg'][j]['dep']['year']+('0'+data['itin'][i]['seg'][j]['dep']['month']).slice(-2)+('0'+data['itin'][i]['seg'][j]['dep']['day']).slice(-2)+('0'+data['itin'][i]['seg'][j]['dep']['time'].replace(':','')).slice(-4);
+      acUrl += '&B_LOCATION_'   +(i+1)+'_'+(j+1)+'='+data['itin'][i]['seg'][j]['orig'];
+      acUrl += '&E_DATE_'       +(i+1)+'_'+(j+1)+'='+data['itin'][i]['seg'][j]['arr']['year']+('0'+data['itin'][i]['seg'][j]['arr']['month']).slice(-2)+('0'+data['itin'][i]['seg'][j]['arr']['day']).slice(-2)+('0'+data['itin'][i]['seg'][j]['arr']['time'].replace(':','')).slice(-4);
+      acUrl += '&E_LOCATION_'   +(i+1)+'_'+(j+1)+'='+data['itin'][i]['seg'][j]['dest'];
+      acUrl += '&FLIGHT_NUMBER_'+(i+1)+'_'+(j+1)+'='+data['itin'][i]['seg'][j]['fnr'];
+      acUrl += '&RBD_'          +(i+1)+'_'+(j+1)+'='+data['itin'][i]['seg'][j]['bookingclass'];
+    }
+  }
+  printUrl(acUrl,"AC");
+}
 function getUSCabin(cabin){
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
   switch(cabin) {
@@ -944,7 +1028,7 @@ function printFarefreaks (data,method){
 }
 
 function printGCM (data){
-    var url = "http://www.gcmap.com/mapui?P=";
+    var url = '';
     // Build multi-city search based on segments
     // Keeping continous path as long as possible 
     for (var i=0;i<data["itin"].length;i++) {
@@ -957,7 +1041,7 @@ function printGCM (data){
         }    
       }
     }
- printUrl(url,"GCM","");
+ printImage('http://www.gcmap.com/map?MR=900&MX=210x210&PM=*&P='+url, 'http://www.gcmap.com/mapui?P='+url, 3);
 }
 function getHipmunkCabin(cabin){
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
@@ -1053,16 +1137,25 @@ function printPriceline (data){
 
 
 //ID sidebarNode
-function printUrl(url,name,desc) {
-if (document.getElementById('powertoolslinkcontainer')==undefined){
-createUrlContainer();
+function printUrl(url,text,desc,nth){
+  printItem('<a href="'+url+ '" target="_blank">'+(userlang=='de'?'&Ouml;ffne mit':'Open with') +' '+text+'</a>',desc,nth);
 }
-var div = document.getElementById('powertoolslinkcontainer');
-div.innerHTML = div.innerHTML + "<br><br><font size=4><bold><a href=\""+url+ "\" target=_blank>"+ (userlang=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")" : "");
+function printItem(text,desc,nth){
+  div = getSidebarContainer(nth);
+  div.innerHTML = div.innerHTML + '<li class="powertoolsitem">'+text+(desc ? '<br/><small>('+desc+')</small>' : '')+'</li>';
+}
+function printImage(src,url,nth){
+  div = getSidebarContainer(nth).parentNode;
+  div.innerHTML = div.innerHTML + (url?'<a href="'+url+ '" target="_blank" class="powertoolsitem">':'')+'<img src="'+src+'" style="margin-top:10px;"'+(!url?' class="powertoolsitem"':'')+'/>'+(url?'</a>':'');
+}
+function getSidebarContainer(nth){
+  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkcontainer') : findtarget('GE-ODR-BBFB',nth);
+  return div ||createUrlContainer();
 }
 function createUrlContainer(){
   var newdiv = document.createElement('div');
-  newdiv.setAttribute('id','powertoolslinkcontainer');
-  newdiv.setAttribute('style','margin-left:10px;');
-  findtarget('GE-ODR-BKEB',1).parentNode.parentNode.parentNode.appendChild(newdiv);
+  newdiv.setAttribute('class','GE-ODR-BDFB');
+  newdiv.innerHTML = '<div class="GE-ODR-BAFB">Powertools</div><ul id="powertoolslinkcontainer" class="GE-ODR-BBFB"></ul>';
+  findtarget('GE-ODR-BCFB',1).appendChild(newdiv);
+  return document.getElementById('powertoolslinkcontainer');
 }
