@@ -402,7 +402,11 @@ function fePS() {
 	 
     printAC(data);
     
-    printAF(data);
+    if (data["itin"].length == 2 && 
+        data["itin"][0]["orig"] == data["itin"][1]["dest"] &&
+        data["itin"][0]["dest"] == data["itin"][1]["orig"]) {
+      printAF(data);
+    }
   
     printDelta(data);
     
