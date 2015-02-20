@@ -1377,7 +1377,7 @@ function printGCM (data){
       }
     }
   if (mptUsersettings["enableInlinemode"]==1){
-      printImageInline('http://www.gcmap.com/map?MR=900&MX=210x210&PM=*&P='+url, 'http://www.gcmap.com/mapui?P='+url, 3);
+      printImageInline('http://www.gcmap.com/map?MR=900&MX=182x182&PM=*&P='+url, 'http://www.gcmap.com/mapui?P='+url, 3);
   } else {
       printUrl("http://www.gcmap.com/mapui?P="+url,"GCM","");
   }
