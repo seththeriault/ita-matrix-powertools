@@ -32,7 +32,8 @@ The CONSOLE version is designed to maintain minify support for execution in the 
 # 2015-02-16 Edited by IAkH   (Introduced inline mode,
                                 added CPM,  
                                 added Air Canada,
-                                added KLM)
+                                added KLM,
+                                added Air France)
 # 2015-02-11 Edited by Steppo (Bugfix for Hipmunk,
                                 added Priceline)
 # 2015-01-12 Edited by Steppo (Added Hipmunk,
@@ -1025,7 +1026,14 @@ function printDelta(data){
     }    
 }
 function printAF(data) {
-  var afUrl = 'https://www.airfrance.com/US/en/local/process/standardbooking/DisplayUpsellAction.do?cabin=Y&calendarSearch=1&listPaxTypo=ADT&subCabin=MCHER&typeTrip=2', flights;
+  var afUrl = 'https://www.airfrance.com/';
+  var flights="";
+  if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
+    afUrl += 'DE/de';
+    } else {
+    afUrl += 'US/en';
+   }
+  afUrl += '/local/process/standardbooking/DisplayUpsellAction.do?cabin=Y&calendarSearch=1&listPaxTypo=ADT&subCabin=MCHER&typeTrip=2';
   afUrl += '&nbPax=' + data["numPax"];
   for (var i=0; i < data['itin'].length; i++) {
     if (i == 0) {
@@ -1409,8 +1417,6 @@ function printGCM (data){
   } else {
       printUrl("http://www.gcmap.com/mapui?P="+url,"GCM","");
   }
- 
- 
 }
 function getHipmunkCabin(cabin){
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
