@@ -413,6 +413,11 @@ function fePS() {
         data["itin"][0]["dest"] == data["itin"][1]["orig"]) {
       printAF(data);
     }
+    
+    // we print AZ if its only on AZ-flights
+    if (data["carriers"].length==1 && data["carriers"][0]=="AZ"){
+      printAZ(data);
+    }
   
     printDelta(data);
     
@@ -1053,6 +1058,29 @@ function printAF(data) {
   } else {
     printUrl(afUrl,"Air France","");
   }
+}
+function printAZ(data) {
+  var azUrl = 'http://booking.alitalia.com/Booking/'+(mptSettings["itaLanguage"]=='de'||mptUsersettings["language"]=='de'?'de_de':'us_en')+'/Flight/ExtMetaSearch?SearchType=BrandMetasearch';
+  azUrl += '&children_number=0&Children=0&newborn_number=0&Infants=0';
+  azUrl += '&adult_number='+data["numPax"]+'&Adults='+data["numPax"];
+  var seg = 0;
+  for (var i=0; i < data['itin'].length; i++) {
+    for (var j=0; j < data['itin'][i]['seg'].length; j++) {
+      azUrl += '&MetaSearchDestinations['+seg+'].From='         +data['itin'][i]['seg'][j]['orig'];
+      azUrl += '&MetaSearchDestinations['+seg+'].to='           +data['itin'][i]['seg'][j]['dest'];
+      azUrl += '&MetaSearchDestinations['+seg+'].DepartureDate='+data['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+data['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+data['itin'][i]['seg'][j]['dep']['day']).slice(-2);
+      azUrl += '&MetaSearchDestinations['+seg+'].Flight='       +data['itin'][i]['seg'][j]['fnr']
+      azUrl += '&MetaSearchDestinations['+seg+'].code='         +data['itin'][i]['seg'][j]['farebase'];
+      azUrl += '&MetaSearchDestinations['+seg+'].slices='       +i;
+      seg++;
+    }
+  }
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+   printUrlInline(azUrl,"Alitalia","");
+  } else {
+   printUrl(azUrl,"Alitalia","");
+  } 
 }
 function printKL(data) {
   var klUrl = 'https://www.klm.com/travel/';
