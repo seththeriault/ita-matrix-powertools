@@ -3,7 +3,8 @@
 // @namespace http://matrix.itasoftware.com
 // @description Builds fare purchase links
 // @version 0.8
-// @grant none
+// @grant GM_getValue
+// @grant GM_setValue
 // @include http://matrix.itasoftware.com/*
 // ==/UserScript==
 
@@ -94,13 +95,17 @@ The CONSOLE version is designed to maintain minify support for execution in the 
 /**************************************** Start Script *****************************************/
 // User settings
 var mptUsersettings = new Object();
-mptUsersettings["timeformat"] = "12h";       // replaces times on resultpage - valid: 12h / 24h
-mptUsersettings["language"] = "en";          // replaces several items on resultpage - valid: en / de
-mptUsersettings["enableInlinemode"] = 0;     // enables inline mode - valid: 0 / 1
-mptUsersettings["enableIMGautoload"] = 0;    // enables images to auto load - valid: 0 / 1
-mptUsersettings["enableFarerules"] = 1;      // enables fare rule opening in new window - valid: 0 / 1
-mptUsersettings["enablePricebreakdown"] = 1; // enables price breakdown - valid: 0 / 1
+var mptSavedUsersettings = GM_getValue("mptUsersettings", "");
+if (mptSavedUsersettings) {
+  mptSavedUsersettings = JSON.parse(mptSavedUsersettings);
+}
 
+mptUsersettings["timeformat"]           = mptSavedUsersettings["timeformat"] || "12h";       // replaces times on resultpage - valid: 12h / 24h
+mptUsersettings["language"]             = mptSavedUsersettings["language"] || "en";          // replaces several items on resultpage - valid: en / de
+mptUsersettings["enableInlinemode"]     = mptSavedUsersettings["enableInlinemode"] || 0;     // enables inline mode - valid: 0 / 1
+mptUsersettings["enableIMGautoload"]    = mptSavedUsersettings["enableIMGautoload"] || 0;    // enables images to auto load - valid: 0 / 1
+mptUsersettings["enableFarerules"]      = mptSavedUsersettings["enableFarerules"] || 1;      // enables fare rule opening in new window - valid: 0 / 1
+mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || 1; // enables price breakdown - valid: 0 / 1
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
@@ -192,6 +197,7 @@ function toggleSettings(target){
            mptUsersettings[target]=1;
          };
   }
+  GM_setValue("mptUsersettings", JSON.stringify(mptUsersettings));
   document.getElementById("mpt"+target).firstChild.nextSibling.innerHTML=printSettingsvalue(target); 
 }
 
@@ -396,7 +402,16 @@ function fePS() {
 	 
     printAC(data);
     
-    printAF(data);
+    if (data["itin"].length == 2 && 
+        data["itin"][0]["orig"] == data["itin"][1]["dest"] &&
+        data["itin"][0]["dest"] == data["itin"][1]["orig"]) {
+      printAF(data);
+    }
+    
+    // we print AZ if its only on AZ-flights
+    if (data["carriers"].length==1 && data["carriers"][0]=="AZ"){
+      printAZ(data);
+    }
   
     printDelta(data);
     
@@ -1044,6 +1059,29 @@ function printAF(data) {
   } else {
     printUrl(afUrl,"Air France","");
   }
+}
+function printAZ(data) {
+  var azUrl = 'http://booking.alitalia.com/Booking/'+(mptSettings["itaLanguage"]=='de'||mptUsersettings["language"]=='de'?'de_de':'us_en')+'/Flight/ExtMetaSearch?SearchType=BrandMetasearch';
+  azUrl += '&children_number=0&Children=0&newborn_number=0&Infants=0';
+  azUrl += '&adult_number='+data["numPax"]+'&Adults='+data["numPax"];
+  var seg = 0;
+  for (var i=0; i < data['itin'].length; i++) {
+    for (var j=0; j < data['itin'][i]['seg'].length; j++) {
+      azUrl += '&MetaSearchDestinations['+seg+'].From='         +data['itin'][i]['seg'][j]['orig'];
+      azUrl += '&MetaSearchDestinations['+seg+'].to='           +data['itin'][i]['seg'][j]['dest'];
+      azUrl += '&MetaSearchDestinations['+seg+'].DepartureDate='+data['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+data['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+data['itin'][i]['seg'][j]['dep']['day']).slice(-2);
+      azUrl += '&MetaSearchDestinations['+seg+'].Flight='       +data['itin'][i]['seg'][j]['fnr']
+      azUrl += '&MetaSearchDestinations['+seg+'].code='         +data['itin'][i]['seg'][j]['farebase'];
+      azUrl += '&MetaSearchDestinations['+seg+'].slices='       +i;
+      seg++;
+    }
+  }
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+   printUrlInline(azUrl,"Alitalia","");
+  } else {
+   printUrl(azUrl,"Alitalia","");
+  } 
 }
 function printKL(data) {
   var klUrl = 'https://www.klm.com/travel/';
