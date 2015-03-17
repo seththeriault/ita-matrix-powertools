@@ -15,6 +15,8 @@
  Copyright Reserved -- At least share with credit if you do
 
 *********** Changelog **************
+**** Version 0.9b ****
+# 2015-03-17 Edited by Steppo (Adapted to new classes)
 **** Version 0.9a ****
 # 2015-03-02 Edited by Steppo (Rewritten extraction function,
                                 readded local storage,
@@ -120,6 +122,19 @@ mptSettings["itaLanguage"]="en";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
+
+var classSettings = new Object();
+classSettings["itin"]="FNGTPEB-z-d"; // Intinerary
+classSettings["milagecontainer"]="FNGTPEB-z-e"; // Container on the right
+classSettings["rulescontainer"]="FNGTPEB-l-d"; // First container before rulelinks (the one with Fare X:)
+classSettings["htbContainer"]="FNGTPEB-D-k"; // full "how to buy"-container inner div (td=>div=>div) 
+classSettings["htbLeft"]="FNGTPEB-l-g"; // Left column in the "how to buy"-container
+classSettings["htbRight"]="FNGTPEB-l-f"; // Class for normal right column
+classSettings["htbGreyBorder"]="FNGTPEB-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
+//inline
+classSettings["mcDiv"]="FNGTPEB-U-e";
+classSettings["mcLinkList"]="FNGTPEB-x-c";
+classSettings["mcHeader"]="FNGTPEB-U-b";
 
 // execute language detection and afterwards functions for current page
 if (window.top != window.self) exit; //don't run on frames or iframes
@@ -352,7 +367,7 @@ function hasClass(element, cls) {
 //Primary function for extracting flight data from ITA/Matrix
 function fePS() {
     // retry if itin not loaded  
-    if (findtarget("FNGTPEB-n-c",1).parentNode.style.display!="none") { 
+    if (findtarget(classSettings["itin"],1).parentNode.previousSibling.previousSibling.style.display!="none") { 
       mptSettings["retrycount"]++;
       if (mptSettings["retrycount"]>20) {
         console.log("Error Content not found.");
@@ -378,16 +393,16 @@ function fePS() {
     
     // configure sidebar
     if (mptUsersettings["enableInlinemode"]==1) {
-    findtarget('FNGTPEB-A-e',1).setAttribute('rowspan', 10);
+    findtarget(classSettings["milagecontainer"],1).setAttribute('rowspan', 10);
     //findtarget('GE-ODR-BET',1).setAttribute('class', 'GE-ODR-BBFB');
     } else if (mptUsersettings["enableInlinemode"]==0 && mptUsersettings["enablePricebreakdown"]==1) {
-      findtarget('FNGTPEB-A-e',1).setAttribute('rowspan', 3);
+      findtarget(classSettings["milagecontainer"],1).setAttribute('rowspan', 3);
     } else {
-      findtarget('FNGTPEB-A-e',1).setAttribute('rowspan', 2);
+      findtarget(classSettings["milagecontainer"],1).setAttribute('rowspan', 2);
     }
   
     var data = readItinerary();
- 
+
     // Search - Remove - Add Pricebreakdown
     var target=findtarget('pricebreakdown',1);
     if (target!=undefined) target.parentNode.removeChild(target);
@@ -436,7 +451,7 @@ function bindRulelinks(){
     var i = 0;
     var j = 0;
     var t = 1;
-    var target=findtarget('FNGTPEB-l-d',t);
+    var target=findtarget(classSettings["rulescontainer"],t);
     if (target!=undefined){
       do {
           var current=Number(target.firstChild.innerHTML.replace(/[^\d]/gi, ""));
@@ -455,7 +470,7 @@ function bindRulelinks(){
           target.parentNode.replaceChild(newlink,target);    
           i++;
           t++;
-          target=findtarget('FNGTPEB-l-d',t);
+          target=findtarget(classSettings["rulescontainer"],t);
       }
       while (target!=undefined);  
     }   
@@ -470,7 +485,7 @@ function rearrangeprices(dist){
     // define searchpattern to detect carrier imposed surcharges
     var searchpatt = new RegExp("\((YQ|YR)\)");
     var t=1;
-    var target=findtarget('FNGTPEB-l-g',t);
+    var target=findtarget(classSettings["htbLeft"],t);
     if (mptUsersettings["enableInlinemode"] == 0){
      var output="";
      var count=0;
@@ -488,7 +503,7 @@ function rearrangeprices(dist){
             //its a pricenode
             var name  = target.firstChild.innerHTML;    
             var price = Number(target.nextSibling.firstChild.innerHTML.replace(/[^\d]/gi, ""));            
-            if( hasClass(target.nextSibling, 'FNGTPEB-l-l') == 1) {
+            if( hasClass(target.nextSibling, classSettings["htbGreyBorder"]) == 1) {
              //we are done for this container
               //console.log( "Basefare: "+ basefares);    
               //console.log( "Taxes: "+ taxes); 
@@ -496,22 +511,22 @@ function rearrangeprices(dist){
               var sum=basefares+taxes+surcharges;
               if (mptUsersettings["enableInlinemode"] == 1){
                   var newtr = document.createElement('tr');
-                  newtr.innerHTML = '<td class="FNGTPEB-l-g"><div class="gwt-Label">Basefare per passenger ('+((basefares/sum)*100).toFixed(2).toString()+'%)</div></td><td class="FNGTPEB-l-l"><div class="gwt-Label">'+cur+(basefares/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  newtr.innerHTML = '<td class="'+classSettings["htbLeft"]+'"><div class="gwt-Label">Basefare per passenger ('+((basefares/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["htbGreyBorder"]+'"><div class="gwt-Label">'+cur+(basefares/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
                   target.parentNode.parentNode.insertBefore(newtr, target.parentNode);  
                   var newtr = document.createElement('tr');
-                  newtr.innerHTML = '<td class="FNGTPEB-l-g"><div class="gwt-Label">Taxes per passenger ('+((taxes/sum)*100).toFixed(2).toString()+'%)</div></td><td class="FNGTPEB-l-f"><div class="gwt-Label">'+cur+(taxes/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  newtr.innerHTML = '<td class="'+classSettings["htbLeft"]+'"><div class="gwt-Label">Taxes per passenger ('+((taxes/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["htbRight"]+'"><div class="gwt-Label">'+cur+(taxes/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
                   target.parentNode.parentNode.insertBefore(newtr, target.parentNode); 
                   var newtr = document.createElement('tr');
-                  newtr.innerHTML = '<td class="FNGTPEB-l-g"><div class="gwt-Label">Surcharges per passenger ('+((surcharges/sum)*100).toFixed(2).toString()+'%)</div></td><td class="FNGTPEB-l-f"><div class="gwt-Label">'+cur+(surcharges/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  newtr.innerHTML = '<td class="'+classSettings["htbLeft"]+'"><div class="gwt-Label">Surcharges per passenger ('+((surcharges/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["htbRight"]+'"><div class="gwt-Label">'+cur+(surcharges/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
                   target.parentNode.parentNode.insertBefore(newtr, target.parentNode);  
                   var newtr = document.createElement('tr');
-                  newtr.innerHTML = '<td class="FNGTPEB-l-g"><div class="gwt-Label">Basefare + Taxes per passenger ('+(((basefares+taxes)/sum)*100).toFixed(2).toString()+'%)</div></td><td class="FNGTPEB-l-l"><div class="gwt-Label">'+cur+((basefares+taxes)/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  newtr.innerHTML = '<td class="'+classSettings["htbLeft"]+'"><div class="gwt-Label">Basefare + Taxes per passenger ('+(((basefares+taxes)/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["htbGreyBorder"]+'"><div class="gwt-Label">'+cur+((basefares+taxes)/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
                   target.parentNode.parentNode.insertBefore(newtr, target.parentNode); 
               } else {
                  count++;
                  output +='<table style="float:left; margin-right:15px;"><tbody>';
                  output +='<tr><td colspan=3 style="text-align:center;">Price breakdown '+count+':</td></tr>';
-                 output +='<tr><td>CPM</td><td colspan=2 style="text-align:center;">'+((sum/dist)/100).toFixed(4).toString()+'</td></tr>';
+                 output +='<tr><td>CPM</td><td colspan=2 style="text-align:center;">'+cur+((sum/dist)/100).toFixed(4).toString()+'</td></tr>';
                  output +='<tr><td>Basefare</td><td style="padding:0px 3px;text-align:right;">'+((basefares/sum)*100).toFixed(1).toString()+'%</td><td style="text-align:right;">'+cur+(basefares/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td></tr>";
                  output +='<tr><td>Tax</td><td style="padding:0px 3px;text-align:right;">'+((taxes/sum)*100).toFixed(1).toString()+'%</td><td style="text-align:right;">'+cur+(taxes/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td></tr>";
                  output +='<tr><td>Surcharges</td><td style="padding:0px 3px;text-align:right;">'+((surcharges/sum)*100).toFixed(1).toString()+'%</td><td style="text-align:right;">'+cur+(surcharges/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td></tr>";
@@ -534,12 +549,12 @@ function rearrangeprices(dist){
             }
           }    
           t++;
-          target=findtarget('FNGTPEB-l-g',t);
+          target=findtarget(classSettings["htbLeft"],t);
       }
       while (target!=undefined);  
     }
     if (mptUsersettings["enableInlinemode"] == 0){
-      var printtarget=findtarget('FNGTPEB-F-a',1).parentNode.parentNode.parentNode.parentNode;
+      var printtarget=findtarget(classSettings["htbContainer"],1).parentNode.parentNode.parentNode;
       var newtr = document.createElement('tr');
       newtr.setAttribute('class','pricebreakdown');
       newtr.innerHTML = '<td><div>'+output+'</div></td>';
@@ -760,7 +775,7 @@ function readItinerary(){
       //console.log(data); //Remove to see flightstructure 
       // lets do the replacement
        if(replacementsold.length>0) {
-         target=findtarget("FNGTPEB-A-d",1).nextSibling.nextSibling;
+         target=findtarget(classSettings["itin"],1).nextSibling.nextSibling;
          for(i=0;i<replacementsold.length;i++) {
            re = new RegExp(replacementsold[i],"g");
            target.innerHTML = target.innerHTML.replace(re, replacementsnew[i]);
@@ -1334,14 +1349,14 @@ function printImageInline(src,url,nth){
    } 
 }
 function getSidebarContainer(nth){
-  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget('FNGTPEB-I-c',nth);
+  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget(classSettings["mcDiv"],nth);
   return div ||createUrlContainerInline();
 }
 function createUrlContainerInline(){
   var newdiv = document.createElement('div');
-  newdiv.setAttribute('class','FNGTPEB-I-e');
-  newdiv.innerHTML = '<div class="FNGTPEB-I-b">Powertools</div><ul id="powertoolslinkinlinecontainer" class="FNGTPEB-t-c"></ul>';
-  findtarget('FNGTPEB-I-d',1).appendChild(newdiv);
+  newdiv.setAttribute('class',classSettings["mcDiv"]);
+  newdiv.innerHTML = '<div class="'+classSettings["mcHeader"]+'">Powertools</div><ul id="powertoolslinkinlinecontainer" class="'+classSettings["mcLinkList"]+'"></ul>';
+  findtarget(classSettings["mcDiv"],1).parentNode.appendChild(newdiv);
   return document.getElementById('powertoolslinkinlinecontainer');
 }
 // Printing Stuff
@@ -1356,5 +1371,5 @@ function createUrlContainer(){
   var newdiv = document.createElement('div');
   newdiv.setAttribute('id','powertoolslinkcontainer');
   newdiv.setAttribute('style','margin-left:10px;');
-  findtarget('FNGTPEB-F-k',1).parentNode.parentNode.parentNode.appendChild(newdiv);
+  findtarget(classSettings["htbContainer"],1).parentNode.parentNode.parentNode.appendChild(newdiv);
 }
