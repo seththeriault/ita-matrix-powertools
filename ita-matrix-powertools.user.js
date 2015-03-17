@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.9b
+// @version 0.9b1
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -113,7 +113,7 @@ mptUsersettings["enableInlinemode"] = mptSavedUsersettings["enableInlinemode"] |
 mptUsersettings["enableIMGautoload"] = mptSavedUsersettings["enableIMGautoload"] || 0; // enables images to auto load - valid: 0 / 1
 mptUsersettings["enableFarerules"] = mptSavedUsersettings["enableFarerules"] || 1; // enables fare rule opening in new window - valid: 0 / 1
 mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || 1; // enables price breakdown - valid: 0 / 1
-
+mptUsersettings["acEdition"] = mptSavedUsersettings["acEdition"] || "us"
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
@@ -184,13 +184,16 @@ function createUsersettings(){
     target.innerHTML +='<span id="mptenableInlinemode" style="cursor:pointer;">Inlinemode:<span>'+printSettingsvalue("enableInlinemode")+'</span></span><br>';
     target.innerHTML +='<span id="mptenableIMGautoload" style="cursor:pointer;">Images autoload:<span>'+printSettingsvalue("enableIMGautoload")+'</span></span><br>';
     target.innerHTML +='<span id="mptenableFarerules" style="cursor:pointer;">Farerules in new window:<span>'+printSettingsvalue("enableFarerules")+'</span></span><br>';
-    target.innerHTML +='<span id="mptenablePricebreakdown" style="cursor:pointer;">Price breakdown:<span>'+printSettingsvalue("enablePricebreakdown")+'</span></span>';
+    target.innerHTML +='<span id="mptenablePricebreakdown" style="cursor:pointer;">Price breakdown:<span>'+printSettingsvalue("enablePricebreakdown")+'</span></span><br>';
+    target.innerHTML +='<span id="mptacEdition" style="cursor:pointer;">Air Canada Edition:<span>'+printSettingsvalue("acEdition")+'</span></span>';
     document.getElementById('mpttimeformat').onclick=function(){toggleSettings("timeformat");};
     document.getElementById('mptlanguage').onclick=function(){toggleSettings("language");};
     document.getElementById('mptenableInlinemode').onclick=function(){toggleSettings("enableInlinemode");};
     document.getElementById('mptenableIMGautoload').onclick=function(){toggleSettings("enableIMGautoload");};
     document.getElementById('mptenableFarerules').onclick=function(){toggleSettings("enableFarerules");};
     document.getElementById('mptenablePricebreakdown').onclick=function(){toggleSettings("enablePricebreakdown");};
+    document.getElementById('mptacEdition').onclick=function(){toggleSettings("acEdition");};
+	
 }
 function toggleSettingsvis(){
   var target=document.getElementById("mptSettings");
@@ -218,6 +221,19 @@ function toggleSettings(target){
            mptUsersettings["language"]="de";
          }
           break;
+      case "acEdition":
+      	switch(mptUserSettings["acEdition"]){
+      		case "us":
+      			mptUsersettings["acEdition"] = "ca";
+      			break;
+      		case "ca":
+      			mptUsersettings["acEdition"] = "au";
+      			break;
+      		case "au":
+      			mptUsersettings["acEdition"] = "us";
+      			break;
+      	}
+      	break;
       default:
         if (mptUsersettings[target]==1){
            mptUsersettings[target]=0;
@@ -1068,7 +1084,18 @@ function printAC(data){
     if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
     acUrl += '&country=DE&countryOfResidence=DE&language=de&LANGUAGE=DE';
     } else {
-    acUrl += '&country=US&countryOfResidence=US&language=en&LANGUAGE=US';
+    	switch(mptUsersettings["acEdition"]) {
+    		case "us":
+    			acUrl += '&country=US&countryOfResidence=US&language=en&LANGUAGE=US';
+    			break;
+    		case "ca":
+    			acUrl += '&country=CA&countryOfResidence=CA&language=en&LANGUAGE=US';
+    			break;
+    		case "au":
+    			acUrl += '&country=AU&countryOfResidence=AU&language=en&LANGUAGE=US';
+    			break;
+    			
+    	}
     }
   acUrl += '&CREATION_MODE=30&EMBEDDED_TRANSACTION=FareServelet&FareRequest=YES&fromThirdParty=YES&HAS_INFANT_1=False&IS_PRIMARY_TRAVELLER_1=True&SITE=SAADSAAD&thirdPartyID=0005118&TRAVELER_TYPE_1=ADT&PRICING_MODE=0';
   acUrl += '&numberOfChildren=0&numberOfInfants=0&numberOfYouth=0&numberOfAdults=' + data["numPax"];
