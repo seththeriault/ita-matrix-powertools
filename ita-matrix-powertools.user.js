@@ -222,7 +222,7 @@ function toggleSettings(target){
          }
           break;
       case "acEdition":
-      	switch(mptUsersettings["acEdition"]){
+      	switch(mptUsersettings["acEdition"]) {
       		case "us":
       			mptUsersettings["acEdition"] = "ca";
       			break;
