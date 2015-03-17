@@ -20,26 +20,22 @@ script_minified.txt --  Compact , pastable/single line version of the script for
 
 ***** Latest Changes: *****
 
-**** Version 0.8 ****
-2015-02-19 Edited by Steppo (Added settings menu,
-                                added price breakdown,
-                                added opening fare rules in new window,
-                                made modes switchable,
-                                added click to reveal images,
-                                several tweaks and cleanups)
+**** Version 0.9b ****
 
-**** Version 0.7n ****
-2015-02-16 Edited by IAkH   (Introduced inline mode,
-                                added CPM,  
-                                added Air Canada,
-                                added KLM)
+2015-03-17 Edited by Steppo (Adapted to new classes)
 
-*** Note ***
+**** Version 0.9a ****
 
-Started to rewrite the extraction-function but stopped.
+2015-03-02 Edited by Steppo (Rewritten extraction function,
+                                readded local storage,
+                                adapted Hipmunk)
 
-I think google will change some things in the near future.
+**** Version 0.9 ****
 
-I am going to do only minimal maintenance to keep the script working.
+2015-03-01 Edited by Steppo (Adapted script to latest ITA-Changes..,
+                                removed local storage to maintain compatibility)
 
-Let's see how google is going to develop our beloved matrix.
+2015-02-26 Edited by IAkH (Added Alitalia,
+                                fixed Air France,
+                                fixed GCM image-width,
+                                introduced local storage)
