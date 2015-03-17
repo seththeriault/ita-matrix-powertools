@@ -113,7 +113,7 @@ mptUsersettings["enableInlinemode"] = mptSavedUsersettings["enableInlinemode"] |
 mptUsersettings["enableIMGautoload"] = mptSavedUsersettings["enableIMGautoload"] || 0; // enables images to auto load - valid: 0 / 1
 mptUsersettings["enableFarerules"] = mptSavedUsersettings["enableFarerules"] || 1; // enables fare rule opening in new window - valid: 0 / 1
 mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || 1; // enables price breakdown - valid: 0 / 1
-mptUsersettings["acEdition"] = mptSavedUsersettings["acEdition"] || "us"
+mptUsersettings["acEdition"] = mptSavedUsersettings["acEdition"] || "us";
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
@@ -253,6 +253,9 @@ function printSettingsvalue(target){
           break;
       case "language":
           ret=mptUsersettings["language"];
+          break;
+      case "acEdition":
+          ret=mptUsersettings["acEdition"];
           break;
       default:
           ret=boolToEnabled(mptUsersettings[target]);
