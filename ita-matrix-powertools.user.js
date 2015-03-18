@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.9b4
+// @version 0.9c
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -15,6 +15,8 @@
  Copyright Reserved -- At least share with credit if you do
 
 *********** Changelog **************
+**** Version 0.9c ****
+# 2013-03-17 Edited by dja852 (Added options to select Air Canada site edition)
 **** Version 0.9b ****
 # 2015-03-17 Edited by Steppo (Adapted to new classes)
 **** Version 0.9a ****
