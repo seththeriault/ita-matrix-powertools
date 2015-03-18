@@ -117,7 +117,7 @@ mptUsersettings["enableFarerules"] = mptSavedUsersettings["enableFarerules"] || 
 mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || 1; // enables price breakdown - valid: 0 / 1
 mptUsersettings["acEdition"] = mptSavedUsersettings["acEdition"] || "us"; // sets the local edition of AirCanada.com for itinerary pricing
 
-var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"]
+var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"];
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
