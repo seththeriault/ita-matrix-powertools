@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.9b1
+// @version 0.9b2
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -1087,18 +1087,7 @@ function printAC(data){
     if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
     acUrl += '&country=DE&countryOfResidence=DE&language=de&LANGUAGE=DE';
     } else {
-    	switch(mptUsersettings["acEdition"]) {
-    		case "us":
-    			acUrl += '&country=US&countryOfResidence=US&language=en&LANGUAGE=US';
-    			break;
-    		case "ca":
-    			acUrl += '&country=CA&countryOfResidence=CA&language=en&LANGUAGE=US';
-    			break;
-    		case "au":
-    			acUrl += '&country=AU&countryOfResidence=AU&language=en&LANGUAGE=US';
-    			break;
-    			
-    	}
+    	acUrl += '&country=' + mptUsersettings["acEdition"].toUpperCase() + '&countryofResidence=' + mptUsersettings["acEdition"].toUpperCase() + '&language=en&LANGUAGE=US';
     }
   acUrl += '&CREATION_MODE=30&EMBEDDED_TRANSACTION=FareServelet&FareRequest=YES&fromThirdParty=YES&HAS_INFANT_1=False&IS_PRIMARY_TRAVELLER_1=True&SITE=SAADSAAD&thirdPartyID=0005118&TRAVELER_TYPE_1=ADT&PRICING_MODE=0';
   acUrl += '&numberOfChildren=0&numberOfInfants=0&numberOfYouth=0&numberOfAdults=' + data["numPax"];
