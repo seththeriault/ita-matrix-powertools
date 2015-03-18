@@ -228,6 +228,9 @@ function printSettingsvalue(target){
       case "language":
           ret=mptUsersettings["language"];
           break;
+      case "acEdition":
+          ret=mptUsersettings["acEdition"];
+          break;
       default:
           ret=boolToEnabled(mptUsersettings[target]);
   }
