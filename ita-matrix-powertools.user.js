@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.9b3
+// @version 0.9b4
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -113,9 +113,9 @@ mptUsersettings["enableInlinemode"] = mptSavedUsersettings["enableInlinemode"] |
 mptUsersettings["enableIMGautoload"] = mptSavedUsersettings["enableIMGautoload"] || 0; // enables images to auto load - valid: 0 / 1
 mptUsersettings["enableFarerules"] = mptSavedUsersettings["enableFarerules"] || 1; // enables fare rule opening in new window - valid: 0 / 1
 mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || 1; // enables price breakdown - valid: 0 / 1
-mptUsersettings["acEdition"] = mptSavedUsersettings["acEdition"] || "us";
+mptUsersettings["acEdition"] = mptSavedUsersettings["acEdition"] || "us"; // sets the local edition of AirCanada.com for itinerary pricing
 
-var acEditions = ["us", "ca", "ar", "au", "hk"]
+var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"]
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
@@ -224,18 +224,6 @@ function toggleSettings(target){
          }
           break;
       case "acEdition":
-      /*	switch(mptUsersettings["acEdition"]) {
-      		case "us":
-      			mptUsersettings["acEdition"] = "ca";
-      			break;
-      		case "ca":
-      			mptUsersettings["acEdition"] = "au";
-      			break;
-      		case "au":
-      			mptUsersettings["acEdition"] = "us";
-      			break;
-      	} */
-      	
       		if (acEditions.indexOf(mptUsersettings["acEdition"]) == (acEditions.length - 1)) {
 			mptUsersettings["acEdition"] = acEditions[0];
       		} else {
