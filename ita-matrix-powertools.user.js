@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.9b2
+// @version 0.9b3
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -115,6 +115,8 @@ mptUsersettings["enableFarerules"] = mptSavedUsersettings["enableFarerules"] || 
 mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || 1; // enables price breakdown - valid: 0 / 1
 mptUsersettings["acEdition"] = mptSavedUsersettings["acEdition"] || "us";
 
+var acEditions = ["us", "ca", "ar", "au", "hk"]
+
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
 var mptSettings = new Object();
@@ -222,7 +224,7 @@ function toggleSettings(target){
          }
           break;
       case "acEdition":
-      	switch(mptUsersettings["acEdition"]) {
+      /*	switch(mptUsersettings["acEdition"]) {
       		case "us":
       			mptUsersettings["acEdition"] = "ca";
       			break;
@@ -232,7 +234,13 @@ function toggleSettings(target){
       		case "au":
       			mptUsersettings["acEdition"] = "us";
       			break;
-      	}
+      	} */
+      	
+      		if (acEditions.indexOf(mptUsersettings["acEdition"]) == (acEditions.length - 1)) {
+			mptUsersettings["acEdition"] = acEditions[0];
+      		} else {
+      			mptUsersettings["acEdition"] = acEditions[(acEditions.indexOf(mptUsersettings["acEdition"]) + 1)];	
+      		}
       	break;
       default:
         if (mptUsersettings[target]==1){
