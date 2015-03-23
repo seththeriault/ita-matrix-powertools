@@ -5,6 +5,8 @@
  Copyright Reserved -- At least share with credit if you do
 
 *********** Changelog **************
+**** Version 0.9c ****
+# 2013-03-17 Edited by dja852  (Added options to select Air Canada site edition)
 **** Version 0.9b ****
 # 2015-03-17 Edited by Steppo (Adapted to new classes)
 **** Version 0.9a ****
@@ -99,6 +101,9 @@ mptUsersettings["enableInlinemode"] =  0; // enables inline mode - valid: 0 / 1
 mptUsersettings["enableIMGautoload"] = 0; // enables images to auto load - valid: 0 / 1
 mptUsersettings["enableFarerules"] = 1; // enables fare rule opening in new window - valid: 0 / 1
 mptUsersettings["enablePricebreakdown"] =  1; // enables price breakdown - valid: 0 / 1
+mptUsersettings["acEdition"] = "us"; // sets the local edition of AirCanada.com for itinerary pricing - valid: "us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"
+
+var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"];
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
@@ -161,13 +166,15 @@ function createUsersettings(){
     target.innerHTML +='<span id="mptenableInlinemode" style="cursor:pointer;">Inlinemode:<span>'+printSettingsvalue("enableInlinemode")+'</span></span><br>';
     target.innerHTML +='<span id="mptenableIMGautoload" style="cursor:pointer;">Images autoload:<span>'+printSettingsvalue("enableIMGautoload")+'</span></span><br>';
     target.innerHTML +='<span id="mptenableFarerules" style="cursor:pointer;">Farerules in new window:<span>'+printSettingsvalue("enableFarerules")+'</span></span><br>';
-    target.innerHTML +='<span id="mptenablePricebreakdown" style="cursor:pointer;">Price breakdown:<span>'+printSettingsvalue("enablePricebreakdown")+'</span></span>';
+    target.innerHTML +='<span id="mptenablePricebreakdown" style="cursor:pointer;">Price breakdown:<span>'+printSettingsvalue("enablePricebreakdown")+'</span></span><br>';
+    target.innerHTML +='<span id="mptacEdition" style="cursor:pointer;">Air Canada Edition:<span>'+printSettingsvalue("acEdition")+'</span></span>';
     document.getElementById('mpttimeformat').onclick=function(){toggleSettings("timeformat");};
     document.getElementById('mptlanguage').onclick=function(){toggleSettings("language");};
     document.getElementById('mptenableInlinemode').onclick=function(){toggleSettings("enableInlinemode");};
     document.getElementById('mptenableIMGautoload').onclick=function(){toggleSettings("enableIMGautoload");};
     document.getElementById('mptenableFarerules').onclick=function(){toggleSettings("enableFarerules");};
     document.getElementById('mptenablePricebreakdown').onclick=function(){toggleSettings("enablePricebreakdown");};
+    document.getElementById('mptacEdition').onclick=function(){toggleSettings("acEdition");};
 }
 function toggleSettingsvis(){
   var target=document.getElementById("mptSettings");
@@ -195,6 +202,13 @@ function toggleSettings(target){
            mptUsersettings["language"]="de";
          }
           break;
+      case "acEdition":
+      		if (acEditions.indexOf(mptUsersettings["acEdition"]) == (acEditions.length - 1)) {
+			mptUsersettings["acEdition"] = acEditions[0];
+      		} else {
+      			mptUsersettings["acEdition"] = acEditions[(acEditions.indexOf(mptUsersettings["acEdition"]) + 1)];	
+      		}
+      	break;
       default:
         if (mptUsersettings[target]==1){
            mptUsersettings[target]=0;
@@ -213,6 +227,9 @@ function printSettingsvalue(target){
           break;
       case "language":
           ret=mptUsersettings["language"];
+          break;
+      case "acEdition":
+          ret=mptUsersettings["acEdition"];
           break;
       default:
           ret=boolToEnabled(mptUsersettings[target]);
@@ -1044,7 +1061,7 @@ function printAC(data){
     if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
     acUrl += '&country=DE&countryOfResidence=DE&language=de&LANGUAGE=DE';
     } else {
-    acUrl += '&country=US&countryOfResidence=US&language=en&LANGUAGE=US';
+    	acUrl += '&country=' + mptUsersettings["acEdition"].toUpperCase() + '&countryofResidence=' + mptUsersettings["acEdition"].toUpperCase() + '&language=en&LANGUAGE=US';
     }
   acUrl += '&CREATION_MODE=30&EMBEDDED_TRANSACTION=FareServelet&FareRequest=YES&fromThirdParty=YES&HAS_INFANT_1=False&IS_PRIMARY_TRAVELLER_1=True&SITE=SAADSAAD&thirdPartyID=0005118&TRAVELER_TYPE_1=ADT&PRICING_MODE=0';
   acUrl += '&numberOfChildren=0&numberOfInfants=0&numberOfYouth=0&numberOfAdults=' + data["numPax"];
