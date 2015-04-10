@@ -156,31 +156,21 @@ classSettings["mcLinkList"]="FNGTPEB-y-c";
 classSettings["mcHeader"]="FNGTPEB-U-b";
 
 if (scriptEngine === 0) {
- startcript(); 
+ startScript(); 
 } else {
   // execute language detection and afterwards functions for current page
   if (window.top != window.self) exit; //don't run on frames or iframes
 
   if (window.addEventListener){
-  window.addEventListener('load', startcript, false);
+  window.addEventListener('load', startScript, false);
   } else if (window.attachEvent)
-  window.attachEvent("onload", startcript);
+  window.attachEvent("onload", startScript);
   else {
-  window.onload = startcript;
+  window.onload = startScript;
   }
 }
 
-function startcript(){
-  if (window.location.href!=mptSettings["laststatus"]){
-    setTimeout(function(){getPageLang();}, 100);
-    mptSettings["laststatus"]=window.location.href;
-  }
-  if (mptSettings["scriptrunning"]==1){
-   setTimeout(function(){startcript();}, 500); 
-  }  
-}
-
-function startcript(){
+function startScript(){
   if (document.getElementById("mptSettingsContainer")== null ) {
   createUsersettings();
   }
@@ -189,7 +179,7 @@ function startcript(){
     mptSettings["laststatus"]=window.location.href;
   }
   if (mptSettings["scriptrunning"]==1){
-   setTimeout(function(){startcript();}, 500); 
+   setTimeout(function(){startScript();}, 500); 
   }  
 }
 
