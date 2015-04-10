@@ -461,11 +461,15 @@ function fePS() {
       printUS(data);
     }
   
+    printSeperator();
+  
     printOrbitz(data);
 
     printHipmunk (data);
 
     printPriceline (data);
+  
+    printSeperator();
   
     //*** Farefreaksstuff ****//
     printFarefreaks (data,0);
@@ -1352,6 +1356,12 @@ function printPriceline (data){
       printUrl(url+pricelineurl+encodeURIComponent(searchparam),"Priceline","");
     }
 }
+function printSeperator() {
+  var container = document.getElementById('powertoolslinkcontainer') || getSidebarContainer();
+  if (container) {
+    container.innerHTML = container.innerHTML + (mptUsersettings["enableInlinemode"] ? '<hr class="powertoolsitem"/>' : '<br/><hr/>');
+  }
+}
 
 // Inline Stuff
 function printUrlInline(url,text,desc,nth){
@@ -1393,7 +1403,7 @@ function printUrl(url,name,desc) {
     createUrlContainer();
     }
 var div = document.getElementById('powertoolslinkcontainer');
-div.innerHTML = div.innerHTML + "<br><br><font size=3><bold><a href=\""+url+ "\" target=_blank>"+ (mptUsersettings["language"]=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")" : "");
+div.innerHTML = div.innerHTML + "<br><font size=3><bold><a href=\""+url+ "\" target=_blank>"+ (mptUsersettings["language"]=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")<br>" : "<br>");
 }
 function createUrlContainer(){
   var newdiv = document.createElement('div');
