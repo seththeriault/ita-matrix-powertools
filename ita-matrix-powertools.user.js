@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.10
+// @version 0.10a
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,8 +13,9 @@
  http://www.flyertalk.com/forum/members/paul21.html
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
-
 *********** Changelog **************
+**** Version 0.10a ****
+# 2015-04-05 Edited by RizwanK (Attempted to merge functionality from .user. and .console. into one file)
 **** Version 0.10 ****
 # 2015-03-31 Edited by IAkH/Steppo (Adapted to new classes)
 **** Version 0.9c ****
@@ -39,7 +40,6 @@
                                 made modes switchable,
                                 added click to reveal images,
                                 several tweaks and cleanups)
-
 **** Version 0.7n ****
 # 2015-02-16 Edited by IAkH   (Introduced inline mode,
                                 added CPM,  
@@ -67,12 +67,10 @@
 # 2015-01-01 Edited by Steppo (Quickfix for Matrix 3.0,
                                removed most content. Only linking at the moment,
                                will do the cleanup ASAP)
-
 **** Version 0.6 ****
 # 2014-11-12 Edited by Steppo (added quicklinks for currency (USD & EUR),
                                added quicklinks for selecting flexible dates,
                                rewrote initial call-function to start the script)
-
 **** Version 0.5 ****
 # 2014-11-11 Edited by Steppo (Fixed bug causing close of advanced routing on searchpage,
                                 moved extraction and linkgenerating to seperate functions,
@@ -90,14 +88,12 @@
 **** Version 0.3a ****
 # 2014-11-01 Edited by Steppo (shortened some regex,
                                added support for german version of matrix)
-
 *********** About **************
  --- Resultpage ---
   # collecting a lot of information in data-var
   # based on gathered data-var: creating links to different OTAs and other pages
   # able to transform timeformat into 24h format
   # able to translate some things
-
  *********** Hints ***********
   Unsure about handling of different fares/pax. 
   Unsure about correct usage of cabins while creating links.
@@ -107,17 +103,34 @@
 /**************************************** Start Script *****************************************/
 // User settings
 var mptUsersettings = new Object();
-var mptSavedUsersettings = GM_getValue("mptUsersettings", "");
-if (mptSavedUsersettings) {
- mptSavedUsersettings = JSON.parse(mptSavedUsersettings);
+
+mptUsersettings["timeformat"] = "12h"; // replaces times on resultpage - valid: 12h / 24h
+mptUsersettings["language"] = "en"; // replaces several items on resultpage - valid: en / de
+mptUsersettings["enableInlinemode"] =  0; // enables inline mode - valid: 0 / 1
+mptUsersettings["enableIMGautoload"] = 0; // enables images to auto load - valid: 0 / 1
+mptUsersettings["enableFarerules"] = 1; // enables fare rule opening in new window - valid: 0 / 1
+mptUsersettings["enablePricebreakdown"] =  1; // enables price breakdown - valid: 0 / 1
+mptUsersettings["acEdition"] = "us"; // sets the local edition of AirCanada.com for itinerary pricing - valid: "us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"
+
+var scriptEngine;
+if (typeof GM_info === "undefined") {
+  scriptEngine=0; // console mode
+  }
+else {
+  scriptEngine=1; // tamper or grease mode
+  var mptSavedUsersettings = GM_getValue("mptUsersettings", "");
+  if (mptSavedUsersettings) {
+    mptSavedUsersettings = JSON.parse(mptSavedUsersettings);
+    
+    mptUsersettings["timeformat"] = mptSavedUsersettings["timeformat"] || mptUsersettings["timeformat"];
+    mptUsersettings["language"] = mptSavedUsersettings["language"] || mptUsersettings["language"];
+    mptUsersettings["enableInlinemode"] = mptSavedUsersettings["enableInlinemode"] || mptUsersettings["enableInlinemode"];
+    mptUsersettings["enableIMGautoload"] = mptSavedUsersettings["enableIMGautoload"] || mptUsersettings["enableIMGautoload"];
+    mptUsersettings["enableFarerules"] = mptSavedUsersettings["enableFarerules"] || mptUsersettings["enableFarerules"];
+    mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || mptUsersettings["enablePricebreakdown"];
+    mptUsersettings["acEdition"] = mptSavedUsersettings["acEdition"] || mptUsersettings["acEdition"];
+  }
 }
-mptUsersettings["timeformat"] = mptSavedUsersettings["timeformat"] || "12h"; // replaces times on resultpage - valid: 12h / 24h
-mptUsersettings["language"] = mptSavedUsersettings["language"] || "en"; // replaces several items on resultpage - valid: en / de
-mptUsersettings["enableInlinemode"] = mptSavedUsersettings["enableInlinemode"] || 0; // enables inline mode - valid: 0 / 1
-mptUsersettings["enableIMGautoload"] = mptSavedUsersettings["enableIMGautoload"] || 0; // enables images to auto load - valid: 0 / 1
-mptUsersettings["enableFarerules"] = mptSavedUsersettings["enableFarerules"] || 1; // enables fare rule opening in new window - valid: 0 / 1
-mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || 1; // enables price breakdown - valid: 0 / 1
-mptUsersettings["acEdition"] = mptSavedUsersettings["acEdition"] || "us"; // sets the local edition of AirCanada.com for itinerary pricing
 
 var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"];
 
@@ -138,31 +151,26 @@ classSettings["htbLeft"]="FNGTPEB-l-g"; // Left column in the "how to buy"-conta
 classSettings["htbRight"]="FNGTPEB-l-f"; // Class for normal right column
 classSettings["htbGreyBorder"]="FNGTPEB-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
-classSettings["mcDiv"]="FNGTPEB-U-e";
-classSettings["mcLinkList"]="FNGTPEB-y-c";
-classSettings["mcHeader"]="FNGTPEB-U-b";
+classSettings["mcDiv"]="FNGTPEB-U-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+classSettings["mcHeader"]="FNGTPEB-U-b"; // Right menu header class ("Mileage", etc.)
+classSettings["mcLinkList"]="FNGTPEB-y-c"; // Right menu ul list class (immediately following header)
 
-// execute language detection and afterwards functions for current page
-if (window.top != window.self) exit; //don't run on frames or iframes
+if (scriptEngine === 0) {
+ startScript(); 
+} else {
+  // execute language detection and afterwards functions for current page
+  if (window.top != window.self) exit; //don't run on frames or iframes
 
-if (window.addEventListener){
-window.addEventListener('load', startcript, false);
-} else if (window.attachEvent)
-window.attachEvent("onload", startcript);
-else {
-window.onload = startcript;
-}
-function startcript(){
-  if (window.location.href!=mptSettings["laststatus"]){
-    setTimeout(function(){getPageLang();}, 100);
-    mptSettings["laststatus"]=window.location.href;
+  if (window.addEventListener){
+  window.addEventListener('load', startScript, false);
+  } else if (window.attachEvent)
+  window.attachEvent("onload", startScript);
+  else {
+  window.onload = startScript;
   }
-  if (mptSettings["scriptrunning"]==1){
-   setTimeout(function(){startcript();}, 500); 
-  }  
 }
 
-function startcript(){
+function startScript(){
   if (document.getElementById("mptSettingsContainer")== null ) {
   createUsersettings();
   }
@@ -171,7 +179,7 @@ function startcript(){
     mptSettings["laststatus"]=window.location.href;
   }
   if (mptSettings["scriptrunning"]==1){
-   setTimeout(function(){startcript();}, 500); 
+   setTimeout(function(){startScript();}, 500); 
   }  
 }
 
@@ -199,7 +207,6 @@ function createUsersettings(){
     document.getElementById('mptenableFarerules').onclick=function(){toggleSettings("enableFarerules");};
     document.getElementById('mptenablePricebreakdown').onclick=function(){toggleSettings("enablePricebreakdown");};
     document.getElementById('mptacEdition').onclick=function(){toggleSettings("acEdition");};
-	
 }
 function toggleSettingsvis(){
   var target=document.getElementById("mptSettings");
@@ -241,8 +248,10 @@ function toggleSettings(target){
            mptUsersettings[target]=1;
          };
   }
-  GM_setValue("mptUsersettings", JSON.stringify(mptUsersettings));
-  document.getElementById("mpt"+target).firstChild.nextSibling.innerHTML=printSettingsvalue(target); 
+  document.getElementById("mpt"+target).firstChild.nextSibling.innerHTML=printSettingsvalue(target);
+  if (scriptEngine === 1) {
+      GM_setValue("mptUsersettings", JSON.stringify(mptUsersettings));
+    }
 }
 
 function printSettingsvalue(target){
@@ -384,7 +393,7 @@ function hasClass(element, cls) {
 }
 /********************************************* Result page *********************************************/
 //Primary function for extracting flight data from ITA/Matrix
-function fePS() { 
+function fePS() {
     // retry if itin not loaded  
     if (findtarget(classSettings["itin"],1).parentNode.previousSibling.previousSibling.style.display!="none") { 
       mptSettings["retrycount"]++;
@@ -395,7 +404,7 @@ function fePS() {
       setTimeout(function(){fePS();}, 200);    
       return false;
     };
-
+  
     if (mptUsersettings["enableFarerules"]==1) bindRulelinks();
        
     // empty outputcontainer
@@ -421,7 +430,7 @@ function fePS() {
     }
   
     var data = readItinerary();
-   
+
     // Search - Remove - Add Pricebreakdown
     var target=findtarget('pricebreakdown',1);
     if (target!=undefined) target.parentNode.removeChild(target);
@@ -452,11 +461,15 @@ function fePS() {
       printUS(data);
     }
   
+    printSeperator();
+  
     printOrbitz(data);
 
     printHipmunk (data);
 
     printPriceline (data);
+  
+    printSeperator();
   
     //*** Farefreaksstuff ****//
     printFarefreaks (data,0);
@@ -1343,6 +1356,12 @@ function printPriceline (data){
       printUrl(url+pricelineurl+encodeURIComponent(searchparam),"Priceline","");
     }
 }
+function printSeperator() {
+  var container = document.getElementById('powertoolslinkcontainer') || getSidebarContainer();
+  if (container) {
+    container.innerHTML = container.innerHTML + (mptUsersettings["enableInlinemode"] ? '<hr class="powertoolsitem"/>' : '<br/><hr/>');
+  }
+}
 
 // Inline Stuff
 function printUrlInline(url,text,desc,nth){
@@ -1368,7 +1387,7 @@ function printImageInline(src,url,nth){
    } 
 }
 function getSidebarContainer(nth){
-  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget(classSettings["mcDiv"],nth);
+  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget(classSettings["mcHeader"], nth).nextElementSibling;
   return div ||createUrlContainerInline();
 }
 function createUrlContainerInline(){
@@ -1384,7 +1403,7 @@ function printUrl(url,name,desc) {
     createUrlContainer();
     }
 var div = document.getElementById('powertoolslinkcontainer');
-div.innerHTML = div.innerHTML + "<br><br><font size=3><bold><a href=\""+url+ "\" target=_blank>"+ (mptUsersettings["language"]=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")" : "");
+div.innerHTML = div.innerHTML + "<br><font size=3><bold><a href=\""+url+ "\" target=_blank>"+ (mptUsersettings["language"]=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")<br>" : "<br>");
 }
 function createUrlContainer(){
   var newdiv = document.createElement('div');
