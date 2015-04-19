@@ -2,92 +2,33 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.10a
+// @version 0.11
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
 // ==/UserScript==
-
 /*
  Written by paul21, Steppo & IAkH of FlyerTalk.com
  http://www.flyertalk.com/forum/members/paul21.html
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
-*********** Changelog **************
+*********** Latest Changes **************
+**** Version 0.11 ****
+# 2015-04-19 Edited by Steppo (added SeatGuru,
+                                added Planefinder,
+                                moved translation to external var/function adding capability to add translations,
+                                added possibility to print notifications,
+                                added self-test to prevent crashing on class-changes,
+                                set timeout of resultpage to 10s,
+                                added powerfull selector-function to get desired td in itin => see findItinTarget,
+                                moved exit in frames to top,
+                                some cleanups,
+                                moved older changelogitems to seprate file on GitHub - no one wants to read such lame stuff :-) )
+                                
 **** Version 0.10a ****
 # 2015-04-05 Edited by RizwanK (Attempted to merge functionality from .user. and .console. into one file)
 **** Version 0.10 ****
 # 2015-03-31 Edited by IAkH/Steppo (Adapted to new classes)
-**** Version 0.9c ****
-# 2013-03-17 Edited by dja852  (Added options to select Air Canada site edition)
-**** Version 0.9b ****
-# 2015-03-17 Edited by Steppo (Adapted to new classes)
-**** Version 0.9a ****
-# 2015-03-02 Edited by Steppo (Rewritten extraction function,
-                                readded local storage,
-                                adapted Hipmunk)
-**** Version 0.9 ****
-# 2015-03-01 Edited by Steppo (Adapted script to latest ITA-Changes..,
-                                removed local storage to maintain compatibility)
-# 2015-02-26 Edited by IAkH   (Added Alitalia,
-                                fixed Air France,
-                                fixed GCM image-width,
-                                introduced local storage)                                
-**** Version 0.8 ****
-# 2015-02-19 Edited by Steppo (Added settings menu,
-                                added price breakdown,
-                                added opening fare rules in new window,
-                                made modes switchable,
-                                added click to reveal images,
-                                several tweaks and cleanups)
-**** Version 0.7n ****
-# 2015-02-16 Edited by IAkH   (Introduced inline mode,
-                                added CPM,  
-                                added Air Canada,
-                                added KLM,
-                                added Air France)
-# 2015-02-11 Edited by Steppo (Bugfix for Hipmunk,
-                                added Priceline)
-# 2015-01-12 Edited by Steppo (Added Hipmunk,
-                                fixed massive bug in leg detection)
-# 2015-01-03 Edited by Steppo (Fixed double execution bug caused by iframe of google,
-                                removed searchpage & calendar,
-                                removed unused functions,
-                                serveral other cleanups
-                                               *** Note ***
-                                Started to rewrite the extraction-function but stopped.
-                                I think google will change some things in the near future.
-                                I am going to do only minimal maintenance to keep the script working.
-                                Let's see how google is going to develop our beloved matrix.)
-# 2015-01-02 Edited by Steppo (Added eventListener to handle switch to ajax,
-                               added support to transform times to 24h-format
-                               added german translation,
-                               several other tweaks & fixes)
-                               
-# 2015-01-01 Edited by Steppo (Quickfix for Matrix 3.0,
-                               removed most content. Only linking at the moment,
-                               will do the cleanup ASAP)
-**** Version 0.6 ****
-# 2014-11-12 Edited by Steppo (added quicklinks for currency (USD & EUR),
-                               added quicklinks for selecting flexible dates,
-                               rewrote initial call-function to start the script)
-**** Version 0.5 ****
-# 2014-11-11 Edited by Steppo (Fixed bug causing close of advanced routing on searchpage,
-                                moved extraction and linkgenerating to seperate functions,
-                                added a lot of information like flightdurations/codeshare/layovertime/arrival-time-object,
-                                complete redesign of data-object, adapted DL/Orbitz/UA/US/Farefreaks/GCM to data-object,
-                                added segmentskip to Orbitz && FF if its just a technical stop,
-                                removed usage of itaLocal (replaced by itaLanguage ) and default values in function ( thx to kulin for this hints) )
-**** Version 0.4 ****
-# 2014-11-10 Edited by paul21 (Improved united.com booking support)
-# 2014-11-09 Edited by Steppo (Added monthly navigation to calendar,
-                                added retry for details if content is loading slow,
-                                added flights as object (see data var ),
-                                added Farefreaks,
-                                added GCM)
-**** Version 0.3a ****
-# 2014-11-01 Edited by Steppo (shortened some regex,
-                               added support for german version of matrix)
 *********** About **************
  --- Resultpage ---
   # collecting a lot of information in data-var
@@ -103,36 +44,14 @@
 /**************************************** Start Script *****************************************/
 // User settings
 var mptUsersettings = new Object();
-
 mptUsersettings["timeformat"] = "12h"; // replaces times on resultpage - valid: 12h / 24h
 mptUsersettings["language"] = "en"; // replaces several items on resultpage - valid: en / de
+mptUsersettings["enableDeviders"] = 1; // Print deviders in links after group (airlines/otas/other stuff) - valid: 0 / 1
 mptUsersettings["enableInlinemode"] =  0; // enables inline mode - valid: 0 / 1
 mptUsersettings["enableIMGautoload"] = 0; // enables images to auto load - valid: 0 / 1
 mptUsersettings["enableFarerules"] = 1; // enables fare rule opening in new window - valid: 0 / 1
 mptUsersettings["enablePricebreakdown"] =  1; // enables price breakdown - valid: 0 / 1
 mptUsersettings["acEdition"] = "us"; // sets the local edition of AirCanada.com for itinerary pricing - valid: "us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"
-
-var scriptEngine;
-if (typeof GM_info === "undefined") {
-  scriptEngine=0; // console mode
-  }
-else {
-  scriptEngine=1; // tamper or grease mode
-  var mptSavedUsersettings = GM_getValue("mptUsersettings", "");
-  if (mptSavedUsersettings) {
-    mptSavedUsersettings = JSON.parse(mptSavedUsersettings);
-    
-    mptUsersettings["timeformat"] = mptSavedUsersettings["timeformat"] || mptUsersettings["timeformat"];
-    mptUsersettings["language"] = mptSavedUsersettings["language"] || mptUsersettings["language"];
-    mptUsersettings["enableInlinemode"] = mptSavedUsersettings["enableInlinemode"] || mptUsersettings["enableInlinemode"];
-    mptUsersettings["enableIMGautoload"] = mptSavedUsersettings["enableIMGautoload"] || mptUsersettings["enableIMGautoload"];
-    mptUsersettings["enableFarerules"] = mptSavedUsersettings["enableFarerules"] || mptUsersettings["enableFarerules"];
-    mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || mptUsersettings["enablePricebreakdown"];
-    mptUsersettings["acEdition"] = mptSavedUsersettings["acEdition"] || mptUsersettings["acEdition"];
-  }
-}
-
-var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"];
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
@@ -142,25 +61,77 @@ mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
 
-var classSettings = new Object();
-classSettings["itin"]="FNGTPEB-A-d"; //Container with headline: "Intinerary"
-classSettings["milagecontainer"]="FNGTPEB-A-e"; // Container on the right
-classSettings["rulescontainer"]="FNGTPEB-l-d"; // First container before rulelinks (the one with Fare X:)
-classSettings["htbContainer"]="FNGTPEB-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
-classSettings["htbLeft"]="FNGTPEB-l-g"; // Left column in the "how to buy"-container
-classSettings["htbRight"]="FNGTPEB-l-f"; // Class for normal right column
-classSettings["htbGreyBorder"]="FNGTPEB-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
-//inline
-classSettings["mcDiv"]="FNGTPEB-U-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
-classSettings["mcHeader"]="FNGTPEB-U-b"; // Right menu header class ("Mileage", etc.)
-classSettings["mcLinkList"]="FNGTPEB-y-c"; // Right menu ul list class (immediately following header)
+if (typeof GM_info === "undefined") {
+   mptSettings["scriptEngine"]=0; // console mode
+  }
+else {
+  if (window.top != window.self) exit; //don't run on frames or iframes and exit as soon as possible
+  mptSettings["scriptEngine"]=1; // tamper or grease mode
+  var mptSavedUsersettings = GM_getValue("mptUsersettings", "");
+  if (mptSavedUsersettings) {
+    mptSavedUsersettings = JSON.parse(mptSavedUsersettings);
+    mptUsersettings["timeformat"] = mptSavedUsersettings["timeformat"] || mptUsersettings["timeformat"];
+    mptUsersettings["language"] = mptSavedUsersettings["language"] || mptUsersettings["language"];
+    mptUsersettings["enableDeviders"]=(mptSavedUsersettings["enableDeviders"] === undefined ? mptUsersettings["enableDeviders"] : mptSavedUsersettings["enableDeviders"]); // had a mysterious bug here?!
+    mptUsersettings["enableInlinemode"] = mptSavedUsersettings["enableInlinemode"] || mptUsersettings["enableInlinemode"];
+    mptUsersettings["enableIMGautoload"] = mptSavedUsersettings["enableIMGautoload"] || mptUsersettings["enableIMGautoload"];
+    mptUsersettings["enableFarerules"] = mptSavedUsersettings["enableFarerules"] || mptUsersettings["enableFarerules"];
+    mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || mptUsersettings["enablePricebreakdown"];
+    mptUsersettings["acEdition"] = mptSavedUsersettings["acEdition"] || mptUsersettings["acEdition"];    
+  }
+}
 
-if (scriptEngine === 0) {
+var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"];
+
+var classSettings = new Object();
+classSettings["resultpage"] = new Object();
+classSettings["resultpage"]["itin"]="FNGTPEB-A-d"; //Container with headline: "Intinerary"
+classSettings["resultpage"]["itinRow"]="FNGTPEB-k-i"; // TR in itin with Orig, Dest and date
+classSettings["resultpage"]["milagecontainer"]="FNGTPEB-A-e"; // Container on the right
+classSettings["resultpage"]["rulescontainer"]="FNGTPEB-l-d"; // First container before rulelinks (the one with Fare X:)
+classSettings["resultpage"]["htbContainer"]="FNGTPEB-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
+classSettings["resultpage"]["htbLeft"]="FNGTPEB-l-g"; // Left column in the "how to buy"-container
+classSettings["resultpage"]["htbRight"]="FNGTPEB-l-f"; // Class for normal right column
+classSettings["resultpage"]["htbGreyBorder"]="FNGTPEB-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
+//inline
+classSettings["resultpage"]["mcDiv"]="FNGTPEB-U-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+classSettings["resultpage"]["mcHeader"]="FNGTPEB-U-b"; // Right menu header class ("Mileage", etc.)
+classSettings["resultpage"]["mcLinkList"]="FNGTPEB-y-c"; // Right menu ul list class (immediately following header)
+
+
+var tranlsations = new Object();
+tranlsations["de"] = new Object();
+tranlsations["de"]["openwith"]="&Ouml;ffne mit";
+tranlsations["de"]["resultpage"] = new Object();
+tranlsations["de"]["resultpage"]["Dep:"]="Abflug:";
+tranlsations["de"]["resultpage"]["Arr:"]="Ankunft:";
+tranlsations["de"]["resultpage"]["Layover in"]="Umst. in";
+tranlsations["de"]["resultpage"][" to "]=" nach ";
+tranlsations["de"]["resultpage"]["Mon,"]="Mo.,";
+tranlsations["de"]["resultpage"]["Tue,"]="Di.,";
+tranlsations["de"]["resultpage"]["Wed,"]="Mi.,";
+tranlsations["de"]["resultpage"]["Thu,"]="Do.,";
+tranlsations["de"]["resultpage"]["Fri,"]="Fr.,";
+tranlsations["de"]["resultpage"]["Sat,"]="Sa.,";
+tranlsations["de"]["resultpage"]["Sun,"]="So.,";
+tranlsations["de"]["resultpage"][" Jan "]=" Januar ";
+tranlsations["de"]["resultpage"][" Feb "]=" Februar ";
+tranlsations["de"]["resultpage"][" Mar "]=" M&auml;rz ";
+tranlsations["de"]["resultpage"][" Apr "]=" April ";
+tranlsations["de"]["resultpage"][" May "]=" Mai ";
+tranlsations["de"]["resultpage"][" Jun "]=" Juni ";
+tranlsations["de"]["resultpage"][" Jul "]=" Juli ";
+tranlsations["de"]["resultpage"][" Aug "]=" August ";
+tranlsations["de"]["resultpage"][" Sep "]=" September ";
+tranlsations["de"]["resultpage"][" Oct "]=" Oktober ";
+tranlsations["de"]["resultpage"][" Nov "]=" November ";
+tranlsations["de"]["resultpage"][" Dez "]=" Dezember ";
+tranlsations["de"]["resultpage"]["OPERATED BY "]="Durchgef&uuml;hrt von ";
+
+if (mptSettings["scriptEngine"] === 0) {
  startScript(); 
 } else {
   // execute language detection and afterwards functions for current page
-  if (window.top != window.self) exit; //don't run on frames or iframes
-
   if (window.addEventListener){
   window.addEventListener('load', startScript, false);
   } else if (window.attachEvent)
@@ -188,13 +159,14 @@ function createUsersettings(){
     var settingscontainer = document.createElement('div');
     settingscontainer.setAttribute('id', 'mptSettingsContainer');
     settingscontainer.setAttribute('style', 'border-bottom: 1px dashed grey;');
-    settingscontainer.innerHTML = '<div><span>Powertools running</span><span id="settingsvistoggler" style="float:right;cursor:pointer;">Show/Hide Settings</span><div id="mptSettings" class="invis" style="display:none;border-top: 1px dotted grey;"><div>';
+    settingscontainer.innerHTML = '<div><div style="display:inline-block;float:left;">Powertools running</div><div id="mtpNotification" style="margin-left:50px;display:inline-block;"></div><div id="settingsvistoggler" style="display:inline-block;float:right;cursor:pointer;">Show/Hide Settings</div><div id="mptSettings" class="invis" style="display:none;border-top: 1px dotted grey;"><div>';
     var target=document.getElementById("contentwrapper");
     target.parentNode.insertBefore(settingscontainer, target);
     document.getElementById('settingsvistoggler').onclick=function(){toggleSettingsvis();};
     target=document.getElementById("mptSettings");
     target.innerHTML ='<span id="mpttimeformat" style="cursor:pointer;">Timeformat:<span>'+printSettingsvalue("timeformat")+'</span></span><br>';   
     target.innerHTML +='<span id="mptlanguage" style="cursor:pointer;">Language:<span>'+printSettingsvalue("language")+'</span></span><br>';
+    target.innerHTML +='<span id="mptenableDeviders" style="cursor:pointer;">Enable deviders:<span>'+printSettingsvalue("enableDeviders")+'</span></span><br>';
     target.innerHTML +='<span id="mptenableInlinemode" style="cursor:pointer;">Inlinemode:<span>'+printSettingsvalue("enableInlinemode")+'</span></span><br>';
     target.innerHTML +='<span id="mptenableIMGautoload" style="cursor:pointer;">Images autoload:<span>'+printSettingsvalue("enableIMGautoload")+'</span></span><br>';
     target.innerHTML +='<span id="mptenableFarerules" style="cursor:pointer;">Farerules in new window:<span>'+printSettingsvalue("enableFarerules")+'</span></span><br>';
@@ -202,6 +174,7 @@ function createUsersettings(){
     target.innerHTML +='<span id="mptacEdition" style="cursor:pointer;">Air Canada Edition:<span>'+printSettingsvalue("acEdition")+'</span></span>';
     document.getElementById('mpttimeformat').onclick=function(){toggleSettings("timeformat");};
     document.getElementById('mptlanguage').onclick=function(){toggleSettings("language");};
+    document.getElementById('mptenableDeviders').onclick=function(){toggleSettings("enableDeviders");};
     document.getElementById('mptenableInlinemode').onclick=function(){toggleSettings("enableInlinemode");};
     document.getElementById('mptenableIMGautoload').onclick=function(){toggleSettings("enableIMGautoload");};
     document.getElementById('mptenableFarerules').onclick=function(){toggleSettings("enableFarerules");};
@@ -236,7 +209,7 @@ function toggleSettings(target){
           break;
       case "acEdition":
       		if (acEditions.indexOf(mptUsersettings["acEdition"]) == (acEditions.length - 1)) {
-			mptUsersettings["acEdition"] = acEditions[0];
+			      mptUsersettings["acEdition"] = acEditions[0];
       		} else {
       			mptUsersettings["acEdition"] = acEditions[(acEditions.indexOf(mptUsersettings["acEdition"]) + 1)];	
       		}
@@ -249,7 +222,7 @@ function toggleSettings(target){
          };
   }
   document.getElementById("mpt"+target).firstChild.nextSibling.innerHTML=printSettingsvalue(target);
-  if (scriptEngine === 1) {
+  if (mptSettings["scriptEngine"] === 1) {
       GM_setValue("mptUsersettings", JSON.stringify(mptUsersettings));
     }
 }
@@ -272,9 +245,23 @@ function printSettingsvalue(target){
   return ret; 
 }
 
+function printNotification(text) {
+  var target = document.getElementById('mtpNotification');
+  if (target===null){
+    alert("mtp Error: Notification container not Found");
+  } else {
+   if (text=="empty"){
+     target.innerHTML= "";
+   } else {
+     //possibility to print multiple notifications
+     target.innerHTML= target.innerHTML+"<div>"+text+"</div>";
+   }   
+  } 
+}
 /**************************************** Get Language *****************************************/
 function getPageLang(){
-    console.log("Matrix 3.0: Set lang to en"); 
+    // reset Notification due to pagechange
+    printNotification("empty");
     mptSettings["itaLanguage"]="en";
     mptSettings["retrycount"]=1;
     if (window.location.href.indexOf("view-details") !=-1) {
@@ -391,20 +378,124 @@ function findtargets(tclass){
 function hasClass(element, cls) {
   return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
 }
+
+function findItinTarget(leg,seg,tcell){
+  var target = findtarget(classSettings["resultpage"]["itin"],1);
+  if (target === false) {
+  printNotification("Error: Itin not found in findItinTarget-function");
+  return false;
+  }
+  target=target.nextSibling.nextSibling;
+  
+  // go to leg
+  var target=target.children[(leg-1)];
+  if (target === undefined) {
+  printNotification("Error: Leg not found in findItinTarget-function");
+  return false;
+  }
+  // go to segments of leg
+  target=target.children[1].children;
+  if (target.length >= 2) {
+      // go to desired segment
+      var index = 0;
+      var j = 0;
+      for(i=0;i<target.length;i++) {
+       if( hasClass(target[i], classSettings["resultpage"]["itinRow"]) == 1) {
+         j++;
+          if (j>=seg){
+            index = i;
+            //special handling for one-seg-legs here
+            if (target.length === 2){
+              index--;
+            }
+            break;
+          }
+        }
+      } // end-for
+      if (i==target.length){
+        //target not found
+        printNotification("Error: Call to unreachable Segment in Leg "+leg+" in findItinTarget-function");
+        return false;
+      }
+      var rowoffset=0;
+      var columnoffset=0;
+      
+      switch(tcell) {
+          case "headline":
+              // special case here allways first row... even in one-seg-legs
+              rowoffset= index * -1;
+              columnoffset=1;
+              break;          
+          case "logo":
+              rowoffset=0;
+              columnoffset=0;
+              break;
+          case "airportsdate":
+              rowoffset=0;
+              columnoffset=1;
+              break;
+          case "flight":
+              rowoffset=1;
+              columnoffset=0;
+              break;
+          case "deptime":
+              rowoffset=1;
+              columnoffset=1;
+              break;
+          case "arrtime":
+              rowoffset=1;
+              columnoffset=2;
+              break;
+          case "duration":
+              rowoffset=1;
+              columnoffset=2;
+              break;          
+          case "plane":
+              rowoffset=1;
+              columnoffset=4;
+              break;
+          case "cabin":
+              rowoffset=1;
+              columnoffset=5;
+              break;  
+          default:
+              printNotification("Error: Unknown Target in findItinTarget-function");
+              return false;
+      }
+      return target[index+rowoffset].children[columnoffset];    
+  } else {
+     printNotification("Error: Unknown error in findItinTarget-function");
+     return false;
+  }  
+}
+
 /********************************************* Result page *********************************************/
 //Primary function for extracting flight data from ITA/Matrix
 function fePS() {
+    // try to get content
+    if (findtarget(classSettings["resultpage"]["itin"],1)===undefined){
+      printNotification("Error: Unable to find Content on result page.");
+      return false;
+    }
     // retry if itin not loaded  
-    if (findtarget(classSettings["itin"],1).parentNode.previousSibling.previousSibling.style.display!="none") { 
+    if (findtarget(classSettings["resultpage"]["itin"],1).parentNode.previousSibling.previousSibling.style.display!="none") { 
       mptSettings["retrycount"]++;
-      if (mptSettings["retrycount"]>20) {
-        console.log("Error Content not found.");
+      if (mptSettings["retrycount"]>50) {
+        printNotification("Error: Timeout on result page. Content not found after 10s.");
         return false;
       };
       setTimeout(function(){fePS();}, 200);    
       return false;
     };
-  
+    // do some self-testing to prevent crashing on class-changes
+    for (i in classSettings["resultpage"]) {
+       if (findtarget(classSettings["resultpage"][i],1) === undefined) {
+          printNotification("Error: Unable to find class "+classSettings["resultpage"][i]+" for "+i+".");
+          return false;                  
+       }
+   }
+   
+   
     if (mptUsersettings["enableFarerules"]==1) bindRulelinks();
        
     // empty outputcontainer
@@ -421,16 +512,17 @@ function fePS() {
     
     // configure sidebar
     if (mptUsersettings["enableInlinemode"]==1) {
-    findtarget(classSettings["milagecontainer"],1).setAttribute('rowspan', 10);
+    findtarget(classSettings["resultpage"]["milagecontainer"],1).setAttribute('rowspan', 10);
     //findtarget('GE-ODR-BET',1).setAttribute('class', 'GE-ODR-BBFB');
     } else if (mptUsersettings["enableInlinemode"]==0 && mptUsersettings["enablePricebreakdown"]==1) {
-      findtarget(classSettings["milagecontainer"],1).setAttribute('rowspan', 3);
+      findtarget(classSettings["resultpage"]["milagecontainer"],1).setAttribute('rowspan', 3);
     } else {
-      findtarget(classSettings["milagecontainer"],1).setAttribute('rowspan', 2);
+      findtarget(classSettings["resultpage"]["milagecontainer"],1).setAttribute('rowspan', 2);
     }
   
     var data = readItinerary();
-
+    // Translate page
+    if (mptUsersettings["language"]!=="en" && tranlsations[mptUsersettings["language"]]["resultpage"]!==undefined) translate("resultpage",mptUsersettings["language"],findtarget(classSettings["resultpage"]["itin"],1).nextSibling.nextSibling);
     // Search - Remove - Add Pricebreakdown
     var target=findtarget('pricebreakdown',1);
     if (target!=undefined) target.parentNode.removeChild(target);
@@ -461,7 +553,7 @@ function fePS() {
       printUS(data);
     }
   
-    printSeperator();
+    if(mptUsersettings["enableDeviders"]==1) printSeperator();
   
     printOrbitz(data);
 
@@ -469,21 +561,27 @@ function fePS() {
 
     printPriceline (data);
   
-    printSeperator();
+    if(mptUsersettings["enableDeviders"]==1) printSeperator();
   
     //*** Farefreaksstuff ****//
     printFarefreaks (data,0);
     printFarefreaks (data,1);
 
     //*** GCM ****//
-    printGCM (data);  
+    printGCM (data);
+  
+    //*** Seatguru ****//
+    bindSeatguru(data);
+  
+    //*** Seatguru ****//
+    bindPlanefinder(data);
 }
     //*** Rulelinks ****//
 function bindRulelinks(){
     var i = 0;
     var j = 0;
     var t = 1;
-    var target=findtarget(classSettings["rulescontainer"],t);
+    var target=findtarget(classSettings["resultpage"]["rulescontainer"],t);
     if (target!=undefined){
       do {
           var current=Number(target.firstChild.innerHTML.replace(/[^\d]/gi, ""));
@@ -502,7 +600,7 @@ function bindRulelinks(){
           target.parentNode.replaceChild(newlink,target);    
           i++;
           t++;
-          target=findtarget(classSettings["rulescontainer"],t);
+          target=findtarget(classSettings["resultpage"]["rulescontainer"],t);
       }
       while (target!=undefined);  
     }   
@@ -517,7 +615,7 @@ function rearrangeprices(dist){
     // define searchpattern to detect carrier imposed surcharges
     var searchpatt = new RegExp("\((YQ|YR)\)");
     var t=1;
-    var target=findtarget(classSettings["htbLeft"],t);
+    var target=findtarget(classSettings["resultpage"]["htbLeft"],t);
     if (mptUsersettings["enableInlinemode"] == 0){
      var output="";
      var count=0;
@@ -535,7 +633,7 @@ function rearrangeprices(dist){
             //its a pricenode
             var name  = target.firstChild.innerHTML;    
             var price = Number(target.nextSibling.firstChild.innerHTML.replace(/[^\d]/gi, ""));            
-            if( hasClass(target.nextSibling, classSettings["htbGreyBorder"]) == 1) {
+            if( hasClass(target.nextSibling, classSettings["resultpage"]["htbGreyBorder"]) == 1) {
              //we are done for this container
               //console.log( "Basefare: "+ basefares);    
               //console.log( "Taxes: "+ taxes); 
@@ -543,16 +641,16 @@ function rearrangeprices(dist){
               var sum=basefares+taxes+surcharges;
               if (mptUsersettings["enableInlinemode"] == 1){
                   var newtr = document.createElement('tr');
-                  newtr.innerHTML = '<td class="'+classSettings["htbLeft"]+'"><div class="gwt-Label">Basefare per passenger ('+((basefares/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["htbGreyBorder"]+'"><div class="gwt-Label">'+cur+(basefares/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  newtr.innerHTML = '<td class="'+classSettings["resultpage"]["htbLeft"]+'"><div class="gwt-Label">Basefare per passenger ('+((basefares/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["resultpage"]["htbGreyBorder"]+'"><div class="gwt-Label">'+cur+(basefares/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
                   target.parentNode.parentNode.insertBefore(newtr, target.parentNode);  
                   var newtr = document.createElement('tr');
-                  newtr.innerHTML = '<td class="'+classSettings["htbLeft"]+'"><div class="gwt-Label">Taxes per passenger ('+((taxes/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["htbRight"]+'"><div class="gwt-Label">'+cur+(taxes/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  newtr.innerHTML = '<td class="'+classSettings["resultpage"]["htbLeft"]+'"><div class="gwt-Label">Taxes per passenger ('+((taxes/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["resultpage"]["htbRight"]+'"><div class="gwt-Label">'+cur+(taxes/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
                   target.parentNode.parentNode.insertBefore(newtr, target.parentNode); 
                   var newtr = document.createElement('tr');
-                  newtr.innerHTML = '<td class="'+classSettings["htbLeft"]+'"><div class="gwt-Label">Surcharges per passenger ('+((surcharges/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["htbRight"]+'"><div class="gwt-Label">'+cur+(surcharges/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  newtr.innerHTML = '<td class="'+classSettings["resultpage"]["htbLeft"]+'"><div class="gwt-Label">Surcharges per passenger ('+((surcharges/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["resultpage"]["htbRight"]+'"><div class="gwt-Label">'+cur+(surcharges/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
                   target.parentNode.parentNode.insertBefore(newtr, target.parentNode);  
                   var newtr = document.createElement('tr');
-                  newtr.innerHTML = '<td class="'+classSettings["htbLeft"]+'"><div class="gwt-Label">Basefare + Taxes per passenger ('+(((basefares+taxes)/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["htbGreyBorder"]+'"><div class="gwt-Label">'+cur+((basefares+taxes)/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  newtr.innerHTML = '<td class="'+classSettings["resultpage"]["htbLeft"]+'"><div class="gwt-Label">Basefare + Taxes per passenger ('+(((basefares+taxes)/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["resultpage"]["htbGreyBorder"]+'"><div class="gwt-Label">'+cur+((basefares+taxes)/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
                   target.parentNode.parentNode.insertBefore(newtr, target.parentNode); 
               } else {
                  count++;
@@ -581,12 +679,12 @@ function rearrangeprices(dist){
             }
           }    
           t++;
-          target=findtarget(classSettings["htbLeft"],t);
+          target=findtarget(classSettings["resultpage"]["htbLeft"],t);
       }
       while (target!=undefined);  
     }
     if (mptUsersettings["enableInlinemode"] == 0){
-      var printtarget=findtarget(classSettings["htbContainer"],1).parentNode.parentNode.parentNode;
+      var printtarget=findtarget(classSettings["resultpage"]["htbContainer"],1).parentNode.parentNode.parentNode;
       var newtr = document.createElement('tr');
       newtr.setAttribute('class','pricebreakdown');
       newtr.innerHTML = '<td><div>'+output+'</div></td>';
@@ -626,56 +724,7 @@ function readItinerary(){
       // the magical part! :-)
       var replacementsold = new Array();
       var replacementsnew = new Array();
-      if (mptUsersettings["language"]=="de"){
-       replacementsold.push("Dep:");
-       replacementsnew.push("Abflug:");
-       replacementsold.push("Arr:");
-       replacementsnew.push("Ankunft:");
-       replacementsold.push("Layover in");
-       replacementsnew.push("Umst. in");
-       replacementsold.push(" to ");
-       replacementsnew.push(" nach ");
-        replacementsold.push("Mon,");
-       replacementsnew.push("Mo.,");
-        replacementsold.push("Tue,");
-       replacementsnew.push("Di.,");
-        replacementsold.push("Wed,");
-       replacementsnew.push("Mi.,");
-        replacementsold.push("Thu,");
-       replacementsnew.push("Do.,");
-        replacementsold.push("Fri,");
-       replacementsnew.push("Fr.,");
-        replacementsold.push("Sat,");
-       replacementsnew.push("Sa.,");
-        replacementsold.push("Sun,");
-       replacementsnew.push("So.,");
-         replacementsold.push(" Jan ");
-       replacementsnew.push(" Januar ");
-         replacementsold.push(" Feb ");
-       replacementsnew.push(" Februar ");
-        replacementsold.push(" Mar ");
-       replacementsnew.push(" M&auml;rz ");
-        replacementsold.push(" Apr ");
-       replacementsnew.push(" April ");
-        replacementsold.push(" May ");
-       replacementsnew.push(" Mai ");
-        replacementsold.push(" Jun ");
-       replacementsnew.push(" Juni ");
-        replacementsold.push(" Jul ");
-       replacementsnew.push(" Juli ");
-        replacementsold.push(" Aug ");
-       replacementsnew.push(" August ");
-        replacementsold.push(" Sep ");
-       replacementsnew.push(" September ");
-        replacementsold.push(" Oct ");
-       replacementsnew.push(" Oktober ");
-        replacementsold.push(" Nov ");
-       replacementsnew.push(" November ");
-        replacementsold.push(" Dez ");
-       replacementsnew.push(" Dezember ");
-        replacementsold.push("OPERATED BY ");
-       replacementsnew.push("Durchgef&uuml;hrt von ");        
-      }  
+
       var itin= new Array();
       var carrieruarray= new Array();
       var html = document.getElementById("contentwrapper").innerHTML;
@@ -805,9 +854,9 @@ function readItinerary(){
                     }
       data={itin:itin, price: milepaxprice[2].replace(/\,/g,""), numPax:milepaxprice[1] , carriers:carrieruarray, cur : itinCur, farebases:fareBaseLegs["fares"], dist:milepaxprice[0].replace(/\./g,"").replace(/\,/g,"")}; 
       //console.log(data); //Remove to see flightstructure 
-      // lets do the replacement
+      // lets do the time-replacement
        if(replacementsold.length>0) {
-         target=findtarget(classSettings["itin"],1).nextSibling.nextSibling;
+         target=findtarget(classSettings["resultpage"]["itin"],1).nextSibling.nextSibling;
          for(i=0;i<replacementsold.length;i++) {
            re = new RegExp(replacementsold[i],"g");
            target.innerHTML = target.innerHTML.replace(re, replacementsnew[i]);
@@ -815,7 +864,23 @@ function readItinerary(){
        }
       return data;
 }  
-  //*** Printfunctions ****//
+
+//*** Printfunctions ****//
+function translate(page,lang,target){
+       if (tranlsations[lang]===undefined){
+         printNotification("Error: Translation "+lang+" not found");
+         return false;
+       }
+       if (tranlsations[lang][page]===undefined){
+         printNotification("Error: Translation "+lang+" not found for page "+page);
+         return false;
+       }
+      for (i in tranlsations[lang][page]) {
+           re = new RegExp(i,"g");
+           target.innerHTML = target.innerHTML.replace(re, tranlsations[lang][page][i]);
+       }  
+}
+
 function printCPM(data){
   printItemInline((Number(data.price) / Number(data.dist)).toFixed(4) + ' cpm','',1);
 }
@@ -1349,23 +1414,77 @@ function printPriceline (data){
    searchparam+="<numberOfTickets>"+data["numPax"]+"</numberOfTickets><cost><totalFare>0.00</totalFare><baseFare>0.00</baseFare><tax>0.00</tax><fee>0.00</fee></cost>";
    searchparam+="</externalSearch>";
    pricelineurl+="&NumTickets="+data["numPax"]+"&AirAffiliateSearch=";
-   
-    if (mptUsersettings["enableInlinemode"]==1){
+   if (mptUsersettings["enableInlinemode"]==1){
       printUrlInline(url+pricelineurl+encodeURIComponent(searchparam),"Priceline","");
     } else {
       printUrl(url+pricelineurl+encodeURIComponent(searchparam),"Priceline","");
     }
 }
-function printSeperator() {
-  var container = document.getElementById('powertoolslinkcontainer') || getSidebarContainer();
-  if (container) {
-    container.innerHTML = container.innerHTML + (mptUsersettings["enableInlinemode"] ? '<hr class="powertoolsitem"/>' : '<br/><hr/>');
-  }
+
+function bindSeatguru(data){
+  for (var i=0;i<data["itin"].length;i++) {
+  // walks each leg      
+    for (var j=0;j<data["itin"][i]["seg"].length;j++) {
+       //walks each segment of leg
+             var k=0;
+             // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
+             while ((j+k)<data["itin"][i]["seg"].length-1){
+                 if (data["itin"][i]["seg"][j+k]["fnr"] != data["itin"][i]["seg"][j+k+1]["fnr"] || 
+                     data["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
+                 k++;
+                }  
+         // build the search to identify flight:
+          var target = findItinTarget((i+1),(j+1),"plane");
+          if (target===false) {
+            printNotification("Error: Could not find target in bindSeatguru");
+            return false;
+          } else {
+            var url='http://www.seatguru.com/findseatmap/findseatmap.php?carrier='+data['itin'][i]['seg'][j]['carrier']+'&flightno='+data['itin'][i]['seg'][j]['fnr']+'&date='+('0'+data['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'%2F'+('0'+data['itin'][i]['seg'][j]['dep']['day']).slice(-2)+'%2F'+data['itin'][i]['seg'][j]['dep']['year']+'&from_loc='+data['itin'][i]['seg'][j]['orig'];
+            target.children[0].innerHTML='<a href="'+url+'" target="_blank" style="text-decoration:none;color:black">'+target.children[0].innerHTML+"</a>";
+          }
+        j+=k;
+      }
+   }  
 }
 
+function bindPlanefinder(data){
+  for (var i=0;i<data["itin"].length;i++) {
+  // walks each leg      
+    for (var j=0;j<data["itin"][i]["seg"].length;j++) {
+       //walks each segment of leg
+             var k=0;
+             // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
+             while ((j+k)<data["itin"][i]["seg"].length-1){
+                 if (data["itin"][i]["seg"][j+k]["fnr"] != data["itin"][i]["seg"][j+k+1]["fnr"] || 
+                     data["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
+                 k++;
+                }  
+         // build the search to identify flight:
+          var target = findItinTarget((i+1),(j+1),"flight");
+          if (target===false) {
+            printNotification("Error: Could not find target in bindPlanefinder");
+            return false;
+          } else {
+            var url='http://www.planefinder.net/data/flight/'+data['itin'][i]['seg'][j]['carrier']+data['itin'][i]['seg'][j]['fnr'];
+            target.children[0].innerHTML='<a href="'+url+'" target="_blank" style="text-decoration:none;color:black">'+target.children[0].innerHTML+"</a>";
+          }
+        j+=k;
+      }
+   }  
+}
 // Inline Stuff
 function printUrlInline(url,text,desc,nth){
-  printItemInline('<a href="'+url+ '" target="_blank">'+(mptUsersettings["language"]=='de'?'&Ouml;ffne mit':'Open with') +' '+text+'</a>',desc,nth);
+  var otext = '<a href="'+url+ '" target="_blank">';
+  var valid=false;
+  if (tranlsations[mptUsersettings["language"]] !== undefined) {
+    if (tranlsations[mptUsersettings["language"]]["openwith"] !== undefined) {
+      otext += tranlsations[mptUsersettings["language"]]["openwith"];
+      valid=true;
+    }
+  }
+  otext+=(valid===false ? "Open with":"");
+  otext+=' '+text+'</a>'; 
+  printItemInline(otext,desc,nth);
 }
 function printItemInline(text,desc,nth){
   div = getSidebarContainer(nth);
@@ -1387,14 +1506,14 @@ function printImageInline(src,url,nth){
    } 
 }
 function getSidebarContainer(nth){
-  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget(classSettings["mcHeader"], nth).nextElementSibling;
+  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget(classSettings["resultpage"]["mcHeader"], nth).nextElementSibling;
   return div ||createUrlContainerInline();
 }
 function createUrlContainerInline(){
   var newdiv = document.createElement('div');
-  newdiv.setAttribute('class',classSettings["mcDiv"]);
-  newdiv.innerHTML = '<div class="'+classSettings["mcHeader"]+'">Powertools</div><ul id="powertoolslinkinlinecontainer" class="'+classSettings["mcLinkList"]+'"></ul>';
-  findtarget(classSettings["mcDiv"],1).parentNode.appendChild(newdiv);
+  newdiv.setAttribute('class',classSettings["resultpage"]["mcDiv"]);
+  newdiv.innerHTML = '<div class="'+classSettings["resultpage"]["mcHeader"]+'">Powertools</div><ul id="powertoolslinkinlinecontainer" class="'+classSettings["resultpage"]["mcLinkList"]+'"></ul>';
+  findtarget(classSettings["resultpage"]["mcDiv"],1).parentNode.appendChild(newdiv);
   return document.getElementById('powertoolslinkinlinecontainer');
 }
 // Printing Stuff
@@ -1402,12 +1521,28 @@ function printUrl(url,name,desc) {
     if (document.getElementById('powertoolslinkcontainer')==undefined){
     createUrlContainer();
     }
-var div = document.getElementById('powertoolslinkcontainer');
-div.innerHTML = div.innerHTML + "<br><font size=3><bold><a href=\""+url+ "\" target=_blank>"+ (mptUsersettings["language"]=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")<br>" : "<br>");
+  var text = "<br><font size=3><bold><a href=\""+url+ "\" target=_blank>";
+  var valid=false;
+  if (tranlsations[mptUsersettings["language"]] !== undefined) {
+    if (tranlsations[mptUsersettings["language"]]["openwith"] !== undefined) {
+      text += tranlsations[mptUsersettings["language"]]["openwith"];
+      valid=true;
+    }
+  }
+  text+=(valid===false ? "Open with":"");
+  text+=" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")<br>" : "<br>");  
+  var div = document.getElementById('powertoolslinkcontainer');
+  div.innerHTML = div.innerHTML + text;
 }
 function createUrlContainer(){
   var newdiv = document.createElement('div');
   newdiv.setAttribute('id','powertoolslinkcontainer');
   newdiv.setAttribute('style','margin-left:10px;');
-  findtarget(classSettings["htbContainer"],1).parentNode.parentNode.parentNode.appendChild(newdiv);
+  findtarget(classSettings["resultpage"]["htbContainer"],1).parentNode.parentNode.parentNode.appendChild(newdiv);
+}
+function printSeperator() {
+  var container = document.getElementById('powertoolslinkcontainer') || getSidebarContainer();
+  if (container) {
+    container.innerHTML = container.innerHTML + (mptUsersettings["enableInlinemode"] ? '<hr class="powertoolsitem"/>' : '<br/><hr/>');
+  }
 }
