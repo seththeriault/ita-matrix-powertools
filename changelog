@@ -1,0 +1,86 @@
+**** Version 0.11 ****
+# 2015-04-19 Edited by Steppo (added SeatGuru,
+                                added Planefinder,
+                                moved translation to external var/function adding capability to add translations,
+                                added possibility to print notifications,
+                                added self-test to prevent crashing on class-changes,
+                                set timeout to 10s,
+                                added powerfull selector-function to get desired td in itin => see findItinTarget,
+                                moved exit in frames to top,
+                                some cleanups,
+                                moved older changelogitems to seprate file on GitHub - no one wants to read such lame stuff :-) )
+                                
+**** Version 0.10a ****
+# 2015-04-05 Edited by RizwanK (Attempted to merge functionality from .user. and .console. into one file)
+**** Version 0.10 ****
+# 2015-03-31 Edited by IAkH/Steppo (Adapted to new classes)
+**** Version 0.9c ****
+# 2013-03-17 Edited by dja852  (Added options to select Air Canada site edition)
+**** Version 0.9b ****
+# 2015-03-17 Edited by Steppo (Adapted to new classes)
+**** Version 0.9a ****
+# 2015-03-02 Edited by Steppo (Rewritten extraction function,
+                                readded local storage,
+                                adapted Hipmunk)
+**** Version 0.9 ****
+# 2015-03-01 Edited by Steppo (Adapted script to latest ITA-Changes..,
+                                removed local storage to maintain compatibility)
+# 2015-02-26 Edited by IAkH   (Added Alitalia,
+                                fixed Air France,
+                                fixed GCM image-width,
+                                introduced local storage)                                
+**** Version 0.8 ****
+# 2015-02-19 Edited by Steppo (Added settings menu,
+                                added price breakdown,
+                                added opening fare rules in new window,
+                                made modes switchable,
+                                added click to reveal images,
+                                several tweaks and cleanups)
+**** Version 0.7n ****
+# 2015-02-16 Edited by IAkH   (Introduced inline mode,
+                                added CPM,  
+                                added Air Canada,
+                                added KLM,
+                                added Air France)
+# 2015-02-11 Edited by Steppo (Bugfix for Hipmunk,
+                                added Priceline)
+# 2015-01-12 Edited by Steppo (Added Hipmunk,
+                                fixed massive bug in leg detection)
+# 2015-01-03 Edited by Steppo (Fixed double execution bug caused by iframe of google,
+                                removed searchpage & calendar,
+                                removed unused functions,
+                                serveral other cleanups
+                                               *** Note ***
+                                Started to rewrite the extraction-function but stopped.
+                                I think google will change some things in the near future.
+                                I am going to do only minimal maintenance to keep the script working.
+                                Let's see how google is going to develop our beloved matrix.)
+# 2015-01-02 Edited by Steppo (Added eventListener to handle switch to ajax,
+                               added support to transform times to 24h-format
+                               added german translation,
+                               several other tweaks & fixes)
+                               
+# 2015-01-01 Edited by Steppo (Quickfix for Matrix 3.0,
+                               removed most content. Only linking at the moment,
+                               will do the cleanup ASAP)
+**** Version 0.6 ****
+# 2014-11-12 Edited by Steppo (added quicklinks for currency (USD & EUR),
+                               added quicklinks for selecting flexible dates,
+                               rewrote initial call-function to start the script)
+**** Version 0.5 ****
+# 2014-11-11 Edited by Steppo (Fixed bug causing close of advanced routing on searchpage,
+                                moved extraction and linkgenerating to seperate functions,
+                                added a lot of information like flightdurations/codeshare/layovertime/arrival-time-object,
+                                complete redesign of data-object, adapted DL/Orbitz/UA/US/Farefreaks/GCM to data-object,
+                                added segmentskip to Orbitz && FF if its just a technical stop,
+                                removed usage of itaLocal (replaced by itaLanguage ) and default values in function ( thx to kulin for this hints) )
+**** Version 0.4 ****
+# 2014-11-10 Edited by paul21 (Improved united.com booking support)
+# 2014-11-09 Edited by Steppo (Added monthly navigation to calendar,
+                                added retry for details if content is loading slow,
+                                added flights as object (see data var ),
+                                added Farefreaks,
+                                added GCM)
+**** Version 0.3a ****
+# 2014-11-01 Edited by Steppo (shortened some regex,
+                               added support for german version of matrix)
