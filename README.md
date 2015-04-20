@@ -6,40 +6,41 @@ Main discussion here:
 
 http://www.flyertalk.com/forum/travel-tools/1623427-ita-purchase-fares-orbitz-delta-userscript.html
 
+***** Notice: *****
+
+!!! Double check your chosen flights before purchasing !!!
+
 ***** Usage: *****
 
-Use either the installable user version or copy the the RAW-Text of your chosen console.js to your debug console (note: there is no need to reexecute the script on pagechange unless you reloaded the page)
+Use either the install the script into your preferred script manager or copy the the RAW-Text into your debug console.
+Using debug console, you may use the shortened minifed version.
+(Note: there is no need to reexecute the script on pagechange unless you reloaded the page)
 
 ***** Files: *****
 
-ita-matrix-powertools.user.js -- Main userscript, install into Greasemonkey/etc.
+ita-matrix-powertools.user.js -- Main userscript, install into Greasemonkey/etc but also usable in debug console.
 
-ita-matrix-powertools.console.js -- Console-execute supported version of the script
+script_minified.txt --  Compact , pastable version of the script for pasting in the debug console.
 
-script_minified.txt --  Compact , pastable/single line version of the script for pasting in the debug console
+*********** Latest Changes **************
 
-***** Latest Changes: *****
+**** Version 0.11 ****
 
-**** Version 0.9c ****
+2015-04-19 Edited by Steppo (added SeatGuru,
+                                added Planefinder,
+                                moved translation to external var/function adding capability to add translations,
+                                added possibility to print notifications,
+                                added self-test to prevent crashing on class-changes,
+                                set timeout of resultpage to 10s,
+                                added powerfull selector-function to get desired td in itin => see findItinTarget,
+                                moved exit in frames to top,
+                                some cleanups,
+                                moved older changelogitems to seprate file on GitHub)
+                                
+**** Version 0.10a ****
 
-2013-03-17 Edited by dja852  (Added options to select Air Canada site edition)
+2015-04-05 Edited by RizwanK (Attempted to merge functionality from .user. and .console. into one file)
 
-**** Version 0.9b ****
+**** Version 0.10 ****
 
-2015-03-17 Edited by Steppo (Adapted to new classes)
-
-**** Version 0.9a ****
-
-2015-03-02 Edited by Steppo (Rewritten extraction function,
-                                readded local storage,
-                                adapted Hipmunk)
-
-**** Version 0.9 ****
-
-2015-03-01 Edited by Steppo (Adapted script to latest ITA-Changes..,
-                                removed local storage to maintain compatibility)
-
-2015-02-26 Edited by IAkH (Added Alitalia,
-                                fixed Air France,
-                                fixed GCM image-width,
-                                introduced local storage)
+2015-03-31 Edited by IAkH/Steppo (Adapted to new classes)
