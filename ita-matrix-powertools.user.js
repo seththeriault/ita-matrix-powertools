@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.11
+// @version 0.11a
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,10 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.11a ****
+# 2015-14-20 Edited by Steppo (fixed Bug in findItinTarget for one-seg-flights,
+                                fixed typo,
+                                added CSS fix for startpage)
 **** Version 0.11 ****
 # 2015-04-19 Edited by Steppo (added SeatGuru,
                                 added Planefinder,
@@ -23,7 +27,7 @@
                                 added powerfull selector-function to get desired td in itin => see findItinTarget,
                                 moved exit in frames to top,
                                 some cleanups,
-                                moved older changelogitems to seprate file on GitHub - no one wants to read such lame stuff :-) )
+                                moved older changelogitems to seperate file on GitHub - no one wants to read such lame stuff :-) )
                                 
 **** Version 0.10a ****
 # 2015-04-05 Edited by RizwanK (Attempted to merge functionality from .user. and .console. into one file)
@@ -84,6 +88,8 @@ else {
 var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"];
 
 var classSettings = new Object();
+classSettings["startpage"] = new Object();
+classSettings["startpage"]["maindiv"]="FNGTPEB-w-d"; //Container of main content. Unfortunately id "contentwrapper" is used twice
 classSettings["resultpage"] = new Object();
 classSettings["resultpage"]["itin"]="FNGTPEB-A-d"; //Container with headline: "Intinerary"
 classSettings["resultpage"]["itinRow"]="FNGTPEB-k-i"; // TR in itin with Orig, Dest and date
@@ -99,34 +105,34 @@ classSettings["resultpage"]["mcHeader"]="FNGTPEB-U-b"; // Right menu header clas
 classSettings["resultpage"]["mcLinkList"]="FNGTPEB-y-c"; // Right menu ul list class (immediately following header)
 
 
-var tranlsations = new Object();
-tranlsations["de"] = new Object();
-tranlsations["de"]["openwith"]="&Ouml;ffne mit";
-tranlsations["de"]["resultpage"] = new Object();
-tranlsations["de"]["resultpage"]["Dep:"]="Abflug:";
-tranlsations["de"]["resultpage"]["Arr:"]="Ankunft:";
-tranlsations["de"]["resultpage"]["Layover in"]="Umst. in";
-tranlsations["de"]["resultpage"][" to "]=" nach ";
-tranlsations["de"]["resultpage"]["Mon,"]="Mo.,";
-tranlsations["de"]["resultpage"]["Tue,"]="Di.,";
-tranlsations["de"]["resultpage"]["Wed,"]="Mi.,";
-tranlsations["de"]["resultpage"]["Thu,"]="Do.,";
-tranlsations["de"]["resultpage"]["Fri,"]="Fr.,";
-tranlsations["de"]["resultpage"]["Sat,"]="Sa.,";
-tranlsations["de"]["resultpage"]["Sun,"]="So.,";
-tranlsations["de"]["resultpage"][" Jan "]=" Januar ";
-tranlsations["de"]["resultpage"][" Feb "]=" Februar ";
-tranlsations["de"]["resultpage"][" Mar "]=" M&auml;rz ";
-tranlsations["de"]["resultpage"][" Apr "]=" April ";
-tranlsations["de"]["resultpage"][" May "]=" Mai ";
-tranlsations["de"]["resultpage"][" Jun "]=" Juni ";
-tranlsations["de"]["resultpage"][" Jul "]=" Juli ";
-tranlsations["de"]["resultpage"][" Aug "]=" August ";
-tranlsations["de"]["resultpage"][" Sep "]=" September ";
-tranlsations["de"]["resultpage"][" Oct "]=" Oktober ";
-tranlsations["de"]["resultpage"][" Nov "]=" November ";
-tranlsations["de"]["resultpage"][" Dez "]=" Dezember ";
-tranlsations["de"]["resultpage"]["OPERATED BY "]="Durchgef&uuml;hrt von ";
+var translations = new Object();
+translations["de"] = new Object();
+translations["de"]["openwith"]="&Ouml;ffne mit";
+translations["de"]["resultpage"] = new Object();
+translations["de"]["resultpage"]["Dep:"]="Abflug:";
+translations["de"]["resultpage"]["Arr:"]="Ankunft:";
+translations["de"]["resultpage"]["Layover in"]="Umst. in";
+translations["de"]["resultpage"][" to "]=" nach ";
+translations["de"]["resultpage"]["Mon,"]="Mo.,";
+translations["de"]["resultpage"]["Tue,"]="Di.,";
+translations["de"]["resultpage"]["Wed,"]="Mi.,";
+translations["de"]["resultpage"]["Thu,"]="Do.,";
+translations["de"]["resultpage"]["Fri,"]="Fr.,";
+translations["de"]["resultpage"]["Sat,"]="Sa.,";
+translations["de"]["resultpage"]["Sun,"]="So.,";
+translations["de"]["resultpage"][" Jan "]=" Januar ";
+translations["de"]["resultpage"][" Feb "]=" Februar ";
+translations["de"]["resultpage"][" Mar "]=" M&auml;rz ";
+translations["de"]["resultpage"][" Apr "]=" April ";
+translations["de"]["resultpage"][" May "]=" Mai ";
+translations["de"]["resultpage"][" Jun "]=" Juni ";
+translations["de"]["resultpage"][" Jul "]=" Juli ";
+translations["de"]["resultpage"][" Aug "]=" August ";
+translations["de"]["resultpage"][" Sep "]=" September ";
+translations["de"]["resultpage"][" Oct "]=" Oktober ";
+translations["de"]["resultpage"][" Nov "]=" November ";
+translations["de"]["resultpage"][" Dez "]=" Dezember ";
+translations["de"]["resultpage"]["OPERATED BY "]="Durchgef&uuml;hrt von ";
 
 if (mptSettings["scriptEngine"] === 0) {
  startScript(); 
@@ -266,7 +272,9 @@ function getPageLang(){
     mptSettings["retrycount"]=1;
     if (window.location.href.indexOf("view-details") !=-1) {
        setTimeout(function(){fePS();}, 200);   
-    }   
+    } else if (window.location.href.indexOf("#search:") !=-1 || window.location.href == "https://matrix.itasoftware.com/" || window.location.href == "https://matrix.itasoftware.com/") {
+       setTimeout(function(){startPage();}, 200);   
+    }
 }
 
 /**************************************** General Functions *****************************************/
@@ -385,8 +393,8 @@ function findItinTarget(leg,seg,tcell){
   printNotification("Error: Itin not found in findItinTarget-function");
   return false;
   }
-  target=target.nextSibling.nextSibling;
   
+  target=target.nextSibling.nextSibling;
   // go to leg
   var target=target.children[(leg-1)];
   if (target === undefined) {
@@ -405,7 +413,8 @@ function findItinTarget(leg,seg,tcell){
           if (j>=seg){
             index = i;
             //special handling for one-seg-legs here
-            if (target.length === 2){
+            if (target.length === 2 || target.length === 3){
+              // 1. Headline 2. Flight-details 3. arrival next day.. 
               index--;
             }
             break;
@@ -468,6 +477,19 @@ function findItinTarget(leg,seg,tcell){
      return false;
   }  
 }
+/********************************************* Start page *********************************************/
+function startPage() {
+    // try to get content  
+    if (findtarget( classSettings["startpage"]["maindiv"],1)===undefined){
+      printNotification("Error: Unable to find content on start page.");
+      return false;
+    } else {
+      // apply style-fix
+      target = findtarget( classSettings["startpage"]["maindiv"],1);
+      target.children[0].children[0].children[0].children[0].setAttribute('valign', 'top');
+    }
+  
+}
 
 /********************************************* Result page *********************************************/
 //Primary function for extracting flight data from ITA/Matrix
@@ -522,7 +544,7 @@ function fePS() {
   
     var data = readItinerary();
     // Translate page
-    if (mptUsersettings["language"]!=="en" && tranlsations[mptUsersettings["language"]]["resultpage"]!==undefined) translate("resultpage",mptUsersettings["language"],findtarget(classSettings["resultpage"]["itin"],1).nextSibling.nextSibling);
+    if (mptUsersettings["language"]!=="en" && translations[mptUsersettings["language"]]["resultpage"]!==undefined) translate("resultpage",mptUsersettings["language"],findtarget(classSettings["resultpage"]["itin"],1).nextSibling.nextSibling);
     // Search - Remove - Add Pricebreakdown
     var target=findtarget('pricebreakdown',1);
     if (target!=undefined) target.parentNode.removeChild(target);
@@ -563,17 +585,17 @@ function fePS() {
   
     if(mptUsersettings["enableDeviders"]==1) printSeperator();
   
-    //*** Farefreaksstuff ****//
+    /*** Farefreaksstuff ****/
     printFarefreaks (data,0);
     printFarefreaks (data,1);
 
-    //*** GCM ****//
+    /*** GCM ****/
     printGCM (data);
-  
-    //*** Seatguru ****//
+
+    /*** Seatguru ****/
     bindSeatguru(data);
   
-    //*** Seatguru ****//
+    /*** Planefinder ****/
     bindPlanefinder(data);
 }
     //*** Rulelinks ****//
@@ -867,17 +889,17 @@ function readItinerary(){
 
 //*** Printfunctions ****//
 function translate(page,lang,target){
-       if (tranlsations[lang]===undefined){
+       if (translations[lang]===undefined){
          printNotification("Error: Translation "+lang+" not found");
          return false;
        }
-       if (tranlsations[lang][page]===undefined){
+       if (translations[lang][page]===undefined){
          printNotification("Error: Translation "+lang+" not found for page "+page);
          return false;
        }
-      for (i in tranlsations[lang][page]) {
+      for (i in translations[lang][page]) {
            re = new RegExp(i,"g");
-           target.innerHTML = target.innerHTML.replace(re, tranlsations[lang][page][i]);
+           target.innerHTML = target.innerHTML.replace(re, translations[lang][page][i]);
        }  
 }
 
@@ -1472,13 +1494,14 @@ function bindPlanefinder(data){
       }
    }  
 }
+
 // Inline Stuff
 function printUrlInline(url,text,desc,nth){
   var otext = '<a href="'+url+ '" target="_blank">';
   var valid=false;
-  if (tranlsations[mptUsersettings["language"]] !== undefined) {
-    if (tranlsations[mptUsersettings["language"]]["openwith"] !== undefined) {
-      otext += tranlsations[mptUsersettings["language"]]["openwith"];
+  if (translations[mptUsersettings["language"]] !== undefined) {
+    if (translations[mptUsersettings["language"]]["openwith"] !== undefined) {
+      otext += translations[mptUsersettings["language"]]["openwith"];
       valid=true;
     }
   }
@@ -1523,9 +1546,9 @@ function printUrl(url,name,desc) {
     }
   var text = "<br><font size=3><bold><a href=\""+url+ "\" target=_blank>";
   var valid=false;
-  if (tranlsations[mptUsersettings["language"]] !== undefined) {
-    if (tranlsations[mptUsersettings["language"]]["openwith"] !== undefined) {
-      text += tranlsations[mptUsersettings["language"]]["openwith"];
+  if (translations[mptUsersettings["language"]] !== undefined) {
+    if (translations[mptUsersettings["language"]]["openwith"] !== undefined) {
+      text += translations[mptUsersettings["language"]]["openwith"];
       valid=true;
     }
   }
