@@ -1,3 +1,8 @@
+**** Version 0.11a ****
+# 2015-14-20 Edited by Steppo (fixed Bug in findItinTarget for one-seg-flights,
+                                fixed typo,
+                                added CSS fix for startpage)
+                                
 **** Version 0.11 ****
 # 2015-04-19 Edited by Steppo (added SeatGuru,
                                 added Planefinder,
@@ -8,7 +13,7 @@
                                 added powerfull selector-function to get desired td in itin => see findItinTarget,
                                 moved exit in frames to top,
                                 some cleanups,
-                                moved older changelogitems to seprate file on GitHub - no one wants to read such lame stuff :-) )
+                                moved older changelogitems to separate file on GitHub - no one wants to read such lame stuff :-) )
                                 
 **** Version 0.10a ****
 # 2015-04-05 Edited by RizwanK (Attempted to merge functionality from .user. and .console. into one file)
