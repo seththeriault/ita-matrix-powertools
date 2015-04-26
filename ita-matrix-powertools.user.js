@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.11a
+// @version 0.11b
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.11b ****
+# 2015-14-26 Edited by Steppo ( made Planefinder/Seatguru switchable)
 **** Version 0.11a ****
 # 2015-14-20 Edited by Steppo (fixed Bug in findItinTarget for one-seg-flights,
                                 fixed typo,
@@ -55,6 +57,8 @@ mptUsersettings["enableInlinemode"] =  0; // enables inline mode - valid: 0 / 1
 mptUsersettings["enableIMGautoload"] = 0; // enables images to auto load - valid: 0 / 1
 mptUsersettings["enableFarerules"] = 1; // enables fare rule opening in new window - valid: 0 / 1
 mptUsersettings["enablePricebreakdown"] =  1; // enables price breakdown - valid: 0 / 1
+mptUsersettings["enablePlanefinder"] =  1; // enables Planefinder - click on flight numbers to open Planefinder for this flight - valid: 0 / 1
+mptUsersettings["enableSeatguru"] =  1; // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
 mptUsersettings["acEdition"] = "us"; // sets the local edition of AirCanada.com for itinerary pricing - valid: "us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
@@ -81,6 +85,8 @@ else {
     mptUsersettings["enableIMGautoload"] = mptSavedUsersettings["enableIMGautoload"] || mptUsersettings["enableIMGautoload"];
     mptUsersettings["enableFarerules"] = mptSavedUsersettings["enableFarerules"] || mptUsersettings["enableFarerules"];
     mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || mptUsersettings["enablePricebreakdown"];
+    mptUsersettings["enablePlanefinder"] = (mptSavedUsersettings["enablePlanefinder"] === undefined ? mptUsersettings["enablePlanefinder"] : mptSavedUsersettings["enablePlanefinder"]);
+    mptUsersettings["enableSeatguru"] = (mptSavedUsersettings["enableSeatguru"] === undefined ? mptUsersettings["enableSeatguru"] : mptSavedUsersettings["enableSeatguru"]);
     mptUsersettings["acEdition"] = mptSavedUsersettings["acEdition"] || mptUsersettings["acEdition"];    
   }
 }
@@ -177,6 +183,8 @@ function createUsersettings(){
     target.innerHTML +='<span id="mptenableIMGautoload" style="cursor:pointer;">Images autoload:<span>'+printSettingsvalue("enableIMGautoload")+'</span></span><br>';
     target.innerHTML +='<span id="mptenableFarerules" style="cursor:pointer;">Farerules in new window:<span>'+printSettingsvalue("enableFarerules")+'</span></span><br>';
     target.innerHTML +='<span id="mptenablePricebreakdown" style="cursor:pointer;">Price breakdown:<span>'+printSettingsvalue("enablePricebreakdown")+'</span></span><br>';
+    target.innerHTML +='<span id="mptenablePlanefinder" style="cursor:pointer;">Enable Planefinder:<span>'+printSettingsvalue("enablePlanefinder")+'</span></span><br>';
+    target.innerHTML +='<span id="mptenableSeatguru" style="cursor:pointer;">Enable Seatguru:<span>'+printSettingsvalue("enableSeatguru")+'</span></span><br>';
     target.innerHTML +='<span id="mptacEdition" style="cursor:pointer;">Air Canada Edition:<span>'+printSettingsvalue("acEdition")+'</span></span>';
     document.getElementById('mpttimeformat').onclick=function(){toggleSettings("timeformat");};
     document.getElementById('mptlanguage').onclick=function(){toggleSettings("language");};
@@ -185,6 +193,8 @@ function createUsersettings(){
     document.getElementById('mptenableIMGautoload').onclick=function(){toggleSettings("enableIMGautoload");};
     document.getElementById('mptenableFarerules').onclick=function(){toggleSettings("enableFarerules");};
     document.getElementById('mptenablePricebreakdown').onclick=function(){toggleSettings("enablePricebreakdown");};
+    document.getElementById('mptenablePlanefinder').onclick=function(){toggleSettings("enablePlanefinder");};
+    document.getElementById('mptenableSeatguru').onclick=function(){toggleSettings("enableSeatguru");};
     document.getElementById('mptacEdition').onclick=function(){toggleSettings("acEdition");};
 }
 function toggleSettingsvis(){
@@ -593,10 +603,10 @@ function fePS() {
     printGCM (data);
 
     /*** Seatguru ****/
-    bindSeatguru(data);
+    if(mptUsersettings["enableSeatguru"]==1) bindSeatguru(data);
   
     /*** Planefinder ****/
-    bindPlanefinder(data);
+    if(mptUsersettings["enablePlanefinder"]==1) bindPlanefinder(data);
 }
     //*** Rulelinks ****//
 function bindRulelinks(){
