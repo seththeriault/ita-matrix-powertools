@@ -24,6 +24,16 @@ script_minified.txt --  Compact , pastable version of the script for pasting in 
 
 *********** Latest Changes **************
 
+**** Version 0.11b ****
+
+2015-04-26 Edited by Steppo ( made Planefinder/Seatguru switchable)
+
+**** Version 0.11a ****
+
+2015-04-20 Edited by Steppo (fixed Bug in findItinTarget for one-seg-flights,
+                                fixed typo,
+                                added CSS fix for startpage)
+
 **** Version 0.11 ****
 
 2015-04-19 Edited by Steppo (added SeatGuru,
