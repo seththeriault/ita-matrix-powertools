@@ -97,18 +97,18 @@ var classSettings = new Object();
 classSettings["startpage"] = new Object();
 classSettings["startpage"]["maindiv"]="FNGTPEB-w-d"; //Container of main content. Unfortunately id "contentwrapper" is used twice
 classSettings["resultpage"] = new Object();
-classSettings["resultpage"]["itin"]="FNGTPEB-A-d"; //Container with headline: "Intinerary"
+classSettings["resultpage"]["itin"]="FNGTPEB-y-d"; //Container with headline: "Intinerary"
 classSettings["resultpage"]["itinRow"]="FNGTPEB-k-i"; // TR in itin with Orig, Dest and date
-classSettings["resultpage"]["milagecontainer"]="FNGTPEB-A-e"; // Container on the right
+classSettings["resultpage"]["milagecontainer"]="FNGTPEB-y-e"; // Container on the right
 classSettings["resultpage"]["rulescontainer"]="FNGTPEB-l-d"; // First container before rulelinks (the one with Fare X:)
 classSettings["resultpage"]["htbContainer"]="FNGTPEB-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
 classSettings["resultpage"]["htbLeft"]="FNGTPEB-l-g"; // Left column in the "how to buy"-container
 classSettings["resultpage"]["htbRight"]="FNGTPEB-l-f"; // Class for normal right column
 classSettings["resultpage"]["htbGreyBorder"]="FNGTPEB-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
-classSettings["resultpage"]["mcDiv"]="FNGTPEB-U-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
-classSettings["resultpage"]["mcHeader"]="FNGTPEB-U-b"; // Right menu header class ("Mileage", etc.)
-classSettings["resultpage"]["mcLinkList"]="FNGTPEB-y-c"; // Right menu ul list class (immediately following header)
+classSettings["resultpage"]["mcDiv"]="FNGTPEB-V-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+classSettings["resultpage"]["mcHeader"]="FNGTPEB-V-b"; // Right menu header class ("Mileage", etc.)
+classSettings["resultpage"]["mcLinkList"]="FNGTPEB-V-c"; // Right menu ul list class (immediately following header)
 
 
 var translations = new Object();
