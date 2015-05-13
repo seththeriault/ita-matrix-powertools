@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.11b
+// @version 0.11c
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,10 +13,12 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.11c ****
+# 2015-05-13 Edited by Steppo ( fixed class names )
 **** Version 0.11b ****
-# 2015-14-26 Edited by Steppo ( made Planefinder/Seatguru switchable)
+# 2015-04-26 Edited by Steppo ( made Planefinder/Seatguru switchable)
 **** Version 0.11a ****
-# 2015-14-20 Edited by Steppo (fixed Bug in findItinTarget for one-seg-flights,
+# 2015-04-20 Edited by Steppo (fixed Bug in findItinTarget for one-seg-flights,
                                 fixed typo,
                                 added CSS fix for startpage)
 **** Version 0.11 ****
@@ -30,11 +32,6 @@
                                 moved exit in frames to top,
                                 some cleanups,
                                 moved older changelogitems to seperate file on GitHub - no one wants to read such lame stuff :-) )
-                                
-**** Version 0.10a ****
-# 2015-04-05 Edited by RizwanK (Attempted to merge functionality from .user. and .console. into one file)
-**** Version 0.10 ****
-# 2015-03-31 Edited by IAkH/Steppo (Adapted to new classes)
 *********** About **************
  --- Resultpage ---
   # collecting a lot of information in data-var
@@ -95,21 +92,20 @@ var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "e
 
 var classSettings = new Object();
 classSettings["startpage"] = new Object();
-classSettings["startpage"]["maindiv"]="FNGTPEB-w-d"; //Container of main content. Unfortunately id "contentwrapper" is used twice
+classSettings["startpage"]["maindiv"]="FFSP23D-w-d"; //Container of main content. Unfortunately id "contentwrapper" is used twice
 classSettings["resultpage"] = new Object();
-classSettings["resultpage"]["itin"]="FNGTPEB-y-d"; //Container with headline: "Intinerary"
-classSettings["resultpage"]["itinRow"]="FNGTPEB-k-i"; // TR in itin with Orig, Dest and date
-classSettings["resultpage"]["milagecontainer"]="FNGTPEB-y-e"; // Container on the right
-classSettings["resultpage"]["rulescontainer"]="FNGTPEB-l-d"; // First container before rulelinks (the one with Fare X:)
-classSettings["resultpage"]["htbContainer"]="FNGTPEB-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
-classSettings["resultpage"]["htbLeft"]="FNGTPEB-l-g"; // Left column in the "how to buy"-container
-classSettings["resultpage"]["htbRight"]="FNGTPEB-l-f"; // Class for normal right column
-classSettings["resultpage"]["htbGreyBorder"]="FNGTPEB-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
+classSettings["resultpage"]["itin"]="FFSP23D-y-d"; //Container with headline: "Intinerary"
+classSettings["resultpage"]["itinRow"]="FFSP23D-k-i"; // TR in itin with Orig, Dest and date
+classSettings["resultpage"]["milagecontainer"]="FFSP23D-y-e"; // TD-Container on the right
+classSettings["resultpage"]["rulescontainer"]="FFSP23D-l-d"; // First container before rulelinks (the one with Fare X:)
+classSettings["resultpage"]["htbContainer"]="FFSP23D-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
+classSettings["resultpage"]["htbLeft"]="FFSP23D-l-g"; // Left column in the "how to buy"-container
+classSettings["resultpage"]["htbRight"]="FFSP23D-l-f"; // Class for normal right column
+classSettings["resultpage"]["htbGreyBorder"]="FFSP23D-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
-classSettings["resultpage"]["mcDiv"]="FNGTPEB-V-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
-classSettings["resultpage"]["mcHeader"]="FNGTPEB-V-b"; // Right menu header class ("Mileage", etc.)
-classSettings["resultpage"]["mcLinkList"]="FNGTPEB-V-c"; // Right menu ul list class (immediately following header)
-
+classSettings["resultpage"]["mcDiv"]="FFSP23D-V-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+classSettings["resultpage"]["mcHeader"]="FFSP23D-V-b"; // Right menu header class ("Mileage", etc.)
+classSettings["resultpage"]["mcLinkList"]="FFSP23D-V-c"; // Right menu ul list class (immediately following header)
 
 var translations = new Object();
 translations["de"] = new Object();
