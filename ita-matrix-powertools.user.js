@@ -92,20 +92,20 @@ var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "e
 
 var classSettings = new Object();
 classSettings["startpage"] = new Object();
-classSettings["startpage"]["maindiv"]="FFSP23D-w-d"; //Container of main content. Unfortunately id "contentwrapper" is used twice
+classSettings["startpage"]["maindiv"]="P2ALY6-w-d"; //Container of main content. Unfortunately id "contentwrapper" is used twice
 classSettings["resultpage"] = new Object();
-classSettings["resultpage"]["itin"]="FFSP23D-y-d"; //Container with headline: "Intinerary"
-classSettings["resultpage"]["itinRow"]="FFSP23D-k-i"; // TR in itin with Orig, Dest and date
-classSettings["resultpage"]["milagecontainer"]="FFSP23D-y-e"; // TD-Container on the right
-classSettings["resultpage"]["rulescontainer"]="FFSP23D-l-d"; // First container before rulelinks (the one with Fare X:)
-classSettings["resultpage"]["htbContainer"]="FFSP23D-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
-classSettings["resultpage"]["htbLeft"]="FFSP23D-l-g"; // Left column in the "how to buy"-container
-classSettings["resultpage"]["htbRight"]="FFSP23D-l-f"; // Class for normal right column
-classSettings["resultpage"]["htbGreyBorder"]="FFSP23D-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
+classSettings["resultpage"]["itin"]="P2ALY6-y-d"; //Container with headline: "Intinerary"
+classSettings["resultpage"]["itinRow"]="P2ALY6-k-i"; // TR in itin with Orig, Dest and date
+classSettings["resultpage"]["milagecontainer"]="P2ALY6-y-e"; // TD-Container on the right
+classSettings["resultpage"]["rulescontainer"]="P2ALY6-l-d"; // First container before rulelinks (the one with Fare X:)
+classSettings["resultpage"]["htbContainer"]="P2ALY6-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
+classSettings["resultpage"]["htbLeft"]="P2ALY6-l-g"; // Left column in the "how to buy"-container
+classSettings["resultpage"]["htbRight"]="P2ALY6-l-f"; // Class for normal right column
+classSettings["resultpage"]["htbGreyBorder"]="P2ALY6-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
-classSettings["resultpage"]["mcDiv"]="FFSP23D-V-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
-classSettings["resultpage"]["mcHeader"]="FFSP23D-V-b"; // Right menu header class ("Mileage", etc.)
-classSettings["resultpage"]["mcLinkList"]="FFSP23D-V-c"; // Right menu ul list class (immediately following header)
+classSettings["resultpage"]["mcDiv"]="P2ALY6-y-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+classSettings["resultpage"]["mcHeader"]="P2ALY6-U-b"; // Right menu header class ("Mileage", etc.)
+classSettings["resultpage"]["mcLinkList"]="P2ALY6-U-c"; // Right menu ul list class (immediately following header)
 
 var translations = new Object();
 translations["de"] = new Object();
