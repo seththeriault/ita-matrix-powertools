@@ -103,7 +103,7 @@ classSettings["resultpage"]["htbLeft"]="P2ALY6-l-g"; // Left column in the "how 
 classSettings["resultpage"]["htbRight"]="P2ALY6-l-f"; // Class for normal right column
 classSettings["resultpage"]["htbGreyBorder"]="P2ALY6-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
-classSettings["resultpage"]["mcDiv"]="P2ALY6-y-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+classSettings["resultpage"]["mcDiv"]="P2ALY6-U-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
 classSettings["resultpage"]["mcHeader"]="P2ALY6-U-b"; // Right menu header class ("Mileage", etc.)
 classSettings["resultpage"]["mcLinkList"]="P2ALY6-U-c"; // Right menu ul list class (immediately following header)
 
