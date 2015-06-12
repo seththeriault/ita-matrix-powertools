@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.11c
+// @version 0.11d
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.11d ****
+# 2015-06-06 ( class names updated )
 **** Version 0.11c ****
 # 2015-05-13 Edited by Steppo ( fixed class names )
 **** Version 0.11b ****
