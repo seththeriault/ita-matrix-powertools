@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.11d
+// @version 0.12
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.12 ****
+# 2015-06-06 Edited by IAkH ( added CheapOair )
 **** Version 0.11d ****
 # 2015-06-06 ( class names updated )
 **** Version 0.11c ****
@@ -584,6 +586,8 @@ function fePS() {
     }
   
     if(mptUsersettings["enableDeviders"]==1) printSeperator();
+    
+    printCheapOair(data);
   
     printOrbitz(data);
 
@@ -1261,6 +1265,49 @@ function printUS(data){
     } else {
       printUrl(usUrl,"US Airways","");
     }
+}
+
+function printCheapOair(data){
+  // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
+  var cabins = ['Economy', 'PREMIUMECONOMY', 'Business', 'First']
+  var coaUrl = 'http://www.cheapoair.com/default.aspx?tabid=1832&ch=0&sr=0&is=0&il=0&ulang=en';
+  coaUrl += '&ad=' + data.numPax;
+  var seg = 0;
+  var slices = {};
+  for (var i=0; i < data.itin.length; i++) {
+    slices[i] = '';
+    for (var j=0; j < data.itin[i].seg.length; j++) {
+      seg++;
+      if (slices[i]) slices[i] += ',';
+      slices[i] += seg;
+      
+      coaUrl += '&cbn'        +seg+'='+cabins[data.itin[i].seg[j].cabin];
+      coaUrl += '&carr'      +seg+'='+data.itin[i].seg[j].carrier;
+      coaUrl += '&dd'+seg+'='+data.itin[i].seg[j].dep.year+('0'+data.itin[i].seg[j].dep.month).slice(-2)+('0'+data.itin[i].seg[j].dep.day).slice(-2);
+      coaUrl += '&og'       +seg+'='+data.itin[i].seg[j].orig;
+      coaUrl += '&dt'  +seg+'='+data.itin[i].seg[j].dest;
+      coaUrl += '&fbc'  +seg+'='+data.itin[i].seg[j].bookingclass;
+      coaUrl += '&fnum' +seg+'='+data.itin[i].seg[j].fnr;
+    }
+    
+    coaUrl += '&Slice'+(i+1)+'='+slices[i];
+  }
+  
+  if (data.itin.length == 1) {
+    coaUrl += '&tt=OneWay';
+  }
+  else if (data.itin.length == 2 && data.itin[0].orig == data.itin[1].dest && data.itin[0].dest == data.itin[1].orig) {
+    coaUrl += '&tt=RoundTrip';
+  }
+  else {
+    coaUrl += '&tt=MultiCity';
+  }
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(coaUrl,"CheapOair","");
+  } else {
+    printUrl(coaUrl,"CheapOair","");
+  }
 }
 function printFarefreaks (data,method){
 // Should be fine
