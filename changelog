@@ -1,3 +1,17 @@
+**** Version 0.13 ****
+# 2015-06-15 Edited by Steppo ( fixed miles/passenger/price extraction,
+                                 moved itin-data to global var "currentItin" -> capability to modify/reuse itin,
+                                 rearranged config section,
+                                 introduced wheretocredit.com,
+                                 introduced background resolving of detailed distances using farefreaks.com based on data of OurAirports.com,
+                                 tested on FF38, IE11, IE10 (emulated)
+                                 )
+**** Version 0.12 ****
+# 2015-06-13 Edited by IAkH ( added CheapOair )
+**** Version 0.11d ****
+# 2015-06-06 ( class names updated )
+**** Version 0.11c ****
+# 2015-05-13 Edited by Steppo ( fixed class names )
 **** Version 0.11b ****
 # 2015-04-26 Edited by Steppo ( made Planefinder/Seatguru switchable)
 
