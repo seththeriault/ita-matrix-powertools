@@ -43,6 +43,7 @@ script_minified.txt --  Compact , pastable version of the script for pasting in 
                                  introduced background resolving of detailed distances using farefreaks.com based on data of OurAirports.com,
                                  tested on FF38, IE11, IE10 (emulated)
                                  )
+                                 
 **** Version 0.12 ****
 
 2015-06-13 Edited by IAkH ( added CheapOair )
@@ -50,11 +51,13 @@ script_minified.txt --  Compact , pastable version of the script for pasting in 
 **** Version 0.11b ****
 
 2015-04-26 Edited by Steppo ( made Planefinder/Seatguru switchable)
+
 **** Version 0.11a ****
 
 2015-04-20 Edited by Steppo (fixed Bug in findItinTarget for one-seg-flights,
                                 fixed typo,
                                 added CSS fix for startpage)
+                                
 **** Version 0.11 ****
 
 2015-04-19 Edited by Steppo (added SeatGuru,
