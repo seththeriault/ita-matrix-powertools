@@ -1462,6 +1462,9 @@ function getOrbitzCabin(cabin){
 // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
 // C - Coach / B - Business / F - First on ORB
   switch(cabin) {
+      case 1:
+          cabin="E";
+          break;
       case 2:
           cabin="B";
           break;
