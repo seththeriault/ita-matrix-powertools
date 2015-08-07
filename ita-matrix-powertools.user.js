@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.13
+// @version 0.13a
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.13a ****
+# 2015-08-07 Edited by Steppo ( class names updated )
 **** Version 0.13 ****
 # 2015-06-15 Edited by Steppo ( fixed miles/passenger/price extraction,
                                  moved itin-data to global var "currentItin" -> capability to modify/reuse itin,
@@ -113,20 +115,20 @@ var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "e
 
 var classSettings = new Object();
 classSettings["startpage"] = new Object();
-classSettings["startpage"]["maindiv"]="P2ALY6-w-d"; //Container of main content. Unfortunately id "contentwrapper" is used twice
+classSettings["startpage"]["maindiv"]="IR6M2QD-w-d"; //Container of main content. Unfortunately id "contentwrapper" is used twice
 classSettings["resultpage"] = new Object();
-classSettings["resultpage"]["itin"]="P2ALY6-y-d"; //Container with headline: "Intinerary"
-classSettings["resultpage"]["itinRow"]="P2ALY6-k-i"; // TR in itin with Orig, Dest and date
-classSettings["resultpage"]["milagecontainer"]="P2ALY6-y-e"; // TD-Container on the right
-classSettings["resultpage"]["rulescontainer"]="P2ALY6-l-d"; // First container before rulelinks (the one with Fare X:)
-classSettings["resultpage"]["htbContainer"]="P2ALY6-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
-classSettings["resultpage"]["htbLeft"]="P2ALY6-l-g"; // Left column in the "how to buy"-container
-classSettings["resultpage"]["htbRight"]="P2ALY6-l-f"; // Class for normal right column
-classSettings["resultpage"]["htbGreyBorder"]="P2ALY6-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
+classSettings["resultpage"]["itin"]="IR6M2QD-A-d"; //Container with headline: "Intinerary"
+classSettings["resultpage"]["itinRow"]="IR6M2QD-k-i"; // TR in itin with Orig, Dest and date
+classSettings["resultpage"]["milagecontainer"]="IR6M2QD-A-e"; // TD-Container on the right
+classSettings["resultpage"]["rulescontainer"]="IR6M2QD-l-d"; // First container before rulelinks (the one with Fare X:)
+classSettings["resultpage"]["htbContainer"]="IR6M2QD-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
+classSettings["resultpage"]["htbLeft"]="IR6M2QD-l-g"; // Left column in the "how to buy"-container
+classSettings["resultpage"]["htbRight"]="IR6M2QD-l-f"; // Class for normal right column
+classSettings["resultpage"]["htbGreyBorder"]="IR6M2QD-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
-classSettings["resultpage"]["mcDiv"]="P2ALY6-U-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
-classSettings["resultpage"]["mcHeader"]="P2ALY6-U-b"; // Right menu header class ("Mileage", etc.)
-classSettings["resultpage"]["mcLinkList"]="P2ALY6-U-c"; // Right menu ul list class (immediately following header)
+classSettings["resultpage"]["mcDiv"]="IR6M2QD-U-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+classSettings["resultpage"]["mcHeader"]="IR6M2QD-U-b"; // Right menu header class ("Mileage", etc.)
+classSettings["resultpage"]["mcLinkList"]="IR6M2QD-U-c"; // Right menu ul list class (immediately following header)
 
 var translations = new Object();
 translations["de"] = new Object();
