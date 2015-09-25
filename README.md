@@ -34,6 +34,10 @@ script_minified.txt --  Compact , pastable version of the script for pasting in 
 
 *********** Latest major changes **************
 
+**** Version 0.14 ****
+
+2015-09-25 Edited by Steppo ( added American Airlines )
+
 **** Version 0.13 ****
 
 2015-06-15 Edited by Steppo ( fixed miles/passenger/price extraction,
@@ -43,7 +47,7 @@ script_minified.txt --  Compact , pastable version of the script for pasting in 
                                  introduced background resolving of detailed distances using farefreaks.com based on data of OurAirports.com,
                                  tested on FF38, IE11, IE10 (emulated)
                                  )
-                                 
+
 **** Version 0.12 ****
 
 2015-06-13 Edited by IAkH ( added CheapOair )
