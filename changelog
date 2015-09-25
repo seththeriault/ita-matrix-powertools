@@ -1,3 +1,7 @@
+**** Version 0.14 ****
+# 2015-09-25 Edited by Steppo ( added American Airlines )
+**** Version 0.13a ****
+# 2015-08-07 Edited by Steppo ( class names updated )
 **** Version 0.13 ****
 # 2015-06-15 Edited by Steppo ( fixed miles/passenger/price extraction,
                                  moved itin-data to global var "currentItin" -> capability to modify/reuse itin,
