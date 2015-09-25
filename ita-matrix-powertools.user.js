@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.13a
+// @version 0.14
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,8 +13,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
-**** Version 0.13a ****
-# 2015-08-07 Edited by Steppo ( class names updated )
+**** Version 0.14 ****
+# 2015-09-25 Edited by Steppo ( added American Airlines )
 **** Version 0.13 ****
 # 2015-06-15 Edited by Steppo ( fixed miles/passenger/price extraction,
                                  moved itin-data to global var "currentItin" -> capability to modify/reuse itin,
@@ -25,16 +25,6 @@
                                  )
 **** Version 0.12 ****
 # 2015-06-13 Edited by IAkH ( added CheapOair )
-**** Version 0.11d ****
-# 2015-06-06 ( class names updated )
-**** Version 0.11c ****
-# 2015-05-13 Edited by Steppo ( fixed class names )
-**** Version 0.11b ****
-# 2015-04-26 Edited by Steppo ( made Planefinder/Seatguru switchable)
-**** Version 0.11a ****
-# 2015-04-20 Edited by Steppo (fixed Bug in findItinTarget for one-seg-flights,
-                                fixed typo,
-                                added CSS fix for startpage)
 **** Version 0.11 ****
 # 2015-04-19 Edited by Steppo (added SeatGuru,
                                 added Planefinder,
@@ -77,6 +67,7 @@ mptUsersettings["enablePlanefinder"] =  1; // enables Planefinder - click on fli
 mptUsersettings["enableSeatguru"] =  1; // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
 mptUsersettings["enableWheretocredit"] =  1; // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
 mptUsersettings["acEdition"] = "us"; // sets the local edition of AirCanada.com for itinerary pricing - valid: "us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"
+mptUsersettings["aaEdition"] = "en_GB"; // sets the local edition of AA-Europe/Asia for itinerary pricing - NO US available
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
@@ -107,11 +98,13 @@ else {
     mptUsersettings["enablePlanefinder"] = (mptSavedUsersettings["enablePlanefinder"] === undefined ? mptUsersettings["enablePlanefinder"] : mptSavedUsersettings["enablePlanefinder"]);
     mptUsersettings["enableSeatguru"] = (mptSavedUsersettings["enableSeatguru"] === undefined ? mptUsersettings["enableSeatguru"] : mptSavedUsersettings["enableSeatguru"]);
     mptUsersettings["enableWheretocredit"] = (mptSavedUsersettings["enableWheretocredit"] === undefined ? mptUsersettings["enableWheretocredit"] : mptSavedUsersettings["enableWheretocredit"]);
-    mptUsersettings["acEdition"] = (mptSavedUsersettings["acEdition"] === undefined ? mptUsersettings["acEdition"] : mptSavedUsersettings["acEdition"]);  
+    mptUsersettings["acEdition"] = (mptSavedUsersettings["acEdition"] === undefined ? mptUsersettings["acEdition"] : mptSavedUsersettings["acEdition"]);
+    mptUsersettings["aaEdition"] = (mptSavedUsersettings["aaEdition"] === undefined ? mptUsersettings["aaEdition"] : mptSavedUsersettings["aaEdition"]);    
   }
 }
 
 var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"];
+var aaEditions = [{value:"en_AU", name:"Australia"},{value:"en_BE", name:"Belgium"},{value:"en_CN", name:"China"},{value:"en_DK", name:"Denmark"},{value:"en_FI", name:"Finland"},{value:"en_FR", name:"France / English"},{value:"fr_FR", name:"France / French"},{value:"en_DE", name:"Germany / English"},{value:"de_DE", name:"Germany / Deutsch"},{value:"en_GR", name:"Greece"},{value:"en_HK", name:"Hong Kong"},{value:"en_IN", name:"India"},{value:"en_IE", name:"Ireland"},{value:"en_IL", name:"Israel"},{value:"en_IT", name:"Italy"},{value:"en_JP", name:"Japan"},{value:"en_KR", name:"Korea"},{value:"en_NL", name:"Netherlands"},{value:"en_NZ", name:"New Zealand"},{value:"en_NO", name:"Norway"},{value:"en_PT", name:"Portugal"},{value:"en_RU", name:"Russia"},{value:"en_ES", name:"Spain"},{value:"en_SE", name:"Sweden"},{value:"en_CH", name:"Switzerland"},{value:"en_GB", name:"United Kingdom"}];
 
 var classSettings = new Object();
 classSettings["startpage"] = new Object();
@@ -219,6 +212,7 @@ function createUsersettings(){
     str +='<div id="mptenableWheretocredit" style="cursor:pointer;">Enable WhereToCredit:<label>'+printSettingsvalue("enableWheretocredit")+'</label></div>';
     str +='</div><div style="float:left;width:25%">';  
     str +='<div id="mptacEdition" style="cursor:pointer;">Air Canada Edition:<label>'+printSettingsvalue("acEdition")+'</label></div>';
+    str +='<div id="mptaaEdition" style="cursor:pointer;">American Edition:<label>'+printSettingsvalue("aaEdition")+'</label></div>';
     str +='</div><div style="clear:both;"></div>';
     target.innerHTML=str;
     document.getElementById('mpttimeformat').onclick=function(){toggleSettings("timeformat");};
@@ -235,6 +229,7 @@ function createUsersettings(){
     document.getElementById('mptenableSeatguru').onclick=function(){toggleSettings("enableSeatguru");};
     document.getElementById('mptenableWheretocredit').onclick=function(){toggleSettings("enableWheretocredit");};
     document.getElementById('mptacEdition').onclick=function(){toggleSettings("acEdition");};
+    document.getElementById('mptaaEdition').onclick=function(){toggleSettings("aaEdition");};  
 }
 function toggleSettingsvis(){
   var target=document.getElementById("mptSettings");
@@ -269,6 +264,15 @@ function toggleSettings(target){
       			mptUsersettings["acEdition"] = acEditions[(acEditions.indexOf(mptUsersettings["acEdition"]) + 1)];	
       		}
       	break;
+     case "aaEdition":
+          var pos=findPositionForValue(mptUsersettings["aaEdition"],aaEditions);
+      		if (pos >= (aaEditions.length - 1) || pos === -1) {
+			      mptUsersettings["aaEdition"] = aaEditions[0]["value"];
+      		} else {
+            pos++;
+      			mptUsersettings["aaEdition"] = aaEditions[pos]["value"];	
+      		}
+      	break;        
       default:
         if (mptUsersettings[target]==1){
            mptUsersettings[target]=0;
@@ -294,12 +298,34 @@ function printSettingsvalue(target){
       case "acEdition":
           ret=mptUsersettings["acEdition"];
           break;
+      case "aaEdition":
+          ret=findNameForValue(mptUsersettings["aaEdition"],aaEditions);
+          break;        
       default:
           ret=boolToEnabled(mptUsersettings[target]);
   }
   return ret; 
 }
-
+function findNameForValue(needle, haystack){  
+  var ret="Unknown";
+  for (var i in haystack){
+    if (haystack[i]["value"]==needle) {
+      ret = haystack[i]["name"];
+      break;
+    }
+  }
+  return ret;  
+}
+function findPositionForValue(needle, haystack){
+  var ret=-1;
+  for (var i in haystack){
+    if (haystack[i]["value"]==needle) {
+      ret = [i];
+      break;
+    }
+  }
+  return ret;  
+}
 function printNotification(text) {
   var target = document.getElementById('mtpNotification');
   if (target===null){
@@ -621,6 +647,7 @@ function fePS() {
     if (mptUsersettings["enableInlinemode"]==1) printCPM();
  
     /*** Airlines ***/
+    printAA();  
     printAC();   
     if (currentItin["itin"].length == 2 &&
         currentItin["itin"][0]["orig"] == currentItin["itin"][1]["dest"] &&
@@ -1101,6 +1128,65 @@ function translate(page,lang,target){
 
 function printCPM(){
   printItemInline((Number(currentItin.price) / Number(currentItin.dist)).toFixed(4) + ' cpm','',1);
+}
+function printAA(){
+var url = "http://i11l-services.aa.com/xaa/mseGateway/entryPoint.php?PARAM=";
+var search ="1,,USD0.00,"+currentItin["itin"].length+",";
+var legs = new Array();
+var leg ="";
+var segs = new Array();
+var seg = ""; 
+// get edition
+var edition=mptUsersettings["aaEdition"].split("_");
+if (edition.length!=2) {
+  printNotification("Error:Invalid AA-Edition");
+  return false;
+}
+  //Build multi-city search based on legs
+    for (var i=0;i<currentItin["itin"].length;i++) {
+      // walks each leg
+      segs = new Array();
+            for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
+            //walks each segment of leg
+                var k=0;
+                // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
+                while ((j+k)<currentItin["itin"][i]["seg"].length-1){
+                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+                     currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
+                 k++;
+                }
+                seg    = currentItin['itin'][i]['seg'][j+k]['arr']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['day']).slice(-2)+'T'+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['time']).slice(-5)+'+00:00,';
+                seg   += currentItin['itin'][i]['seg'][j]['bookingclass']+",";
+                seg   += currentItin['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+'T'+('0'+currentItin['itin'][i]['seg'][j]['dep']['time']).slice(-5)+'+00:00,';                
+                seg   += currentItin['itin'][i]['seg'][j+k]['dest']+",";
+                seg   += currentItin['itin'][i]['seg'][j]['carrier']+currentItin['itin'][i]['seg'][j]['fnr']+",";
+                seg   += currentItin['itin'][i]['seg'][j]['orig']; // NO , here!
+                segs.push(seg);
+                j+=k;
+      }
+      search+=segs.length+","+segs.join()+",";
+      //build leg structure
+      leg =currentItin["itin"][i]["dep"]['year']+"-"+("0"+currentItin["itin"][i]["dep"]['month']).slice(-2)+"-"+("0"+currentItin["itin"][i]["dep"]['day']).slice(-2)+",";
+      leg+=currentItin["itin"][i]["dest"]+",,";
+      leg+=currentItin["itin"][i]["orig"]+","; // USE , here!
+      legs.push(leg);     
+    }
+    search+="DIRECT,";
+    search+=edition[0].toUpperCase()+","; // Language
+    search+="3,";
+    search+=currentItin["numPax"]+",";  // ADT
+    search+="0,";  // Child
+    search+="0,";  // Inf
+    search+="0,";  // Senior
+    search+=edition[1].toUpperCase()+","; // Country  
+    // push outer search
+    search+=currentItin["itin"].length+","+legs.join();  
+    url+=encodeURIComponent(search);
+    if (mptUsersettings["enableInlinemode"]==1){
+      printUrlInline(url,"American","");
+    } else {
+      printUrl(url,"American","");
+    } 
 }
 
 function printAC(){
