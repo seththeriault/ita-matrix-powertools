@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.14a
+// @version 0.15
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,10 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.15 ****
+# 2015-09-30 Edited by IAkH ( added additional edition flyout menu,
+                                added Ebookers, 
+                                added Etraveli )
 **** Version 0.14a ****
 # 2015-09-26 Edited by Steppo ( fixed AA-POS )
 **** Version 0.14 ****
