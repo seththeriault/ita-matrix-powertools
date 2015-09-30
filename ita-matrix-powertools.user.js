@@ -174,12 +174,13 @@ if (mptSettings["scriptEngine"] === 0 && window.top === window.self) {
   } else {
   window.onload = startScript();
   }
-  injectCss();
 }
 
 function startScript(){
   if (document.getElementById("mptSettingsContainer") === null ) {
-  createUsersettings();
+    // Create CSS and Settings or anything else that needs to be executed once
+    injectCss();
+    createUsersettings();
   }
   if (window.location.href !== mptSettings["laststatus"]){
     setTimeout(function(){getPageLang();}, 100);
