@@ -1571,85 +1571,88 @@ function printHipmunk(){
       printUrl(url,"Hipmunk","");
     } 
 }
-function getOrbitzCabin(cabin){
-// 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-// C - Coach / B - Business / F - First on ORB
-  switch(cabin) {
-      case 1:
-          cabin="E";
-          break;
-      case 2:
-          cabin="B";
-          break;
-      case 3:
-          cabin="F";
-          break;
-      default:
-          cabin="C";
-  }
-  return cabin;
-}
 function printOrbitz(){
-    // Steppo: This should be fine
-    var selectKey="";
-    var orbitzUrl = "/shop/home?type=air&source=GOOGLE_META&searchHost=ITA&ar.type=multiCity&strm=true";
-    //Build multi-city search based on legs
+  // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
+  var cabins = ['C', 'E', 'B', 'F'];
   
+  var ebookerEditions = [{name:"ebookers.de",host:"www.ebookers.de",dateFormat:"dd.MM.yyyy"},{name:"ebookers.at",host:"www.ebookers.at",dateFormat:"dd.MM.yyyy"},{name:"ebookers.fi",host:"www.ebookers.fi",dateFormat:"dd.MM.yyyy"},{name:"ebookers.com",host:"www.ebookers.com",dateFormat:"dd/MM/yyyy"},{name:"ebookers.be",host:"www.ebookers.be",dateFormat:"dd/MM/yyyy"},{name:"ebookers.fr",host:"www.ebookers.fr",dateFormat:"dd/MM/yyyy"},{name:"ebookers.ie",host:"www.ebookers.ie",dateFormat:"dd/MM/yyyy"},{name:"ebookers.ch",host:"www.ebookers.ch",dateFormat:"dd/MM/yyyy"},{name:"ebookers.nl",host:"www.ebookers.nl",dateFormat:"dd-MM-yy"},{name:"ebookers.no",host:"www.ebookers.no",dateFormat:"dd.MM.yyyy"},{name:"mrjet.se",host:"www.mrjet.se",dateFormat:"yyyy-MM-dd"},{name:"mrjet.dk",host:"www.mrjet.dk",dateFormat:"dd-MM-yyyy"}];
+  
+  var formatDate = function (value, dateFormat) {
+    return dateFormat
+            .replace('dd', value.day)
+            .replace('MM', value.month)
+            .replace('yyyy', value.year)
+            .replace('yy', value.year%100);
+  };
+  
+  var createUrl = function (host, dateFormat) {
+    var selectKey = "";
+    var url = "http://" + host + "/shop/home?type=air&source=GOOGLE_META&searchHost=ITA&ar.type=multiCity&strm=true";
+    url += "&ar.mc.numAdult=" + currentItin["numPax"];
+    url += "&ar.mc.numSenior=0&ar.mc.numChild=0&ar.mc.child[0]=&ar.mc.child[1]=&ar.mc.child[2]=&ar.mc.child[3]=&ar.mc.child[4]=&ar.mc.child[5]=&ar.mc.child[6]=&ar.mc.child[7]=&search=Search Flights&ar.mc.nonStop=true&_ar.mc.nonStop=0";
+    
+    //Build multi-city search based on legs  
     for (var i=0;i<currentItin["itin"].length;i++) {
       // walks each leg
-            var iStr = i.toString();
-            orbitzUrl += "&ar.mc.slc["+iStr+"].orig.key=" + currentItin["itin"][i]["orig"];
-            orbitzUrl += "&_ar.mc.slc["+iStr+"].originRadius=0";
-            orbitzUrl += "&ar.mc.slc["+iStr+"].dest.key=" + currentItin["itin"][i]["dest"];
-            orbitzUrl += "&_ar.mc.slc["+iStr+"].destinationRadius=0";
-            var twoyear = currentItin["itin"][i]["dep"]["year"]%100;
-            orbitzUrl += "&ar.mc.slc["+iStr+"].date=" + currentItin["itin"][i]["dep"]["month"].toString() + "/" + currentItin["itin"][i]["dep"]["day"].toString() + "/" + twoyear.toString();
-            orbitzUrl += "&ar.mc.slc["+iStr+"].time=Anytime"; 
-        
-       for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
-         //walks each segment of leg
-                var k=0;
-                // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
-                while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
-                     currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
-                 k++;
-                }               
-                selectKey += currentItin["itin"][i]["seg"][j]["carrier"] + currentItin["itin"][i]["seg"][j]["fnr"] + currentItin["itin"][i]["seg"][j]["orig"] + currentItin["itin"][i]["seg"][j+k]["dest"] + ( currentItin["itin"][i]["seg"][j]["dep"]["month"] < 10 ? "0":"") + currentItin["itin"][i]["seg"][j]["dep"]["month"] +  ( currentItin["itin"][i]["seg"][j]["dep"]["day"] < 10 ? "0":"") + currentItin["itin"][i]["seg"][j]["dep"]["day"] + getOrbitzCabin(currentItin["itin"][i]["seg"][j]["cabin"]);
-                selectKey += "_";                      
-                j+=k;
+      url += "&ar.mc.slc["+i+"].orig.key=" + currentItin["itin"][i]["orig"];
+      url += "&_ar.mc.slc["+i+"].originRadius=0";
+      url += "&ar.mc.slc["+i+"].dest.key=" + currentItin["itin"][i]["dest"];
+      url += "&_ar.mc.slc["+i+"].destinationRadius=0";
+      url += "&ar.mc.slc["+i+"].date=" + formatDate(currentItin["itin"][i]["dep"], dateFormat);
+      url += "&ar.mc.slc["+i+"].time=Anytime";
+      
+      for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
+        //walks each segment of leg
+        var k=0;
+        // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
+        while ((j+k)<currentItin["itin"][i]["seg"].length-1) {
+          if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+              currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
+          k++;
+        }               
+        selectKey += currentItin["itin"][i]["seg"][j]["carrier"] + currentItin["itin"][i]["seg"][j]["fnr"] + currentItin["itin"][i]["seg"][j]["orig"] + currentItin["itin"][i]["seg"][j+k]["dest"] + ( currentItin["itin"][i]["seg"][j]["dep"]["month"] < 10 ? "0":"") + currentItin["itin"][i]["seg"][j]["dep"]["month"] +  ( currentItin["itin"][i]["seg"][j]["dep"]["day"] < 10 ? "0":"") + currentItin["itin"][i]["seg"][j]["dep"]["day"] + cabins[currentItin["itin"][i]["seg"][j]["cabin"]];
+        selectKey += "_";                      
+        j+=k;
       }
     }
-
-  orbitzUrl += "&ar.mc.numAdult=" + currentItin["numPax"];
-    orbitzUrl += "&ar.mc.numSenior=0&ar.mc.numChild=0&ar.mc.child[0]=&ar.mc.child[1]=&ar.mc.child[2]=&ar.mc.child[3]=&ar.mc.child[4]=&ar.mc.child[5]=&ar.mc.child[6]=&ar.mc.child[7]=&search=Search Flights&ar.mc.nonStop=true&_ar.mc.nonStop=0";
+    
     //lets see if we can narrow the carriers  Orbitz supports up to 3
     if (currentItin["carriers"].length <= 3) {
-      orbitzUrl += "&_ar.mc.narrowSel=1&ar.mc.narrow=airlines";
+      url += "&_ar.mc.narrowSel=1&ar.mc.narrow=airlines";
       for (var i = 0; i< 3;i++){
           if (i<currentItin["carriers"].length){
-          orbitzUrl += "&ar.mc.carriers["+i+"]="+currentItin["carriers"][i];
+          url += "&ar.mc.carriers["+i+"]="+currentItin["carriers"][i];
           } else {
-          orbitzUrl += "&ar.mc.carriers["+i+"]=";
+          url += "&ar.mc.carriers["+i+"]=";
           }       
       }
     } else {
-      orbitzUrl += "&_ar.mc.narrowSel=0&ar.mc.narrow=airlines&ar.mc.carriers[0]=&ar.mc.carriers[1]=&ar.mc.carriers[2]=";
+      url += "&_ar.mc.narrowSel=0&ar.mc.narrow=airlines&ar.mc.carriers[0]=&ar.mc.carriers[1]=&ar.mc.carriers[2]=";
     }
-    orbitzUrl += "&ar.mc.cabin=C";
-    orbitzUrl += "&selectKey=" + selectKey.substring(0,selectKey.length-1);
-    if (currentItin["cur"]=="USD") {
-    //lets do this when USD is cur
-    var priceval = parseFloat(currentItin["price"]) + 6.99;
-    orbitzUrl += "&userRate.price=USD|" + priceval.toString();
-    }
-    if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline("http://www.cheaptickets.com"+orbitzUrl,"Cheaptickets","");
-      printUrlInline("http://www.orbitz.com"+orbitzUrl,"Orbitz","");
-    } else {
-      printUrl("http://www.cheaptickets.com"+orbitzUrl,"Cheaptickets","");
-      printUrl("http://www.orbitz.com"+orbitzUrl,"Orbitz","");
-    }    
+    
+    url += "&ar.mc.cabin=C";
+    url += "&selectKey=" + selectKey.substring(0,selectKey.length-1);
+      
+    return url;
+  };
+  
+  var orbitzUrl = createUrl("www.orbitz.com", "MM/dd/yy");
+  var cheapticketsUrl = createUrl("www.cheaptickets.com", "MM/dd/yy");
+  var ebookersUrl = createUrl("www.ebookers.com", "dd/MM/yy");
+  
+  var ebookersExtra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  ebookersExtra += ebookerEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.host, obj.dateFormat) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
+  ebookersExtra += '</span></span>';
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(cheapticketsUrl,"Cheaptickets","");
+    printUrlInline(ebookersUrl,"Ebookers","",null,ebookersExtra);
+    printUrlInline(orbitzUrl,"Orbitz","");
+  } else {
+    printUrl(cheapticketsUrl,"Cheaptickets","");
+    printUrl(ebookersUrl,"Ebookers","",ebookersExtra);
+    printUrl(orbitzUrl,"Orbitz","");
+  }
 }
 function printPriceline(){
     var url = "https://www.priceline.com/airlines/landingServlet?userAction=search";
