@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.14a
+// @version 0.15
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,10 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.15 ****
+# 2015-09-30 Edited by IAkH ( added additional edition flyout menu,
+                                added Ebookers, 
+                                added Etraveli )
 **** Version 0.14a ****
 # 2015-09-26 Edited by Steppo ( fixed AA-POS )
 **** Version 0.14 ****
@@ -170,6 +174,7 @@ if (mptSettings["scriptEngine"] === 0 && window.top === window.self) {
   } else {
   window.onload = startScript();
   }
+  injectCss();
 }
 
 function startScript(){
@@ -670,6 +675,7 @@ function fePS() {
     printOrbitz();
     printHipmunk ();
     printPriceline ();
+    printEtraveli();
   
     if(mptUsersettings["enableDeviders"]==1) printSeperator();
     /*** other stuff ***/
@@ -1132,19 +1138,15 @@ function printCPM(){
   printItemInline((Number(currentItin.price) / Number(currentItin.dist)).toFixed(4) + ' cpm','',1);
 }
 function printAA(){
-var url = "http://i11l-services.aa.com/xaa/mseGateway/entryPoint.php?PARAM=";
-var search ="1,,USD0.00,"+currentItin["itin"].length+",";
-var legs = new Array();
-var leg ="";
-var segs = new Array();
-var seg = ""; 
-// get edition
-var edition=mptUsersettings["aaEdition"].split("_");
-if (edition.length!=2) {
-  printNotification("Error:Invalid AA-Edition");
-  return false;
-}
-  //Build multi-city search based on legs
+  var createUrl = function (edition) {
+    var url = "http://i11l-services.aa.com/xaa/mseGateway/entryPoint.php?PARAM=";
+    var search ="1,,USD0.00,"+currentItin["itin"].length+",";
+    var legs = new Array();
+    var leg ="";
+    var segs = new Array();
+    var seg = ""; 
+    
+    //Build multi-city search based on legs
     for (var i=0;i<currentItin["itin"].length;i++) {
       // walks each leg
       segs = new Array();
@@ -1184,46 +1186,71 @@ if (edition.length!=2) {
     // push outer search
     search+=currentItin["itin"].length+","+legs.join();  
     url+=encodeURIComponent(search);
-    if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline(url,"American","");
-    } else {
-      printUrl(url,"American","");
-    } 
+    return url;
+  };
+  
+  // get edition
+  var edition=mptUsersettings["aaEdition"].split("_");
+  if (edition.length!=2) {
+    printNotification("Error:Invalid AA-Edition");
+    return false;
+  }
+  var url = createUrl(edition);
+  
+  var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  extra += aaEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value.split("_")) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
+  extra += '</span></span>';
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(url,"American","",null,extra);
+  } else {
+    printUrl(url,"American","",extra);
+  } 
 }
 
 function printAC(){
-  var acUrl = 'http://www.aircanada.com/aco/flights.do?AH_IATA_NUMBER=0005118&AVAIL_EMMBEDDED_TRANSACTION=FlexPricerAvailabilityServlet'
-    if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
-    acUrl += '&country=DE&countryOfResidence=DE&language=de&LANGUAGE=DE';
-    } else {
-    	acUrl += '&country=' + mptUsersettings["acEdition"].toUpperCase() + '&countryofResidence=' + mptUsersettings["acEdition"].toUpperCase() + '&language=en&LANGUAGE=US';
+  var createUrl = function (edition) {
+    var acUrl = 'http://www.aircanada.com/aco/flights.do?AH_IATA_NUMBER=0005118&AVAIL_EMMBEDDED_TRANSACTION=FlexPricerAvailabilityServlet'
+      if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
+      acUrl += '&country=DE&countryOfResidence=DE&language=de&LANGUAGE=DE';
+      } else {
+        acUrl += '&country=' + edition + '&countryofResidence=' + edition + '&language=en&LANGUAGE=US';
+      }
+    acUrl += '&CREATION_MODE=30&EMBEDDED_TRANSACTION=FareServelet&FareRequest=YES&fromThirdParty=YES&HAS_INFANT_1=False&IS_PRIMARY_TRAVELLER_1=True&SITE=SAADSAAD&thirdPartyID=0005118&TRAVELER_TYPE_1=ADT&PRICING_MODE=0';
+    acUrl += '&numberOfChildren=0&numberOfInfants=0&numberOfYouth=0&numberOfAdults=' + currentItin["numPax"];
+    acUrl += '&tripType=' + (currentItin['itin'].length > 1 ? 'R' : 'O');
+    for (var i=0; i < currentItin['itin'].length; i++) {
+      if (i == 0) {
+        acUrl += '&departure1='+('0'+currentItin['itin'][i]['dep']['day']).slice(-2)+'/'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'/'+currentItin['itin'][i]['dep']['year']+'&org1='+currentItin['itin'][i]['orig']+'&dest1='+currentItin['itin'][i]['dest'];
+      }
+      else if (i == 1) {
+        acUrl += '&departure2='+('0'+currentItin['itin'][i]['dep']['day']).slice(-2)+'/'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'/'+currentItin['itin'][i]['dep']['year'];
+      }
+      
+      for (var j=0; j < currentItin['itin'][i]['seg'].length; j++) {
+        acUrl += '&AIRLINE_'      +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['carrier'];
+        acUrl += '&B_DATE_'       +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['dep']['year']+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['dep']['time'].replace(':','')).slice(-4);
+        acUrl += '&B_LOCATION_'   +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['orig'];
+        acUrl += '&E_DATE_'       +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['arr']['year']+('0'+currentItin['itin'][i]['seg'][j]['arr']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['arr']['day']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['arr']['time'].replace(':','')).slice(-4);
+        acUrl += '&E_LOCATION_'   +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['dest'];
+        acUrl += '&FLIGHT_NUMBER_'+(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['fnr'];
+        acUrl += '&RBD_'          +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['bookingclass'];
+      }
     }
-  acUrl += '&CREATION_MODE=30&EMBEDDED_TRANSACTION=FareServelet&FareRequest=YES&fromThirdParty=YES&HAS_INFANT_1=False&IS_PRIMARY_TRAVELLER_1=True&SITE=SAADSAAD&thirdPartyID=0005118&TRAVELER_TYPE_1=ADT&PRICING_MODE=0';
-  acUrl += '&numberOfChildren=0&numberOfInfants=0&numberOfYouth=0&numberOfAdults=' + currentItin["numPax"];
-  acUrl += '&tripType=' + (currentItin['itin'].length > 1 ? 'R' : 'O');
-  for (var i=0; i < currentItin['itin'].length; i++) {
-    if (i == 0) {
-      acUrl += '&departure1='+('0'+currentItin['itin'][i]['dep']['day']).slice(-2)+'/'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'/'+currentItin['itin'][i]['dep']['year']+'&org1='+currentItin['itin'][i]['orig']+'&dest1='+currentItin['itin'][i]['dest'];
-    }
-    else if (i == 1) {
-      acUrl += '&departure2='+('0'+currentItin['itin'][i]['dep']['day']).slice(-2)+'/'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'/'+currentItin['itin'][i]['dep']['year'];
-    }
-    
-    for (var j=0; j < currentItin['itin'][i]['seg'].length; j++) {
-      acUrl += '&AIRLINE_'      +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['carrier'];
-      acUrl += '&B_DATE_'       +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['dep']['year']+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['dep']['time'].replace(':','')).slice(-4);
-      acUrl += '&B_LOCATION_'   +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['orig'];
-      acUrl += '&E_DATE_'       +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['arr']['year']+('0'+currentItin['itin'][i]['seg'][j]['arr']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['arr']['day']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['arr']['time'].replace(':','')).slice(-4);
-      acUrl += '&E_LOCATION_'   +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['dest'];
-      acUrl += '&FLIGHT_NUMBER_'+(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['fnr'];
-      acUrl += '&RBD_'          +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['bookingclass'];
-    }
+    return acUrl;
+  };
+  
+  var acUrl = createUrl(mptUsersettings["acEdition"].toUpperCase());
+  
+  var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  extra += acEditions.map(function (edition, i) { return '<a href="' + createUrl(edition.toUpperCase()) + '" target="_blank">' + edition +'</a>'; }).join('<br/>');
+  extra += '</span></span>';
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(acUrl,"Air Canada","",null,extra);
+  } else {
+    printUrl(acUrl,"Air Canada","",extra);
   }
-    if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline(acUrl,"Air Canada","");
-    } else {
-      printUrl(acUrl,"Air Canada","");
-    }
 }
 function printAF() {
   var afUrl = 'https://www.airfrance.com/';
@@ -1548,85 +1575,88 @@ function printHipmunk(){
       printUrl(url,"Hipmunk","");
     } 
 }
-function getOrbitzCabin(cabin){
-// 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-// C - Coach / B - Business / F - First on ORB
-  switch(cabin) {
-      case 1:
-          cabin="E";
-          break;
-      case 2:
-          cabin="B";
-          break;
-      case 3:
-          cabin="F";
-          break;
-      default:
-          cabin="C";
-  }
-  return cabin;
-}
 function printOrbitz(){
-    // Steppo: This should be fine
-    var selectKey="";
-    var orbitzUrl = "/shop/home?type=air&source=GOOGLE_META&searchHost=ITA&ar.type=multiCity&strm=true";
-    //Build multi-city search based on legs
+  // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
+  var cabins = ['C', 'E', 'B', 'F'];
   
+  var ebookerEditions = [{name:"ebookers.de",host:"www.ebookers.de",dateFormat:"dd.MM.yyyy"},{name:"ebookers.at",host:"www.ebookers.at",dateFormat:"dd.MM.yyyy"},{name:"ebookers.fi",host:"www.ebookers.fi",dateFormat:"dd.MM.yyyy"},{name:"ebookers.com",host:"www.ebookers.com",dateFormat:"dd/MM/yyyy"},{name:"ebookers.be",host:"www.ebookers.be",dateFormat:"dd/MM/yyyy"},{name:"ebookers.fr",host:"www.ebookers.fr",dateFormat:"dd/MM/yyyy"},{name:"ebookers.ie",host:"www.ebookers.ie",dateFormat:"dd/MM/yyyy"},{name:"ebookers.ch",host:"www.ebookers.ch",dateFormat:"dd/MM/yyyy"},{name:"ebookers.nl",host:"www.ebookers.nl",dateFormat:"dd-MM-yy"},{name:"ebookers.no",host:"www.ebookers.no",dateFormat:"dd.MM.yyyy"},{name:"mrjet.se",host:"www.mrjet.se",dateFormat:"yyyy-MM-dd"},{name:"mrjet.dk",host:"www.mrjet.dk",dateFormat:"dd-MM-yyyy"}];
+  
+  var formatDate = function (value, dateFormat) {
+    return dateFormat
+            .replace('dd', value.day)
+            .replace('MM', value.month)
+            .replace('yyyy', value.year)
+            .replace('yy', value.year%100);
+  };
+  
+  var createUrl = function (host, dateFormat) {
+    var selectKey = "";
+    var url = "http://" + host + "/shop/home?type=air&source=GOOGLE_META&searchHost=ITA&ar.type=multiCity&strm=true";
+    url += "&ar.mc.numAdult=" + currentItin["numPax"];
+    url += "&ar.mc.numSenior=0&ar.mc.numChild=0&ar.mc.child[0]=&ar.mc.child[1]=&ar.mc.child[2]=&ar.mc.child[3]=&ar.mc.child[4]=&ar.mc.child[5]=&ar.mc.child[6]=&ar.mc.child[7]=&search=Search Flights&ar.mc.nonStop=true&_ar.mc.nonStop=0";
+    
+    //Build multi-city search based on legs  
     for (var i=0;i<currentItin["itin"].length;i++) {
       // walks each leg
-            var iStr = i.toString();
-            orbitzUrl += "&ar.mc.slc["+iStr+"].orig.key=" + currentItin["itin"][i]["orig"];
-            orbitzUrl += "&_ar.mc.slc["+iStr+"].originRadius=0";
-            orbitzUrl += "&ar.mc.slc["+iStr+"].dest.key=" + currentItin["itin"][i]["dest"];
-            orbitzUrl += "&_ar.mc.slc["+iStr+"].destinationRadius=0";
-            var twoyear = currentItin["itin"][i]["dep"]["year"]%100;
-            orbitzUrl += "&ar.mc.slc["+iStr+"].date=" + currentItin["itin"][i]["dep"]["month"].toString() + "/" + currentItin["itin"][i]["dep"]["day"].toString() + "/" + twoyear.toString();
-            orbitzUrl += "&ar.mc.slc["+iStr+"].time=Anytime"; 
-        
-       for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
-         //walks each segment of leg
-                var k=0;
-                // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
-                while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
-                     currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
-                 k++;
-                }               
-                selectKey += currentItin["itin"][i]["seg"][j]["carrier"] + currentItin["itin"][i]["seg"][j]["fnr"] + currentItin["itin"][i]["seg"][j]["orig"] + currentItin["itin"][i]["seg"][j+k]["dest"] + ( currentItin["itin"][i]["seg"][j]["dep"]["month"] < 10 ? "0":"") + currentItin["itin"][i]["seg"][j]["dep"]["month"] +  ( currentItin["itin"][i]["seg"][j]["dep"]["day"] < 10 ? "0":"") + currentItin["itin"][i]["seg"][j]["dep"]["day"] + getOrbitzCabin(currentItin["itin"][i]["seg"][j]["cabin"]);
-                selectKey += "_";                      
-                j+=k;
+      url += "&ar.mc.slc["+i+"].orig.key=" + currentItin["itin"][i]["orig"];
+      url += "&_ar.mc.slc["+i+"].originRadius=0";
+      url += "&ar.mc.slc["+i+"].dest.key=" + currentItin["itin"][i]["dest"];
+      url += "&_ar.mc.slc["+i+"].destinationRadius=0";
+      url += "&ar.mc.slc["+i+"].date=" + formatDate(currentItin["itin"][i]["dep"], dateFormat);
+      url += "&ar.mc.slc["+i+"].time=Anytime";
+      
+      for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
+        //walks each segment of leg
+        var k=0;
+        // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
+        while ((j+k)<currentItin["itin"][i]["seg"].length-1) {
+          if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+              currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
+          k++;
+        }               
+        selectKey += currentItin["itin"][i]["seg"][j]["carrier"] + currentItin["itin"][i]["seg"][j]["fnr"] + currentItin["itin"][i]["seg"][j]["orig"] + currentItin["itin"][i]["seg"][j+k]["dest"] + ( currentItin["itin"][i]["seg"][j]["dep"]["month"] < 10 ? "0":"") + currentItin["itin"][i]["seg"][j]["dep"]["month"] +  ( currentItin["itin"][i]["seg"][j]["dep"]["day"] < 10 ? "0":"") + currentItin["itin"][i]["seg"][j]["dep"]["day"] + cabins[currentItin["itin"][i]["seg"][j]["cabin"]];
+        selectKey += "_";                      
+        j+=k;
       }
     }
-
-  orbitzUrl += "&ar.mc.numAdult=" + currentItin["numPax"];
-    orbitzUrl += "&ar.mc.numSenior=0&ar.mc.numChild=0&ar.mc.child[0]=&ar.mc.child[1]=&ar.mc.child[2]=&ar.mc.child[3]=&ar.mc.child[4]=&ar.mc.child[5]=&ar.mc.child[6]=&ar.mc.child[7]=&search=Search Flights&ar.mc.nonStop=true&_ar.mc.nonStop=0";
+    
     //lets see if we can narrow the carriers  Orbitz supports up to 3
     if (currentItin["carriers"].length <= 3) {
-      orbitzUrl += "&_ar.mc.narrowSel=1&ar.mc.narrow=airlines";
+      url += "&_ar.mc.narrowSel=1&ar.mc.narrow=airlines";
       for (var i = 0; i< 3;i++){
           if (i<currentItin["carriers"].length){
-          orbitzUrl += "&ar.mc.carriers["+i+"]="+currentItin["carriers"][i];
+          url += "&ar.mc.carriers["+i+"]="+currentItin["carriers"][i];
           } else {
-          orbitzUrl += "&ar.mc.carriers["+i+"]=";
+          url += "&ar.mc.carriers["+i+"]=";
           }       
       }
     } else {
-      orbitzUrl += "&_ar.mc.narrowSel=0&ar.mc.narrow=airlines&ar.mc.carriers[0]=&ar.mc.carriers[1]=&ar.mc.carriers[2]=";
+      url += "&_ar.mc.narrowSel=0&ar.mc.narrow=airlines&ar.mc.carriers[0]=&ar.mc.carriers[1]=&ar.mc.carriers[2]=";
     }
-    orbitzUrl += "&ar.mc.cabin=C";
-    orbitzUrl += "&selectKey=" + selectKey.substring(0,selectKey.length-1);
-    if (currentItin["cur"]=="USD") {
-    //lets do this when USD is cur
-    var priceval = parseFloat(currentItin["price"]) + 6.99;
-    orbitzUrl += "&userRate.price=USD|" + priceval.toString();
-    }
-    if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline("http://www.cheaptickets.com"+orbitzUrl,"Cheaptickets","");
-      printUrlInline("http://www.orbitz.com"+orbitzUrl,"Orbitz","");
-    } else {
-      printUrl("http://www.cheaptickets.com"+orbitzUrl,"Cheaptickets","");
-      printUrl("http://www.orbitz.com"+orbitzUrl,"Orbitz","");
-    }    
+    
+    url += "&ar.mc.cabin=C";
+    url += "&selectKey=" + selectKey.substring(0,selectKey.length-1);
+      
+    return url;
+  };
+  
+  var orbitzUrl = createUrl("www.orbitz.com", "MM/dd/yy");
+  var cheapticketsUrl = createUrl("www.cheaptickets.com", "MM/dd/yy");
+  var ebookersUrl = createUrl("www.ebookers.com", "dd/MM/yy");
+  
+  var ebookersExtra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  ebookersExtra += ebookerEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.host, obj.dateFormat) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
+  ebookersExtra += '</span></span>';
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(cheapticketsUrl,"Cheaptickets","");
+    printUrlInline(ebookersUrl,"Ebookers","",null,ebookersExtra);
+    printUrlInline(orbitzUrl,"Orbitz","");
+  } else {
+    printUrl(cheapticketsUrl,"Cheaptickets","");
+    printUrl(ebookersUrl,"Ebookers","",ebookersExtra);
+    printUrl(orbitzUrl,"Orbitz","");
+  }
 }
 function printPriceline(){
     var url = "https://www.priceline.com/airlines/landingServlet?userAction=search";
@@ -1680,6 +1710,45 @@ function printPriceline(){
     } else {
       printUrl(url+pricelineurl+encodeURIComponent(searchparam),"Priceline","");
     }
+}
+
+function printEtraveli () {
+  if (currentItin.itin.length > 2) return; // no multi segments
+  if (currentItin.itin.length == 2 && !(currentItin.itin[0].orig == currentItin.itin[1].dest && currentItin.itin[0].dest == currentItin.itin[1].orig)) return; // no open jaws
+  
+  var editions = [{name:"Seat24.se",host:"www.seat24.se"},{name:"Seat24.de",host:"www.seat24.de"},{name:"Seat24.dk",host:"www.seat24.dk"},{name:"Seat24.fi",host:"www.seat24.fi"},{name:"Seat24.no",host:"www.seat24.no"},{name:"Flygvaruhuset.se",host:"www.flygvaruhuset.se"},{name:"Travelpartner.se",host:"www.travelpartner.se"},{name:"Travelpartner.fi",host:"www.travelpartner.fi"},{name:"Travelpartner.no",host:"www.travelpartner.no"},{name:"Budjet.se",host:"www.budjet.se"},{name:"Budjet.fi",host:"www.budjet.fi"},{name:"Budjet.no",host:"www.budjet.no"},{name:"Budjet.dk",host:"www.budjet.dk"},{name:"Goleif.dk",host:"www.goleif.dk"},{name:"Travelfinder.se",host:"www.travelfinder.se"},{name:"Gotogate.no",host:"www.gotogate.no"},{name:"Gotogate.at",host:"www.gotogate.at"},{name:"Gotogate.be",host:"be.gotogate.com"},{name:"Gotogate.bg",host:"bg.gotogate.com"},{name:"Gotogate.ch",host:"www.gotogate.ch"},{name:"Gotogate.cz",host:"cz.gotogate.com"},{name:"Gotogate.es",host:"www.gotogate.es"},{name:"Gotogate.fr",host:"www.gotogate.fr"},{name:"Gotogate.gr",host:"www.gotogate.gr"},{name:"Gotogate.hu",host:"hu.gotogate.com"},{name:"Gotogate.ie",host:"ie.gotogate.com"},{name:"Gotogate.it",host:"www.gotogate.it"},{name:"Gotogate.pl",host:"www.gotogate.pl"},{name:"Gotogate.pt",host:"www.gotogate.pt"},{name:"Gotogate.ro",host:"ro.gotogate.com"},{name:"Gotogate.sk",host:"www.gotogate.sk"},{name:"Gotogate.tr",host:"tr.gotogate.com"},{name:"Gotogate.com.ua",host:"www.gotogate.com.ua"},{name:"Gotogate.co.uk",host:"www.gotogate.co.uk"},{name:"Flybillet.dk",host:"www.flybillet.dk"},{name:"Travelstart.se",host:"www.travelstart.se"},{name:"Travelstart.de",host:"www.travelstart.de"},{name:"Travelstart.dk",host:"www.travelstart.dk"},{name:"Travelstart.fi",host:"www.travelstart.fi"},{name:"Travelstart.no",host:"www.travelstart.no"},{name:"Supersaver.se",host:"www.supersavertravel.se"},{name:"Supersaver.dk",host:"www.supersaver.dk"},{name:"Supersaver.fi",host:"www.supersaver.fi"},{name:"Supersaver.nl",host:"www.supersaver.nl"},{name:"Supersaver.no",host:"www.supersaver.no"},{name:"Supersaver.ru",host:"www.supersaver.ru"}];
+  
+  var convertDate = function (date, withYear) {
+    return ('0'+date.day).slice(-2) + monthnumberToName(date.month) + (withYear ? date.year.toString().slice(-2) : '');
+  };
+  
+  var createUrl = function (host) {
+    var ggUrl = 'http://' + host + '/air/';
+    
+    ggUrl += currentItin.itin[0].orig + currentItin.itin[0].dest + convertDate(currentItin.itin[0].dep, false);
+    
+    if (currentItin.itin.length > 1) ggUrl += convertDate(currentItin.itin[1].dep, false);
+    
+    ggUrl += '/' + currentItin.numPax;
+    ggUrl += '?selectionKey=' + currentItin.itin.map(function (itin) { 
+      return itin.seg.map(function (seg) { return seg.carrier + seg.fnr + '-' + convertDate(seg.dep, true) + '-' + seg.bookingclass; }).join('_');
+    }).join('_');
+    
+    return ggUrl;
+  };
+  
+  // picked seat24 as main one, but could be any of them
+  var ggUrl = createUrl('www.seat24.de');
+  
+  var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  extra += editions.map(function (obj, i) { return '<a href="' + createUrl(obj.host) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
+  extra += '</span></span>';
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(ggUrl,'Seat24.de',"",null,extra);
+  } else {
+    printUrl(ggUrl,'Seat24.de',"",extra);
+  }
 }
 
 function printFarefreaks (method){
@@ -1842,7 +1911,7 @@ function bindWheretocredit(){
 }
 
 // Inline Stuff
-function printUrlInline(url,text,desc,nth){
+function printUrlInline(url,text,desc,nth,extra){
   var otext = '<a href="'+url+ '" target="_blank">';
   var valid=false;
   if (translations[mptUsersettings["language"]] !== undefined) {
@@ -1852,7 +1921,7 @@ function printUrlInline(url,text,desc,nth){
     }
   }
   otext+=(valid===false ? "Open with":"");
-  otext+=' '+text+'</a>'; 
+  otext+=' '+text+'</a>' + (extra||''); 
   printItemInline(otext,desc,nth);
 }
 function printItemInline(text,desc,nth){
@@ -1886,7 +1955,7 @@ function createUrlContainerInline(){
   return document.getElementById('powertoolslinkinlinecontainer');
 }
 // Printing Stuff
-function printUrl(url,name,desc) {
+function printUrl(url,name,desc,extra) {
     if (document.getElementById('powertoolslinkcontainer')==undefined){
     createUrlContainer();
     }
@@ -1899,7 +1968,7 @@ function printUrl(url,name,desc) {
     }
   }
   text+=(valid===false ? "Open with":"");
-  text+=" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")<br>" : "<br>");  
+  text+=" "+name+"</a></font></bold>"+(extra||'')+(desc ? "<br>("+desc+")<br>" : "<br>");  
   var target = document.getElementById('powertoolslinkcontainer');
   target.innerHTML = target.innerHTML + text;
 }
@@ -1914,4 +1983,21 @@ function printSeperator() {
   if (container) {
     container.innerHTML = container.innerHTML + (mptUsersettings["enableInlinemode"] ? '<hr class="powertoolsitem"/>' : '<br/><hr/>');
   }
+}
+function injectCss() {
+  var css = '',
+    head = document.head || document.getElementsByTagName('head')[0],
+    style = document.createElement('style');
+  style.type = 'text/css';
+
+  css += '.pt-hover-menu { position:absolute; padding: 8px; background-color: #FFF; border: 1px solid #808080; display:none; }';
+  css += '.pt-hover-container:hover .pt-hover-menu { display:inline; }';
+    
+  if (style.styleSheet){
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+
+  head.appendChild(style);
 }
