@@ -170,6 +170,7 @@ if (mptSettings["scriptEngine"] === 0 && window.top === window.self) {
   } else {
   window.onload = startScript();
   }
+  injectCss();
 }
 
 function startScript(){
@@ -1132,19 +1133,15 @@ function printCPM(){
   printItemInline((Number(currentItin.price) / Number(currentItin.dist)).toFixed(4) + ' cpm','',1);
 }
 function printAA(){
-var url = "http://i11l-services.aa.com/xaa/mseGateway/entryPoint.php?PARAM=";
-var search ="1,,USD0.00,"+currentItin["itin"].length+",";
-var legs = new Array();
-var leg ="";
-var segs = new Array();
-var seg = ""; 
-// get edition
-var edition=mptUsersettings["aaEdition"].split("_");
-if (edition.length!=2) {
-  printNotification("Error:Invalid AA-Edition");
-  return false;
-}
-  //Build multi-city search based on legs
+  var createUrl = function (edition) {
+    var url = "http://i11l-services.aa.com/xaa/mseGateway/entryPoint.php?PARAM=";
+    var search ="1,,USD0.00,"+currentItin["itin"].length+",";
+    var legs = new Array();
+    var leg ="";
+    var segs = new Array();
+    var seg = ""; 
+    
+    //Build multi-city search based on legs
     for (var i=0;i<currentItin["itin"].length;i++) {
       // walks each leg
       segs = new Array();
@@ -1184,46 +1181,71 @@ if (edition.length!=2) {
     // push outer search
     search+=currentItin["itin"].length+","+legs.join();  
     url+=encodeURIComponent(search);
-    if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline(url,"American","");
-    } else {
-      printUrl(url,"American","");
-    } 
+    return url;
+  };
+  
+  // get edition
+  var edition=mptUsersettings["aaEdition"].split("_");
+  if (edition.length!=2) {
+    printNotification("Error:Invalid AA-Edition");
+    return false;
+  }
+  var url = createUrl(edition);
+  
+  var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  extra += aaEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value.split("_")) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
+  extra += '</span></span>';
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(url,"American","",null,extra);
+  } else {
+    printUrl(url,"American","",extra);
+  } 
 }
 
 function printAC(){
-  var acUrl = 'http://www.aircanada.com/aco/flights.do?AH_IATA_NUMBER=0005118&AVAIL_EMMBEDDED_TRANSACTION=FlexPricerAvailabilityServlet'
-    if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
-    acUrl += '&country=DE&countryOfResidence=DE&language=de&LANGUAGE=DE';
-    } else {
-    	acUrl += '&country=' + mptUsersettings["acEdition"].toUpperCase() + '&countryofResidence=' + mptUsersettings["acEdition"].toUpperCase() + '&language=en&LANGUAGE=US';
+  var createUrl = function (edition) {
+    var acUrl = 'http://www.aircanada.com/aco/flights.do?AH_IATA_NUMBER=0005118&AVAIL_EMMBEDDED_TRANSACTION=FlexPricerAvailabilityServlet'
+      if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
+      acUrl += '&country=DE&countryOfResidence=DE&language=de&LANGUAGE=DE';
+      } else {
+        acUrl += '&country=' + edition + '&countryofResidence=' + edition + '&language=en&LANGUAGE=US';
+      }
+    acUrl += '&CREATION_MODE=30&EMBEDDED_TRANSACTION=FareServelet&FareRequest=YES&fromThirdParty=YES&HAS_INFANT_1=False&IS_PRIMARY_TRAVELLER_1=True&SITE=SAADSAAD&thirdPartyID=0005118&TRAVELER_TYPE_1=ADT&PRICING_MODE=0';
+    acUrl += '&numberOfChildren=0&numberOfInfants=0&numberOfYouth=0&numberOfAdults=' + currentItin["numPax"];
+    acUrl += '&tripType=' + (currentItin['itin'].length > 1 ? 'R' : 'O');
+    for (var i=0; i < currentItin['itin'].length; i++) {
+      if (i == 0) {
+        acUrl += '&departure1='+('0'+currentItin['itin'][i]['dep']['day']).slice(-2)+'/'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'/'+currentItin['itin'][i]['dep']['year']+'&org1='+currentItin['itin'][i]['orig']+'&dest1='+currentItin['itin'][i]['dest'];
+      }
+      else if (i == 1) {
+        acUrl += '&departure2='+('0'+currentItin['itin'][i]['dep']['day']).slice(-2)+'/'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'/'+currentItin['itin'][i]['dep']['year'];
+      }
+      
+      for (var j=0; j < currentItin['itin'][i]['seg'].length; j++) {
+        acUrl += '&AIRLINE_'      +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['carrier'];
+        acUrl += '&B_DATE_'       +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['dep']['year']+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['dep']['time'].replace(':','')).slice(-4);
+        acUrl += '&B_LOCATION_'   +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['orig'];
+        acUrl += '&E_DATE_'       +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['arr']['year']+('0'+currentItin['itin'][i]['seg'][j]['arr']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['arr']['day']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['arr']['time'].replace(':','')).slice(-4);
+        acUrl += '&E_LOCATION_'   +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['dest'];
+        acUrl += '&FLIGHT_NUMBER_'+(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['fnr'];
+        acUrl += '&RBD_'          +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['bookingclass'];
+      }
     }
-  acUrl += '&CREATION_MODE=30&EMBEDDED_TRANSACTION=FareServelet&FareRequest=YES&fromThirdParty=YES&HAS_INFANT_1=False&IS_PRIMARY_TRAVELLER_1=True&SITE=SAADSAAD&thirdPartyID=0005118&TRAVELER_TYPE_1=ADT&PRICING_MODE=0';
-  acUrl += '&numberOfChildren=0&numberOfInfants=0&numberOfYouth=0&numberOfAdults=' + currentItin["numPax"];
-  acUrl += '&tripType=' + (currentItin['itin'].length > 1 ? 'R' : 'O');
-  for (var i=0; i < currentItin['itin'].length; i++) {
-    if (i == 0) {
-      acUrl += '&departure1='+('0'+currentItin['itin'][i]['dep']['day']).slice(-2)+'/'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'/'+currentItin['itin'][i]['dep']['year']+'&org1='+currentItin['itin'][i]['orig']+'&dest1='+currentItin['itin'][i]['dest'];
-    }
-    else if (i == 1) {
-      acUrl += '&departure2='+('0'+currentItin['itin'][i]['dep']['day']).slice(-2)+'/'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'/'+currentItin['itin'][i]['dep']['year'];
-    }
-    
-    for (var j=0; j < currentItin['itin'][i]['seg'].length; j++) {
-      acUrl += '&AIRLINE_'      +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['carrier'];
-      acUrl += '&B_DATE_'       +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['dep']['year']+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['dep']['time'].replace(':','')).slice(-4);
-      acUrl += '&B_LOCATION_'   +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['orig'];
-      acUrl += '&E_DATE_'       +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['arr']['year']+('0'+currentItin['itin'][i]['seg'][j]['arr']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['arr']['day']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['arr']['time'].replace(':','')).slice(-4);
-      acUrl += '&E_LOCATION_'   +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['dest'];
-      acUrl += '&FLIGHT_NUMBER_'+(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['fnr'];
-      acUrl += '&RBD_'          +(i+1)+'_'+(j+1)+'='+currentItin['itin'][i]['seg'][j]['bookingclass'];
-    }
+    return acUrl;
+  };
+  
+  var acUrl = createUrl(mptUsersettings["acEdition"].toUpperCase());
+  
+  var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  extra += acEditions.map(function (edition, i) { return '<a href="' + createUrl(edition.toUpperCase()) + '" target="_blank">' + edition +'</a>'; }).join('<br/>');
+  extra += '</span></span>';
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(acUrl,"Air Canada","",null,extra);
+  } else {
+    printUrl(acUrl,"Air Canada","",extra);
   }
-    if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline(acUrl,"Air Canada","");
-    } else {
-      printUrl(acUrl,"Air Canada","");
-    }
 }
 function printAF() {
   var afUrl = 'https://www.airfrance.com/';
@@ -1842,7 +1864,7 @@ function bindWheretocredit(){
 }
 
 // Inline Stuff
-function printUrlInline(url,text,desc,nth){
+function printUrlInline(url,text,desc,nth,extra){
   var otext = '<a href="'+url+ '" target="_blank">';
   var valid=false;
   if (translations[mptUsersettings["language"]] !== undefined) {
@@ -1852,7 +1874,7 @@ function printUrlInline(url,text,desc,nth){
     }
   }
   otext+=(valid===false ? "Open with":"");
-  otext+=' '+text+'</a>'; 
+  otext+=' '+text+'</a>' + (extra||''); 
   printItemInline(otext,desc,nth);
 }
 function printItemInline(text,desc,nth){
@@ -1886,7 +1908,7 @@ function createUrlContainerInline(){
   return document.getElementById('powertoolslinkinlinecontainer');
 }
 // Printing Stuff
-function printUrl(url,name,desc) {
+function printUrl(url,name,desc,extra) {
     if (document.getElementById('powertoolslinkcontainer')==undefined){
     createUrlContainer();
     }
@@ -1899,7 +1921,7 @@ function printUrl(url,name,desc) {
     }
   }
   text+=(valid===false ? "Open with":"");
-  text+=" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")<br>" : "<br>");  
+  text+=" "+name+"</a></font></bold>"+(extra||'')+(desc ? "<br>("+desc+")<br>" : "<br>");  
   var target = document.getElementById('powertoolslinkcontainer');
   target.innerHTML = target.innerHTML + text;
 }
@@ -1914,4 +1936,21 @@ function printSeperator() {
   if (container) {
     container.innerHTML = container.innerHTML + (mptUsersettings["enableInlinemode"] ? '<hr class="powertoolsitem"/>' : '<br/><hr/>');
   }
+}
+function injectCss() {
+  var css = '',
+    head = document.head || document.getElementsByTagName('head')[0],
+    style = document.createElement('style');
+  style.type = 'text/css';
+
+  css += '.pt-hover-menu { position:absolute; padding: 8px; background-color: #FFF; border: 1px solid #808080; display:none; }';
+  css += '.pt-hover-container:hover .pt-hover-menu { display:inline; }';
+    
+  if (style.styleSheet){
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+
+  head.appendChild(style);
 }
