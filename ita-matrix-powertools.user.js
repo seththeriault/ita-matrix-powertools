@@ -1904,7 +1904,7 @@ function bindWheretocredit(){
             printNotification("Error: Could not find target in bindWheretocredit");
             return false;
           } else {
-            var url='http://www.wheretocredit.com/'+currentItin['itin'][i]['seg'][j]['carrier']+'/'+currentItin['itin'][i]['seg'][j]['bookingclass'];
+            var url='http://www.wheretocredit.com/'+currentItin['itin'][i]['seg'][j]['carrier'].toLowerCase()+'/'+currentItin['itin'][i]['seg'][j]['bookingclass'].toLowerCase();
             target.children[0].innerHTML= target.children[0].innerHTML.replace(/<a.*?\/a>/,'('+currentItin['itin'][i]['seg'][j]['bookingclass']+')').replace('('+currentItin['itin'][i]['seg'][j]['bookingclass']+')','<a href="'+url+'" target="_blank" style="text-decoration:none;color:black">('+currentItin['itin'][i]['seg'][j]['bookingclass']+")</a>");        
           }
       }
