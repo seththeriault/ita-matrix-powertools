@@ -22,8 +22,8 @@ Problems and limitations regarding pricing itins: http://www.flyertalk.com/forum
 
 ***** Usage: *****
 
-Use either the install the script into your preferred script manager or copy the the RAW-Text into your debug console.
-Using debug console, you may use the shortened minifed version.
+Either add the script into your preferred script manager or copy the the RAW-Text into your debug console.
+Using debug console, you may use the shortened minified version.
 (Note: there is no need to reexecute the script on pagechange unless you reloaded the page)
 
 ***** Files: *****
@@ -33,6 +33,12 @@ ita-matrix-powertools.user.js -- Main userscript, install into Greasemonkey/etc 
 script_minified.txt --  Compact , pastable version of the script for pasting in the debug console.
 
 *********** Latest major changes **************
+
+**** Version 0.15 ****
+
+2015-09-30 Edited by IAkH ( added additional edition flyout menu,
+                                added Ebookers, 
+                                added Etraveli )
 
 **** Version 0.14 ****
 
@@ -52,16 +58,6 @@ script_minified.txt --  Compact , pastable version of the script for pasting in 
 
 2015-06-13 Edited by IAkH ( added CheapOair )
 
-**** Version 0.11b ****
-
-2015-04-26 Edited by Steppo ( made Planefinder/Seatguru switchable)
-
-**** Version 0.11a ****
-
-2015-04-20 Edited by Steppo (fixed Bug in findItinTarget for one-seg-flights,
-                                fixed typo,
-                                added CSS fix for startpage)
-                                
 **** Version 0.11 ****
 
 2015-04-19 Edited by Steppo (added SeatGuru,
