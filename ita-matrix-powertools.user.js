@@ -1919,12 +1919,14 @@ function openWheretocredit(link) {
   
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '//www.wheretocredit.com/api/beta/calculator');
+  xhr.setRequestHeader('Accept', 'application/json;charset=UTF-8');
   xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
       link.href = '//www.wheretocredit.com';
+      link.target = '_blank';
       link.innerHTML = 'Results provided by wheretocredit.com';
-      
+      console.log(xhr.responseText);
       var data, result;
       try {
         data = JSON.parse(xhr.responseText);
@@ -1968,6 +1970,7 @@ function printWheretocredit() {
   
   var links = container.getElementsByTagName('a');
   var link = links[links.length - 1];
+  link.target = '_self';
   link.innerHTML = 'Calculate miles with wheretocredit.com';
   link.onclick = function () {
     link.onclick = null;
