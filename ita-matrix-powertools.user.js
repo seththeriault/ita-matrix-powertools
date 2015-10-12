@@ -1918,11 +1918,11 @@ function openWheretocredit(link) {
   }
   
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'http://www.wheretocredit.com/api/beta/calculator');
+  xhr.open('POST', '//www.wheretocredit.com/api/beta/calculator');
   xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
-      link.href = 'http://www.wheretocredit.com';
+      link.href = '//www.wheretocredit.com';
       link.innerHTML = 'Results provided by wheretocredit.com';
       
       var data, result;
