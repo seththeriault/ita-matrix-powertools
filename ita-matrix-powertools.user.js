@@ -1926,7 +1926,7 @@ function openWheretocredit(link) {
       link.href = '//www.wheretocredit.com';
       link.target = '_blank';
       link.innerHTML = 'Results provided by wheretocredit.com';
-      console.log(xhr.responseText);
+
       var data, result;
       try {
         data = JSON.parse(xhr.responseText);
