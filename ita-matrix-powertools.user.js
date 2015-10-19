@@ -1934,14 +1934,14 @@ function openWheretocredit(link) {
         data = xhr.responseText;
       }
       
-      if (xhr.status === 200 && data && data.success) {
-          data.value[0].totals.sort(function (a, b) {
+      if (xhr.status === 200 && data && data.success && data.value && data.value.length && data.value[0].success) {
+          data.value[0].value.totals.sort(function (a, b) {
             if (a.value === b.value) {
               return +(a.name > b.name) || +(a.name === b.name) - 1;
             }
             return b.value - a.value; // desc
           });
-          result = data.value[0].totals.map(function (seg, i) { return seg.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + seg.name + ' miles'; }).join('<br/>');
+          result = data.value[0].value.totals.map(function (seg, i) { return seg.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + seg.name + ' miles'; }).join('<br/>');
       }
       else {
         result = data.errorMessage || data || 'API quota exceeded &#x2639;';
