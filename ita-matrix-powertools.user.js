@@ -1935,13 +1935,13 @@ function openWheretocredit(link) {
       }
       
       if (xhr.status === 200 && data && data.success) {
-          data.value.totals.sort(function (a, b) {
+          data.value[0].totals.sort(function (a, b) {
             if (a.value === b.value) {
               return +(a.name > b.name) || +(a.name === b.name) - 1;
             }
             return b.value - a.value; // desc
           });
-          result = data.value.totals.map(function (seg, i) { return seg.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + seg.name + ' miles'; }).join('<br/>');
+          result = data.value[0].totals.map(function (seg, i) { return seg.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + seg.name + ' miles'; }).join('<br/>');
       }
       else {
         result = data.errorMessage || data || 'API quota exceeded &#x2639;';
@@ -1951,9 +1951,9 @@ function openWheretocredit(link) {
       container.innerHTML = result;
     }
   };
-  xhr.send(JSON.stringify({
+  xhr.send(JSON.stringify([{
     segments: segments
-  }));
+  }]));
 }
 
 function printWheretocredit() {
