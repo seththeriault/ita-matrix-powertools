@@ -779,12 +779,7 @@ function rearrangeprices(){
                  output +='<tr><td>Surcharges</td><td style="padding:0px 3px;text-align:right;">'+((surcharges/sum)*100).toFixed(1).toString()+'%</td><td style="text-align:right;">'+cur+(surcharges/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td></tr>";
                  output +='<tr><td style="border-top: 1px solid #878787;padding:2px 0">Bf+Tax</td><td style="border-top: 1px solid #878787;padding:2px 3px;text-align:right;">'+(((basefares+taxes)/sum)*100).toFixed(1).toString()+'%</td><td style="border-top: 1px solid #878787;padding:2px 0; text-align:right;">'+cur+((basefares+taxes)/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td></tr>";
                  output +="</tbody></table>"; 
-              }      
-              // reset var
-              basefound=0;
-              basefares = 0;
-              taxes = 0;
-              surcharges =0;         
+              }     
             } else {
               //Carrier surcharge?
               if (searchpatt.test(name)===true){
@@ -806,6 +801,9 @@ function rearrangeprices(){
       newtr.innerHTML = '<td><div>'+output+'</div></td>';
       printtarget.parentNode.insertBefore(newtr, printtarget); 
     }
+    currentItin.basefares = +(basefares/100).toFixed(2);
+    currentItin.taxes = +(taxes/100).toFixed(2);
+    currentItin.surcharges = +(surcharges/100).toFixed(2);
 }
 //*** Mileage breakdown ****//
 function printMilesbreakdown(){
@@ -1902,10 +1900,14 @@ function openWheretocredit(link) {
   var container = document.getElementById('wheretocredit-container');
   container.style.display = 'inline';
   
-  var segments = [];
+  var itin = {
+    ticketingCarrier: currentItin.carriers.length == 1 ? currentItin.carriers[0] : null,
+    baseFareUSD: currentItin.basefares + currentItin.surcharges,
+    segments: []
+  };
   for (var i = 0; i < currentItin.itin.length; i++) {
     for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
-      segments.push({
+      itin.segments.push({
         origin: currentItin.itin[i].seg[j].orig,
         destination: currentItin.itin[i].seg[j].dest,
         departure: new Date(currentItin.itin[i].seg[j].dep.year, currentItin.itin[i].seg[j].dep.month, currentItin.itin[i].seg[j].dep.day),
@@ -1951,9 +1953,7 @@ function openWheretocredit(link) {
       container.innerHTML = result;
     }
   };
-  xhr.send(JSON.stringify([{
-    segments: segments
-  }]));
+  xhr.send(JSON.stringify([itin]));
 }
 
 function printWheretocredit() {
