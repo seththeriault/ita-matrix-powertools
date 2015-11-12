@@ -1926,7 +1926,7 @@ function openWheretocredit(link) {
   }
   
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '//www.wheretocredit.com/api/beta/calculator');
+  xhr.open('POST', '//www.wheretocredit.com/api/beta/calculate');
   xhr.setRequestHeader('Accept', 'application/json;charset=UTF-8');
   xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
   xhr.onreadystatechange = function() {
