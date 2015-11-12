@@ -1933,7 +1933,7 @@ function openWheretocredit(link) {
     if (xhr.readyState === 4) {
       link.href = '//www.wheretocredit.com';
       link.target = '_blank';
-      link.innerHTML = 'Results provided by wheretocredit.com';
+      link.innerHTML = 'Data provided by wheretocredit.com';
 
       var data, result;
       try {
