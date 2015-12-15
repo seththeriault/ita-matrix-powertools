@@ -34,6 +34,13 @@ script_minified.txt --  Compact , pastable version of the script for pasting in 
 
 *********** Latest major changes **************
 
+**** Version 0.16 ****
+
+2015-12-15 Edited by Steppo ( removed UA - Hipmunk,
+                                use textNode for printing (external) messages)
+
+2015-10-12 Edited by IAkH ( added wheretocredit.com calculator )
+
 **** Version 0.15 ****
 
 2015-09-30 Edited by IAkH ( added additional edition flyout menu,
