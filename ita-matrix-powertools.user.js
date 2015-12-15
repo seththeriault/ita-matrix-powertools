@@ -14,6 +14,8 @@
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
 **** Version 0.16 ****
+# 2015-12-15 Edited by Steppo ( removed UA - Hipmunk,
+                                use textNode for printing (external) messages)
 # 2015-10-12 Edited by IAkH ( added wheretocredit.com calculator )
 **** Version 0.15 ****
 # 2015-09-30 Edited by IAkH ( added additional edition flyout menu,
@@ -345,7 +347,9 @@ function printNotification(text) {
      target.innerHTML= "";
    } else {
      //possibility to print multiple notifications
-     target.innerHTML= target.innerHTML+"<div>"+text+"</div>";
+     var temp=document.createElement("div");
+     temp.appendChild(document.createTextNode(text)); 
+     target.appendChild(temp);
    }   
   } 
 }
@@ -668,7 +672,6 @@ function fePS() {
     if (currentItin["carriers"].length==1 && currentItin["carriers"][0]=="AZ"){ printAZ(); }  
     printDelta();   
     printKL();
-    printUA();
     // we print US if its only on US-flights
     if (currentItin["carriers"].length==1 && currentItin["carriers"][0]=="US"){ printUS(); }
   
@@ -1409,56 +1412,6 @@ function printKL() {
      printUrl(klUrl,"KLM","");
     } 
 }
-function getUACabin(cabin){
-// 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-// Coach - Coach / Business - Business / First - First on UA
-  switch(cabin) {
-      case 2:
-          cabin="Business";
-          break;
-      case 3:
-          cabin="First";
-          break;
-      default:
-          cabin="Coach";
-  }
-  return cabin;
-}
-function printUA(){
-var uaUrl='{\"post\": {\"pax\": '+currentItin["numPax"];
-uaUrl += ', \"trips\": [';
-    for (var i=0;i<currentItin["itin"].length;i++) {
-      var minCabin=3;
-      uaUrl += '{\"origin\": \"'+currentItin["itin"][i]["orig"]+'\", \"dest\": \"'+currentItin["itin"][i]["dest"]+'\", \"dep_date\": \"'+currentItin["itin"][i]["dep"]["month"]+'/'+currentItin["itin"][i]["dep"]["day"]+'/'+currentItin["itin"][i]["dep"]["year"]+'\", \"segments\": [';
-      // walks each leg
-       for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
-         //walks each segment of leg
-          var k = 0;
-         // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
-          while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-          if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
-                   currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
-                 k++;
-          }
-          uaUrl += '{\"origin\": \"'+currentItin["itin"][i]["seg"][j]["orig"]+'\", \"dep_date\": \"'+ currentItin["itin"][i]["seg"][j]["dep"]["month"].toString() +'/'+ currentItin["itin"][i]["seg"][j]["dep"]["day"].toString() +'/'+currentItin["itin"][i]["seg"][j]["dep"]["year"].toString() +'\", \"dest_date\": \" \", \"dest\": \"'+currentItin["itin"][i]["seg"][j+k]["dest"]+'\", ';
-          uaUrl += '\"flight_num\": '+currentItin["itin"][i]["seg"][j]["fnr"]+', \"carrier\": \"'+currentItin["itin"][i]["seg"][j]["carrier"]+'\", \"fare_code\": \"'+currentItin["itin"][i]["seg"][j]["farebase"]+'\"},';         
-          if (currentItin["itin"][i]["seg"][j]["cabin"] < minCabin) {minCabin=currentItin["itin"][i]["seg"][j]["cabin"];};
-          j+=k; 
-      }
-      uaUrl = uaUrl.substring(0,uaUrl.length-1)+'],\"cabin\": \"'+getUACabin(minCabin)+'\"},';
-    }
-    uaUrl = 'https://www.hipmunk.com/bookjs?booking_info=' + encodeURIComponent(uaUrl.substring(0,uaUrl.length-1) +']}, \"kind\": \"flight\", \"provider_code\": \"UA\" }');
-        if (mptUsersettings["language"]=="de"){
-        desc="Kopiere den Link bei Hipmunk";
-      } else {
-        desc="Copy Link in Text, via Hipmunk";
-      }     
-    if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline(uaUrl,"United",desc);
-    } else {
-      printUrl(uaUrl,"United",desc);
-    }
-}
 function getUSCabin(cabin){
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
   switch(cabin) {
@@ -1935,7 +1888,7 @@ function openWheretocredit(link) {
       link.target = '_blank';
       link.innerHTML = 'Data provided by wheretocredit.com';
 
-      var data, result;
+      var data, result, temp;
       try {
         data = JSON.parse(xhr.responseText);
       } catch (e) {
@@ -1949,14 +1902,22 @@ function openWheretocredit(link) {
             }
             return b.value - a.value; // desc
           });
-          result = data.value[0].value.totals.map(function (seg, i) { return seg.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + seg.name + ' miles'; }).join('<br/>');
+          
+         result = document.createElement("div");
+         temp = data.value[0].value.totals.map(function (seg, i) { return parseInt(seg.value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + seg.name + ' miles'; });
+         for (var i = 0 ; i<temp.length;i++){
+           result.appendChild(document.createTextNode(temp[i])); 
+           result.appendChild(document.createElement("br"));
+         }
+         result.removeChild(result.lastChild);
       }
       else {
-        result = data.errorMessage || data || 'API quota exceeded &#x2639;';
+        result = data.errorMessage || data || 'API quota exceeded :-/';
+        result = document.createTextNode(result);
       }
-      
       container.style.display = 'block';
-      container.innerHTML = result;
+      container.innerHTML ="";
+      container.appendChild(result);
     }
   };
   xhr.send(JSON.stringify([itin]));
