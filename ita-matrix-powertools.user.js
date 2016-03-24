@@ -1348,7 +1348,7 @@ function printDelta(){
 // Steppo: What about farebasis?
 // Steppo: What about segmentskipping?
     var deltaURL ="http://"+(mptSettings["itaLanguage"]=="de" || mptUsersettings["language"]=="de" ? "de" : "www");
-    deltaURL +=".delta.com/booking/priceItin.do?dispatchMethod=priceItin&tripType=multiCity&cabin=B5-Coach";
+    deltaURL +=".delta.com/air-shopping/priceTripAction.action?tripType=multiCity&cabin=B5-Coach";
     deltaURL +="&currencyCd=" + (currentItin["cur"]=="EUR" ? "EUR" : "USD") + "&exitCountry="+(mptSettings["itaLanguage"]=="de" || mptUsersettings["language"]=="de" ? "US" : "US");
     var segcounter=0;
     for (var i=0;i<currentItin["itin"].length;i++) {
