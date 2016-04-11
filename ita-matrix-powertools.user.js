@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.16
+// @version 0.17
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+# 2016-04-11 Edited by Steppo (fixed Priceline)
+# 2016-03-24 Edited by tomasdev (Fix Delta booking link like Google does)
 **** Version 0.16 ****
 # 2015-12-15 Edited by Steppo ( removed UA - Hipmunk,
                                 use textNode for printing (external) messages)
@@ -1619,27 +1621,17 @@ function printOrbitz(){
     printUrl(orbitzUrl,"Orbitz","");
   }
 }
+
 function printPriceline(){
-    var url = "https://www.priceline.com/airlines/landingServlet?userAction=search";
-    var pricelineurl="&TripType=MD&ProductID=1";
-    // outer params
-    pricelineurl+="&DepCity="+currentItin["itin"][0]["orig"];
-    pricelineurl+="&ArrCity="+currentItin["itin"][0]["dest"];
-    pricelineurl+="&DepartureDate="+(Number(currentItin["itin"][0]["dep"]["month"]) <= 9 ? "0":"") +currentItin["itin"][0]["dep"]["month"].toString()+"/"+(Number(currentItin["itin"][0]["dep"]["day"]) <= 9 ? "0":"") +currentItin["itin"][0]["dep"]["day"].toString()+"/"+currentItin["itin"][0]["dep"]["year"].toString();
-    var legsize=1;
-    var segsize=1;
-    var searchparam="<externalSearch>";
+    var pricelineurl = "https://www.priceline.com/m/fly/search";
+    var searchparam="~";
     for (var i=0;i<currentItin["itin"].length;i++) {
-      // walks each leg
-      pricelineurl+="&MDCity_"+legsize.toString()+"="+currentItin["itin"][i]["orig"];
-      pricelineurl+="&DepDateMD"+legsize.toString()+"="+(Number(currentItin["itin"][i]["dep"]["month"]) <= 9 ? "0":"") +currentItin["itin"][i]["dep"]["month"].toString()+"/"+(Number(currentItin["itin"][i]["dep"]["day"]) <= 9 ? "0":"") +currentItin["itin"][i]["dep"]["day"].toString()+"/"+currentItin["itin"][i]["dep"]["year"].toString();
-      legsize++;
-      pricelineurl+="&MDCity_"+legsize.toString()+"="+currentItin["itin"][i]["dest"];
-      pricelineurl+="&DepDateMD"+legsize.toString()+"="+(Number(currentItin["itin"][i]["arr"]["month"]) <= 9 ? "0":"") +currentItin["itin"][i]["arr"]["month"].toString()+"/"+(Number(currentItin["itin"][i]["arr"]["day"]) <= 9 ? "0":"") +currentItin["itin"][i]["arr"]["day"].toString()+"/"+currentItin["itin"][i]["arr"]["year"].toString();
-      legsize++;
-      searchparam+="<slice>";    
-       for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
-         searchparam+="<segment>";  
+      // walks each leg     
+      searchparam=searchparam.substring(0,searchparam.length-1)+"-";     
+      pricelineurl+="/"+currentItin["itin"][i]["orig"];
+      pricelineurl+="-"+currentItin["itin"][i]["dest"];
+      pricelineurl+="-"+currentItin["itin"][i]["arr"]["year"].toString()+("0"+currentItin["itin"][i]["dep"]["month"]).slice(-2)+("0"+currentItin["itin"][i]["dep"]["day"]).slice(-2);
+      for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) { 
                 //walks each segment of leg
                 var k=0;
                 // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
@@ -1648,28 +1640,22 @@ function printPriceline(){
                          currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
                        k++;
                 }
-                searchparam+="<number>"+segsize.toString()+"</number>";
-                searchparam+="<departDateTime>"+(Number(currentItin["itin"][i]["seg"][j]["dep"]["month"]) <= 9 ? "0":"") +currentItin["itin"][i]["seg"][j]["dep"]["month"].toString()+"/"+(Number(currentItin["itin"][i]["seg"][j]["dep"]["day"]) <= 9 ? "0":"") +currentItin["itin"][i]["seg"][j]["dep"]["day"].toString()+"/"+currentItin["itin"][i]["seg"][j]["dep"]["year"].toString()+" "+currentItin["itin"][i]["seg"][j]["dep"]["time"]+":00</departDateTime>";
-                searchparam+="<arrivalDateTime>"+(Number(currentItin["itin"][i]["seg"][j+k]["arr"]["month"]) <= 9 ? "0":"") +currentItin["itin"][i]["seg"][j+k]["arr"]["month"].toString()+"/"+(Number(currentItin["itin"][i]["seg"][j+k]["arr"]["day"]) <= 9 ? "0":"") +currentItin["itin"][i]["seg"][j+k]["arr"]["day"].toString()+"/"+currentItin["itin"][i]["seg"][j+k]["arr"]["year"].toString()+" "+currentItin["itin"][i]["seg"][j+k]["arr"]["time"]+":00</arrivalDateTime>";
-                searchparam+="<origAirportCode>"+currentItin["itin"][i]["seg"][j]["orig"]+"</origAirportCode>";
-                searchparam+="<destAirportCode>"+currentItin["itin"][i]["seg"][j+k]["dest"]+"</destAirportCode>";
-                searchparam+="<carrierCode>"+currentItin["itin"][i]["seg"][j]["carrier"]+"</carrierCode>";
-                searchparam+="<flightNumber>"+currentItin["itin"][i]["seg"][j]["fnr"]+"</flightNumber>";
-                searchparam+="<equipmentCode></equipmentCode>";
-                searchparam+="<bookingClass>"+currentItin["itin"][i]["seg"][j]["bookingclass"]+"</bookingClass>";         
-                segsize++;
+                //TXL2016 04 15 0630 MUC 2016 04 15 0740 K LH2053
+                searchparam+=currentItin["itin"][i]["seg"][j]["orig"];
+                searchparam+=currentItin["itin"][i]["seg"][j]["dep"]["year"].toString()+("0"+currentItin["itin"][i]["seg"][j]["dep"]["month"]).slice(-2)+("0"+currentItin["itin"][i]["seg"][j]["dep"]["day"]).slice(-2)+("0"+currentItin["itin"][i]["seg"][j]["dep"]["time"].replace(":","")).slice(-4);
+                searchparam+=currentItin["itin"][i]["seg"][j+k]["dest"];
+                searchparam+=currentItin["itin"][i]["seg"][j+k]["arr"]["year"].toString()+("0"+currentItin["itin"][i]["seg"][j+k]["arr"]["month"]).slice(-2)+("0"+currentItin["itin"][i]["seg"][j+k]["arr"]["day"]).slice(-2)+("0"+currentItin["itin"][i]["seg"][j+k]["arr"]["time"].replace(":","")).slice(-4);
+                searchparam+=currentItin["itin"][i]["seg"][j]["bookingclass"]+currentItin["itin"][i]["seg"][j]["carrier"]+currentItin["itin"][i]["seg"][j]["fnr"];
+                searchparam+="~";         
                 j+=k;
-         searchparam+="</segment>";
       }
-      searchparam+="</slice>";
     }
-   searchparam+="<numberOfTickets>"+currentItin["numPax"]+"</numberOfTickets><cost><totalFare>0.00</totalFare><baseFare>0.00</baseFare><tax>0.00</tax><fee>0.00</fee></cost>";
-   searchparam+="</externalSearch>";
-   pricelineurl+="&NumTickets="+currentItin["numPax"]+"&AirAffiliateSearch=";
+   searchparam=searchparam.substring(1,searchparam.length-1);
+   pricelineurl+="/details/R_"+searchparam+"_"+currentItin["numPax"]+"_USD0.00?num-adults="+currentItin["numPax"]+"&num-children=0&num-infants=0&num-youths=0";
    if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline(url+pricelineurl+encodeURIComponent(searchparam),"Priceline","");
+      printUrlInline(pricelineurl,"Priceline","");
     } else {
-      printUrl(url+pricelineurl+encodeURIComponent(searchparam),"Priceline","");
+      printUrl(pricelineurl,"Priceline","");
     }
 }
 
