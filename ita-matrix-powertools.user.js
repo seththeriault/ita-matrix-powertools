@@ -106,7 +106,7 @@ mptUsersettings["ibEdition"] = "en-US"; // sets the local edition of Iberia
 mptUsersettings["ibCurrency"] = "USD"; // sets the Currency of Iberia - unused
 mptUsersettings["klEdition"] = "us_en"; // sets the local edition of KLM
 mptUsersettings["laEdition"] = "en_us"; // sets the local edition of Lan
-mptUsersettings["lhEdition"] = "US-en"; // sets the local edition of Lufthansa
+mptUsersettings["lhEdition"] = "US-gb"; // sets the local edition of Lufthansa
 mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
