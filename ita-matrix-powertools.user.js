@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name ITA Matrix Powertools
+// @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
 // @version 0.18
