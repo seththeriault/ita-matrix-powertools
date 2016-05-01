@@ -1,3 +1,17 @@
+# 2016-05-01 Edited by Steppo (Renamed UserScript
+                                added cabin override
+                                added pax management -> use with caution!
+                                redesigned settings - added font size for links
+                                added editor mode
+                                reworked/adapted linking functions - added edition support                               
+                                tweaked extraction function - bugs removed/shortened/added plane type & fare carrier/improved currency detection
+                                added Amadeus realated functions
+                                added AAc1, BA, CZ, IB, LA, LH, LX, TK
+                                added advanced routing codes using FareFreaks
+                                added flight manager support of FareFreaks)
+**** Version 0.17 ****
+# 2016-04-11 Edited by Steppo (fixed Priceline)
+# 2016-03-24 Edited by tomasdev (Fix Delta booking link like Google does)                                
 **** Version 0.16 ****
 # 2015-12-15 Edited by Steppo ( removed UA - Hipmunk,
                                 use textNode for printing (external) messages)
