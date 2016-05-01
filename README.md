@@ -10,6 +10,8 @@ http://www.flyertalk.com/forum/travel-tools/1623427-ita-purchase-fares-orbitz-de
 
 !!! Double check your chosen flights before purchasing !!!
 
+!!! Some providers have limited support !!!
+
 ***** Posts you should read: *****
 
 General statement regarding this script: http://www.flyertalk.com/forum/travel-tools/1623427-ita-purchase-fares-orbitz-delta-united-userscript-4.html#post24394534
@@ -33,6 +35,26 @@ ita-matrix-powertools.user.js -- Main userscript, install into Greasemonkey/etc 
 script_minified.txt --  Compact , pastable version of the script for pasting in the debug console.
 
 *********** Latest major changes **************
+
+**** Version 0.18 ****
+
+2016-05-01 Edited by Steppo (Renamed UserScript,
+                                added cabin override,
+                                added pax management -> use with caution!,
+                                redesigned settings - added font size for links,
+                                added editor mode,
+                                reworked/adapted linking functions - added edition support,
+                                tweaked extraction function - bugs removed/shortened/added plane type & fare carrier/improved currency detection,
+                                added Amadeus realated functions,
+                                added AAc1, BA, CZ, IB, LA, LH, LX, TK,
+                                added advanced routing codes using FareFreaks,
+                                added flight manager support of FareFreaks)
+
+**** Version 0.17 ****
+
+2016-04-11 Edited by Steppo (fixed Priceline)
+
+2016-03-24 Edited by tomasdev (Fix Delta booking link like Google does)
 
 **** Version 0.16 ****
 
