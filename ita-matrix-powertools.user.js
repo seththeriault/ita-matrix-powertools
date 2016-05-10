@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.18
+// @version 0.18a
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,9 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.18a ****
+# 2016-05-10 Edited by Steppo (Fixed critical bug in Amadeus function - thx to adam.smith)
+
 **** Version 0.18 ****
 # 2016-05-01 Edited by Steppo (Renamed UserScript
                                 added cabin override
@@ -113,7 +116,7 @@ mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
 // General settings
 var mptSettings = new Object();
 mptSettings["itaLanguage"]="en";
-mptSettings["version"]="0.18";
+mptSettings["version"]="0.18a";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
@@ -302,8 +305,8 @@ function createUsersettings(){
     str +='</div><div style="clear:both"></div></div>'; 
     str +='<div style="text-align:center;font-weight:bold">**** Provider Editions: ****</div>';
     str +='<div style="margin:5px 0">';
-    str +='<div id="mptaaEdition" style="width:33%;float:left;">American Edition (Amadeus):<label style="cursor:pointer;">'+printSettingsvalue("aaEdition")+'</label></div>';
-    str +='<div id="mptaac1Edition" style="width:33%;float:left;">American Edition (C1&UK):<label style="cursor:pointer;">'+printSettingsvalue("aac1Edition")+'</label></div>';
+    str +='<div id="mptaaEdition" style="width:33%;float:left;">American Edition (Europe/Asia/Pacific):<label style="cursor:pointer;">'+printSettingsvalue("aaEdition")+'</label></div>';
+    str +='<div id="mptaac1Edition" style="width:33%;float:left;">American Edition (America & UK):<label style="cursor:pointer;">'+printSettingsvalue("aac1Edition")+'</label></div>';
     str +='<div id="mptacEdition" style="width:33%;float:left;">Air Canada Edition:<label style="cursor:pointer;">'+printSettingsvalue("acEdition")+'</label></div>';
     str +='<div id="mptafEdition" style="width:33%;float:left;">Air France Edition:<label style="cursor:pointer;">'+printSettingsvalue("afEdition")+'</label></div>';
     str +='<div id="mptbaLanguage" style="width:33%;float:left;">British Airways Language:<label style="cursor:pointer;">'+printSettingsvalue("baLanguage")+'</label></div>';
@@ -1117,8 +1120,8 @@ function fePS() {
     if (mptUsersettings["enableInlinemode"]==1) printCPM();
  
     /*** Airlines ***/
-    printAA(); 
     printAAc1();
+    printAA(); 
     printAC();   
     if (currentItin["itin"].length == 2 &&
         currentItin["itin"][0]["orig"] == currentItin["itin"][1]["dest"] &&
@@ -1714,7 +1717,7 @@ function getAmadeusUrl(config){
                 if (config["detailed"]===1){ 
                   url += '&B_LOCATION_'   + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['orig'];     
                   url += '&B_LOCATION_CITY_'   + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['orig'];     
-                  url += '&B_DATE_'       + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['dep']['year']+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['day']).slice(-2)+(config["inctimes"]==1?('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['dep']['time'].replace(':','')).slice(-4):"0000");;
+                  url += '&B_DATE_'       + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['dep']['year']+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+(config["inctimes"]==1?('0'+currentItin['itin'][i]['seg'][j]['dep']['time'].replace(':','')).slice(-4):"0000");
                   url += '&E_LOCATION_'   + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j+k]['dest'];
                   url += '&E_LOCATION_CITY_'   + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j+k]['dest'];
                   url += '&E_DATE_'       + curleg +'_' + curseg + '='+lastarrtime;
@@ -1852,9 +1855,9 @@ function printAA(){
   extra += '</span></span>';
   
   if (mptUsersettings["enableInlinemode"]==1){
-    printUrlInline(url,"American","",null,extra);
+    printUrlInline(url,"American","Europe/Asia/Pacific",null,extra);
   } else {
-    printUrl(url,"American","",extra);
+    printUrl(url,"American","Europe/Asia/Pacific",extra);
   } 
 }
 
@@ -1913,9 +1916,9 @@ function printAAc1(){
     extra += aac1Editions.map(function (edition, i) { return '<a href="' + createUrl(edition.value.toUpperCase()) + '" target="_blank">' + edition.name +'</a>'; }).join('<br/>');
     extra += '</span></span>';  
     if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline(url,"American (C1)","",null,extra);
+      printUrlInline(url,"American","America & UK",null,extra);
     } else {
-      printUrl(url,"American (C1)","",extra);
+      printUrl(url,"American","America & UK",extra);
     } 
 }
 
