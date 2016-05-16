@@ -1,3 +1,8 @@
+**** Version 0.19 ****
+# 2016-05-14 Edited by seththeriault (Specify proper cabin parameter for DL C+/W booking)
+**** Version 0.18a ****
+# 2016-05-10 Edited by Steppo (Fixed critical bug in Amadeus function - thx to adam.smith)
+**** Version 0.18 ****
 # 2016-05-01 Edited by Steppo (Renamed UserScript
                                 added cabin override
                                 added pax management -> use with caution!
@@ -40,7 +45,6 @@
 # 2015-05-13 Edited by Steppo ( fixed class names )
 **** Version 0.11b ****
 # 2015-04-26 Edited by Steppo ( made Planefinder/Seatguru switchable)
-
 **** Version 0.11a ****
 # 2015-04-20 Edited by Steppo (fixed Bug in findItinTarget for one-seg-flights,
                                 fixed typo,
