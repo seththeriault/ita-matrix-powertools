@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.19
+// @version 0.20
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,10 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.20 ****
+# 2016-05-31 Edited by elduce (Added Monomdo & Kayak)
+# 2016-06-05 Edited by Steppo (Disabled LAN, Removed invalid Ebookers targets, Regrouped links to Airline/OTA/Meta)
+
 **** Version 0.19 ****
 # 2016-05-14 Edited by seththeriault (Specify proper cabin parameter for DL C+/W booking)
 
@@ -119,7 +123,7 @@ mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
 // General settings
 var mptSettings = new Object();
 mptSettings["itaLanguage"]="en";
-mptSettings["version"]="0.19";
+mptSettings["version"]="0.20";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
@@ -1137,14 +1141,14 @@ function fePS() {
     if (currentItin["itin"].length >= 3 && inArray("CZ",currentItin["carriers"])) {
         printCZ();
     }    
-    // we print AZ if its only on AZ-flights
+    // we print AZ if it's only on AZ-flights
     if (currentItin["carriers"].length==1 && currentItin["carriers"][0]=="AZ"){ printAZ(); }  
     printDL();
     if (inArray("IB",currentItin["carriers"]) || inArray("BA",currentItin["carriers"])){
        printIB();
     }  
     printKL();
-    printLA();
+    // printLA(); // Disabled until further notice
     if (inArray("LH",currentItin["carriers"])){
        printLH();
     }
@@ -1158,10 +1162,14 @@ function fePS() {
     /*** OTAs ***/
     printCheapOair();   
     printOrbitz();
-    printHipmunk ();
     printPriceline ();
     printEtraveli();
-  
+    /*** Metas ***/
+    if(mptUsersettings["enableDeviders"]==1) printSeperator();
+    printHipmunk ();
+    printMomondo();
+    printKayak(0);
+    printKayak(1);  
     if(mptUsersettings["enableDeviders"]==1) printSeperator();
     /*** other stuff ***/
     printFarefreaks (0);
@@ -2599,49 +2607,13 @@ function printCheapOair(){
   }
 }
 
-function printHipmunk(){
-  // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-    var cabins = ['Coach', 'Coach', 'Business', 'First'];  
-    var url = "https://www.hipmunk.com/search/flights?";
-    var mincabin=3;
-    var pax=validatePaxcount({maxPaxcount:9, countInf:true, childAsAdult:18, sepInfSeat:true, childMinAge:2});
-    if (pax===false){
-      printNotification("Error: Failed to validate Passengers in printHipmunk");
-      return false;
-    } 
-    //Build multi-city search based on legs
-    for (var i=0;i<currentItin["itin"].length;i++) {
-      // walks each leg
-            url += "&from"+i+"=" + currentItin["itin"][i]["orig"];            
-            for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
-           //walks each segment of leg
-                var k=0;
-                // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
-                while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
-                     currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
-                 k++;
-                }               
-                url += ( j>0 ? "%20"+currentItin["itin"][i]["seg"][j]["orig"]+"%20":"%3A%3A")+currentItin["itin"][i]["seg"][j]["carrier"] + currentItin["itin"][i]["seg"][j]["fnr"];
-                if (currentItin["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};  
-                j+=k;
-      }
-      url += "&date"+i+"="+currentItin["itin"][i]["dep"]["year"]+"-"+( Number(currentItin["itin"][i]["dep"]["month"]) <= 9 ? "0":"") +currentItin["itin"][i]["dep"]["month"].toString()+"-"+ ( Number(currentItin["itin"][i]["dep"]["day"]) <= 9 ? "0":"") +currentItin["itin"][i]["dep"]["day"].toString();  
-      url += "&to"+i+"="+currentItin["itin"][i]["dest"];
-    }  
-    url += '&pax='+pax.adults+'&cabin='+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())]+'&infant_lap='+pax.infLap+'&infant_seat='+pax.infSeat+'&seniors=0&children='+pax.children.length;
-    if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline(url,"Hipmunk","");
-    } else {
-      printUrl(url,"Hipmunk","");
-    } 
-}
 
+/*** OTAs ****/
 function printOrbitz(){
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
   var cabins = ['C', 'E', 'B', 'F'];
   
-  var ebookerEditions = [{name:"ebookers.de",host:"www.ebookers.de",dateFormat:"dd.MM.yyyy"},{name:"ebookers.at",host:"www.ebookers.at",dateFormat:"dd.MM.yyyy"},{name:"ebookers.fi",host:"www.ebookers.fi",dateFormat:"dd.MM.yyyy"},{name:"ebookers.com",host:"www.ebookers.com",dateFormat:"dd/MM/yyyy"},{name:"ebookers.be",host:"www.ebookers.be",dateFormat:"dd/MM/yyyy"},{name:"ebookers.fr",host:"www.ebookers.fr",dateFormat:"dd/MM/yyyy"},{name:"ebookers.ie",host:"www.ebookers.ie",dateFormat:"dd/MM/yyyy"},{name:"ebookers.ch",host:"www.ebookers.ch",dateFormat:"dd/MM/yyyy"},{name:"ebookers.nl",host:"www.ebookers.nl",dateFormat:"dd-MM-yy"},{name:"ebookers.no",host:"www.ebookers.no",dateFormat:"dd.MM.yyyy"},{name:"mrjet.se",host:"www.mrjet.se",dateFormat:"yyyy-MM-dd"},{name:"mrjet.dk",host:"www.mrjet.dk",dateFormat:"dd-MM-yyyy"}];
+  var ebookerEditions = [{name:"ebookers.de",host:"www.ebookers.de",dateFormat:"dd.MM.yyyy"},{name:"ebookers.fr",host:"www.ebookers.fr",dateFormat:"dd/MM/yyyy"},{name:"ebookers.ie",host:"www.ebookers.ie",dateFormat:"dd/MM/yyyy"}];
   
   var formatDate = function (value, dateFormat) {
     return dateFormat
@@ -2734,7 +2706,7 @@ function printOrbitz(){
   };
   var orbitzUrl = createUrl("www.orbitz.com", "MM/dd/yy");
   var cheapticketsUrl = createUrl("www.cheaptickets.com", "MM/dd/yy");
-  var ebookersUrl = createUrl("www.ebookers.com", "dd/MM/yy"); 
+  var ebookersUrl = createUrl("www.ebookers.de", "dd.MM.yyyy"); 
   var ebookersExtra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   ebookersExtra += ebookerEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.host, obj.dateFormat) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
   ebookersExtra += '</span></span>';
@@ -2819,6 +2791,158 @@ function printEtraveli () {
   } else {
     printUrl(ggUrl,'Seat24.de',"",extra);
   }
+}
+/***  META ***/
+function printHipmunk(){
+  // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
+    var cabins = ['Coach', 'Coach', 'Business', 'First'];  
+    var url = "https://www.hipmunk.com/search/flights?";
+    var mincabin=3;
+    var pax=validatePaxcount({maxPaxcount:9, countInf:true, childAsAdult:18, sepInfSeat:true, childMinAge:2});
+    if (pax===false){
+      printNotification("Error: Failed to validate Passengers in printHipmunk");
+      return false;
+    } 
+    //Build multi-city search based on legs
+    for (var i=0;i<currentItin["itin"].length;i++) {
+      // walks each leg
+            url += "&from"+i+"=" + currentItin["itin"][i]["orig"];            
+            for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
+           //walks each segment of leg
+                var k=0;
+                // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
+                while ((j+k)<currentItin["itin"][i]["seg"].length-1){
+                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+                     currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
+                 k++;
+                }               
+                url += ( j>0 ? "%20"+currentItin["itin"][i]["seg"][j]["orig"]+"%20":"%3A%3A")+currentItin["itin"][i]["seg"][j]["carrier"] + currentItin["itin"][i]["seg"][j]["fnr"];
+                if (currentItin["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};  
+                j+=k;
+      }
+      url += "&date"+i+"="+currentItin["itin"][i]["dep"]["year"]+"-"+( Number(currentItin["itin"][i]["dep"]["month"]) <= 9 ? "0":"") +currentItin["itin"][i]["dep"]["month"].toString()+"-"+ ( Number(currentItin["itin"][i]["dep"]["day"]) <= 9 ? "0":"") +currentItin["itin"][i]["dep"]["day"].toString();  
+      url += "&to"+i+"="+currentItin["itin"][i]["dest"];
+    }  
+    url += '&pax='+pax.adults+'&cabin='+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())]+'&infant_lap='+pax.infLap+'&infant_seat='+pax.infSeat+'&seniors=0&children='+pax.children.length;
+    if (mptUsersettings["enableInlinemode"]==1){
+      printUrlInline(url,"Hipmunk","");
+    } else {
+      printUrl(url,"Hipmunk","");
+    } 
+}
+function printMomondo() {
+    //example http://www.Momondo.ru/flightsearch/?...false&NA=false
+    //pax # &AD=2&CA=0,8 – not working with children (total amount of adults + kids goes to adult)  
+    var MomondoEditions = [{name:"Momondo.com",host:"Momondo.com"},{name:"Momondo.de",host:"Momondo.de"},{name:"Momondo.it",host:"Momondo.it"},{name:"Momondo.es",host:"Momondo.es"},{name:"Momondo.co.uk",host:"Momondo.co.uk"},{name:"Momondo.dk",host:"Momondo.dk"},{name:"Momondo.mx",host:"Momondo.mx"},{name:"Momondo.fi",host:"Momondo.fi"},{name:"Momondo.fr",host:"Momondo.fr"}, {name:"Momondo.no",host:"Momondo.no"},{name:"Momondo.nl",host:"Momondo.nl"},{name:"Momondo.pt",host: "Momondo.pt"},{name:"Momondo.se",host:"Momondo.se" },{name:"Momondo.ru",host:"Momondo.ru"}];
+    var MomondoCreateUrl = function(host) {
+        var MomondoUrl = 'http://www.' + host + '/flightsearch/?Search=true&TripType=4';
+        var seg = 0;
+        MomondoUrl += '&SegNo=' + currentItin['itin'].length;
+        for (var i = 0; i < currentItin['itin'].length; i++) {
+            MomondoUrl += '&SO' + seg + '=' + currentItin['itin'][i]['orig'];
+            MomondoUrl += '&SD' + seg + '=' + currentItin['itin'][i]['dest'];
+            MomondoUrl += '&SDP' + seg + '=' + ('0' + currentItin['itin'][i]['dep']['day']).slice(-2) + '-' + ('0' + currentItin['itin'][i]['dep']['month']).slice(-2) + '-' + currentItin['itin'][i]['dep']['year'];
+            seg++;
+        }
+        MomondoUrl += '&AD=' + currentItin['numPax'] + '&TK=' + getMomondoCabin(currentItin['itin']['cabin']);
+        return MomondoUrl;
+    }
+    var MomondoUrl = MomondoCreateUrl("Momondo.com");
+    var MomondoExtra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+    MomondoExtra += MomondoEditions.map(function(obj, i) {
+        return '<a href="' + MomondoCreateUrl(obj.host) + '" target="_blank">' + obj.name + '</a>';
+    }).join('<br/>');
+    MomondoExtra += '</span></span>';
+    if (mptUsersettings["enableInlinemode"] == 1) {
+        printUrlInline(MomondoUrl, "Momondo", "", null, MomondoExtra);
+    } else {
+        printUrl(MomondoUrl, "Momondo", "", MomondoExtra);
+    }
+}
+function getMomondoCabin(cabin) {
+    // not working... i didn't get how to get cabin from itin so far
+    // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
+    // Booking classes on Momondo &TK=ECO|&TK=FLX|&TK=BIZ|&TK=FST
+    switch (cabin) {
+        case 0:
+            cabin = "ECO";
+            break;
+        case 1:
+            cabin = "FLX";
+            break;
+        case 2:
+            cabin = "BIZ";
+            break;
+        case 3:
+            cabin = "FST";
+            break;
+        default:
+            cabin = "ECO";
+    }
+    return cabin;
+}
+function printKayak(method) {
+    //example https://www.Kayak.ru/flights/MOW-CPH...OW/2016-05-20/
+    // pax: #adults
+    // method: 0 = based on leg; 1 = based on segment
+    var KayakEditions = [{name:"Kayak.com",host:"Kayak.com"},{name:"Kayak.de",host:"Kayak.de"},{name:"Kayak.it",host:"Kayak.it"},{name:"Kayak.es",host:"Kayak.es"},{name:"Kayak.co.uk",host:"Kayak.co.uk"},{name:"Kayak.dk",host: "Kayak.dk"},{name:"Kayak.mx",host:"Kayak.mx"},{name:"Kayak.fi",host:"Kayak.fi"},{name:"Kayak.fr",host:"Kayak.fr"},{name:"Kayak.no",host:"Kayak.no"},{name:"Kayak.nl",host:"Kayak.nl"},{name:"Kayak.pt",host:"Kayak.pt"},{name:"Kayak.se",host:"Kayak.se"}, {name:"Kayak.ru",host:"Kayak.ru"}];
+    var KayakCreateUrl = function(host) {
+        var KayakUrl = 'https://www.' + host + '/flights';
+        var segsize = 0;
+        for (var i = 0; i < currentItin["itin"].length; i++) {
+            if (method != 1) {
+                KayakUrl += '/' + currentItin["itin"][i]["orig"];
+                KayakUrl += '-' + currentItin["itin"][i]["dest"];
+                KayakUrl += '/' + currentItin['itin'][i]['dep']['year'] + '-' + ('0' + currentItin['itin'][i]['dep']['month']).slice(-2) + '-' + ('0' + currentItin['itin'][i]['dep']['day']).slice(-2);
+                segsize++;
+            }
+            for (var j = 0; j < currentItin["itin"][i]["seg"].length; j++) {
+                if (method == 1) {
+                    var k = 0;
+                    // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
+                    while ((j + k) < currentItin["itin"][i]["seg"].length - 1) {
+                        if (currentItin["itin"][i]["seg"][j + k]["fnr"] != currentItin["itin"][i]["seg"][j + k + 1]["fnr"] ||
+                            currentItin["itin"][i]["seg"][j + k]["layoverduration"] >= 1440) break;
+                        k++;
+                    }
+                    KayakUrl += '/' + currentItin["itin"][i]["seg"][j]["orig"];
+                    KayakUrl += '-' + currentItin["itin"][i]["seg"][j + k]["dest"];
+                    KayakUrl += '/' + currentItin['itin'][i]['seg'][j]['dep']['year'] + '-' + ('0' + currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2) + '-' + ('0' + currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2);
+                    j += k;
+                    segsize++;
+                }
+            }
+        }
+        KayakUrl += '/' + currentItin['numPax'] + 'adults';
+        if (method == 1) {
+            if (mptUsersettings["language"] == "de") {
+                desc = "Benutze " + segsize + " Segment(e)";
+            } else {
+                desc = "Based on " + segsize + " segment(s)";
+            }
+        } else {
+            if (segsize == 1) {
+                return false;
+            }
+            if (mptUsersettings["language"] == "de") {
+                desc = "Benutze " + segsize + " Abschnitt(e)";
+            } else {
+                desc = "Based on " + segsize + " segment(s)";
+            }
+        }
+        return KayakUrl;
+    }
+    var KayakUrl = KayakCreateUrl("Kayak.com");
+    var KayakExtra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+    KayakExtra += KayakEditions.map(function(obj, i) {
+        return '<a href="' + KayakCreateUrl(obj.host) + '" target="_blank">' + obj.name + '</a>';
+    }).join('<br/>');
+    KayakExtra += '</span></span>';
+    if (mptUsersettings["enableInlinemode"] == 1) {
+        printUrlInline(KayakUrl, "Kayak", desc, null, KayakExtra);
+    } else {
+        printUrl(KayakUrl, "Kayak", desc, KayakExtra);
+    }
 }
 
 function printFarefreaks (method){
