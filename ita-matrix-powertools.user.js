@@ -127,7 +127,7 @@ mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
 // General settings
 var mptSettings = new Object();
 mptSettings["itaLanguage"]="en";
-mptSettings["version"]="0.20";
+mptSettings["version"]="0.21";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
