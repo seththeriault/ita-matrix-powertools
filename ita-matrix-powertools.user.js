@@ -14,7 +14,7 @@
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
 **** Version 0.21 ****
-# 2016-05-31 Edited by Steppo (Removed Orbitz/Ebookers
+# 2016-09-18 Edited by Steppo (Removed Orbitz/Ebookers
                                 fixed Air Canada
                                 some Kayak tweaking)
 **** Version 0.20 ****
