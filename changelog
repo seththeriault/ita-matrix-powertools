@@ -1,3 +1,11 @@
+**** Version 0.21 ****
+# 2016-05-31 Edited by Steppo (Removed Orbitz/Ebookers
+                                fixed Air Canada
+                                some Kayak tweaking)
+                                
+**** Version 0.20 ****
+# 2016-05-31 Edited by elduce (Added Monomdo & Kayak)
+# 2016-06-05 Edited by Steppo (Disabled LAN, Removed invalid Ebookers targets, Regrouped links to Airline/OTA/Meta)
 **** Version 0.19 ****
 # 2016-05-14 Edited by seththeriault (Specify proper cabin parameter for DL C+/W booking)
 **** Version 0.18a ****
