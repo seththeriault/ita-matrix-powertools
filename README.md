@@ -36,6 +36,18 @@ script_minified.txt --  Compact , pastable version of the script for pasting in 
 
 *********** Latest major changes **************
 
+**** Version 0.21 ****
+
+2016-09-18 Edited by Steppo (Removed Orbitz/Ebookers
+                                fixed Air Canada
+                                some Kayak tweaking)
+
+**** Version 0.20 ****
+
+2016-05-31 Edited by elduce (Added Monomdo & Kayak)
+
+2016-06-05 Edited by Steppo (Disabled LAN, Removed invalid Ebookers targets, Regrouped links to Airline/OTA/Meta)
+
 **** Version 0.18 ****
 
 2016-05-01 Edited by Steppo (Renamed UserScript,
