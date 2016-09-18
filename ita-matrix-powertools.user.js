@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.20
+// @version 0.21
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,10 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.21 ****
+# 2016-05-31 Edited by Steppo (Removed Orbitz/Ebookers
+                                fixed Air Canada
+                                some Kayak tweaking)
 **** Version 0.20 ****
 # 2016-05-31 Edited by elduce (Added Monomdo & Kayak)
 # 2016-06-05 Edited by Steppo (Disabled LAN, Removed invalid Ebookers targets, Regrouped links to Airline/OTA/Meta)
@@ -1160,8 +1164,7 @@ function fePS() {
     }   
     if(mptUsersettings["enableDeviders"]==1) printSeperator();
     /*** OTAs ***/
-    printCheapOair();   
-    printOrbitz();
+    printCheapOair();
     printPriceline ();
     printEtraveli();
     /*** Metas ***/
@@ -1935,9 +1938,8 @@ function printAAc1(){
 
 function printAC(){
   var createUrl = function (edition) {
-    var acUrl = 'http://www.aircanada.com/aco/flights.do?AH_IATA_NUMBER=0005118&AVAIL_EMMBEDDED_TRANSACTION=FlexPricerAvailabilityServlet';
-    acUrl += '&country=' + edition + '&countryofResidence=' + edition + (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"?'&language=de&LANGUAGE=DE':'&language=en&LANGUAGE=US');
-    acUrl += '&CREATION_MODE=30&EMBEDDED_TRANSACTION=FareServelet&FareRequest=YES&fromThirdParty=YES&SITE=SAADSAAD&thirdPartyID=0005118&PRICING_MODE=0';   
+    var acUrl = 'https://book.aircanada.com/pl/AConline/en/RedirectionServlet?FareRequest=YES&PRICING_MODE=0&fromThirdParty=YES';
+    acUrl += '&country=' + edition + '&countryOfResidence=' + edition + (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"?'&language=de':'&language=en');   
     // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
     var pax=validatePaxcount({maxPaxcount:9, countInf:true, childAsAdult:16, sepInfSeat:false, childMinAge:2});
     if (pax===false){
@@ -2609,119 +2611,6 @@ function printCheapOair(){
 
 
 /*** OTAs ****/
-function printOrbitz(){
-  // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-  var cabins = ['C', 'E', 'B', 'F'];
-  
-  var ebookerEditions = [{name:"ebookers.de",host:"www.ebookers.de",dateFormat:"dd.MM.yyyy"},{name:"ebookers.fr",host:"www.ebookers.fr",dateFormat:"dd/MM/yyyy"},{name:"ebookers.ie",host:"www.ebookers.ie",dateFormat:"dd/MM/yyyy"}];
-  
-  var formatDate = function (value, dateFormat) {
-    return dateFormat
-            .replace('dd', value.day)
-            .replace('MM', value.month)
-            .replace('yyyy', value.year)
-            .replace('yy', value.year%100);
-  };
-  
-    var createUrl = function (host, dateFormat) {
-    var selectKey = "";
-    var mincabin = 3;
-    var url = "http://" + host + "/shop/home?type=air&source=GOOGLE_META&searchHost=ITA&ar.type=multiCity&strm=true";
-    var pax=validatePaxcount({maxPaxcount:9, countInf:true, childAsAdult:18, sepInfSeat:true, childMinAge:2});
-    var childcount=0;
-    if (pax===false){
-      printNotification("Error: Failed to validate Passengers in printOrbitz");
-      return false;
-    }     
-    url += "&ar.mc.numAdult=" + pax.adults;   
-    url += "&ar.mc.numSenior=0";
-    for (i=0;i<pax.infLap;i++){
-       url += "&ar.mc.child["+childcount+"]=0";
-       childcount++;
-    }
-    for (i=0;i<pax.infSeat;i++){
-       url += "&ar.mc.child["+childcount+"]=1";
-       childcount++;
-    }   
-    for (i=0;i<pax.children.length;i++){
-       url += "&ar.mc.child["+childcount+"]="+pax.children[i];
-      childcount++;
-    }     
-    url += "&ar.mc.numChild="+childcount;
-    url += "&search=Search Flights&_ar.mc.nonStop=0";
-    // Datefix
-    if (host=="www.orbitz.com" || host=="www.cheaptickets.com") {
-      var maxDate=[6,9,2016]
-    } else {
-      var maxDate=[31,10,2016]
-    }      
-    //Build multi-city search based on legs  
-    for (var i=0;i<currentItin["itin"].length;i++) {
-      // walks each leg
-      url += "&ar.mc.slc["+i+"].orig.key=" + currentItin["itin"][i]["orig"];
-      url += "&_ar.mc.slc["+i+"].originRadius=0";
-      url += "&ar.mc.slc["+i+"].dest.key=" + currentItin["itin"][i]["dest"];
-      url += "&_ar.mc.slc["+i+"].destinationRadius=0";
-      url += "&ar.mc.slc["+i+"].date=" + formatDate(currentItin["itin"][i]["dep"], dateFormat);
-      // check date
-      if ((currentItin["itin"][i]["dep"]["day"] > maxDate[0] && currentItin["itin"][i]["dep"]["month"] >= maxDate[1]) ||
-           currentItin["itin"][i]["dep"]["month"] > maxDate[1] ||
-           currentItin["itin"][i]["dep"]["year"] > maxDate[2]
-          ) {
-          return false;
-      }
-      url += "&ar.mc.slc["+i+"].time=Anytime";
-      
-      for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
-        //walks each segment of leg
-        var k=0;
-        // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
-        while ((j+k)<currentItin["itin"][i]["seg"].length-1) {
-          if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
-              currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
-          k++;
-        }               
-        selectKey += currentItin["itin"][i]["seg"][j]["carrier"] + currentItin["itin"][i]["seg"][j]["fnr"] + currentItin["itin"][i]["seg"][j]["orig"] + currentItin["itin"][i]["seg"][j+k]["dest"] + ( currentItin["itin"][i]["seg"][j]["dep"]["month"] < 10 ? "0":"") + currentItin["itin"][i]["seg"][j]["dep"]["month"] +  ( currentItin["itin"][i]["seg"][j]["dep"]["day"] < 10 ? "0":"") + currentItin["itin"][i]["seg"][j]["dep"]["day"] + cabins[currentItin["itin"][i]["seg"][j]["cabin"]];
-        selectKey += "_"; 
-        if (currentItin["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};                             
-        j+=k;
-      }
-    }    
-    //lets see if we can narrow the carriers  Orbitz supports up to 3
-    if (currentItin["carriers"].length <= 3) {
-      url += "&_ar.mc.narrowSel=1&ar.mc.narrow=airlines";
-      for (var i = 0; i< 3;i++){
-          if (i<currentItin["carriers"].length){
-          url += "&ar.mc.carriers["+i+"]="+currentItin["carriers"][i];
-          } else {
-          url += "&ar.mc.carriers["+i+"]=";
-          }       
-      }
-    } else {
-      url += "&_ar.mc.narrowSel=0&ar.mc.narrow=airlines&ar.mc.carriers[0]=&ar.mc.carriers[1]=&ar.mc.carriers[2]=";
-    }    
-    url += "&ar.mc.cabin="+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())];
-    url += "&selectKey=" + selectKey.substring(0,selectKey.length-1);      
-    return url;
-  };
-  var orbitzUrl = createUrl("www.orbitz.com", "MM/dd/yy");
-  var cheapticketsUrl = createUrl("www.cheaptickets.com", "MM/dd/yy");
-  var ebookersUrl = createUrl("www.ebookers.de", "dd.MM.yyyy"); 
-  var ebookersExtra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
-  ebookersExtra += ebookerEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.host, obj.dateFormat) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
-  ebookersExtra += '</span></span>';
-  
-  if (mptUsersettings["enableInlinemode"]==1){
-    if (cheapticketsUrl!== false) {printUrlInline(cheapticketsUrl,"Cheaptickets","")};
-    if (ebookersUrl!== false) {printUrlInline(ebookersUrl,"Ebookers","",null,ebookersExtra);};
-    if (orbitzUrl!== false) {printUrlInline(orbitzUrl,"Orbitz","");};
-  } else {
-    if (cheapticketsUrl!== false) {printUrl(cheapticketsUrl,"Cheaptickets","");};
-    if (ebookersUrl!== false) {printUrl(ebookersUrl,"Ebookers","",ebookersExtra);};
-    if (orbitzUrl!== false) {printUrl(orbitzUrl,"Orbitz","");};
-  }
-}
-
 function printPriceline(){
     var pricelineurl = "https://www.priceline.com/m/fly/search";
     var searchparam="~";
@@ -2913,7 +2802,9 @@ function printKayak(method) {
                 }
             }
         }
-        KayakUrl += '/' + currentItin['numPax'] + 'adults';
+        if(currentItin['numPax']>1){
+          KayakUrl += '/' + currentItin['numPax'] + 'adults'; 
+        }
         if (method == 1) {
             if (mptUsersettings["language"] == "de") {
                 desc = "Benutze " + segsize + " Segment(e)";
@@ -2933,6 +2824,9 @@ function printKayak(method) {
         return KayakUrl;
     }
     var KayakUrl = KayakCreateUrl("Kayak.com");
+    if (!KayakUrl){
+      return false;
+    }
     var KayakExtra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
     KayakExtra += KayakEditions.map(function(obj, i) {
         return '<a href="' + KayakCreateUrl(obj.host) + '" target="_blank">' + obj.name + '</a>';
