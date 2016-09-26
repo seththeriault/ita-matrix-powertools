@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.21
+// @version 0.22
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,9 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.22 ****
+# 2016-09-26 Edited by Steppo (Added American US/CA/GB currencies)
+
 **** Version 0.21 ****
 # 2016-09-18 Edited by Steppo (Removed Orbitz/Ebookers
                                 fixed Air Canada
@@ -85,7 +88,7 @@
   Unsure about handling of different fares/pax. 
   Unsure about correct usage of cabins while creating links.
   Unsure about correct usage of farebase-per-leg - usage in order of appearance.
-  Unsere about segment-skipping - should be fine but needs heavy testing.
+  Unsure about segment-skipping - should be fine but needs heavy testing.
 */
 /**************************************** Start Script *****************************************/
 // User settings
@@ -111,6 +114,7 @@ mptUsersettings["enableFarefreaks"] =  0; // enables FareFreaks features - valid
 mptUsersettings["acEdition"] = "us"; // sets the local edition of AirCanada.com for itinerary pricing - valid: "us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"
 mptUsersettings["aaEdition"] = "en_DE"; // sets the local edition of AA-Europe/Asia for itinerary pricing - NO US available
 mptUsersettings["aac1Edition"] = "US"; // sets the local edition of AA-C1 and UK
+mptUsersettings["aac1Currency"] = "1"; // sets the currency of AA-C1 and UK
 mptUsersettings["afEdition"] = "US/en"; // sets the local edition of Air France
 mptUsersettings["baLanguage"] = "en"; // sets the language of British Airways
 mptUsersettings["baEdition"] = "US"; // sets the local edition of British Airways
@@ -127,7 +131,7 @@ mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
 // General settings
 var mptSettings = new Object();
 mptSettings["itaLanguage"]="en";
-mptSettings["version"]="0.21";
+mptSettings["version"]="0.22";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
@@ -159,7 +163,8 @@ else {
     mptUsersettings["enableFarefreaks"] = (mptSavedUsersettings["enableFarefreaks"] === undefined ? mptUsersettings["enableFarefreaks"] : mptSavedUsersettings["enableFarefreaks"]);
     mptUsersettings["acEdition"] = (mptSavedUsersettings["acEdition"] === undefined ? mptUsersettings["acEdition"] : mptSavedUsersettings["acEdition"]);
     mptUsersettings["aaEdition"] = (mptSavedUsersettings["aaEdition"] === undefined ? mptUsersettings["aaEdition"] : mptSavedUsersettings["aaEdition"]);    
-    mptUsersettings["aac1Edition"] = (mptSavedUsersettings["aac1Edition"] === undefined ? mptUsersettings["aac1Edition"] : mptSavedUsersettings["aac1Edition"]); 
+    mptUsersettings["aac1Edition"] = (mptSavedUsersettings["aac1Edition"] === undefined ? mptUsersettings["aac1Edition"] : mptSavedUsersettings["aac1Edition"]);
+    mptUsersettings["aac1Currency"] = (mptSavedUsersettings["aac1Currency"] === undefined ? mptUsersettings["aac1Currency"] : mptSavedUsersettings["aac1Currency"]);
     mptUsersettings["afEdition"] = (mptSavedUsersettings["afEdition"] === undefined ? mptUsersettings["afEdition"] : mptSavedUsersettings["afEdition"]);
     mptUsersettings["baLanguage"] = (mptSavedUsersettings["baLanguage"] === undefined ? mptUsersettings["baLanguage"] : mptSavedUsersettings["baLanguage"]);
     mptUsersettings["baEdition"] = (mptSavedUsersettings["baEdition"] === undefined ? mptUsersettings["baEdition"] : mptSavedUsersettings["baEdition"]);
@@ -177,6 +182,7 @@ else {
 var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"];
 var aaEditions = [{value:"en_AU", name:"Australia"},{value:"en_BE", name:"Belgium"},{value:"en_CN", name:"China"},{value:"en_DK", name:"Denmark"},{value:"en_FI", name:"Finland"},{value:"en_FR", name:"France / English"},{value:"fr_FR", name:"France / French"},{value:"en_DE", name:"Germany / English"},{value:"de_DE", name:"Germany / Deutsch"},{value:"en_GR", name:"Greece"},{value:"en_HK", name:"Hong Kong"},{value:"en_IN", name:"India"},{value:"en_IE", name:"Ireland"},{value:"en_IL", name:"Israel"},{value:"en_IT", name:"Italy"},{value:"en_JP", name:"Japan"},{value:"en_KR", name:"Korea"},{value:"en_NL", name:"Netherlands"},{value:"en_NZ", name:"New Zealand"},{value:"en_NO", name:"Norway"},{value:"en_PT", name:"Portugal"},{value:"en_RU", name:"Russia"},{value:"en_ES", name:"Spain"},{value:"en_SE", name:"Sweden"},{value:"en_CH", name:"Switzerland"}];
 var aac1Editions = [{value:"CA", name:"Canada"},{value:"US", name:"United States"},{value:"GB", name:"United Kingdom"}];
+var aac1Currencies = [{value:"1", name:"USD"},{value:"2", name:"GBP"},{value:"4", name:"CAD"}];
 var afEditions = [{value:"DE/de", name:"Germany / Deutsch"},{value:"DE/en", name:"Germany / English"},{value:"FR/en", name:"France / English"},{value:"FR/fr", name:"France / French"},{value:"NL/en", name:"Netherlands / English"},{value:"GB/en", name:"United Kingdom / English"},{value:"US/en", name:"US / English"}];
 var baLanguages = [{value:"de", name:"Deutsch"},{value:"en", name:"English"},{value:"es", name:"Español"},{value:"fr", name:"Français"},{value:"it", name:"Italiano"},{value:"pl", name:"Polski"},{value:"pt", name:"Português"},{value:"sv", name:"Svenska"},{value:"zh", name:"中文"},{value:"ja", name:"日本語"},{value:"ru", name:"Русский"},{value:"ko", name:"한국어"}];
 var baEditions = [{value:"AF", name:"Afghanistan"},{value:"AL", name:"Albania"},{value:"DZ", name:"Algeria"},{value:"AS", name:"American Samoa"},{value:"AD", name:"Andorra"},{value:"AO", name:"Angola"},{value:"AI", name:"Anguilla"},{value:"AG", name:"Antigua"},{value:"AR", name:"Argentina"},{value:"AM", name:"Armenia"},{value:"AW", name:"Aruba"},{value:"AU", name:"Australia"},{value:"AT", name:"Austria"},{value:"AZ", name:"Azerbaijan"},{value:"BS", name:"Bahamas"},{value:"BH", name:"Bahrain"},{value:"BD", name:"Bangladesh"},{value:"BB", name:"Barbados"},{value:"BY", name:"Belarus"},{value:"BE", name:"Belgium"},{value:"BZ", name:"Belize"},{value:"BJ", name:"Benin Republic"},{value:"BM", name:"Bermuda"},{value:"BT", name:"Bhutan"},{value:"BO", name:"Bolivia"},{value:"BA", name:"Bosnia-Herzegovina"},{value:"BW", name:"Botswana"},{value:"BR", name:"Brazil"},{value:"VG", name:"British Virgin Islands"},{value:"BN", name:"Brunei"},{value:"BG", name:"Bulgaria"},{value:"BF", name:"Burkina Faso"},{value:"BI", name:"Burundi"},{value:"KH", name:"Cambodia"},{value:"CA", name:"Canada"},{value:"CV", name:"Cape Verde"},{value:"KY", name:"Cayman Islands"},{value:"CF", name:"Central African Rep"},{value:"TD", name:"Chad"},{value:"CL", name:"Chile"},{value:"CN", name:"China"},{value:"CX", name:"Christmas Island"},{value:"CC", name:"Cocos Islands"},{value:"CO", name:"Colombia"},{value:"CG", name:"Congo"},{value:"CK", name:"Cook Islands"},{value:"CR", name:"Costa Rica"},{value:"HR", name:"Croatia"},{value:"CU", name:"Cuba"},{value:"CY", name:"Cyprus"},{value:"CZ", name:"Czech Republic"},{value:"DK", name:"Denmark"},{value:"DJ", name:"Djibouti"},{value:"DM", name:"Dominica"},{value:"DO", name:"Dominican Rep"},{value:"EC", name:"Ecuador"},{value:"EG", name:"Egypt"},{value:"SV", name:"El Salvador"},{value:"GQ", name:"Equatorial Guinea"},{value:"ER", name:"Eritrea"},{value:"EE", name:"Estonia"},{value:"ET", name:"Ethiopia"},{value:"FO", name:"Faeroe Is"},{value:"FK", name:"Falkland Is"},{value:"FJ", name:"Fiji"},{value:"FI", name:"Finland"},{value:"FR", name:"France"},{value:"GF", name:"French Guyana"},{value:"PF", name:"French Polynesia"},{value:"GA", name:"Gabon"},{value:"GM", name:"Gambia"},{value:"GE", name:"Georgia"},{value:"DE", name:"Germany"},{value:"GH", name:"Ghana"},{value:"GI", name:"Gibraltar (UK)"},{value:"GR", name:"Greece"},{value:"GL", name:"Greenland"},{value:"GD", name:"Grenada"},{value:"GP", name:"Guadeloupe"},{value:"GU", name:"Guam"},{value:"GT", name:"Guatemala"},{value:"GN", name:"Guinea"},{value:"GW", name:"Guinea Bissau"},{value:"GY", name:"Guyana"},{value:"HT", name:"Haiti"},{value:"HN", name:"Honduras"},{value:"HK", name:"Hong Kong"},{value:"HU", name:"Hungary"},{value:"IS", name:"Iceland"},{value:"IN", name:"India"},{value:"ID", name:"Indonesia"},{value:"IR", name:"Iran"},{value:"IQ", name:"Iraq"},{value:"IE", name:"Ireland"},{value:"IL", name:"Israel"},{value:"IT", name:"Italy"},{value:"CI", name:"Ivory Coast"},{value:"JM", name:"Jamaica"},{value:"JP", name:"Japan"},{value:"JO", name:"Jordan"},{value:"KZ", name:"Kazakhstan"},{value:"KE", name:"Kenya"},{value:"KI", name:"Kiribati"},{value:"XK", name:"Kosovo"},{value:"KW", name:"Kuwait"},{value:"KG", name:"Kyrgyzstan"},{value:"LA", name:"Laos"},{value:"LV", name:"Latvia"},{value:"LB", name:"Lebanon"},{value:"LS", name:"Lesotho"},{value:"LR", name:"Liberia"},{value:"LY", name:"Libya"},{value:"LI", name:"Liechtenstein"},{value:"LT", name:"Lithuania"},{value:"LU", name:"Luxembourg"},{value:"MO", name:"Macau"},{value:"MK", name:"Macedonia"},{value:"MG", name:"Madagascar"},{value:"MW", name:"Malawi"},{value:"MY", name:"Malaysia"},{value:"MV", name:"Maldives"},{value:"ML", name:"Mali"},{value:"MT", name:"Malta"},{value:"MP", name:"Mariana Islands"},{value:"MH", name:"Marshall Islands"},{value:"MQ", name:"Martinique"},{value:"MR", name:"Mauritania"},{value:"MU", name:"Mauritius"},{value:"MX", name:"Mexico"},{value:"FM", name:"Micronesia"},{value:"UM", name:"Minor Island"},{value:"MD", name:"Moldova"},{value:"MC", name:"Monaco"},{value:"ME", name:"Montenegro"},{value:"MS", name:"Montserrat"},{value:"MA", name:"Morocco"},{value:"MZ", name:"Mozambique"},{value:"MM", name:"Myanmar"},{value:"NA", name:"Namibia"},{value:"NR", name:"Nauru"},{value:"NP", name:"Nepal"},{value:"AN", name:"Netherland Antilles"},{value:"NL", name:"Netherlands"},{value:"NC", name:"New Caledonia"},{value:"NZ", name:"New Zealand"},{value:"NI", name:"Nicaragua"},{value:"NE", name:"Niger"},{value:"NG", name:"Nigeria"},{value:"NU", name:"Niue"},{value:"NF", name:"Norfolk Island"},{value:"NO", name:"Norway"},{value:"OM", name:"Oman"},{value:"PK", name:"Pakistan"},{value:"PA", name:"Panama"},{value:"PG", name:"Papua New Guinea"},{value:"PY", name:"Paraguay"},{value:"KP", name:"Peoples Rep Korea"},{value:"PE", name:"Peru"},{value:"PH", name:"Philippines"},{value:"PL", name:"Poland"},{value:"PT", name:"Portugal"},{value:"PR", name:"Puerto Rico"},{value:"QA", name:"Qatar"},{value:"CM", name:"Republic Cameroon"},{value:"RE", name:"Reunion"},{value:"RO", name:"Romania"},{value:"RU", name:"Russia"},{value:"RW", name:"Rwanda"},{value:"SM", name:"San Marino"},{value:"SA", name:"Saudi Arabia"},{value:"SN", name:"Senegal"},{value:"RS", name:"Serbia"},{value:"SC", name:"Seychelles"},{value:"SL", name:"Sierra Leone"},{value:"SG", name:"Singapore"},{value:"SK", name:"Slovakia"},{value:"SI", name:"Slovenia"},{value:"SB", name:"Solomon Island"},{value:"SO", name:"Somalia"},{value:"ZA", name:"South Africa"},{value:"KR", name:"South Korea"},{value:"ES", name:"Spain"},{value:"LK", name:"Sri Lanka"},{value:"KN", name:"St Kitts and Nevis"},{value:"LC", name:"St Lucia"},{value:"VC", name:"St Vincent"},{value:"SD", name:"Sudan"},{value:"SR", name:"Suriname"},{value:"SZ", name:"Swaziland"},{value:"SE", name:"Sweden"},{value:"CH", name:"Switzerland"},{value:"SY", name:"Syria"},{value:"TW", name:"Taiwan"},{value:"TJ", name:"Tajikistan"},{value:"TZ", name:"Tanzania"},{value:"TH", name:"Thailand"},{value:"TL", name:"Timor - Leste"},{value:"TG", name:"Togo"},{value:"TO", name:"Tonga"},{value:"TT", name:"Trinidad and Tobago"},{value:"TN", name:"Tunisia"},{value:"TR", name:"Turkey"},{value:"TM", name:"Turkmenistan"},{value:"TC", name:"Turks Caicos"},{value:"TV", name:"Tuvalu"},{value:"VI", name:"US Virgin Islands"},{value:"US", name:"USA"},{value:"UG", name:"Uganda"},{value:"UA", name:"Ukraine"},{value:"AE", name:"United Arab Emirates"},{value:"GB", name:"United Kingdom"},{value:"UY", name:"Uruguay"},{value:"UZ", name:"Uzbekistan"},{value:"VU", name:"Vanuatu"},{value:"VE", name:"Venezuela"},{value:"VN", name:"Vietnam"},{value:"WS", name:"Western Samoa"},{value:"YE", name:"Yemen Republic"},{value:"ZM", name:"Zambia"},{value:"ZW", name:"Zimbabwe"}];
@@ -318,6 +324,7 @@ function createUsersettings(){
     str +='<div style="margin:5px 0">';
     str +='<div id="mptaaEdition" style="width:33%;float:left;">American Edition (Europe/Asia/Pacific):<label style="cursor:pointer;">'+printSettingsvalue("aaEdition")+'</label></div>';
     str +='<div id="mptaac1Edition" style="width:33%;float:left;">American Edition (America & UK):<label style="cursor:pointer;">'+printSettingsvalue("aac1Edition")+'</label></div>';
+    str +='<div id="mptaac1Currency" style="width:33%;float:left;">American Currency (America & UK):<label style="cursor:pointer;">'+printSettingsvalue("aac1Currency")+'</label></div>';
     str +='<div id="mptacEdition" style="width:33%;float:left;">Air Canada Edition:<label style="cursor:pointer;">'+printSettingsvalue("acEdition")+'</label></div>';
     str +='<div id="mptafEdition" style="width:33%;float:left;">Air France Edition:<label style="cursor:pointer;">'+printSettingsvalue("afEdition")+'</label></div>';
     str +='<div id="mptbaLanguage" style="width:33%;float:left;">British Airways Language:<label style="cursor:pointer;">'+printSettingsvalue("baLanguage")+'</label></div>';
@@ -351,6 +358,7 @@ function createUsersettings(){
     document.getElementById('mptenableFarefreaks').onclick=function(){toggleSettings("enableFarefreaks");};
     document.getElementById('mptaaEdition').onclick=function(){toggleSettings("aaEdition");};
     document.getElementById('mptaac1Edition').onclick=function(){toggleSettings("aac1Edition");};
+    document.getElementById('mptaac1Currency').onclick=function(){toggleSettings("aac1Currency");};
     document.getElementById('mptacEdition').onclick=function(){toggleSettings("acEdition");};      
     document.getElementById('mptafEdition').onclick=function(){toggleSettings("afEdition");};
     document.getElementById('mptbaLanguage').onclick=function(){toggleSettings("baLanguage");};
@@ -474,7 +482,16 @@ function toggleSettings(target){
             pos++;
       			mptUsersettings["aac1Edition"] = aac1Editions[pos]["value"];	
       		}
-      	break;       
+      	break;
+     case "aac1Currency":
+          var pos=findPositionForValue(mptUsersettings["aac1Currency"],aac1Currencies);
+      		if (pos >= (aac1Currencies.length - 1) || pos === -1) {
+			      mptUsersettings["aac1Currency"] = aac1Currencies[0]["value"];
+      		} else {
+            pos++;
+      			mptUsersettings["aac1Currency"] = aac1Currencies[pos]["value"];	
+      		}
+      	break; 
      case "afEdition":
           var pos=findPositionForValue(mptUsersettings["afEdition"],afEditions);
       		if (pos >= (afEditions.length - 1) || pos === -1) {
@@ -649,7 +666,10 @@ function printSettingsvalue(target){
           break;
       case "aac1Edition":
           ret=findNameForValue(mptUsersettings["aac1Edition"],aac1Editions);
-          break;       
+          break;
+      case "aac1Currency":
+          ret=findNameForValue(mptUsersettings["aac1Currency"],aac1Currencies);
+          break;
       case "afEdition":
           ret=findNameForValue(mptUsersettings["afEdition"],afEditions);
           break;
@@ -1917,7 +1937,7 @@ function printAAc1(){
         itinleg +="|"+Date.parse(currentItin["itin"][i]["dep"]['year']+"-"+("0"+currentItin["itin"][i]["dep"]['month']).slice(-2)+"-"+("0"+currentItin["itin"][i]["dep"]['day']).slice(-2)+"T"+("0"+currentItin["itin"][i]["dep"]['time']).slice(-5)+":00+00:00");
         itinlegs.push(itinleg);
       }
-      search+=",0.00,1,";
+      search+=",0.00,"+mptUsersettings["aac1Currency"]+",";
       search+=itinlegs.join("")+","+itinsegs.join("");
       url+=encodeURIComponent(search);
       return url;  
