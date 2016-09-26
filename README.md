@@ -36,6 +36,10 @@ script_minified.txt --  Compact , pastable version of the script for pasting in 
 
 *********** Latest major changes **************
 
+**** Version 0.22 ****
+
+2016-09-26 Edited by Steppo (Added American US/CA/GB currencies)
+
 **** Version 0.21 ****
 
 2016-09-18 Edited by Steppo (Removed Orbitz/Ebookers
