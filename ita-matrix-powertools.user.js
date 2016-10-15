@@ -815,9 +815,9 @@ function trimStr(x) {
 }
 function boolToEnabled(value){
    if (value==1) {
-   return "enabled"
+   return "enabled";
    } else {
-   return "disabled"
+   return "disabled";
    }
 }
 function getcabincode(cabin){
@@ -884,7 +884,7 @@ function doHttpRequest(url,options,callback){
        printNotification("Error: Failed to complete http request");
        return false;  
       }   
-   }
+   };
   if (options.mode=="get"){
      xmlHttpObject.open("GET",url,true);
      xmlHttpObject.send();
@@ -1205,6 +1205,7 @@ function fePS() {
     if(mptUsersettings["enableMilesbreakdown"]==1 && typeof(JSON) !== "undefined") printMilesbreakdown();  
     if(mptUsersettings["enableWheretocredit"]==1) bindWheretocredit();
    if (mptUsersettings["enableFarefreaks"]==1 && typeof(JSON) !== "undefined"){createFareFreaksContainer();}  
+
 }
 //*** Rulelinks ****//
 function bindRulelinks(){
@@ -1341,7 +1342,7 @@ function printMilesbreakdown(){
 function retrieveMileages(){
    // collect all airport cominations
   var routes = new Object();
-  var params = ""
+  var params = "";
   for (var i=0;i<currentItin["itin"].length;i++) {
       // walks each leg
        for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
@@ -1470,7 +1471,7 @@ function parseAddInfo(info){
   var re = /contains\s*airport\s*changes/g;
   if (re.test(info)===true) {ret.airportchange=1;};
   var re = /OPERATED\s*BY/g;
-  if (re.test(info)===true) {ret.codeshare=1};
+  if (re.test(info)===true) {ret.codeshare=1;};
   var temp = new Array();
   var re=/\,\s*([a-zA-Z]{3})\s*([0-9]{1,2})/g;
   temp = exRE(info,re);
@@ -1941,7 +1942,7 @@ function printAAc1(){
       search+=itinlegs.join("")+","+itinsegs.join("");
       url+=encodeURIComponent(search);
       return url;  
-    }  
+    };  
     var url = createUrl(mptUsersettings["aac1Edition"].toUpperCase());
     if (url === false) {
       return false;
@@ -2090,7 +2091,7 @@ function printAZ() {
       azUrl += '&MetaSearchDestinations['+seg+'].From='         +currentItin['itin'][i]['seg'][j]['orig'];
       azUrl += '&MetaSearchDestinations['+seg+'].to='           +currentItin['itin'][i]['seg'][j]['dest'];
       azUrl += '&MetaSearchDestinations['+seg+'].DepartureDate='+currentItin['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2);
-      azUrl += '&MetaSearchDestinations['+seg+'].Flight='       +currentItin['itin'][i]['seg'][j]['fnr']
+      azUrl += '&MetaSearchDestinations['+seg+'].Flight='       +currentItin['itin'][i]['seg'][j]['fnr'];
       azUrl += '&MetaSearchDestinations['+seg+'].code='         +currentItin['itin'][i]['seg'][j]['farebase'];
       azUrl += '&MetaSearchDestinations['+seg+'].slices='       +i;
       seg++;
@@ -2146,9 +2147,9 @@ function printBA(){
                   url +=cabins[currentItin["itin"][i]["seg"][j]["cabin"]];
                   url +=currentItin['itin'][i]['seg'][j]['orig']+currentItin['itin'][i]['seg'][(j+k)]['dest'];
                   if (currentItin["itin"].length == 2 && i == 1 ) {
-                   url +='F' 
+                   url +='F'; 
                   } else {
-                   url +='T' 
+                   url +='T';
                   }
                   if (currentItin["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};
                   j+=k;
@@ -2156,7 +2157,7 @@ function printBA(){
       }  
       url += "&p=EUR6666.66&e=FP&c="+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())]+"&source=FareQuoteEmail&isEmailHBOFareQuote=false";
       return url;
-    }    
+    };    
   // get edition
   var url = createUrl(mptUsersettings["baEdition"],mptUsersettings["baLanguage"]);
   if (url === false) {
@@ -2190,7 +2191,7 @@ function printCZ(){
     url += '&TRIP_TYPE=M';
     url +=getAmadeusUrl(amadeusConfig);      
     return url;
-  }
+  };
   // get edition
   var edition=mptUsersettings["czEdition"].split("-");
   if (edition.length!=2) {
@@ -2225,7 +2226,7 @@ function printDL(){
       }
            
       var deltaURL ="http://"+edition[0]+".delta.com/air-shopping/priceTripAction.action?tripType=multiCity";
-      deltaURL +="&currencyCd=" + (currentItin["cur"]=="EUR" ? "EUR" : "USD")
+      deltaURL +="&currencyCd=" + (currentItin["cur"]=="EUR" ? "EUR" : "USD");
       deltaURL +="&exitCountry="+edition[1];
       var segcounter=0;
       for (var i=0;i<currentItin["itin"].length;i++) {
@@ -2245,7 +2246,7 @@ function printDL(){
       deltaURL += "&numOfSegments=" + segcounter.toString() + "&paxCount=" + (pax.adults+pax.children.length+pax.infLap);
       deltaURL += "&vendorRedirectFlag=true&vendorID=Google";
       return deltaURL;
-     }   
+     };   
   // get edition
   var edition=mptUsersettings["dlEdition"].split("_");
   if (edition.length!=2) {
@@ -2318,7 +2319,7 @@ function printIB(){
           slicestr="";
         } 
         return url;
-    }
+    };
   // get edition
   var edition=mptUsersettings["ibEdition"].split("-");
   var url = createUrl(edition,mptUsersettings["ibCurrency"]);
@@ -2474,7 +2475,7 @@ function printLH(){
     url +=getAmadeusUrl(amadeusConfig);  
     
     return url;
-  }
+  };
   // get edition
   var edition=mptUsersettings["lhEdition"].split("-");
   if (edition.length!=2) {
@@ -2755,7 +2756,7 @@ function printMomondo() {
         }
         MomondoUrl += '&AD=' + currentItin['numPax'] + '&TK=' + getMomondoCabin(currentItin['itin']['cabin']);
         return MomondoUrl;
-    }
+    };
     var MomondoUrl = MomondoCreateUrl("Momondo.com");
     var MomondoExtra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
     MomondoExtra += MomondoEditions.map(function(obj, i) {
@@ -2842,7 +2843,7 @@ function printKayak(method) {
             }
         }
         return KayakUrl;
-    }
+    };
     var KayakUrl = KayakCreateUrl("Kayak.com");
     if (!KayakUrl){
       return false;
