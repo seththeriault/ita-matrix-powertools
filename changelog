@@ -1,3 +1,8 @@
+**** Version 0.23 ****
+# 2016-12-11 Edited by Steppo (Fixed Alitalia and added editions
+                                added time zone resolving - only affecting links for American Airlines
+                                added on the fly link updates for passengers/cabin - printLinksContainer()
+                                added support for multiple onClick() events in link section)
 **** Version 0.22 ****
 # 2016-09-26 Edited by Steppo (Added American US/CA/GB currencies)
 **** Version 0.21 ****
