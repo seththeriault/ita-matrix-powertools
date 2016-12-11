@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.22
+// @version 0.23
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,12 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.23 ****
+# 2016-12-11 Edited by Steppo (Fixed Alitalia and added editions
+                                added time zone resolving - only affecting links for American Airlines
+                                added on the fly link updates for passengers/cabin - printLinksContainer()
+                                added support for multiple onClick() events in link section)
+
 **** Version 0.22 ****
 # 2016-09-26 Edited by Steppo (Added American US/CA/GB currencies)
 
@@ -116,6 +122,7 @@ mptUsersettings["aaEdition"] = "en_DE"; // sets the local edition of AA-Europe/A
 mptUsersettings["aac1Edition"] = "US"; // sets the local edition of AA-C1 and UK
 mptUsersettings["aac1Currency"] = "1"; // sets the currency of AA-C1 and UK
 mptUsersettings["afEdition"] = "US/en"; // sets the local edition of Air France
+mptUsersettings["azEdition"] = "us_en"; // sets the local edition of Alitalia
 mptUsersettings["baLanguage"] = "en"; // sets the language of British Airways
 mptUsersettings["baEdition"] = "US"; // sets the local edition of British Airways
 mptUsersettings["czEdition"] = "US-GB"; // sets the local edition of China Southern
@@ -131,7 +138,7 @@ mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
 // General settings
 var mptSettings = new Object();
 mptSettings["itaLanguage"]="en";
-mptSettings["version"]="0.22";
+mptSettings["version"]="0.23";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
@@ -166,6 +173,7 @@ else {
     mptUsersettings["aac1Edition"] = (mptSavedUsersettings["aac1Edition"] === undefined ? mptUsersettings["aac1Edition"] : mptSavedUsersettings["aac1Edition"]);
     mptUsersettings["aac1Currency"] = (mptSavedUsersettings["aac1Currency"] === undefined ? mptUsersettings["aac1Currency"] : mptSavedUsersettings["aac1Currency"]);
     mptUsersettings["afEdition"] = (mptSavedUsersettings["afEdition"] === undefined ? mptUsersettings["afEdition"] : mptSavedUsersettings["afEdition"]);
+    mptUsersettings["azEdition"] = (mptSavedUsersettings["azEdition"] === undefined ? mptUsersettings["azEdition"] : mptSavedUsersettings["azEdition"]);
     mptUsersettings["baLanguage"] = (mptSavedUsersettings["baLanguage"] === undefined ? mptUsersettings["baLanguage"] : mptSavedUsersettings["baLanguage"]);
     mptUsersettings["baEdition"] = (mptSavedUsersettings["baEdition"] === undefined ? mptUsersettings["baEdition"] : mptSavedUsersettings["baEdition"]);
     mptUsersettings["czEdition"] = (mptSavedUsersettings["czEdition"] === undefined ? mptUsersettings["czEdition"] : mptSavedUsersettings["czEdition"]);
@@ -184,6 +192,7 @@ var aaEditions = [{value:"en_AU", name:"Australia"},{value:"en_BE", name:"Belgiu
 var aac1Editions = [{value:"CA", name:"Canada"},{value:"US", name:"United States"},{value:"GB", name:"United Kingdom"}];
 var aac1Currencies = [{value:"1", name:"USD"},{value:"2", name:"GBP"},{value:"4", name:"CAD"}];
 var afEditions = [{value:"DE/de", name:"Germany / Deutsch"},{value:"DE/en", name:"Germany / English"},{value:"FR/en", name:"France / English"},{value:"FR/fr", name:"France / French"},{value:"NL/en", name:"Netherlands / English"},{value:"GB/en", name:"United Kingdom / English"},{value:"US/en", name:"US / English"}];
+var azEditions = [{value:"de_de", name:"Germany / Deutsch"},{value:"at_de", name:"Austria / Deutsch"},{value:"ch_de", name:"Switzerland / Deutsch"},{value:"fr_fr", name:"France / French"},{value:"nl_nl", name:"Netherlands / Dutch"},{value:"it_it", name:"Italy / Italian"},{value:"ca_en", name:"Canada / Englisch"},{value:"us_en", name:"US / Englisch"},{value:"gb_en", name:"GB / Englisch"},{value:"en_en", name:"International / Englisch"}];
 var baLanguages = [{value:"de", name:"Deutsch"},{value:"en", name:"English"},{value:"es", name:"Español"},{value:"fr", name:"Français"},{value:"it", name:"Italiano"},{value:"pl", name:"Polski"},{value:"pt", name:"Português"},{value:"sv", name:"Svenska"},{value:"zh", name:"中文"},{value:"ja", name:"日本語"},{value:"ru", name:"Русский"},{value:"ko", name:"한국어"}];
 var baEditions = [{value:"AF", name:"Afghanistan"},{value:"AL", name:"Albania"},{value:"DZ", name:"Algeria"},{value:"AS", name:"American Samoa"},{value:"AD", name:"Andorra"},{value:"AO", name:"Angola"},{value:"AI", name:"Anguilla"},{value:"AG", name:"Antigua"},{value:"AR", name:"Argentina"},{value:"AM", name:"Armenia"},{value:"AW", name:"Aruba"},{value:"AU", name:"Australia"},{value:"AT", name:"Austria"},{value:"AZ", name:"Azerbaijan"},{value:"BS", name:"Bahamas"},{value:"BH", name:"Bahrain"},{value:"BD", name:"Bangladesh"},{value:"BB", name:"Barbados"},{value:"BY", name:"Belarus"},{value:"BE", name:"Belgium"},{value:"BZ", name:"Belize"},{value:"BJ", name:"Benin Republic"},{value:"BM", name:"Bermuda"},{value:"BT", name:"Bhutan"},{value:"BO", name:"Bolivia"},{value:"BA", name:"Bosnia-Herzegovina"},{value:"BW", name:"Botswana"},{value:"BR", name:"Brazil"},{value:"VG", name:"British Virgin Islands"},{value:"BN", name:"Brunei"},{value:"BG", name:"Bulgaria"},{value:"BF", name:"Burkina Faso"},{value:"BI", name:"Burundi"},{value:"KH", name:"Cambodia"},{value:"CA", name:"Canada"},{value:"CV", name:"Cape Verde"},{value:"KY", name:"Cayman Islands"},{value:"CF", name:"Central African Rep"},{value:"TD", name:"Chad"},{value:"CL", name:"Chile"},{value:"CN", name:"China"},{value:"CX", name:"Christmas Island"},{value:"CC", name:"Cocos Islands"},{value:"CO", name:"Colombia"},{value:"CG", name:"Congo"},{value:"CK", name:"Cook Islands"},{value:"CR", name:"Costa Rica"},{value:"HR", name:"Croatia"},{value:"CU", name:"Cuba"},{value:"CY", name:"Cyprus"},{value:"CZ", name:"Czech Republic"},{value:"DK", name:"Denmark"},{value:"DJ", name:"Djibouti"},{value:"DM", name:"Dominica"},{value:"DO", name:"Dominican Rep"},{value:"EC", name:"Ecuador"},{value:"EG", name:"Egypt"},{value:"SV", name:"El Salvador"},{value:"GQ", name:"Equatorial Guinea"},{value:"ER", name:"Eritrea"},{value:"EE", name:"Estonia"},{value:"ET", name:"Ethiopia"},{value:"FO", name:"Faeroe Is"},{value:"FK", name:"Falkland Is"},{value:"FJ", name:"Fiji"},{value:"FI", name:"Finland"},{value:"FR", name:"France"},{value:"GF", name:"French Guyana"},{value:"PF", name:"French Polynesia"},{value:"GA", name:"Gabon"},{value:"GM", name:"Gambia"},{value:"GE", name:"Georgia"},{value:"DE", name:"Germany"},{value:"GH", name:"Ghana"},{value:"GI", name:"Gibraltar (UK)"},{value:"GR", name:"Greece"},{value:"GL", name:"Greenland"},{value:"GD", name:"Grenada"},{value:"GP", name:"Guadeloupe"},{value:"GU", name:"Guam"},{value:"GT", name:"Guatemala"},{value:"GN", name:"Guinea"},{value:"GW", name:"Guinea Bissau"},{value:"GY", name:"Guyana"},{value:"HT", name:"Haiti"},{value:"HN", name:"Honduras"},{value:"HK", name:"Hong Kong"},{value:"HU", name:"Hungary"},{value:"IS", name:"Iceland"},{value:"IN", name:"India"},{value:"ID", name:"Indonesia"},{value:"IR", name:"Iran"},{value:"IQ", name:"Iraq"},{value:"IE", name:"Ireland"},{value:"IL", name:"Israel"},{value:"IT", name:"Italy"},{value:"CI", name:"Ivory Coast"},{value:"JM", name:"Jamaica"},{value:"JP", name:"Japan"},{value:"JO", name:"Jordan"},{value:"KZ", name:"Kazakhstan"},{value:"KE", name:"Kenya"},{value:"KI", name:"Kiribati"},{value:"XK", name:"Kosovo"},{value:"KW", name:"Kuwait"},{value:"KG", name:"Kyrgyzstan"},{value:"LA", name:"Laos"},{value:"LV", name:"Latvia"},{value:"LB", name:"Lebanon"},{value:"LS", name:"Lesotho"},{value:"LR", name:"Liberia"},{value:"LY", name:"Libya"},{value:"LI", name:"Liechtenstein"},{value:"LT", name:"Lithuania"},{value:"LU", name:"Luxembourg"},{value:"MO", name:"Macau"},{value:"MK", name:"Macedonia"},{value:"MG", name:"Madagascar"},{value:"MW", name:"Malawi"},{value:"MY", name:"Malaysia"},{value:"MV", name:"Maldives"},{value:"ML", name:"Mali"},{value:"MT", name:"Malta"},{value:"MP", name:"Mariana Islands"},{value:"MH", name:"Marshall Islands"},{value:"MQ", name:"Martinique"},{value:"MR", name:"Mauritania"},{value:"MU", name:"Mauritius"},{value:"MX", name:"Mexico"},{value:"FM", name:"Micronesia"},{value:"UM", name:"Minor Island"},{value:"MD", name:"Moldova"},{value:"MC", name:"Monaco"},{value:"ME", name:"Montenegro"},{value:"MS", name:"Montserrat"},{value:"MA", name:"Morocco"},{value:"MZ", name:"Mozambique"},{value:"MM", name:"Myanmar"},{value:"NA", name:"Namibia"},{value:"NR", name:"Nauru"},{value:"NP", name:"Nepal"},{value:"AN", name:"Netherland Antilles"},{value:"NL", name:"Netherlands"},{value:"NC", name:"New Caledonia"},{value:"NZ", name:"New Zealand"},{value:"NI", name:"Nicaragua"},{value:"NE", name:"Niger"},{value:"NG", name:"Nigeria"},{value:"NU", name:"Niue"},{value:"NF", name:"Norfolk Island"},{value:"NO", name:"Norway"},{value:"OM", name:"Oman"},{value:"PK", name:"Pakistan"},{value:"PA", name:"Panama"},{value:"PG", name:"Papua New Guinea"},{value:"PY", name:"Paraguay"},{value:"KP", name:"Peoples Rep Korea"},{value:"PE", name:"Peru"},{value:"PH", name:"Philippines"},{value:"PL", name:"Poland"},{value:"PT", name:"Portugal"},{value:"PR", name:"Puerto Rico"},{value:"QA", name:"Qatar"},{value:"CM", name:"Republic Cameroon"},{value:"RE", name:"Reunion"},{value:"RO", name:"Romania"},{value:"RU", name:"Russia"},{value:"RW", name:"Rwanda"},{value:"SM", name:"San Marino"},{value:"SA", name:"Saudi Arabia"},{value:"SN", name:"Senegal"},{value:"RS", name:"Serbia"},{value:"SC", name:"Seychelles"},{value:"SL", name:"Sierra Leone"},{value:"SG", name:"Singapore"},{value:"SK", name:"Slovakia"},{value:"SI", name:"Slovenia"},{value:"SB", name:"Solomon Island"},{value:"SO", name:"Somalia"},{value:"ZA", name:"South Africa"},{value:"KR", name:"South Korea"},{value:"ES", name:"Spain"},{value:"LK", name:"Sri Lanka"},{value:"KN", name:"St Kitts and Nevis"},{value:"LC", name:"St Lucia"},{value:"VC", name:"St Vincent"},{value:"SD", name:"Sudan"},{value:"SR", name:"Suriname"},{value:"SZ", name:"Swaziland"},{value:"SE", name:"Sweden"},{value:"CH", name:"Switzerland"},{value:"SY", name:"Syria"},{value:"TW", name:"Taiwan"},{value:"TJ", name:"Tajikistan"},{value:"TZ", name:"Tanzania"},{value:"TH", name:"Thailand"},{value:"TL", name:"Timor - Leste"},{value:"TG", name:"Togo"},{value:"TO", name:"Tonga"},{value:"TT", name:"Trinidad and Tobago"},{value:"TN", name:"Tunisia"},{value:"TR", name:"Turkey"},{value:"TM", name:"Turkmenistan"},{value:"TC", name:"Turks Caicos"},{value:"TV", name:"Tuvalu"},{value:"VI", name:"US Virgin Islands"},{value:"US", name:"USA"},{value:"UG", name:"Uganda"},{value:"UA", name:"Ukraine"},{value:"AE", name:"United Arab Emirates"},{value:"GB", name:"United Kingdom"},{value:"UY", name:"Uruguay"},{value:"UZ", name:"Uzbekistan"},{value:"VU", name:"Vanuatu"},{value:"VE", name:"Venezuela"},{value:"VN", name:"Vietnam"},{value:"WS", name:"Western Samoa"},{value:"YE", name:"Yemen Republic"},{value:"ZM", name:"Zambia"},{value:"ZW", name:"Zimbabwe"}];
 var czEditions = [{value:"AR-GB", name:"Argentina / English"},{value:"AU-GB", name:"Australia / English"},{value:"AZ-GB", name:"Azerbaijan / English"},{value:"BD-GB", name:"Bangladesh / English"},{value:"BE-GB", name:"Belgium / English"},{value:"BR-GB", name:"Brazil / English"},{value:"KH-GB", name:"Cambodia / English"},{value:"CA-GB", name:"Canada / English"},{value:"CA-FR", name:"Canada / French"},{value:"CN-GB", name:"China / English"},{value:"DK-GB", name:"Denmark / English"},{value:"FI-GB", name:"Finland / English"},{value:"FR-GB", name:"France / English"},{value:"FR-FR", name:"France / French"},{value:"GE-GB", name:"Georgia / English"},{value:"DE-GB", name:"Germany / English"},{value:"DE-DE", name:"Germany / German"},{value:"GR-GB", name:"Greece / English"},{value:"HK-GB", name:"Hong Kong / English"},{value:"IN-GB", name:"India / English"},{value:"ID-GB", name:"Indonesia / English"},{value:"IR-GB", name:"Iran / English"},{value:"IE-GB", name:"Ireland / English"},{value:"IT-GB", name:"Italy / English"},{value:"JP-GB", name:"Japan / English"},{value:"JO-GB", name:"Jordan / English"},{value:"KZ-GB", name:"Kazakhstan / English"},{value:"KE-GB", name:"Kenya / English"},{value:"KG-GB", name:"Kyrgyzstan / English"},{value:"MY-GB", name:"Malaysia / English"},{value:"MV-GB", name:"Maldives / English"},{value:"MO-GB", name:"Macau / English"},{value:"MM-GB", name:"Myanmar / English"},{value:"NP-GB", name:"Nepal / English"},{value:"NL-GB", name:"Netherlands / English"},{value:"NZ-GB", name:"New Zealand / English"},{value:"NO-GB", name:"Norway / English"},{value:"PK-GB", name:"Pakistan / English"},{value:"PA-GB", name:"Panama / English"},{value:"PE-GB", name:"Peru / English"},{value:"PH-GB", name:"Philippines / English"},{value:"PT-GB", name:"Portugal / English"},{value:"RU-GB", name:"Russia / English"},{value:"SA-GB", name:"Saudi Arabia / English"},{value:"SG-GB", name:"Singapore / English"},{value:"ZA-GB", name:"South Africa / English"},{value:"KR-GB", name:"South Korea / English"},{value:"ES-GB", name:"Spain / English"},{value:"SE-GB", name:"Sweden / English"},{value:"CH-GB", name:"Switzerland / English"},{value:"TW-GB", name:"Taiwan / English"},{value:"TJ-GB", name:"Tajikistan / English"},{value:"TZ-GB", name:"Tanzania / English"},{value:"TH-GB", name:"Thailand / English"},{value:"TR-GB", name:"Turkey / English"},{value:"TM-GB", name:"Turkmenistan / English"},{value:"UA-GB", name:"Ukraine / English"},{value:"GB-GB", name:"United Kingdom / English"},{value:"AE-GB", name:"United Arab Emirates / English"},{value:"UG-GB", name:"Uganda / English"},{value:"US-GB", name:"United  States / English"},{value:"UZ-GB", name:"Uzbekistan / English"},{value:"VE-GB", name:"Venezuela / English"},{value:"VN-GB", name:"Vietnam / English"}];
@@ -327,6 +336,7 @@ function createUsersettings(){
     str +='<div id="mptaac1Currency" style="width:33%;float:left;">American Currency (America & UK):<label style="cursor:pointer;">'+printSettingsvalue("aac1Currency")+'</label></div>';
     str +='<div id="mptacEdition" style="width:33%;float:left;">Air Canada Edition:<label style="cursor:pointer;">'+printSettingsvalue("acEdition")+'</label></div>';
     str +='<div id="mptafEdition" style="width:33%;float:left;">Air France Edition:<label style="cursor:pointer;">'+printSettingsvalue("afEdition")+'</label></div>';
+    str +='<div id="mptazEdition" style="width:33%;float:left;">Alitalia Edition:<label style="cursor:pointer;">'+printSettingsvalue("azEdition")+'</label></div>';
     str +='<div id="mptbaLanguage" style="width:33%;float:left;">British Airways Language:<label style="cursor:pointer;">'+printSettingsvalue("baLanguage")+'</label></div>';
     str +='<div id="mptbaEdition" style="width:33%;float:left;">British Airways Edition:<label style="cursor:pointer;">'+printSettingsvalue("baEdition")+'</label></div>';
     str +='<div id="mptczEdition" style="width:33%;float:left;">China Southern Edition:<label style="cursor:pointer;">'+printSettingsvalue("czEdition")+'</label></div>';
@@ -361,6 +371,7 @@ function createUsersettings(){
     document.getElementById('mptaac1Currency').onclick=function(){toggleSettings("aac1Currency");};
     document.getElementById('mptacEdition').onclick=function(){toggleSettings("acEdition");};      
     document.getElementById('mptafEdition').onclick=function(){toggleSettings("afEdition");};
+    document.getElementById('mptazEdition').onclick=function(){toggleSettings("azEdition");};
     document.getElementById('mptbaLanguage').onclick=function(){toggleSettings("baLanguage");};
     document.getElementById('mptbaEdition').onclick=function(){toggleSettings("baEdition");};
     document.getElementById('mptczEdition').onclick=function(){toggleSettings("czEdition");};
@@ -501,6 +512,15 @@ function toggleSettings(target){
       			mptUsersettings["afEdition"] = afEditions[pos]["value"];	
       		}
       	break;
+     case "azEdition":
+          var pos=findPositionForValue(mptUsersettings["azEdition"],azEditions);
+      		if (pos >= (azEditions.length - 1) || pos === -1) {
+			      mptUsersettings["azEdition"] = azEditions[0]["value"];
+      		} else {
+            pos++;
+      			mptUsersettings["azEdition"] = azEditions[pos]["value"];	
+      		}
+      	break;
      case "baLanguage":
           var pos=findPositionForValue(mptUsersettings["baLanguage"],baLanguages);
       		if (pos >= (baLanguages.length - 1) || pos === -1) {
@@ -604,8 +624,10 @@ function toggleSettings(target){
           mptSettings["cabin"]="Auto";
         }
         document.getElementById('mptCabinMode').innerHTML=mptSettings["cabin"];
-          return false;
-          break;       
+        // refresh links
+        printLinksContainer();
+        return false;
+        break;       
       default:
         if (mptUsersettings[target]==1){
            mptUsersettings[target]=0;
@@ -635,6 +657,8 @@ function processPassengers(){
   paxText=mtpPassengerConfig.adults + "a" + (mtpPassengerConfig.cAges.length>0?" "+mtpPassengerConfig.cAges.length+"c":"")+((mtpPassengerConfig.infantsLap+mtpPassengerConfig.infantsSeat)>0?" "+(mtpPassengerConfig.infantsLap+mtpPassengerConfig.infantsSeat)+"i":"");
   document.getElementById('mtpPaxCount').innerHTML = paxText;
   toggleVis(document.getElementById("mptPassengers"));
+  // reload links
+  printLinksContainer();
 }
 
 function processChild(target){
@@ -672,6 +696,9 @@ function printSettingsvalue(target){
           break;
       case "afEdition":
           ret=findNameForValue(mptUsersettings["afEdition"],afEditions);
+          break;
+      case "azEdition":
+          ret=findNameForValue(mptUsersettings["azEdition"],azEditions);
           break;
       case "baLanguage":
           ret=findNameForValue(mptUsersettings["baLanguage"],baLanguages);
@@ -1150,6 +1177,35 @@ function fePS() {
     
     if (mptUsersettings["enableInlinemode"]==1) printCPM();
  
+    printLinksContainer();
+
+    /*** inline binding ***/
+    if(mptUsersettings["enableSeatguru"]==1) bindSeatguru();
+    if(mptUsersettings["enablePlanefinder"]==1) bindPlanefinder();  
+    if(mptUsersettings["enableMilesbreakdown"]==1 && typeof(JSON) !== "undefined") printMilesbreakdown();  
+    if(mptUsersettings["enableWheretocredit"]==1) bindWheretocredit();
+    if (mptUsersettings["enableFarefreaks"]==1 && typeof(JSON) !== "undefined"){createFareFreaksContainer();}  
+}
+
+function printLinksContainer(){
+    // do nothing if editor mode is active
+    if (findtargets("editoritem").length>0){
+        return false;
+    }
+    // empty outputcontainer
+    if (document.getElementById('powertoolslinkcontainer')!=undefined){
+        var div = document.getElementById('powertoolslinkcontainer');
+        div.innerHTML ="";
+    }
+    //  S&D powertool items
+  	var elems = findtargets('powertoolsitem');
+  	for(var i = elems.length - 1; i >= 1; i--){
+  		elems[i].parentNode.removeChild(elems[i]);
+  	}
+    /*** Print Timezone***/
+    if (typeof(currentItin["itin"][0]["dep"]["offset"])==="undefined") {
+       printTimezones();
+    }    
     /*** Airlines ***/
     printAAc1();
     printAA(); 
@@ -1173,7 +1229,7 @@ function fePS() {
     }  
     printKL();
     // printLA(); // Disabled until further notice
-    if (inArray("LH",currentItin["carriers"])){
+    if (inArray("LH",currentItin["carriers"]) || inArray("OS",currentItin["carriers"])){
        printLH();
     }
     if (currentItin["itin"].length <= 2 && inArray("LX",currentItin["carriers"])) {
@@ -1199,13 +1255,8 @@ function fePS() {
     printFarefreaks (1); 
     printGCM ();
     printWheretocredit();
-    /*** inline binding ***/
-    if(mptUsersettings["enableSeatguru"]==1) bindSeatguru();
-    if(mptUsersettings["enablePlanefinder"]==1) bindPlanefinder();  
-    if(mptUsersettings["enableMilesbreakdown"]==1 && typeof(JSON) !== "undefined") printMilesbreakdown();  
-    if(mptUsersettings["enableWheretocredit"]==1) bindWheretocredit();
-   if (mptUsersettings["enableFarefreaks"]==1 && typeof(JSON) !== "undefined"){createFareFreaksContainer();}  
-
+    /*** attach JS events after building link container  ***/
+    bindLinkClicks();
 }
 //*** Rulelinks ****//
 function bindRulelinks(){
@@ -1839,9 +1890,9 @@ function printAA(){
                      currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
                  k++;
                 }
-                seg    = currentItin['itin'][i]['seg'][j+k]['arr']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['day']).slice(-2)+'T'+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['time']).slice(-5)+'+00:00,';
+                seg    = currentItin['itin'][i]['seg'][j+k]['arr']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['day']).slice(-2)+'T'+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['time']).slice(-5)+(typeof(currentItin['itin'][i]['seg'][j+k]['arr']['offset'])=="undefined" ? "+00:00" : currentItin['itin'][i]['seg'][j+k]['arr']['offset'])+',';
                 seg   += currentItin['itin'][i]['seg'][j]['bookingclass']+",";
-                seg   += currentItin['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+'T'+('0'+currentItin['itin'][i]['seg'][j]['dep']['time']).slice(-5)+'+00:00,';                
+                seg   += currentItin['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+'T'+('0'+currentItin['itin'][i]['seg'][j]['dep']['time']).slice(-5)+(typeof(currentItin['itin'][i]['seg'][j]['dep']['offset'])=="undefined" ? "+00:00" : currentItin['itin'][i]['seg'][j]['dep']['offset'])+',';                
                 seg   += currentItin['itin'][i]['seg'][j+k]['dest']+",";
                 seg   += currentItin['itin'][i]['seg'][j]['carrier']+currentItin['itin'][i]['seg'][j]['fnr']+",";
                 seg   += currentItin['itin'][i]['seg'][j]['orig']; // NO , here!
@@ -1927,7 +1978,11 @@ function printAAc1(){
                   itinseg    = "#"+currentItin['itin'][i]['seg'][j]['carrier']+"|"+currentItin['itin'][i]['seg'][j]['fnr']+"|"+currentItin['itin'][i]['seg'][j]['bookingclass'];
                   itinseg   += "|"+currentItin['itin'][i]['seg'][j]['orig'];    
                   itinseg   += "|"+currentItin['itin'][i]['seg'][j+k]['dest'];
-                  itinseg   += "|"+Date.parse(currentItin['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+'T'+('0'+currentItin['itin'][i]['seg'][j]['dep']['time']).slice(-5)+":00+00:00");                
+                  itinseg   += "|"+Date.parse(currentItin['itin'][i]['seg'][j]['dep']['year']+'-'+
+                                               ('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+
+                                               ('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+
+                                               'T'+('0'+currentItin['itin'][i]['seg'][j]['dep']['time']).slice(-5)+":00"+
+                                               (typeof(currentItin['itin'][i]['seg'][j]['dep']['offset'])=="undefined" ? "+00:00" : currentItin['itin'][i]['seg'][j]['dep']['offset']));                
                   itinseg   += "|"+i;
                   itinsegs.push(itinseg);
                   j+=k;
@@ -1935,7 +1990,11 @@ function printAAc1(){
         //build itin-leg structure
         itinleg  ="#"+currentItin["itin"][i]["orig"]+"|"+currentItin["itin"][i]["dest"];
         itinleg +="|0|0";
-        itinleg +="|"+Date.parse(currentItin["itin"][i]["dep"]['year']+"-"+("0"+currentItin["itin"][i]["dep"]['month']).slice(-2)+"-"+("0"+currentItin["itin"][i]["dep"]['day']).slice(-2)+"T"+("0"+currentItin["itin"][i]["dep"]['time']).slice(-5)+":00+00:00");
+        itinleg +="|"+Date.parse(currentItin["itin"][i]["dep"]['year']+"-"+
+                                ("0"+currentItin["itin"][i]["dep"]['month']).slice(-2)+"-"+
+                                ("0"+currentItin["itin"][i]["dep"]['day']).slice(-2)+
+                                "T"+("0"+currentItin["itin"][i]["dep"]['time']).slice(-5)+":00"+
+                                (typeof(currentItin['itin'][i]["dep"]["offset"])=="undefined" ? "+00:00" : currentItin['itin'][i]["dep"]["offset"]));
         itinlegs.push(itinleg);
       }
       search+=",0.00,"+mptUsersettings["aac1Currency"]+",";
@@ -2084,15 +2143,21 @@ function printAF() {
 }
 
 function printAZ() {
-  var azUrl = 'http://booking.alitalia.com/Booking/'+(mptSettings["itaLanguage"]=='de'||mptUsersettings["language"]=='de'?'de_de':'us_en')+'/Flight/ExtMetaSearch?SearchType=BrandMetasearch';
+  var createUrl = function (edition) {
+    var azUrl = 'https://www.alitalia.com/'+edition+'/home-page.metasearch.json?SearchType=BrandMetasearch';
+  var cabins = ['Economy', 'Economy', 'Business', 'First'];
   var seg = 0;
   for (var i=0; i < currentItin['itin'].length; i++) {
     for (var j=0; j < currentItin['itin'][i]['seg'].length; j++) {
       azUrl += '&MetaSearchDestinations['+seg+'].From='         +currentItin['itin'][i]['seg'][j]['orig'];
-      azUrl += '&MetaSearchDestinations['+seg+'].to='           +currentItin['itin'][i]['seg'][j]['dest'];
-      azUrl += '&MetaSearchDestinations['+seg+'].DepartureDate='+currentItin['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2);
-      azUrl += '&MetaSearchDestinations['+seg+'].Flight='       +currentItin['itin'][i]['seg'][j]['fnr'];
+      azUrl += '&MetaSearchDestinations['+seg+'].To='           +currentItin['itin'][i]['seg'][j]['dest'];
+        azUrl += '&MetaSearchDestinations['+seg+'].DepartureDate='+currentItin['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+':'+('0'+currentItin['itin'][i]['seg'][j]['dep']['time']).slice(-5);
+        azUrl += '&MetaSearchDestinations['+seg+'].ArrivalDate='  +currentItin['itin'][i]['seg'][j]['arr']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j]['arr']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j]['arr']['day']).slice(-2)+':'+('0'+currentItin['itin'][i]['seg'][j]['arr']['time']).slice(-5);
+      azUrl += '&MetaSearchDestinations['+seg+'].Flight='       +currentItin['itin'][i]['seg'][j]['fnr']
       azUrl += '&MetaSearchDestinations['+seg+'].code='         +currentItin['itin'][i]['seg'][j]['farebase'];
+      azUrl += '&MetaSearchDestinations['+seg+'].MseType=';
+      azUrl += '&MetaSearchDestinations['+seg+'].bookingClass=' +currentItin['itin'][i]['seg'][j]['bookingclass'];
+      azUrl += '&MetaSearchDestinations['+seg+'].cabinClass='   +cabins[currentItin['itin'][i]['seg'][j]['cabin']];
       azUrl += '&MetaSearchDestinations['+seg+'].slices='       +i;
       seg++;
     }
@@ -2102,12 +2167,22 @@ function printAZ() {
     printNotification("Error: Failed to validate Passengers in printAZ");
     return false;
   }
-  azUrl += '&children_number='+pax.children.length+'&Children='+pax.children.length+'&newborn_number='+pax.infLap+'&Infants='+pax.infLap;
-  azUrl += '&adult_number='+pax.adults+'&Adults='+pax.adults; 
+  azUrl += '&children_number='+pax.children.length+'&newborn_number='+pax.infLap+'&adult_number='+pax.adults; 
+    return azUrl;
+  };  
+  // get edition
+  var edition=mptUsersettings["azEdition"];
+  var azUrl = createUrl(edition);
+  if (azUrl === false) {
+    return false;
+  }
+  var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  extra += azEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
+  extra += '</span></span>';  
   if (mptUsersettings["enableInlinemode"]==1){
-   printUrlInline(azUrl,"Alitalia","");
+   printUrlInline(azUrl,"Alitalia","",null,extra);
   } else {
-   printUrl(azUrl,"Alitalia","");
+   printUrl(azUrl,"Alitalia","",extra);
   } 
 }
 
@@ -2630,7 +2705,6 @@ function printCheapOair(){
   }
 }
 
-
 /*** OTAs ****/
 function printPriceline(){
     var pricelineurl = "https://www.priceline.com/m/fly/search";
@@ -3071,12 +3145,10 @@ function createFareFreaksContainer(){
        document.getElementById('ff-routingcodesoutput').innerHTML="Loading... Please wait..";
        getFareFreaksRoutingcodes();
      }
-    console.log("hi");
      toggleVis(document.getElementById("ff-routingcodescontainer"));
    };
   document.getElementById('ff-closeroutingcodescontainer').onclick=function(){ toggleVis(document.getElementById("ff-routingcodescontainer"));};  
 }
-
 
 function getFareFreaksPlan(){
    function formatDuration(dur){
@@ -3221,6 +3293,107 @@ function createFareFreaksPlanlink(){
     });   
 }
 
+function resolveTimezones(){
+  var options = {};
+  document.getElementById('timezone-container').style.display = 'inline';
+  options.mode="post";
+  options.headers=[{name:'Accept', val:'application/json;charset=UTF-8'}, {name:'Content-Type', val:'application/x-www-form-urlencoded'}];
+  options.data="data="+JSON.stringify({action:"resolvetimezones",plan:getTimezoneData("small"),type:"matrix"});  
+  doHttpRequest("https://www.farefreaks.com/ajax/timezone.php",options,function(xmlHttpObject) {
+     var response=false;
+     document.getElementById('timezone-container').style.display = 'none';
+     if (typeof(JSON) !== "undefined"){
+       try {
+          response = JSON.parse(xmlHttpObject.responseText);
+        } catch (e){
+          response=false;
+        }
+     } else {
+       // do not(!) use eval here :-/
+       printNotification("Error: Failed retrieving timezones - Browser not supporting JSON");
+       return false;
+     }     
+     if (typeof(response) !== "object"){
+      printNotification("Error: Failed retrieving timezones");
+      return false;
+     }
+     if (response["success"]===undefined || response["data"]===undefined){
+      printNotification("Error: Failed retrieving timezones - wrong plan data format");
+      return false;
+     }
+     if (response["success"]!=="1"){
+      printNotification("Error: "+response["error"]+" while retrieving timezone data");
+      return false; 
+     } else {
+       for (var i=0;i<currentItin["itin"].length;i++) {
+        // walks each leg
+          currentItin["itin"][i]["dep"]["offset"]=response["data"][i][0]["depoffset"];
+          for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
+            // walks each segment of leg
+            // validate
+            var temp = response["data"][i][j]["depoffset"].match(/^([\+\-]{1}[0-9]{2}:[0-9]{2})$/);
+            if(temp===null){
+                  printNotification("Error: Failed retrieving timezones - invalid response");
+                  return false;
+            }
+            currentItin["itin"][i]["seg"][j]["dep"]["offset"]=response["data"][i][j]["depoffset"];
+            if (typeof(response["data"][i][j]["arroffset"])!=="undefined"){
+              // validate
+              var temp = response["data"][i][j]["arroffset"].match(/^([\+\-]{1}[0-9]{2}:[0-9]{2})$/);
+              if(temp===null){
+                    printNotification("Error: Failed retrieving timezones - invalid response");
+                    return false;
+              }     
+              currentItin["itin"][i]["seg"][j]["arr"]["offset"]=response["data"][i][j]["arroffset"];
+            }
+          }
+          if (typeof(response["data"][i][j-1]["arroffset"])!=="undefined"){
+            currentItin["itin"][i]["arr"]["offset"]=response["data"][i][j-1]["arroffset"];
+          }          
+       }
+     }
+     printLinksContainer();
+    });   
+}
+
+function printTimezones(){
+  var container;
+  var extra = '<span id="timezone-container" style="display: none;">&nbsp;<img src="data:image/gif;base64,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" style="width: 1em; height: 1em;"></span>';
+  if (mptUsersettings["enableInlinemode"]==1){
+      printUrlInline('javascript: void(0);', 'Resolve Timezones', '', 1, extra);
+      container = getSidebarContainer(1);
+  } else {
+      printUrl('javascript: void(0);', 'Resolve Timezones', '', extra);
+      container = document.getElementById('powertoolslinkcontainer');
+  } 
+  var links = container.getElementsByTagName('a');
+  var link = links[0];
+  link.innerHTML = 'Resolve Timezones';
+  link.target = '_self';
+  link.style='color:black';
+}
+
+function getTimezoneData(mode){
+  var plan=new Array(); 
+  for (var i=0;i<currentItin["itin"].length;i++) {
+  // walks each leg
+  var leg = new Array(); 
+    for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
+       //walks each segment of leg
+         var temp= new Object();
+         temp.orig = currentItin["itin"][i]["seg"][j]["orig"];
+         temp.depdatetime = currentItin["itin"][i]["seg"][j]["dep"]["year"]+"-"+("0"+currentItin["itin"][i]["seg"][j]["dep"]["month"]).slice(-2)+"-"+("0"+currentItin["itin"][i]["seg"][j]["dep"]["day"]).slice(-2)+"T"+("00"+currentItin["itin"][i]["seg"][j]["dep"]["time"]).slice(-5);
+         if(mode==="full"){
+           temp.dest = currentItin["itin"][i]["seg"][j]["dest"];
+           temp.arrdatetime = currentItin["itin"][i]["seg"][j]["arr"]["year"]+"-"+("0"+currentItin["itin"][i]["seg"][j]["arr"]["month"]).slice(-2)+"-"+("0"+currentItin["itin"][i]["seg"][j]["arr"]["day"]).slice(-2)+"T"+("00"+currentItin["itin"][i]["seg"][j]["arr"]["time"]).slice(-5);          
+         }
+         leg.push(temp);
+      }
+   plan.push({segs:leg}); 
+   }
+  return plan;
+}
+
 function openWheretocredit(link) {
   var container = document.getElementById('wheretocredit-container');
   container.style.display = 'inline';
@@ -3305,10 +3478,6 @@ function printWheretocredit() {
   var link = links[links.length - 1];
   link.target = '_self';
   link.innerHTML = 'Calculate miles with wheretocredit.com';
-  link.onclick = function () {
-    link.onclick = null;
-    openWheretocredit(link);
-  };
 }
 
 function bindWheretocredit(){
@@ -3326,6 +3495,30 @@ function bindWheretocredit(){
           }
       }
    }  
+}
+
+function bindLinkClicks(){
+  var container;
+  var linkid=0;
+  if (mptUsersettings["enableInlinemode"]==1){
+      container = getSidebarContainer(1);
+  } else {
+      container = document.getElementById('powertoolslinkcontainer');
+  } 
+  var links = container.getElementsByTagName('a');
+  if (typeof(currentItin["itin"][0]["dep"]["offset"])==="undefined") {
+    links[linkid].onclick=function () {
+      resolveTimezones();
+    };
+    linkid++;
+  }
+  if (mptUsersettings["enableInlinemode"]!=1){
+      linkid = links.length - 1;
+  }  
+  links[linkid].onclick = function () {
+     links[linkid].onclick = null;
+     openWheretocredit(links[linkid]);
+  };
 }
 
 // Inline Stuff
