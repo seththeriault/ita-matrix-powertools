@@ -14,7 +14,7 @@
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
 **** Version 0.24 ****
-# 2017-02-21 Edited by Steppo (Fixed Priceline - thx andyDD!)
+# 2017-02-21 Edited by Steppo (Fixed Priceline - thx andydd!)
 **** Version 0.23 ****
 # 2016-12-11 Edited by Steppo (Fixed Alitalia and added editions
                                 added time zone resolving - only affecting links for American Airlines
