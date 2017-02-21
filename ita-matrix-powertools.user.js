@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.23
+// @version 0.24
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.24 ****
+# 2017-02-21 Edited by Steppo (Fixed Priceline - thx andyDD!)
 **** Version 0.23 ****
 # 2016-12-11 Edited by Steppo (Fixed Alitalia and added editions
                                 added time zone resolving - only affecting links for American Airlines
@@ -138,7 +140,7 @@ mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
 // General settings
 var mptSettings = new Object();
 mptSettings["itaLanguage"]="en";
-mptSettings["version"]="0.23";
+mptSettings["version"]="0.24";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
@@ -2739,7 +2741,7 @@ function printPriceline(){
       printNotification("Error: Failed to validate Passengers in printPriceline");
       return false;
     }
-   pricelineurl+="/details/R_"+searchparam+"_"+(pax.adults+pax.children.length+pax.infLap)+"_USD0.00?num-adults="+pax.adults+"&num-children="+pax.children.length+"&num-infants="+pax.infLap+"&num-youths=0";
+   pricelineurl+="/details/R_"+searchparam+"_"+(pax.adults+pax.children.length+pax.infLap)+"_USD0.00?refid=0&num-adults="+pax.adults+"&num-children="+pax.children.length+"&num-infants="+pax.infLap+"&num-youths=0";
    if (mptUsersettings["enableInlinemode"]==1){
       printUrlInline(pricelineurl,"Priceline","");
     } else {
