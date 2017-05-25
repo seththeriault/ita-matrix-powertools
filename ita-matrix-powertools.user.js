@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.24
+// @version 0.25
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.25 ****
+# 2017-02-21 Edited by c0dr (Fix for new matrix release)
 **** Version 0.24 ****
 # 2017-02-21 Edited by Steppo (Fixed Priceline - thx andydd!)
 **** Version 0.23 ****
@@ -140,7 +142,7 @@ mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
 // General settings
 var mptSettings = new Object();
 mptSettings["itaLanguage"]="en";
-mptSettings["version"]="0.24";
+mptSettings["version"]="0.25";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
@@ -211,18 +213,18 @@ var classSettings = new Object();
 classSettings["startpage"] = new Object();
 classSettings["startpage"]["maindiv"]="IR6M2QD-w-d"; //Container of main content. Unfortunately id "contentwrapper" is used twice
 classSettings["resultpage"] = new Object();
-classSettings["resultpage"]["itin"]="IR6M2QD-A-d"; //Container with headline: "Intinerary"
+classSettings["resultpage"]["itin"]="IR6M2QD-v-d"; //Container with headline: "Intinerary"
 classSettings["resultpage"]["itinRow"]="IR6M2QD-k-i"; // TR in itin with Orig, Dest and date
-classSettings["resultpage"]["milagecontainer"]="IR6M2QD-A-e"; // TD-Container on the right
+classSettings["resultpage"]["milagecontainer"]="IR6M2QD-v-e"; // TD-Container on the right
 classSettings["resultpage"]["rulescontainer"]="IR6M2QD-l-d"; // First container before rulelinks (the one with Fare X:)
-classSettings["resultpage"]["htbContainer"]="IR6M2QD-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
+classSettings["resultpage"]["htbContainer"]="IR6M2QD-l-k"; // full "how to buy"-container inner div (td=>div=>div) 
 classSettings["resultpage"]["htbLeft"]="IR6M2QD-l-g"; // Left column in the "how to buy"-container
 classSettings["resultpage"]["htbRight"]="IR6M2QD-l-f"; // Class for normal right column
 classSettings["resultpage"]["htbGreyBorder"]="IR6M2QD-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
-classSettings["resultpage"]["mcDiv"]="IR6M2QD-U-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
-classSettings["resultpage"]["mcHeader"]="IR6M2QD-U-b"; // Right menu header class ("Mileage", etc.)
-classSettings["resultpage"]["mcLinkList"]="IR6M2QD-U-c"; // Right menu ul list class (immediately following header)
+classSettings["resultpage"]["mcDiv"]="IR6M2QD-y-d";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+classSettings["resultpage"]["mcHeader"]="IR6M2QD-y-b"; // Right menu header class ("Mileage", etc.)
+classSettings["resultpage"]["mcLinkList"]="IR6M2QD-y-c"; // Right menu ul list class (immediately following header)
 
 var matrixCurrencies=[{p:/US\$/,c:"USD"},{p:/\€/,c:"EUR"},{p:/\£/,c:"GBP"},{p:/CA\$/,c:"CAD"},{p:/RS\./,c:"INR"}];
                        
