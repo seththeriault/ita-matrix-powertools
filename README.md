@@ -1,18 +1,17 @@
-ita-matrix-powertools
-=====================
+# ita-matrix-powertools
 Script for greasemonkey + ITA Matrix
 
 Main discussion here:
 
 http://www.flyertalk.com/forum/travel-tools/1623427-ita-purchase-fares-orbitz-delta-userscript.html
 
-***** Notice: *****
+## Notice: ##
 
 !!! Double check your chosen flights before purchasing !!!
 
 !!! Some providers have limited support !!!
 
-***** Posts you should read: *****
+## Posts you should read: ##
 
 General statement regarding this script: http://www.flyertalk.com/forum/travel-tools/1623427-ita-purchase-fares-orbitz-delta-united-userscript-4.html#post24394534
 
@@ -20,21 +19,27 @@ How to fix class names yourself: http://www.flyertalk.com/forum/24807572-post119
 
 Problems and limitations regarding pricing itins: http://www.flyertalk.com/forum/travel-tools/1623427-ita-purchase-fares-orbitz-delta-united-userscript-9.html#post24906119
 
-
-
-***** Usage: *****
+## Usage: ##
 
 Either add the script into your preferred script manager or copy the the RAW-Text into your debug console.
 Using debug console, you may use the shortened minified version.
 (Note: there is no need to reexecute the script on pagechange unless you reloaded the page)
 
-***** Files: *****
+You can also create a Bookmarklet by creating a Bookmark or Favorite with the following code as the URL:
+`javascript:var scr=document.createElement('script');scr.src='https://rawgit.com/SteppoFF/ita-matrix-powertools/master/script_minified.js';document.body.appendChild(scr);`
+
+
+
+## Files: ##
 
 ita-matrix-powertools.user.js -- Main userscript, install into Greasemonkey/etc but also usable in debug console.
 
 script_minified.txt --  Compact , pastable version of the script for pasting in the debug console.
 
-*********** Latest major changes **************
+### Latest major changes ###
+
+2017-05-25 Edited by c0dr (Fixed DOM classes)
+**** Version 0.25 ****
 
 2017-04-09 Edited by mr-C (Added Finland edition for AirFrance, necessary for bookings originating in Lithuania / VNO)
 **** Version 0.24 ****
@@ -92,7 +97,7 @@ Not documented
 **** Version 0.15 ****
 
 2015-09-30 Edited by IAkH ( added additional edition flyout menu,
-                                added Ebookers, 
+                                added Ebookers,
                                 added Etraveli )
 
 **** Version 0.14 ****
