@@ -36,6 +36,9 @@ You can also create a [Bookmarklet](https://support.mozilla.org/en-US/kb/bookmar
 
 ### Latest major changes ###
 
+##### Version 0.26 #####
+2017-05-29 Edited by Dead-Flag (added Skyscanner)
+
 ##### Version 0.25 #####
 2017-05-25 Edited by c0dr (Fixed DOM classes)
 
