@@ -1252,7 +1252,8 @@ function printLinksContainer(){
     printHipmunk ();
     printMomondo();
     printKayak(0);
-    printKayak(1);  
+    printKayak(1);
+    printSkyscanner();	
     if(mptUsersettings["enableDeviders"]==1) printSeperator();
     /*** other stuff ***/
     printFarefreaks (0);
@@ -2935,6 +2936,34 @@ function printKayak(method) {
         printUrlInline(KayakUrl, "Kayak", desc, null, KayakExtra);
     } else {
         printUrl(KayakUrl, "Kayak", desc, KayakExtra);
+    }
+}
+function printSkyscanner() {
+    //example https://www.skyscanner.ru/transport/d/stoc/2017-09-02/akl/akl/2017-09-16/stoc/akl/2017-09-29/syd?adults=1&children=0&adultsv2=1&childrenv2=&infants=0&cabinclass=economy&ref=day-view#results  
+    var SkyscannerEditions = [{name:"Skyscanner.com",host:"Skyscanner.com"},{name:"Skyscanner.de",host:"Skyscanner.de"},{name:"Skyscanner.it",host:"Skyscanner.it"},{name:"Skyscanner.es",host:"Skyscanner.es"},{name:"Skyscanner.co.uk",host:"Skyscanner.co.uk"},{name:"Skyscanner.dk",host:"Skyscanner.dk"},{name:"Skyscanner.mx",host:"Skyscanner.mx"},{name:"Skyscanner.fi",host:"Skyscanner.fi"},{name:"Skyscanner.fr",host:"Skyscanner.fr"}, {name:"Skyscanner.no",host:"Skyscanner.no"},{name:"Skyscanner.nl",host:"Skyscanner.nl"},{name:"Skyscanner.pt",host: "Skyscanner.pt"},{name:"Skyscanner.se",host:"Skyscanner.se" },{name:"Skyscanner.ru",host:"Skyscanner.ru"}];
+    var SkyscannerCreateUrl = function(host) {
+        var SkyscannerUrl = 'http://www.' + host + '/transport/d/';
+        var seg = 0;
+        for (var i = 0; i < currentItin['itin'].length; i++) {
+            SkyscannerUrl += '/' + currentItin['itin'][i]['orig'];
+            SkyscannerUrl += '/' + ('0' + currentItin['itin'][i]['dep']['day']).slice(-2) + '-' + ('0' + currentItin['itin'][i]['dep']['month']).slice(-2) + '-' + currentItin['itin'][i]['dep']['year'];
+			SkyscannerUrl += '/' + currentItin['itin'][i]['dest'];
+            seg++;
+        }
+        //SkyscannerUrl += '&AD=' + currentItin['numPax'] + '&TK=' + getSkyscannerCabin(currentItin['itin']['cabin']);
+		SkyscannerUrl += '?adults=' + currentItin['numPax'] + '&ref=day-view#results';
+        return SkyscannerUrl;
+    };
+    var SkyscannerUrl = SkyscannerCreateUrl("Skyscanner.com");
+    var SkyscannerExtra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+    SkyscannerExtra += SkyscannerEditions.map(function(obj, i) {
+        return '<a href="' + SkyscannerCreateUrl(obj.host) + '" target="_blank">' + obj.name + '</a>';
+    }).join('<br/>');
+    SkyscannerExtra += '</span></span>';
+    if (mptUsersettings["enableInlinemode"] == 1) {
+        printUrlInline(SkyscannerUrl, "Skyscanner", "", null, SkyscannerExtra);
+    } else {
+        printUrl(SkyscannerUrl, "Skyscanner", "", SkyscannerExtra);
     }
 }
 
