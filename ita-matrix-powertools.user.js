@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.25
+// @version 0.26
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,6 +13,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.26 ****
+# 2017-02-29 Edited by Dead-Flag (added Skyscanner)
 **** Version 0.25 ****
 # 2017-02-21 Edited by c0dr (Fix for new matrix release)
 **** Version 0.24 ****
@@ -142,7 +144,7 @@ mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
 // General settings
 var mptSettings = new Object();
 mptSettings["itaLanguage"]="en";
-mptSettings["version"]="0.25";
+mptSettings["version"]="0.26";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
