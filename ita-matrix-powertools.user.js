@@ -14,9 +14,9 @@
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
 **** Version 0.26 ****
-# 2017-02-29 Edited by Dead-Flag (added Skyscanner)
+# 2017-05-29 Edited by Dead-Flag (added Skyscanner)
 **** Version 0.25 ****
-# 2017-02-21 Edited by c0dr (Fix for new matrix release)
+# 2017-05-21 Edited by c0dr (Fix for new matrix release)
 **** Version 0.24 ****
 # 2017-02-21 Edited by Steppo (Fixed Priceline - thx andydd!)
 **** Version 0.23 ****
