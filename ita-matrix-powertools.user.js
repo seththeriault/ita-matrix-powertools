@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.26
+// @version 0.27
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -13,8 +13,10 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.27 ****
+# 2017-06-18 Edited by Steppo (Fixed Delta)
 **** Version 0.26 ****
-# 2017-05-29 Edited by Dead-Flag (added Skyscanner)
+# 2017-05-29 Edited by Dead-Flag (Added Skyscanner)
 **** Version 0.25 ****
 # 2017-05-21 Edited by c0dr (Fix for new matrix release)
 **** Version 0.24 ****
@@ -144,7 +146,7 @@ mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
 // General settings
 var mptSettings = new Object();
 mptSettings["itaLanguage"]="en";
-mptSettings["version"]="0.26";
+mptSettings["version"]="0.27";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
@@ -2296,11 +2298,12 @@ function printCZ(){
 
 function printDL(){
 // Steppo: What about farebasis?
-// Steppo: What about segmentskipping?    
+// Steppo: What about segmentskipping?
     var createUrl = function (edition) {
       // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-      var cabins = ['B5-Coach', 'COMFORT-PLUS-PREMIUM-ECONOMY', 'B2-Business', 'B2-Business']; 
+      var cabins = ['BASIC-ECONOMY', 'COMFORT-PLUS-PREMIUM-ECONOMY', 'BUSINESS', 'FIRST']; 
       var mincabin=3;
+      var farebases=new Array();
       var pax=validatePaxcount({maxPaxcount:9, countInf:true, childAsAdult:12, sepInfSeat:false, childMinAge:2});
       if (pax===false){
         printNotification("Error: Failed to validate Passengers in printDL");
@@ -2318,13 +2321,14 @@ function printDL(){
           deltaURL +="&itinSegment["+segcounter.toString()+"]="+i.toString()+":"+currentItin["itin"][i]["seg"][j]["bookingclass"];
           deltaURL +=":"+currentItin["itin"][i]["seg"][j]["orig"]+":"+currentItin["itin"][i]["seg"][j]["dest"]+":"+currentItin["itin"][i]["seg"][j]["carrier"]+":"+currentItin["itin"][i]["seg"][j]["fnr"];
           deltaURL +=":"+monthnumberToName(currentItin["itin"][i]["seg"][j]["dep"]["month"])+":"+ ( currentItin["itin"][i]["seg"][j]["dep"]["day"] < 10 ? "0":"") +currentItin["itin"][i]["seg"][j]["dep"]["day"]+":"+currentItin["itin"][i]["seg"][j]["dep"]["year"]+":0";
+          farebases.push(currentItin["itin"][i]["seg"][j]["farebase"]);
           if (currentItin["itin"][i]["seg"][j]["cabin"] < mincabin) {mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};
           segcounter++; 
         }
       }
       deltaURL += "&cabin="+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())];
-      deltaURL += "&fareBasis="+currentItin["farebases"].toString().replace(/,/g, ":");
-      deltaURL += "&price=0";
+      deltaURL += "&fareBasis="+farebases.join(":");
+      //deltaURL += "&price=0";
       deltaURL += "&numOfSegments=" + segcounter.toString() + "&paxCount=" + (pax.adults+pax.children.length+pax.infLap);
       deltaURL += "&vendorRedirectFlag=true&vendorID=Google";
       return deltaURL;
