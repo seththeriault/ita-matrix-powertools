@@ -3,7 +3,10 @@
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
 // @version 0.27
-// @grant GM_getValue
+// @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
+// @grant GM.getValue
+// @grant GM_setValue
+// @grant GM.setValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
 // ==/UserScript==
@@ -152,12 +155,15 @@ mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
 mptSettings["cabin"]="Auto";
 
-if (typeof GM_info === "undefined") {
+// async for GM4
+(async ()=>{
+
+if (typeof GM.info === "undefined") {
    mptSettings["scriptEngine"]=0; // console mode
   }
 else {
   mptSettings["scriptEngine"]=1; // tamper or grease mode
-  var mptSavedUsersettings = GM_getValue("mptUsersettings", "");
+  var mptSavedUsersettings = await GM.getValue("mptUsersettings", "");
   if (mptSavedUsersettings) {
     mptSavedUsersettings = JSON.parse(mptSavedUsersettings);
     mptUsersettings["timeformat"] = (mptSavedUsersettings["timeformat"] === undefined ? mptUsersettings["timeformat"] : mptSavedUsersettings["timeformat"]);
@@ -194,6 +200,8 @@ else {
     mptUsersettings["lxEdition"] = (mptSavedUsersettings["lxEdition"] === undefined ? mptUsersettings["lxEdition"] : mptSavedUsersettings["lxEdition"]);
   }
 }
+
+})(); // end async for GM4
 
 var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"];
 var aaEditions = [{value:"en_AU", name:"Australia"},{value:"en_BE", name:"Belgium"},{value:"en_CN", name:"China"},{value:"en_DK", name:"Denmark"},{value:"en_FI", name:"Finland"},{value:"en_FR", name:"France / English"},{value:"fr_FR", name:"France / French"},{value:"en_DE", name:"Germany / English"},{value:"de_DE", name:"Germany / Deutsch"},{value:"en_GR", name:"Greece"},{value:"en_HK", name:"Hong Kong"},{value:"en_IN", name:"India"},{value:"en_IE", name:"Ireland"},{value:"en_IL", name:"Israel"},{value:"en_IT", name:"Italy"},{value:"en_JP", name:"Japan"},{value:"en_KR", name:"Korea"},{value:"en_NL", name:"Netherlands"},{value:"en_NZ", name:"New Zealand"},{value:"en_NO", name:"Norway"},{value:"en_PT", name:"Portugal"},{value:"en_RU", name:"Russia"},{value:"en_ES", name:"Spain"},{value:"en_SE", name:"Sweden"},{value:"en_CH", name:"Switzerland"}];
@@ -645,7 +653,7 @@ function toggleSettings(target){
   }
   document.getElementById("mpt"+target).firstChild.nextSibling.innerHTML=printSettingsvalue(target);  
   if (mptSettings["scriptEngine"] === 1) {
-      GM_setValue("mptUsersettings", JSON.stringify(mptUsersettings));
+      GM.setValue("mptUsersettings", JSON.stringify(mptUsersettings));
     }
 }
 
@@ -3457,7 +3465,7 @@ function openWheretocredit(link) {
   }
   
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '//www.wheretocredit.com/api/beta/calculate');
+  xhr.open('POST', 'http://www.wheretocredit.com/api/beta/calculate');
   xhr.setRequestHeader('Accept', 'application/json;charset=UTF-8');
   xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
   xhr.onreadystatechange = function() {
