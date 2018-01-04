@@ -1223,6 +1223,12 @@ function printLinksContainer(){
         currentItin["itin"][0]["dest"] == currentItin["itin"][1]["orig"]) {
         printAF();
     }
+    // print AS if it's only AS or VX
+    if (inArray(currentItin["carriers"][0], ["AS", "VX"]) &&
+        (currentItin["carriers"].length === 1 ||
+         currentItin["carriers"].length === 2 && inArray(currentItin["carriers"][1], ["AS", "VX"]))) {
+        printAS();
+    }
     if (inArray("IB",currentItin["carriers"]) || inArray("BA",currentItin["carriers"])){
        printBA();
     }
@@ -1957,72 +1963,88 @@ function printAA(){
 }
 
 function printAAc1(){
-      // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
+    var dateToEpoch = function (y, m, d) {
+      var dateStr = y+'-'+('0'+m).slice(-2)+'-'+('0'+d).slice(-2)+'T00:00:00-06:00';
+      return Date.parse(dateStr);
+    }
+
+    // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
     var createUrl = function (edition) {
       var pax=validatePaxcount({maxPaxcount:6, countInf:true, childAsAdult:12, sepInfSeat:false, childMinAge:2});
       if (pax===false){
         printNotification("Error: Failed to validate Passengers in printAAc1");
         return false;
       }
-      var url = "https://www.aa.com/reservation/metaSearchAccess.do?ITEN=";
-      var search ="DIRECT,0,"+edition+",multi,4,A"+pax.adults+"C"+pax.children.length+"S0I"+pax.infLap+",3,";
-      search +=currentItin["itin"][0]["orig"]+",0,"+currentItin["itin"][0]["dest"]+",0,0,0,0,0,0,0";  
-      var itinlegs = new Array();
-      var itinleg = "";
+      var url = "https://www.aa.com/goto/metasearch?ITEN=GOOGLE,,US,";
+      if (currentItin["itin"].length === 1){
+        url+="oneWay";
+      } else {
+        url+="multi";
+      }
+      url+=",4,A"+pax.adults+"S0C"+pax.children.length+"I"+pax.infLap+"Y0L0,0,";
+      url+=currentItin["itin"][0]["orig"]+",0,"+currentItin["itin"][0]["dest"];
+      url+=",0";
+
+      for (var i=0;i<currentItin["itin"].length;i++) {
+        url+=",false,"+dateToEpoch(currentItin['itin'][i]['seg'][0]['dep']['year'], currentItin['itin'][i]['seg'][0]['dep']['month'], currentItin['itin'][i]['seg'][0]['dep']['day']);
+      }
+
+      if (currentItin["itin"].length > 1) {
+        url+=",0,0";
+      }
+      url+=","+currentItin["price"]+",1,";
+
+      if (currentItin["itin"].length > 1) {
+        var addon = "";
+        for (var i=0;i<currentItin["itin"].length;i++) {
+          addon+="#"+currentItin["itin"][i]["orig"]+"|"+currentItin["itin"][i]["dest"]+"|0|0|";
+          addon+=dateToEpoch(currentItin['itin'][i]['seg'][0]['dep']['year'], currentItin['itin'][i]['seg'][0]['dep']['month'], currentItin['itin'][i]['seg'][0]['dep']['day']);
+        }
+        url+=encodeURIComponent(addon)+",";
+      }
+
       var itinsegs = new Array();
-      var itinseg = "";
+
       //Build multi-city search based on legs
       for (var i=0;i<currentItin["itin"].length;i++) {
         // walks each leg
-        segs = new Array();
-              for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
-              //walks each segment of leg
-                  var k=0;
-                  // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
-                  while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-                   if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
-                       currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
-                   k++;
-                  }
-                  itinseg    = "#"+currentItin['itin'][i]['seg'][j]['carrier']+"|"+currentItin['itin'][i]['seg'][j]['fnr']+"|"+currentItin['itin'][i]['seg'][j]['bookingclass'];
-                  itinseg   += "|"+currentItin['itin'][i]['seg'][j]['orig'];    
-                  itinseg   += "|"+currentItin['itin'][i]['seg'][j+k]['dest'];
-                  itinseg   += "|"+Date.parse(currentItin['itin'][i]['seg'][j]['dep']['year']+'-'+
-                                               ('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+
-                                               ('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+
-                                               'T'+('0'+currentItin['itin'][i]['seg'][j]['dep']['time']).slice(-5)+":00"+
-                                               (typeof(currentItin['itin'][i]['seg'][j]['dep']['offset'])=="undefined" ? "+00:00" : currentItin['itin'][i]['seg'][j]['dep']['offset']));                
-                  itinseg   += "|"+i;
-                  itinsegs.push(itinseg);
-                  j+=k;
+          for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
+          //walks each segment of leg
+              var k=0;
+              // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
+              while ((j+k)<currentItin["itin"][i]["seg"].length-1){
+               if (currentItin["itin"][i]["seg"][j+k]["fnr"] !== currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
+                   currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
+               k++;
+              }
+              var itinseg= "#"+currentItin['itin'][i]['seg'][j]['carrier']+"|"+currentItin['itin'][i]['seg'][j]['fnr']+"|"+currentItin['itin'][i]['seg'][j]['bookingclass'];
+              itinseg   += "|"+currentItin['itin'][i]['seg'][j]['orig'];
+              itinseg   += "|"+currentItin['itin'][i]['seg'][j+k]['dest'];
+              itinseg   += "|"+Date.parse(currentItin['itin'][i]['seg'][j]['dep']['year']+'-'+
+                                           ('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+
+                                           ('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+
+                                           'T'+('0'+currentItin['itin'][i]['seg'][j]['dep']['time']).slice(-5)+":00"+
+                                           (typeof(currentItin['itin'][i]['seg'][j]['dep']['offset'])==="undefined" ? "+00:00" : currentItin['itin'][i]['seg'][j]['dep']['offset']));
+              itinseg   += "|"+i;
+              itinsegs.push(itinseg);
+              j+=k;
         }
-        //build itin-leg structure
-        itinleg  ="#"+currentItin["itin"][i]["orig"]+"|"+currentItin["itin"][i]["dest"];
-        itinleg +="|0|0";
-        itinleg +="|"+Date.parse(currentItin["itin"][i]["dep"]['year']+"-"+
-                                ("0"+currentItin["itin"][i]["dep"]['month']).slice(-2)+"-"+
-                                ("0"+currentItin["itin"][i]["dep"]['day']).slice(-2)+
-                                "T"+("0"+currentItin["itin"][i]["dep"]['time']).slice(-5)+":00"+
-                                (typeof(currentItin['itin'][i]["dep"]["offset"])=="undefined" ? "+00:00" : currentItin['itin'][i]["dep"]["offset"]));
-        itinlegs.push(itinleg);
       }
-      search+=",0.00,"+mptUsersettings["aac1Currency"]+",";
-      search+=itinlegs.join("")+","+itinsegs.join("");
-      url+=encodeURIComponent(search);
-      return url;  
-    };  
+      url+=encodeURIComponent(itinsegs.join(""));
+      return url;
+    };
     var url = createUrl(mptUsersettings["aac1Edition"].toUpperCase());
     if (url === false) {
       return false;
-    }  
+    }
     var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
     extra += aac1Editions.map(function (edition, i) { return '<a href="' + createUrl(edition.value.toUpperCase()) + '" target="_blank">' + edition.name +'</a>'; }).join('<br/>');
-    extra += '</span></span>';  
-    if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline(url,"American","America & UK",null,extra);
+    extra += '</span></span>';
+    if (mptUsersettings["enableInlinemode"] === 1){
+      printUrlInline(url,"American","America & UK", "");
     } else {
-      printUrl(url,"American","America & UK",extra);
-    } 
+      printUrl(url,"American","America & UK", "");
+    }
 }
 
 function printAC(){
@@ -2149,6 +2171,51 @@ function printAF() {
   } else {
     printUrl(url,"Air France","",extra);
   }     
+}
+
+function printAS(){
+    // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
+    var createUrl = function () {
+      var pax=validatePaxcount({maxPaxcount:6, countInf:true, childAsAdult:6, sepInfSeat:false, childMinAge:2});
+      if (pax===false){
+        printNotification("Error: Failed to validate Passengers in printAAc1");
+        return false;
+      }
+      var url = "https://www.alaskaair.com/planbook/shoppingstart?";
+      url+="A="+pax.adults+"&C="+pax.children.length+"&FT=";
+      if (currentItin["itin"].length == 1){
+        url+="ow";
+      } else {
+        url+="rt";
+      }
+
+      var k=0;
+      //Build multi-city search based on legs
+      for (var i=0;i<currentItin["itin"].length;i++) {
+        // walks each leg
+          for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
+          //walks each segment of leg
+            var itinseg = currentItin['itin'][i]['seg'][j]['orig']+"|"+currentItin['itin'][i]['seg'][j]['dest'];
+            itinseg    += "|"+("0"+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+"/"+("0"+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2);
+            itinseg    += "/"+currentItin['itin'][i]['seg'][j]['dep']['year'];
+            itinseg    += "|"+currentItin['itin'][i]['seg'][j]['fnr']+"|";
+            itinseg    += currentItin['itin'][i]['seg'][j]['cabin'] ? "f" : "c";
+            url+="&F"+(++k)+"="+encodeURIComponent(itinseg);
+          }
+      }
+      url+="&DEST="+currentItin['itin'][0]['seg'][currentItin['itin'][0]['seg'].length-1]['dest'];
+      url+="&FARE="+currentItin["price"]+"&frm=cart&META=GOO_CS";
+      return url;
+    };
+    var url = createUrl();
+    if (url === false) {
+      return false;
+    }
+    if (mptUsersettings["enableInlinemode"]==1){
+      printUrlInline(url,"Alaska","");
+    } else {
+      printUrl(url,"Alaska","");
+    }
 }
 
 function printAZ() {
@@ -2326,7 +2393,7 @@ function printDL(){
           segcounter++; 
         }
       }
-      deltaURL += "&cabin="+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())];
+      //deltaURL += "&cabin="+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())];
       deltaURL += "&fareBasis="+farebases.join(":");
       //deltaURL += "&price=0";
       deltaURL += "&numOfSegments=" + segcounter.toString() + "&paxCount=" + (pax.adults+pax.children.length+pax.infLap);
