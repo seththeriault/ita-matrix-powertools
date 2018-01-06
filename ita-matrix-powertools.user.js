@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.27
+// @version 0.28
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
 // @grant GM_setValue
@@ -16,6 +16,10 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.28 ****
+# 2018-01-04 Edited by powerivq (Fix DL/AA and add AS/VX support)
+# 2017-11-27 Edited by seththeriault (Changes for Delta to address the BE/Main Cabin and C+/PS issues)
+# 2017-11-20 Edited by seththeriault (changes for Greasemonkey 4 / FF 57)
 **** Version 0.27 ****
 # 2017-06-18 Edited by Steppo (Fixed Delta)
 **** Version 0.26 ****
@@ -149,7 +153,7 @@ mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
 // General settings
 var mptSettings = new Object();
 mptSettings["itaLanguage"]="en";
-mptSettings["version"]="0.27";
+mptSettings["version"]="0.28";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
