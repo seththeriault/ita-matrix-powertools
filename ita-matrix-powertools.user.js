@@ -2309,7 +2309,8 @@ function printDL(){
 // Steppo: What about segmentskipping?
     var createUrl = function (edition) {
       // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-      var cabins = ['BASIC-ECONOMY', 'COMFORT-PLUS-PREMIUM-ECONOMY', 'BUSINESS', 'FIRST']; 
+      // Defaults for cabin identifiers for DL pricing engine; exceptions handled later
+      var cabins = ['MAIN', 'DPPS', 'BU', 'FIRST'];
       var mincabin=3;
       var farebases=new Array();
       var pax=validatePaxcount({maxPaxcount:9, countInf:true, childAsAdult:12, sepInfSeat:false, childMinAge:2});
@@ -2331,6 +2332,18 @@ function printDL(){
           deltaURL +=":"+monthnumberToName(currentItin["itin"][i]["seg"][j]["dep"]["month"])+":"+ ( currentItin["itin"][i]["seg"][j]["dep"]["day"] < 10 ? "0":"") +currentItin["itin"][i]["seg"][j]["dep"]["day"]+":"+currentItin["itin"][i]["seg"][j]["dep"]["year"]+":0";
           farebases.push(currentItin["itin"][i]["seg"][j]["farebase"]);
           if (currentItin["itin"][i]["seg"][j]["cabin"] < mincabin) {mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};
+          // Exceptions to cabin identifiers for pricing
+          switch (currentItin["itin"][i]["seg"][j]["bookingclass"]) {
+            // Basic Economy fares
+            case "E":
+              cabins[0]='BASIC-ECONOMY';
+              break;
+            // Comfort+ fares
+            case "W":
+              cabins[1]='DCP';
+              break;
+            default:
+          }
           segcounter++; 
         }
       }
