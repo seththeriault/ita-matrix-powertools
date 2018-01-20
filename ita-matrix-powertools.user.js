@@ -132,6 +132,8 @@ mptUsersettings["enablePlanefinder"] =  1; // enables Planefinder - click on fli
 mptUsersettings["enableSeatguru"] =  1; // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
 mptUsersettings["enableWheretocredit"] =  1; // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
 mptUsersettings["enableFarefreaks"] =  0; // enables FareFreaks features - valid: 0 / 1
+mptUsersettings["enableNonDeltaAirlineOnDL"] = 0; // trying to price a non-DL airline on DL site? - valid 0 /  1
+
 mptUsersettings["acEdition"] = "us"; // sets the local edition of AirCanada.com for itinerary pricing - valid: "us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"
 mptUsersettings["aaEdition"] = "en_DE"; // sets the local edition of AA-Europe/Asia for itinerary pricing - NO US available
 mptUsersettings["aac1Edition"] = "US"; // sets the local edition of AA-C1 and UK
@@ -186,6 +188,7 @@ else {
     mptUsersettings["enableSeatguru"] = (mptSavedUsersettings["enableSeatguru"] === undefined ? mptUsersettings["enableSeatguru"] : mptSavedUsersettings["enableSeatguru"]);
     mptUsersettings["enableWheretocredit"] = (mptSavedUsersettings["enableWheretocredit"] === undefined ? mptUsersettings["enableWheretocredit"] : mptSavedUsersettings["enableWheretocredit"]);
     mptUsersettings["enableFarefreaks"] = (mptSavedUsersettings["enableFarefreaks"] === undefined ? mptUsersettings["enableFarefreaks"] : mptSavedUsersettings["enableFarefreaks"]);
+    mptUsersettings["enableNonDeltaAirlineOnDL"] = (mptSavedUsersettings["enableNonDeltaAirlineOnDL"] === undefined ? mptUsersettings["enableNonDeltaAirlineOnDL"] : mptSavedUsersettings["enableNonDeltaAirlineOnDL"]);
     mptUsersettings["acEdition"] = (mptSavedUsersettings["acEdition"] === undefined ? mptUsersettings["acEdition"] : mptSavedUsersettings["acEdition"]);
     mptUsersettings["aaEdition"] = (mptSavedUsersettings["aaEdition"] === undefined ? mptUsersettings["aaEdition"] : mptSavedUsersettings["aaEdition"]);    
     mptUsersettings["aac1Edition"] = (mptSavedUsersettings["aac1Edition"] === undefined ? mptUsersettings["aac1Edition"] : mptSavedUsersettings["aac1Edition"]);
@@ -348,6 +351,7 @@ function createUsersettings(){
     str +='</div><div style="float:left;width:25%">';
     str +='<div id="mptenablePlanefinder">Enable Planefinder:<label style="cursor:pointer;">'+printSettingsvalue("enablePlanefinder")+'</label></div>';
     str +='<div id="mptenableSeatguru">Enable Seatguru:<label style="cursor:pointer;">'+printSettingsvalue("enableSeatguru")+'</label></div>';    
+    str +='<div id="mptenableNonDeltaAirlineOnDL">Price non-DL airline on dl.com:<label style="cursor:pointer;">'+printSettingsvalue("enableNonDeltaAirlineOnDL")+'</label></div>';
     str +='</div><div style="clear:both"></div></div>'; 
     str +='<div style="text-align:center;font-weight:bold">**** Provider Editions: ****</div>';
     str +='<div style="margin:5px 0">';
@@ -386,6 +390,7 @@ function createUsersettings(){
     document.getElementById('mptenableSeatguru').onclick=function(){toggleSettings("enableSeatguru");};
     document.getElementById('mptenableWheretocredit').onclick=function(){toggleSettings("enableWheretocredit");};
     document.getElementById('mptenableFarefreaks').onclick=function(){toggleSettings("enableFarefreaks");};
+    document.getElementById('mptenableNonDeltaAirlineOnDL').onclick=function(){toggleSettings("enableNonDeltaAirlineOnDL");};
     document.getElementById('mptaaEdition').onclick=function(){toggleSettings("aaEdition");};
     document.getElementById('mptaac1Edition').onclick=function(){toggleSettings("aac1Edition");};
     document.getElementById('mptaac1Currency').onclick=function(){toggleSettings("aac1Currency");};
@@ -2418,7 +2423,9 @@ function printDL(){
           segcounter++; 
         }
       }
-      //deltaURL += "&cabin="+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())];
+      if (mptUsersettings["enableNonDeltaAirlineOnDL"]==0) {
+        deltaURL += "&cabin="+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())];
+      }
       deltaURL += "&fareBasis="+farebases.join(":");
       //deltaURL += "&price=0";
       deltaURL += "&numOfSegments=" + segcounter.toString() + "&paxCount=" + (pax.adults+pax.children.length+pax.infLap);
