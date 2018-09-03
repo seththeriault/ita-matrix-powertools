@@ -2418,7 +2418,7 @@ function printDL(){
           segcounter++; 
         }
       }
-      //deltaURL += "&cabin="+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())];
+      deltaURL += "&cabin="+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())];
       deltaURL += "&fareBasis="+farebases.join(":");
       //deltaURL += "&price=0";
       deltaURL += "&numOfSegments=" + segcounter.toString() + "&paxCount=" + (pax.adults+pax.children.length+pax.infLap);
@@ -3208,7 +3208,7 @@ function bindSeatguru(){
             printNotification("Error: Could not find target in bindSeatguru");
             return false;
           } else {
-            var url='http://www.seatguru.com/findseatmap/findseatmap.php?carrier='+currentItin['itin'][i]['seg'][j]['carrier']+'&flightno='+currentItin['itin'][i]['seg'][j]['fnr']+'&date='+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'%2F'+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+'%2F'+currentItin['itin'][i]['seg'][j]['dep']['year']+'&from_loc='+currentItin['itin'][i]['seg'][j]['orig'];
+            var url='http://www.seatguru.com/findseatmap/findseatmap.php?carrier='+currentItin['itin'][i]['seg'][j]['carrier']+'&flightno='+currentItin['itin'][i]['seg'][j]['fnr']+'&date='+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'%2F'+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+'%2F'+currentItin['itin'][i]['seg'][j]['dep']['year']+'&to=&from='+currentItin['itin'][i]['seg'][j]['orig'];
             target.children[0].innerHTML='<a href="'+url+'" target="_blank" style="text-decoration:none;color:black">'+target.children[0].innerHTML+"</a>";
           }
         j+=k;
