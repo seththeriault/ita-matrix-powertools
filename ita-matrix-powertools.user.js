@@ -3556,12 +3556,12 @@ function openWheretocredit(link) {
   }
 
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '//www.wheretocredit.com/api/beta/calculate');
+  xhr.open('POST', 'https://www.wheretocredit.com/api/beta/calculate');
   xhr.setRequestHeader('Accept', 'application/json;charset=UTF-8');
   xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
-      link.href = '//www.wheretocredit.com';
+      link.href = 'https://www.wheretocredit.com';
       link.target = '_blank';
       link.innerHTML = 'Data provided by wheretocredit.com';
 
