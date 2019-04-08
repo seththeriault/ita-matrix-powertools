@@ -59,7 +59,7 @@
                                 added pax management -> use with caution!
                                 redesigned settings - added font size for links
                                 added editor mode
-                                reworked/adapted linking functions - added edition support                               
+                                reworked/adapted linking functions - added edition support
                                 tweaked extraction function - bugs removed/shortened/added plane type & fare carrier/improved currency detection
                                 added Amadeus realated functions
                                 added AAc1, BA, CZ, IB, LA, LH, LX, TK
@@ -74,7 +74,7 @@
 # 2015-10-12 Edited by IAkH ( added wheretocredit.com calculator )
 **** Version 0.15 ****
 # 2015-09-30 Edited by IAkH ( added additional edition flyout menu,
-                                added Ebookers, 
+                                added Ebookers,
                                 added Etraveli )
 **** Version 0.14a ****
 # 2015-09-26 Edited by Steppo ( fixed AA-POS )
@@ -108,7 +108,7 @@
   # able to transform timeformat into 24h format
   # able to translate some things
  *********** Hints ***********
-  Unsure about handling of different fares/pax. 
+  Unsure about handling of different fares/pax.
   Unsure about correct usage of cabins while creating links.
   Unsure about correct usage of farebase-per-leg - usage in order of appearance.
   Unsure about segment-skipping - should be fine but needs heavy testing.
@@ -189,7 +189,7 @@ else {
     mptUsersettings["enableWheretocredit"] = (mptSavedUsersettings["enableWheretocredit"] === undefined ? mptUsersettings["enableWheretocredit"] : mptSavedUsersettings["enableWheretocredit"]);
     mptUsersettings["enableFarefreaks"] = (mptSavedUsersettings["enableFarefreaks"] === undefined ? mptUsersettings["enableFarefreaks"] : mptSavedUsersettings["enableFarefreaks"]);
     mptUsersettings["acEdition"] = (mptSavedUsersettings["acEdition"] === undefined ? mptUsersettings["acEdition"] : mptSavedUsersettings["acEdition"]);
-    mptUsersettings["aaEdition"] = (mptSavedUsersettings["aaEdition"] === undefined ? mptUsersettings["aaEdition"] : mptSavedUsersettings["aaEdition"]);    
+    mptUsersettings["aaEdition"] = (mptSavedUsersettings["aaEdition"] === undefined ? mptUsersettings["aaEdition"] : mptSavedUsersettings["aaEdition"]);
     mptUsersettings["aac1Edition"] = (mptSavedUsersettings["aac1Edition"] === undefined ? mptUsersettings["aac1Edition"] : mptSavedUsersettings["aac1Edition"]);
     mptUsersettings["aac1Currency"] = (mptSavedUsersettings["aac1Currency"] === undefined ? mptUsersettings["aac1Currency"] : mptSavedUsersettings["aac1Currency"]);
     mptUsersettings["afEdition"] = (mptSavedUsersettings["afEdition"] === undefined ? mptUsersettings["afEdition"] : mptSavedUsersettings["afEdition"]);
@@ -199,7 +199,7 @@ else {
     mptUsersettings["czEdition"] = (mptSavedUsersettings["czEdition"] === undefined ? mptUsersettings["czEdition"] : mptSavedUsersettings["czEdition"]);
     mptUsersettings["dlEdition"] = (mptSavedUsersettings["dlEdition"] === undefined ? mptUsersettings["dlEdition"] : mptSavedUsersettings["dlEdition"]);
     mptUsersettings["ibCurrency"] = (mptSavedUsersettings["ibCurrency"] === undefined ? mptUsersettings["ibCurrency"] : mptSavedUsersettings["ibCurrency"]);
-    mptUsersettings["ibEdition"] = (mptSavedUsersettings["ibEdition"] === undefined ? mptUsersettings["ibEdition"] : mptSavedUsersettings["ibEdition"]);    
+    mptUsersettings["ibEdition"] = (mptSavedUsersettings["ibEdition"] === undefined ? mptUsersettings["ibEdition"] : mptSavedUsersettings["ibEdition"]);
     mptUsersettings["klEdition"] = (mptSavedUsersettings["klEdition"] === undefined ? mptUsersettings["klEdition"] : mptSavedUsersettings["klEdition"]);
     mptUsersettings["laEdition"] = (mptSavedUsersettings["laEdition"] === undefined ? mptUsersettings["laEdition"] : mptSavedUsersettings["laEdition"]);
     mptUsersettings["lhEdition"] = (mptSavedUsersettings["lhEdition"] === undefined ? mptUsersettings["lhEdition"] : mptSavedUsersettings["lhEdition"]);
@@ -245,7 +245,7 @@ classSettings["resultpage"]["mcHeader"]="IR6M2QD-y-b"; // Right menu header clas
 classSettings["resultpage"]["mcLinkList"]="IR6M2QD-y-c"; // Right menu ul list class (immediately following header)
 
 var matrixCurrencies=[{p:/US\$/,c:"USD"},{p:/\€/,c:"EUR"},{p:/\£/,c:"GBP"},{p:/CA\$/,c:"CAD"},{p:/RS\./,c:"INR"}];
-                       
+
 var translations = new Object();
 translations["de"] = new Object();
 translations["de"]["use"]="&Ouml;ffne ";
@@ -283,13 +283,13 @@ var currentItin = new Object();
 var mtpPassengerConfig = {adults:1, infantsLap:0, infantsSeat:0, cAges:new Array()};
 
 if (mptSettings["scriptEngine"] === 0 && window.top === window.self) {
- startScript(); 
+ startScript();
 } else if( window.top === window.self ) {
   // execute language detection and afterwards functions for current page
   if (typeof window.addEventListener !== "undefined"){
   window.addEventListener('load', startScript(), false);
   } else if (typeof window.attachEvent !== "undefined") {
-  window.attachEvent("onload", startScript());    
+  window.attachEvent("onload", startScript());
   } else {
   window.onload = startScript();
   }
@@ -306,8 +306,8 @@ function startScript(){
     mptSettings["laststatus"]=window.location.href;
   }
   if ( mptSettings["scriptrunning"] === 1 ){
-   setTimeout(function(){startScript();}, 500); 
-  }  
+   setTimeout(function(){startScript();}, 500);
+  }
 }
 
 /**************************************** Settings Stuff *****************************************/
@@ -325,7 +325,7 @@ function createUsersettings(){
     target=document.getElementById("mptSettings");
     str ='<div style="text-align:center;font-weight:bold">**** Display Settings: ****</div>';
     str +='<div style="margin:5px 0;"><div style="float:left;width:25%">';
-    str +='<div id="mpttimeformat">Timeformat:<label style="cursor:pointer;">'+printSettingsvalue("timeformat")+'</label></div>';   
+    str +='<div id="mpttimeformat">Timeformat:<label style="cursor:pointer;">'+printSettingsvalue("timeformat")+'</label></div>';
     str +='<div id="mptlanguage">Language:<label style="cursor:pointer;">'+printSettingsvalue("language")+'</label></div>';
     str +='</div><div style="float:left;width:25%">';
     str +='<div id="mptenableDeviders">Enable deviders:<label style="cursor:pointer;">'+printSettingsvalue("enableDeviders")+'</label></div>';
@@ -349,8 +349,8 @@ function createUsersettings(){
     str +='<div id="mptenableFarefreaks">Enable FareFreaks:<label style="cursor:pointer;">'+printSettingsvalue("enableFarefreaks")+'</label></div>';
     str +='</div><div style="float:left;width:25%">';
     str +='<div id="mptenablePlanefinder">Enable Planefinder:<label style="cursor:pointer;">'+printSettingsvalue("enablePlanefinder")+'</label></div>';
-    str +='<div id="mptenableSeatguru">Enable Seatguru:<label style="cursor:pointer;">'+printSettingsvalue("enableSeatguru")+'</label></div>';    
-    str +='</div><div style="clear:both"></div></div>'; 
+    str +='<div id="mptenableSeatguru">Enable Seatguru:<label style="cursor:pointer;">'+printSettingsvalue("enableSeatguru")+'</label></div>';
+    str +='</div><div style="clear:both"></div></div>';
     str +='<div style="text-align:center;font-weight:bold">**** Provider Editions: ****</div>';
     str +='<div style="margin:5px 0">';
     str +='<div id="mptaaEdition" style="width:33%;float:left;">American Edition (Europe/Asia/Pacific):<label style="cursor:pointer;">'+printSettingsvalue("aaEdition")+'</label></div>';
@@ -371,7 +371,7 @@ function createUsersettings(){
     str +='<div id="mptlxEdition" style="width:33%;float:left;">Swiss Edition:<label style="cursor:pointer;">'+printSettingsvalue("lxEdition")+'</label></div>';
     str +='<div style="clear:both"></div></div>';
     str +='<div style="text-align:center;font-weight:bold"><label id="configcloser" style="cursor:pointer;">Close</label><div>';
-    target.innerHTML=str;  
+    target.innerHTML=str;
     document.getElementById('mpttimeformat').onclick=function(){toggleSettings("timeformat");};
     document.getElementById('mptlanguage').onclick=function(){toggleSettings("language");};
     document.getElementById('mptenableDeviders').onclick=function(){toggleSettings("enableDeviders");};
@@ -381,8 +381,8 @@ function createUsersettings(){
     document.getElementById('mptenableFarerules').onclick=function(){toggleSettings("enableFarerules");};
     document.getElementById('mptenablePricebreakdown').onclick=function(){toggleSettings("enablePricebreakdown");};
     document.getElementById('mptenableMilesbreakdown').onclick=function(){toggleSettings("enableMilesbreakdown");};
-    document.getElementById('mptlinkFontsize').onclick=function(){toggleSettings("linkFontsize");}; 
-    document.getElementById('mptenableMilesbreakdownautoload').onclick=function(){toggleSettings("enableMilesbreakdownautoload");}; 
+    document.getElementById('mptlinkFontsize').onclick=function(){toggleSettings("linkFontsize");};
+    document.getElementById('mptenableMilesbreakdownautoload').onclick=function(){toggleSettings("enableMilesbreakdownautoload");};
     document.getElementById('mptenableMilesInlinemode').onclick=function(){toggleSettings("enableMilesInlinemode");};
     document.getElementById('mptenablePlanefinder').onclick=function(){toggleSettings("enablePlanefinder");};
     document.getElementById('mptenableSeatguru').onclick=function(){toggleSettings("enableSeatguru");};
@@ -391,14 +391,14 @@ function createUsersettings(){
     document.getElementById('mptaaEdition').onclick=function(){toggleSettings("aaEdition");};
     document.getElementById('mptaac1Edition').onclick=function(){toggleSettings("aac1Edition");};
     document.getElementById('mptaac1Currency').onclick=function(){toggleSettings("aac1Currency");};
-    document.getElementById('mptacEdition').onclick=function(){toggleSettings("acEdition");};      
+    document.getElementById('mptacEdition').onclick=function(){toggleSettings("acEdition");};
     document.getElementById('mptafEdition').onclick=function(){toggleSettings("afEdition");};
     document.getElementById('mptazEdition').onclick=function(){toggleSettings("azEdition");};
     document.getElementById('mptbaLanguage').onclick=function(){toggleSettings("baLanguage");};
     document.getElementById('mptbaEdition').onclick=function(){toggleSettings("baEdition");};
     document.getElementById('mptczEdition').onclick=function(){toggleSettings("czEdition");};
-    document.getElementById('mptdlEdition').onclick=function(){toggleSettings("dlEdition");};  
-    document.getElementById('mptibEdition').onclick=function(){toggleSettings("ibEdition");}; 
+    document.getElementById('mptdlEdition').onclick=function(){toggleSettings("dlEdition");};
+    document.getElementById('mptibEdition').onclick=function(){toggleSettings("ibEdition");};
     //document.getElementById('mptibCurrency').onclick=function(){toggleSettings("ibCurrency");};  // not supported
     document.getElementById('mptklEdition').onclick=function(){toggleSettings("klEdition");};
     document.getElementById('mptlaEdition').onclick=function(){toggleSettings("laEdition");};
@@ -406,50 +406,50 @@ function createUsersettings(){
     document.getElementById('mptlxEdition').onclick=function(){toggleSettings("lxEdition");};
     document.getElementById('mptCabintoggler').onclick=function(){toggleSettings("cabin");};
     document.getElementById('configcloser').onclick=function(){toggleVis(document.getElementById("mptSettings"));};
-    document.getElementById('mptStartparse').onclick=function(){document.getElementById('mptStartparse').style.display="none";setTimeout(function(){fePS();}, 50);}; 
-  
+    document.getElementById('mptStartparse').onclick=function(){document.getElementById('mptStartparse').style.display="none";setTimeout(function(){fePS();}, 50);};
+
     // Build passengers
     target=document.getElementById("mptPassengers");
     str ='<div style="float:left;width:25%">';
     str +='<div style="margin:2px 0"><label style="width:100px;display:inline-block">Adults:</label> <select name="numAdults" id="numAdults" style="width:50px">';
     for (var i = 1; i<=9; i++) {
-     str +='<option>'+i+'</option>'; 
+     str +='<option>'+i+'</option>';
     }
     str +='</select></div>';
     str +='<div style="margin:2px 0"><label style="width:100px;display:inline-block">Infants (Lap):</label> <select name="numInfantsLap" id="numInfantsLap" style="width:50px">';
     for (var i = 0; i<=9; i++) {
-     str +='<option>'+i+'</option>'; 
+     str +='<option>'+i+'</option>';
     }
     str +='</select></div>';
     str +='<div style="margin:2px 0"><label style="width:100px;display:inline-block">Infants (Seat):</label> <select name="numInfantsSeat" id="numInfantsSeat" style="width:50px">';
     for (var i = 0; i<=9; i++) {
-     str +='<option>'+i+'</option>'; 
+     str +='<option>'+i+'</option>';
     }
-    str +='</select></div>';  
+    str +='</select></div>';
     str +='</div><div style="float:left;width:25%">';
     for (var k = 1; k<=3; k++) {
       str +='<div style="margin:2px 0"><label style="width:100px;display:inline-block">Child '+k+' - Age:</label> <select name="child'+k+'age" id="child'+k+'age" style="width:50px">';
-      str +='<option value="-1">-</option>'; 
+      str +='<option value="-1">-</option>';
       for (var i = 2; i<=17; i++) {
-       str +='<option value="'+i+'">'+i+'</option>'; 
+       str +='<option value="'+i+'">'+i+'</option>';
       }
       str +='</select></div>';
     }
-    str +='</div><div style="float:left;width:25%">';  
+    str +='</div><div style="float:left;width:25%">';
     for (var k = 4; k<=6; k++) {
       str +='<div style="margin:2px 0"><label style="width:100px;display:inline-block">Child '+k+' - Age:</label> <select name="child'+k+'age" id="child'+k+'age" style="width:50px">';
-      str +='<option value="-1">-</option>'; 
+      str +='<option value="-1">-</option>';
       for (var i = 2; i<=17; i++) {
-       str +='<option value="'+i+'">'+i+'</option>'; 
+       str +='<option value="'+i+'">'+i+'</option>';
       }
       str +='</select></div>';
     }
-    str +='</div><div style="float:left;width:25%">';  
+    str +='</div><div style="float:left;width:25%">';
     for (var k = 7; k<=8; k++) {
       str +='<div style="margin:2px 0"><label style="width:100px;display:inline-block">Child '+k+' - Age:</label> <select name="child'+k+'age" id="child'+k+'age" style="width:50px">';
       str +='<option value="-1">-</option>';
       for (var i = 2; i<=17; i++) {
-       str +='<option value="'+i+'">'+i+'</option>'; 
+       str +='<option value="'+i+'">'+i+'</option>';
       }
       str +='</select></div>';
     }
@@ -462,10 +462,10 @@ function createUsersettings(){
 function toggleVis(target){
   if (hasClass(target,"vis")){
     target.setAttribute('class', 'invis');
-    target.style.display="none"; 
+    target.style.display="none";
   } else {
     target.setAttribute('class', 'vis');
-    target.style.display="block"; 
+    target.style.display="block";
   }
 }
 function toggleSettings(target){
@@ -490,149 +490,149 @@ function toggleSettings(target){
          } else {
            mptUsersettings["linkFontsize"]=50;
          }
-          break;             
+          break;
       case "acEdition":
-      		if (acEditions.indexOf(mptUsersettings["acEdition"]) == (acEditions.length - 1)) {
-			      mptUsersettings["acEdition"] = acEditions[0];
-      		} else {
-      			mptUsersettings["acEdition"] = acEditions[(acEditions.indexOf(mptUsersettings["acEdition"]) + 1)];	
-      		}
-      	break;
+          if (acEditions.indexOf(mptUsersettings["acEdition"]) == (acEditions.length - 1)) {
+            mptUsersettings["acEdition"] = acEditions[0];
+          } else {
+            mptUsersettings["acEdition"] = acEditions[(acEditions.indexOf(mptUsersettings["acEdition"]) + 1)];
+          }
+        break;
      case "aaEdition":
           var pos=findPositionForValue(mptUsersettings["aaEdition"],aaEditions);
-      		if (pos >= (aaEditions.length - 1) || pos === -1) {
-			      mptUsersettings["aaEdition"] = aaEditions[0]["value"];
-      		} else {
+          if (pos >= (aaEditions.length - 1) || pos === -1) {
+            mptUsersettings["aaEdition"] = aaEditions[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["aaEdition"] = aaEditions[pos]["value"];	
-      		}
-      	break;
+            mptUsersettings["aaEdition"] = aaEditions[pos]["value"];
+          }
+        break;
      case "aac1Edition":
           var pos=findPositionForValue(mptUsersettings["aac1Edition"],aac1Editions);
-      		if (pos >= (aac1Editions.length - 1) || pos === -1) {
-			      mptUsersettings["aac1Edition"] = aac1Editions[0]["value"];
-      		} else {
+          if (pos >= (aac1Editions.length - 1) || pos === -1) {
+            mptUsersettings["aac1Edition"] = aac1Editions[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["aac1Edition"] = aac1Editions[pos]["value"];	
-      		}
-      	break;
+            mptUsersettings["aac1Edition"] = aac1Editions[pos]["value"];
+          }
+        break;
      case "aac1Currency":
           var pos=findPositionForValue(mptUsersettings["aac1Currency"],aac1Currencies);
-      		if (pos >= (aac1Currencies.length - 1) || pos === -1) {
-			      mptUsersettings["aac1Currency"] = aac1Currencies[0]["value"];
-      		} else {
+          if (pos >= (aac1Currencies.length - 1) || pos === -1) {
+            mptUsersettings["aac1Currency"] = aac1Currencies[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["aac1Currency"] = aac1Currencies[pos]["value"];	
-      		}
-      	break; 
+            mptUsersettings["aac1Currency"] = aac1Currencies[pos]["value"];
+          }
+        break;
      case "afEdition":
           var pos=findPositionForValue(mptUsersettings["afEdition"],afEditions);
-      		if (pos >= (afEditions.length - 1) || pos === -1) {
-			      mptUsersettings["afEdition"] = afEditions[0]["value"];
-      		} else {
+          if (pos >= (afEditions.length - 1) || pos === -1) {
+            mptUsersettings["afEdition"] = afEditions[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["afEdition"] = afEditions[pos]["value"];	
-      		}
-      	break;
+            mptUsersettings["afEdition"] = afEditions[pos]["value"];
+          }
+        break;
      case "azEdition":
           var pos=findPositionForValue(mptUsersettings["azEdition"],azEditions);
-      		if (pos >= (azEditions.length - 1) || pos === -1) {
-			      mptUsersettings["azEdition"] = azEditions[0]["value"];
-      		} else {
+          if (pos >= (azEditions.length - 1) || pos === -1) {
+            mptUsersettings["azEdition"] = azEditions[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["azEdition"] = azEditions[pos]["value"];	
-      		}
-      	break;
+            mptUsersettings["azEdition"] = azEditions[pos]["value"];
+          }
+        break;
      case "baLanguage":
           var pos=findPositionForValue(mptUsersettings["baLanguage"],baLanguages);
-      		if (pos >= (baLanguages.length - 1) || pos === -1) {
-			      mptUsersettings["baLanguage"] = baLanguages[0]["value"];
-      		} else {
+          if (pos >= (baLanguages.length - 1) || pos === -1) {
+            mptUsersettings["baLanguage"] = baLanguages[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["baLanguage"] = baLanguages[pos]["value"];	
-      		}
-      	break;       
+            mptUsersettings["baLanguage"] = baLanguages[pos]["value"];
+          }
+        break;
      case "baEdition":
           var pos=findPositionForValue(mptUsersettings["baEdition"],baEditions);
-      		if (pos >= (baEditions.length - 1) || pos === -1) {
-			      mptUsersettings["baEdition"] = baEditions[0]["value"];
-      		} else {
+          if (pos >= (baEditions.length - 1) || pos === -1) {
+            mptUsersettings["baEdition"] = baEditions[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["baEdition"] = baEditions[pos]["value"];	
-      		}
-      	break;
+            mptUsersettings["baEdition"] = baEditions[pos]["value"];
+          }
+        break;
      case "czEdition":
           var pos=findPositionForValue(mptUsersettings["czEdition"],czEditions);
-      		if (pos >= (czEditions.length - 1) || pos === -1) {
-			      mptUsersettings["czEdition"] = czEditions[0]["value"];
-      		} else {
+          if (pos >= (czEditions.length - 1) || pos === -1) {
+            mptUsersettings["czEdition"] = czEditions[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["czEdition"] = czEditions[pos]["value"];	
-      		}
-      	break;       
+            mptUsersettings["czEdition"] = czEditions[pos]["value"];
+          }
+        break;
      case "dlEdition":
           var pos=findPositionForValue(mptUsersettings["dlEdition"],dlEditions);
-      		if (pos >= (dlEditions.length - 1) || pos === -1) {
-			      mptUsersettings["dlEdition"] = dlEditions[0]["value"];
-      		} else {
+          if (pos >= (dlEditions.length - 1) || pos === -1) {
+            mptUsersettings["dlEdition"] = dlEditions[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["dlEdition"] = dlEditions[pos]["value"];	
-      		}
-      	break;
+            mptUsersettings["dlEdition"] = dlEditions[pos]["value"];
+          }
+        break;
      case "ibEdition":
           var pos=findPositionForValue(mptUsersettings["ibEdition"],ibEditions);
-      		if (pos >= (ibEditions.length - 1) || pos === -1) {
-			      mptUsersettings["ibEdition"] = ibEditions[0]["value"];
-      		} else {
+          if (pos >= (ibEditions.length - 1) || pos === -1) {
+            mptUsersettings["ibEdition"] = ibEditions[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["ibEdition"] = ibEditions[pos]["value"];	
-      		}
-      	break;
+            mptUsersettings["ibEdition"] = ibEditions[pos]["value"];
+          }
+        break;
      case "ibCurrency":
           var pos=findPositionForValue(mptUsersettings["ibCurrency"],ibCurrencies);
-      		if (pos >= (ibCurrencies.length - 1) || pos === -1) {
-			      mptUsersettings["ibCurrency"] = ibCurrencies[0]["value"];
-      		} else {
+          if (pos >= (ibCurrencies.length - 1) || pos === -1) {
+            mptUsersettings["ibCurrency"] = ibCurrencies[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["ibCurrency"] = ibCurrencies[pos]["value"];	
-      		}
-      	break;       
+            mptUsersettings["ibCurrency"] = ibCurrencies[pos]["value"];
+          }
+        break;
      case "klEdition":
           var pos=findPositionForValue(mptUsersettings["klEdition"],klEditions);
-      		if (pos >= (klEditions.length - 1) || pos === -1) {
-			      mptUsersettings["klEdition"] = klEditions[0]["value"];
-      		} else {
+          if (pos >= (klEditions.length - 1) || pos === -1) {
+            mptUsersettings["klEdition"] = klEditions[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["klEdition"] = klEditions[pos]["value"];	
-      		}
-      	break;
+            mptUsersettings["klEdition"] = klEditions[pos]["value"];
+          }
+        break;
      case "laEdition":
           var pos=findPositionForValue(mptUsersettings["laEdition"],laEditions);
-      		if (pos >= (laEditions.length - 1) || pos === -1) {
-			      mptUsersettings["laEdition"] = laEditions[0]["value"];
-      		} else {
+          if (pos >= (laEditions.length - 1) || pos === -1) {
+            mptUsersettings["laEdition"] = laEditions[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["laEdition"] = laEditions[pos]["value"];	
-      		}
-      	break;
+            mptUsersettings["laEdition"] = laEditions[pos]["value"];
+          }
+        break;
      case "lhEdition":
           var pos=findPositionForValue(mptUsersettings["lhEdition"],lhEditions);
-      		if (pos >= (lhEditions.length - 1) || pos === -1) {
-			      mptUsersettings["lhEdition"] = lhEditions[0]["value"];
-      		} else {
+          if (pos >= (lhEditions.length - 1) || pos === -1) {
+            mptUsersettings["lhEdition"] = lhEditions[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["lhEdition"] = lhEditions[pos]["value"];	
-      		}
-      	break;       
+            mptUsersettings["lhEdition"] = lhEditions[pos]["value"];
+          }
+        break;
      case "lxEdition":
           var pos=findPositionForValue(mptUsersettings["lxEdition"],lxEditions);
-      		if (pos >= (lxEditions.length - 1) || pos === -1) {
-			      mptUsersettings["lxEdition"] = lxEditions[0]["value"];
-      		} else {
+          if (pos >= (lxEditions.length - 1) || pos === -1) {
+            mptUsersettings["lxEdition"] = lxEditions[0]["value"];
+          } else {
             pos++;
-      			mptUsersettings["lxEdition"] = lxEditions[pos]["value"];	
-      		}
-      	break;
+            mptUsersettings["lxEdition"] = lxEditions[pos]["value"];
+          }
+        break;
       case "cabin":
         if (mptSettings["cabin"]==="Auto"){
           mptSettings["cabin"]="Y";
@@ -649,7 +649,7 @@ function toggleSettings(target){
         // refresh links
         printLinksContainer();
         return false;
-        break;       
+        break;
       default:
         if (mptUsersettings[target]==1){
            mptUsersettings[target]=0;
@@ -657,7 +657,7 @@ function toggleSettings(target){
            mptUsersettings[target]=1;
          };
   }
-  document.getElementById("mpt"+target).firstChild.nextSibling.innerHTML=printSettingsvalue(target);  
+  document.getElementById("mpt"+target).firstChild.nextSibling.innerHTML=printSettingsvalue(target);
   if (mptSettings["scriptEngine"] === 1) {
       GM.setValue("mptUsersettings", JSON.stringify(mptUsersettings));
     }
@@ -671,10 +671,10 @@ function processPassengers(){
   e = document.getElementById("numInfantsLap");
   mtpPassengerConfig.infantsLap=Number(e.options[e.selectedIndex].value);
   e = document.getElementById("numInfantsSeat");
-  mtpPassengerConfig.infantsSeat=Number(e.options[e.selectedIndex].value);   
+  mtpPassengerConfig.infantsSeat=Number(e.options[e.selectedIndex].value);
   mtpPassengerConfig.cAges=new Array();
   for (var i=1; i<=8; i++) {
-   processChild("child"+i+"age"); 
+   processChild("child"+i+"age");
   }
   paxText=mtpPassengerConfig.adults + "a" + (mtpPassengerConfig.cAges.length>0?" "+mtpPassengerConfig.cAges.length+"c":"")+((mtpPassengerConfig.infantsLap+mtpPassengerConfig.infantsSeat)>0?" "+(mtpPassengerConfig.infantsLap+mtpPassengerConfig.infantsSeat)+"i":"");
   document.getElementById('mtpPaxCount').innerHTML = paxText;
@@ -703,7 +703,7 @@ function printSettingsvalue(target){
           break;
       case "linkFontsize":
           ret=mptUsersettings["linkFontsize"];
-          break;       
+          break;
       case "acEdition":
           ret=mptUsersettings["acEdition"];
           break;
@@ -727,10 +727,10 @@ function printSettingsvalue(target){
           break;
       case "baEdition":
           ret=findNameForValue(mptUsersettings["baEdition"],baEditions);
-          break; 
+          break;
       case "czEdition":
           ret=findNameForValue(mptUsersettings["czEdition"],czEditions);
-          break;          
+          break;
       case "dlEdition":
           ret=findNameForValue(mptUsersettings["dlEdition"],dlEditions);
           break;
@@ -739,7 +739,7 @@ function printSettingsvalue(target){
           break;
       case "ibCurrency":
           ret=findNameForValue(mptUsersettings["ibCurrency"],ibCurrencies);
-          break;       
+          break;
       case "klEdition":
           ret=findNameForValue(mptUsersettings["klEdition"],klEditions);
           break;
@@ -748,16 +748,16 @@ function printSettingsvalue(target){
           break;
       case "lhEdition":
           ret=findNameForValue(mptUsersettings["lhEdition"],lhEditions);
-          break;        
+          break;
       case "lxEdition":
           ret=findNameForValue(mptUsersettings["lxEdition"],lxEditions);
-          break;       
+          break;
       default:
           ret=boolToEnabled(mptUsersettings[target]);
   }
-  return ret; 
+  return ret;
 }
-function findNameForValue(needle, haystack){  
+function findNameForValue(needle, haystack){
   var ret="Unknown";
   for (var i in haystack){
     if (haystack[i]["value"]==needle) {
@@ -765,7 +765,7 @@ function findNameForValue(needle, haystack){
       break;
     }
   }
-  return ret;  
+  return ret;
 }
 function findPositionForValue(needle, haystack){
   var ret=-1;
@@ -775,7 +775,7 @@ function findPositionForValue(needle, haystack){
       break;
     }
   }
-  return ret;  
+  return ret;
 }
 function printNotification(text) {
   var target = document.getElementById('mtpNotification');
@@ -787,10 +787,10 @@ function printNotification(text) {
    } else {
      //possibility to print multiple notifications
      var temp=document.createElement("div");
-     temp.appendChild(document.createTextNode(text)); 
+     temp.appendChild(document.createTextNode(text));
      target.appendChild(temp);
-   }   
-  } 
+   }
+  }
 }
 /**************************************** Get Language *****************************************/
 function getPageLang(){
@@ -802,9 +802,9 @@ function getPageLang(){
     mptSettings["itaLanguage"]="en";
     mptSettings["retrycount"]=1;
     if (window.location.href.indexOf("view-details") !=-1) {
-       setTimeout(function(){fePS();}, 200);   
+       setTimeout(function(){fePS();}, 200);
     } else if (window.location.href.indexOf("#search:") !=-1 || window.location.href == "https://matrix.itasoftware.com/" || window.location.href == "https://matrix.itasoftware.com/") {
-       setTimeout(function(){startPage();}, 200);   
+       setTimeout(function(){startPage();}, 200);
     }
 }
 /**************************************** General Functions *****************************************/
@@ -857,7 +857,7 @@ function return12htime(match){
         match[3]=trimStr(match[3]);
         if  ((match[3]=='AM' || match[3]=='am') && match[1]=='12'){offset = -12;}
         else if  ((match[3]=='PM' || match[3]=='pm') && match[1]!='12'){ offset = 12;}
-        return (+match[1] + offset) +match[2];        
+        return (+match[1] + offset) +match[2];
 };
 function trimStr(x) {
     return x.replace(/^\s+|\s+$/gm,'');
@@ -917,13 +917,13 @@ function hasClass(element, cls) {
 function doHttpRequest(url,options,callback){
   if (typeof(callback) !== "function") {
        printNotification("Error: Invalid callback in doHttpRequest -> not a function");
-       return false;  
+       return false;
   }
   var xmlHttpObject = false;
   if (typeof(XMLHttpRequest) !== "undefined"){ xmlHttpObject = new XMLHttpRequest(); }
   if (!xmlHttpObject) {
        printNotification("Error: Failed to initialize http request");
-       return false;  
+       return false;
   }
   xmlHttpObject.onreadystatechange=function(){
     if (xmlHttpObject.readyState==4 && xmlHttpObject.status==200)
@@ -931,8 +931,8 @@ function doHttpRequest(url,options,callback){
       callback(xmlHttpObject);
       } else if (xmlHttpObject.readyState==4 && xmlHttpObject.status!=200) {
        printNotification("Error: Failed to complete http request");
-       return false;  
-      }   
+       return false;
+      }
    };
   if (options.mode=="get"){
      xmlHttpObject.open("GET",url,true);
@@ -940,9 +940,9 @@ function doHttpRequest(url,options,callback){
   } else if (options.mode=="post"){
      xmlHttpObject.open("POST",url,true);
     for (var i = 0; i < options.headers.length; i++) {
-      xmlHttpObject.setRequestHeader(options.headers[i].name, options.headers[i].val);    
+      xmlHttpObject.setRequestHeader(options.headers[i].name, options.headers[i].val);
     }
-     xmlHttpObject.send(options.data);    
+     xmlHttpObject.send(options.data);
   }
 
 }
@@ -952,7 +952,7 @@ function findItinTarget(leg,seg,tcell){
   printNotification("Error: Itin not found in findItinTarget-function");
   return false;
   }
-  
+
   target=target.nextSibling.nextSibling;
   // go to leg
   var target=target.children[(leg-1)];
@@ -973,7 +973,7 @@ function findItinTarget(leg,seg,tcell){
             index = i;
             //special handling for one-seg-legs here
             if (target.length === 2 || target.length === 3){
-              // 1. Headline 2. Flight-details 3. arrival next day.. 
+              // 1. Headline 2. Flight-details 3. arrival next day..
               index--;
             }
             break;
@@ -987,13 +987,13 @@ function findItinTarget(leg,seg,tcell){
       }
       var rowoffset=0;
       var columnoffset=0;
-      
+
       switch(tcell) {
           case "headline":
               // special case here allways first row... even in one-seg-legs
               rowoffset= index * -1;
               columnoffset=1;
-              break;          
+              break;
           case "logo":
               rowoffset=0;
               columnoffset=0;
@@ -1017,7 +1017,7 @@ function findItinTarget(leg,seg,tcell){
           case "duration":
               rowoffset=1;
               columnoffset=2;
-              break;          
+              break;
           case "plane":
               rowoffset=1;
               columnoffset=4;
@@ -1025,16 +1025,16 @@ function findItinTarget(leg,seg,tcell){
           case "cabin":
               rowoffset=1;
               columnoffset=5;
-              break;  
+              break;
           default:
               printNotification("Error: Unknown Target in findItinTarget-function");
               return false;
       }
-      return target[index+rowoffset].children[columnoffset];    
+      return target[index+rowoffset].children[columnoffset];
   } else {
      printNotification("Error: Unknown error in findItinTarget-function");
      return false;
-  }  
+  }
 }
 function validatePaxcount(config){
   //{maxPaxcount:7, countInf:false, childAsAdult:12, sepInfSeat:false, childMinAge:2}
@@ -1057,7 +1057,7 @@ function validatePaxcount(config){
        ret.children.push(tmpChildren[i]);
     } else {
        ret.adults++;
-    } 
+    }
   }
   // check Pax-Count
   if (config.countInf===true){
@@ -1069,7 +1069,7 @@ function validatePaxcount(config){
     if (config.maxPaxcount < ( ret.adults+ret.infSeat+ret.children.length)) {
       console.log("Too many passengers");
       return false;
-    }    
+    }
   }
   if (0 === ( ret.adults+ret.infSeat+ret.children.length)) {
     console.log("No passengers");
@@ -1079,7 +1079,7 @@ function validatePaxcount(config){
 }
 /********************************************* Start page *********************************************/
 function startPage() {
-    // try to get content  
+    // try to get content
     if (findtarget( classSettings["startpage"]["maindiv"],1)===undefined){
       printNotification("Error: Unable to find content on start page.");
       return false;
@@ -1088,7 +1088,7 @@ function startPage() {
       target = findtarget( classSettings["startpage"]["maindiv"],1);
       target.children[0].children[0].children[0].children[0].setAttribute('valign', 'top');
     }
-  
+
 }
 /********************************************* Result page *********************************************/
 // editor functions
@@ -1099,24 +1099,24 @@ function bindEditorMode(dir){
          // bind/unbind cabin & BC
          var target= findItinTarget((i+1),(j+1),"cabin").firstChild;
           if (dir==="create"){
-            var tmp=target.innerHTML;    
+            var tmp=target.innerHTML;
             var bc=tmp.substr(tmp.length-2,1);
             var cabin=tmp.substr(0,tmp.length-4);
             var tmp = [["Economy","Y"],["Premium Economy","Y+"],["Business","C"],["First","F"]];
             var str='<select style="width:40px" class="editoritem">';
             for (var k = 0; k < tmp.length; k++){
-              str +='<option value="'+tmp[k][0]+'"'+(tmp[k][0]===cabin?' selected="selected"':'')+'>'+tmp[k][1]+'</option>';  
+              str +='<option value="'+tmp[k][0]+'"'+(tmp[k][0]===cabin?' selected="selected"':'')+'>'+tmp[k][1]+'</option>';
             }
             str +='</select>';
-            str +=' (<input type="text" class="editoritem" value="'+bc+'" style="width:20px;text-align:center">)';      
+            str +=' (<input type="text" class="editoritem" value="'+bc+'" style="width:20px;text-align:center">)';
           } else {
            var cabin=target.firstChild.options[target.firstChild.selectedIndex].value;
            var bc=target.firstChild.nextSibling.nextSibling.value;
-           var str=cabin+' ('+bc+')';   
+           var str=cabin+' ('+bc+')';
           }
           target.innerHTML=str;
       }
-   }    
+   }
 }
 
 //Primary function for extracting flight data from ITA/Matrix
@@ -1126,21 +1126,21 @@ function fePS() {
       printNotification("Error: Unable to find Content on result page.");
       return false;
     }
-    // retry if itin not loaded  
-    if (findtarget(classSettings["resultpage"]["itin"],1).parentNode.previousSibling.previousSibling.style.display!="none") { 
+    // retry if itin not loaded
+    if (findtarget(classSettings["resultpage"]["itin"],1).parentNode.previousSibling.previousSibling.style.display!="none") {
       mptSettings["retrycount"]++;
       if (mptSettings["retrycount"]>50) {
         printNotification("Error: Timeout on result page. Content not found after 10s.");
         return false;
       };
-      setTimeout(function(){fePS();}, 200);    
+      setTimeout(function(){fePS();}, 200);
       return false;
     };
     // do some self-testing to prevent crashing on class-changes
     for (i in classSettings["resultpage"]) {
        if (findtarget(classSettings["resultpage"][i],1) === undefined) {
           printNotification("Error: Unable to find class "+classSettings["resultpage"][i]+" for "+i+".");
-          return false;                  
+          return false;
        }
     }
     // empty outputcontainer
@@ -1148,12 +1148,12 @@ function fePS() {
         var div = document.getElementById('powertoolslinkcontainer');
         div.innerHTML ="";
     }
-	
+
     //  S&D powertool items
-  	var elems = findtargets('powertoolsitem');
-  	for(var i = elems.length - 1; i >= 0; i--){
-  		elems[i].parentNode.removeChild(elems[i]);
-  	}
+    var elems = findtargets('powertoolsitem');
+    for(var i = elems.length - 1; i >= 0; i--){
+      elems[i].parentNode.removeChild(elems[i]);
+    }
     // S&D price breakdown
     var target=findtarget('pricebreakdown',1);
     if (target!=undefined) target.parentNode.removeChild(target);
@@ -1162,12 +1162,12 @@ function fePS() {
     var target=findtarget('ff-links',1);
     if (target!=undefined) target.parentNode.removeChild(target);
     var target=findtarget('ff-plancontainer',1);
-    if (target!=undefined) target.parentNode.removeChild(target);  
+    if (target!=undefined) target.parentNode.removeChild(target);
     var target=document.getElementById('ff-routingcodescontainer');
-    if (target!=undefined) target.parentNode.removeChild(target); 
+    if (target!=undefined) target.parentNode.removeChild(target);
 
-  
-    // Editor mode?  
+
+    // Editor mode?
     if (mptUsersettings["enableEditormode"]==1 && findtargets("editoritem").length===0){
       toggleVis(document.getElementById('mptStartparse'));
       document.getElementById('mptStartparse').style.display="inline-block";
@@ -1178,9 +1178,9 @@ function fePS() {
       bindEditorMode("remove");
       toggleVis(document.getElementById('mptStartparse'));
     }
-   
+
     if (mptUsersettings["enableFarerules"]==1) bindRulelinks();
-    
+
     // configure sidebar
     if (mptUsersettings["enableInlinemode"]==1) {
     findtarget(classSettings["resultpage"]["milagecontainer"],1).setAttribute('rowspan', 10);
@@ -1190,23 +1190,23 @@ function fePS() {
     } else {
       findtarget(classSettings["resultpage"]["milagecontainer"],1).setAttribute('rowspan', 2);
     }
-  
+
     readItinerary(true);
     // Translate page
     if (mptUsersettings["language"]!=="en" && translations[mptUsersettings["language"]]["resultpage"]!==undefined) translate("resultpage",mptUsersettings["language"],findtarget(classSettings["resultpage"]["itin"],1).nextSibling.nextSibling);
-    //Add price breakdown  
+    //Add price breakdown
     if (mptUsersettings["enablePricebreakdown"]==1) rearrangeprices(currentItin.dist);
-    
+
     if (mptUsersettings["enableInlinemode"]==1) printCPM();
- 
+
     printLinksContainer();
 
     /*** inline binding ***/
     if(mptUsersettings["enableSeatguru"]==1) bindSeatguru();
-    if(mptUsersettings["enablePlanefinder"]==1) bindPlanefinder();  
-    if(mptUsersettings["enableMilesbreakdown"]==1 && typeof(JSON) !== "undefined") printMilesbreakdown();  
+    if(mptUsersettings["enablePlanefinder"]==1) bindPlanefinder();
+    if(mptUsersettings["enableMilesbreakdown"]==1 && typeof(JSON) !== "undefined") printMilesbreakdown();
     if(mptUsersettings["enableWheretocredit"]==1) bindWheretocredit();
-    if (mptUsersettings["enableFarefreaks"]==1 && typeof(JSON) !== "undefined"){createFareFreaksContainer();}  
+    if (mptUsersettings["enableFarefreaks"]==1 && typeof(JSON) !== "undefined"){createFareFreaksContainer();}
 }
 
 function printLinksContainer(){
@@ -1220,18 +1220,18 @@ function printLinksContainer(){
         div.innerHTML ="";
     }
     //  S&D powertool items
-  	var elems = findtargets('powertoolsitem');
-  	for(var i = elems.length - 1; i >= 1; i--){
-  		elems[i].parentNode.removeChild(elems[i]);
-  	}
+    var elems = findtargets('powertoolsitem');
+    for(var i = elems.length - 1; i >= 1; i--){
+      elems[i].parentNode.removeChild(elems[i]);
+    }
     /*** Print Timezone***/
     if (typeof(currentItin["itin"][0]["dep"]["offset"])==="undefined") {
        printTimezones();
-    }    
+    }
     /*** Airlines ***/
     printAAc1();
-    printAA(); 
-    printAC();   
+    printAA();
+    printAC();
     if (currentItin["itin"].length == 2 &&
         currentItin["itin"][0]["orig"] == currentItin["itin"][1]["dest"] &&
         currentItin["itin"][0]["dest"] == currentItin["itin"][1]["orig"]) {
@@ -1248,13 +1248,13 @@ function printLinksContainer(){
     }
     if (currentItin["itin"].length >= 3 && inArray("CZ",currentItin["carriers"])) {
         printCZ();
-    }    
+    }
     // we print AZ if it's only on AZ-flights
-    if (currentItin["carriers"].length==1 && currentItin["carriers"][0]=="AZ"){ printAZ(); }  
+    if (currentItin["carriers"].length==1 && currentItin["carriers"][0]=="AZ"){ printAZ(); }
     printDL();
     if (inArray("IB",currentItin["carriers"]) || inArray("BA",currentItin["carriers"])){
        printIB();
-    }  
+    }
     printKL();
     // printLA(); // Disabled until further notice
     if (inArray("LH",currentItin["carriers"]) || inArray("OS",currentItin["carriers"])){
@@ -1265,7 +1265,7 @@ function printLinksContainer(){
     }
     if (inArray("TK",currentItin["carriers"])){
        printTK();
-    }   
+    }
     if(mptUsersettings["enableDeviders"]==1) printSeperator();
     /*** OTAs ***/
     printCheapOair();
@@ -1277,11 +1277,11 @@ function printLinksContainer(){
     printMomondo();
     printKayak(0);
     printKayak(1);
-    printSkyscanner();	
+    printSkyscanner();
     if(mptUsersettings["enableDeviders"]==1) printSeperator();
     /*** other stuff ***/
     printFarefreaks (0);
-    printFarefreaks (1); 
+    printFarefreaks (1);
     printGCM ();
     printWheretocredit();
     /*** attach JS events after building link container  ***/
@@ -1298,7 +1298,7 @@ function bindRulelinks(){
           var current=Number(target.firstChild.innerHTML.replace(/[^\d]/gi, ""));
           if (i>current){
             j++;
-            i=0;  
+            i=0;
           }
           target=target.nextSibling.nextSibling.nextSibling;
           var targeturl = window.location.href.replace(/view-details/, "view-rules")+";fare-key="+j+"/"+i;
@@ -1308,13 +1308,13 @@ function bindRulelinks(){
           newlink.setAttribute('target', "_blank");
           var linkText = document.createTextNode("rules");
           newlink.appendChild(linkText);
-          target.parentNode.replaceChild(newlink,target);    
+          target.parentNode.replaceChild(newlink,target);
           i++;
           t++;
           target=findtarget(classSettings["resultpage"]["rulescontainer"],t);
       }
-      while (target!=undefined);  
-    }   
+      while (target!=undefined);
+    }
 }
 //*** Price breakdown ****//
 function rearrangeprices(){
@@ -1332,7 +1332,7 @@ function rearrangeprices(){
      var count=0;
     }
     if (target!=undefined){
-      do {    
+      do {
           var type = target.firstChild.firstChild.nodeType;
           if (type == 1) {
             basefound=1;
@@ -1342,27 +1342,27 @@ function rearrangeprices(){
             basefares+=price;
           } else if(basefound==1 && type == 3) {
             //its a pricenode
-            var name  = target.firstChild.innerHTML;    
-            var price = Number(target.nextSibling.firstChild.innerHTML.replace(/[^\d]/gi, ""));            
+            var name  = target.firstChild.innerHTML;
+            var price = Number(target.nextSibling.firstChild.innerHTML.replace(/[^\d]/gi, ""));
             if( hasClass(target.nextSibling, classSettings["resultpage"]["htbGreyBorder"]) == 1) {
              //we are done for this container
-              //console.log( "Basefare: "+ basefares);    
-              //console.log( "Taxes: "+ taxes); 
+              //console.log( "Basefare: "+ basefares);
+              //console.log( "Taxes: "+ taxes);
               //console.log( "Surcharges: "+ surcharges);
               var sum=basefares+taxes+surcharges;
               if (mptUsersettings["enableInlinemode"] == 1){
                   var newtr = document.createElement('tr');
                   newtr.innerHTML = '<td class="'+classSettings["resultpage"]["htbLeft"]+'"><div class="gwt-Label">Basefare per passenger ('+((basefares/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["resultpage"]["htbGreyBorder"]+'"><div class="gwt-Label">'+cur+(basefares/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
-                  target.parentNode.parentNode.insertBefore(newtr, target.parentNode);  
+                  target.parentNode.parentNode.insertBefore(newtr, target.parentNode);
                   var newtr = document.createElement('tr');
                   newtr.innerHTML = '<td class="'+classSettings["resultpage"]["htbLeft"]+'"><div class="gwt-Label">Taxes per passenger ('+((taxes/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["resultpage"]["htbRight"]+'"><div class="gwt-Label">'+cur+(taxes/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
-                  target.parentNode.parentNode.insertBefore(newtr, target.parentNode); 
+                  target.parentNode.parentNode.insertBefore(newtr, target.parentNode);
                   var newtr = document.createElement('tr');
                   newtr.innerHTML = '<td class="'+classSettings["resultpage"]["htbLeft"]+'"><div class="gwt-Label">Surcharges per passenger ('+((surcharges/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["resultpage"]["htbRight"]+'"><div class="gwt-Label">'+cur+(surcharges/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
-                  target.parentNode.parentNode.insertBefore(newtr, target.parentNode);  
+                  target.parentNode.parentNode.insertBefore(newtr, target.parentNode);
                   var newtr = document.createElement('tr');
                   newtr.innerHTML = '<td class="'+classSettings["resultpage"]["htbLeft"]+'"><div class="gwt-Label">Basefare + Taxes per passenger ('+(((basefares+taxes)/sum)*100).toFixed(2).toString()+'%)</div></td><td class="'+classSettings["resultpage"]["htbGreyBorder"]+'"><div class="gwt-Label">'+cur+((basefares+taxes)/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
-                  target.parentNode.parentNode.insertBefore(newtr, target.parentNode); 
+                  target.parentNode.parentNode.insertBefore(newtr, target.parentNode);
               } else {
                  count++;
                  output +='<table style="float:left; margin-right:15px;"><tbody>';
@@ -1372,7 +1372,7 @@ function rearrangeprices(){
                  output +='<tr><td>Tax</td><td style="padding:0px 3px;text-align:right;">'+((taxes/sum)*100).toFixed(1).toString()+'%</td><td style="text-align:right;">'+cur+(taxes/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td></tr>";
                  output +='<tr><td>Surcharges</td><td style="padding:0px 3px;text-align:right;">'+((surcharges/sum)*100).toFixed(1).toString()+'%</td><td style="text-align:right;">'+cur+(surcharges/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td></tr>";
                  output +='<tr><td style="border-top: 1px solid #878787;padding:2px 0">Bf+Tax</td><td style="border-top: 1px solid #878787;padding:2px 3px;text-align:right;">'+(((basefares+taxes)/sum)*100).toFixed(1).toString()+'%</td><td style="border-top: 1px solid #878787;padding:2px 0; text-align:right;">'+cur+((basefares+taxes)/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td></tr>";
-                 output +="</tbody></table>"; 
+                 output +="</tbody></table>";
               }
               currentItin.basefares = +(basefares/100).toFixed(2);
               currentItin.taxes = +(taxes/100).toFixed(2);
@@ -1386,23 +1386,23 @@ function rearrangeprices(){
             } else {
               //Carrier surcharge?
               if (searchpatt.test(name)===true){
-               surcharges+=price; 
+               surcharges+=price;
               } else {
-               taxes+=price; 
-              }           
+               taxes+=price;
+              }
             }
-          }    
+          }
           t++;
           target=findtarget(classSettings["resultpage"]["htbLeft"],t);
       }
-      while (target!=undefined);  
+      while (target!=undefined);
     }
     if (mptUsersettings["enableInlinemode"] == 0){
       var printtarget=findtarget(classSettings["resultpage"]["htbContainer"],1).parentNode.parentNode.parentNode;
       var newtr = document.createElement('tr');
       newtr.setAttribute('class','pricebreakdown');
       newtr.innerHTML = '<td><div>'+output+'</div></td>';
-      printtarget.parentNode.insertBefore(newtr, printtarget); 
+      printtarget.parentNode.insertBefore(newtr, printtarget);
     }
 }
 //*** Mileage breakdown ****//
@@ -1411,13 +1411,13 @@ function printMilesbreakdown(){
    retrieveMileages();
  } else {
   target = findItinTarget(1,1,"headline");
-  target.innerHTML = target.innerHTML.replace(target.firstChild.className, target.firstChild.className + '" style="display:inline-block')+'<div id="loadmileage" class="'+target.firstChild.className+'" style="display:inline-block;cursor:pointer;float:right;">Load mileage</div>'; 
+  target.innerHTML = target.innerHTML.replace(target.firstChild.className, target.firstChild.className + '" style="display:inline-block')+'<div id="loadmileage" class="'+target.firstChild.className+'" style="display:inline-block;cursor:pointer;float:right;">Load mileage</div>';
   document.getElementById("loadmileage").onclick=function() {
         document.getElementById("loadmileage").parentNode.removeChild(document.getElementById("loadmileage"));
         retrieveMileages();
-      };        
+      };
  }
-  
+
 }
 function retrieveMileages(){
    // collect all airport cominations
@@ -1433,7 +1433,7 @@ function retrieveMileages(){
              routes[currentItin["itin"][i]["seg"][j]["orig"]+currentItin["itin"][i]["seg"][j]["dest"]] === undefined &&
              routes[currentItin["itin"][i]["seg"][j]["dest"]+currentItin["itin"][i]["seg"][j]["orig"]] === undefined ) {
              routes[currentItin["itin"][i]["seg"][j]["orig"]+currentItin["itin"][i]["seg"][j]["dest"]] = currentItin["itin"][i]["seg"][j]["orig"]+"-"+currentItin["itin"][i]["seg"][j]["dest"];
-        }       
+        }
       }
    }
   //build request
@@ -1443,7 +1443,7 @@ function retrieveMileages(){
   if (params==="") {
     //no request needed.. call final print function
     printMileages();
-    return false; 
+    return false;
   }
   doHttpRequest("https://www.farefreaks.com/ajax/calcroutedist.php?"+params,{mode:"get"},function(xmlHttpObject) {
      var response=false;
@@ -1457,7 +1457,7 @@ function retrieveMileages(){
        // do not(!) use eval here :-/
        printNotification("Error: Failed parsing route data - Browser not supporting JSON");
        return false;
-     }     
+     }
      if (typeof(response) !== "object"){
       printNotification("Error: Failed parsing route data");
       return false;
@@ -1468,14 +1468,14 @@ function retrieveMileages(){
      }
      if (response["success"]!=="1"){
       printNotification("Error: "+response["error"]+" in retrieveMileages function");
-      return false; 
+      return false;
      }
      // add new routes to distances
      for (i in response["data"]) {
         distances[i]=parseFloat(response["data"][i]);
      }
-     printMileages(); 
-    });  
+     printMileages();
+    });
 }
 function printMileages(){
   var legdistance=0;
@@ -1489,12 +1489,12 @@ function printMileages(){
              printNotification("Error: Missing route data for "+currentItin["itin"][i]["seg"][j]["orig"]+" => "+currentItin["itin"][i]["seg"][j]["dest"]);
              return false;
         } else if ( distances[currentItin["itin"][i]["seg"][j]["orig"]+currentItin["itin"][i]["seg"][j]["dest"]] !== undefined &&
-                    distances[currentItin["itin"][i]["seg"][j]["dest"]+currentItin["itin"][i]["seg"][j]["orig"]] === undefined ) {         
+                    distances[currentItin["itin"][i]["seg"][j]["dest"]+currentItin["itin"][i]["seg"][j]["orig"]] === undefined ) {
           currentItin["itin"][i]["seg"][j]["dist"]=distances[currentItin["itin"][i]["seg"][j]["orig"]+currentItin["itin"][i]["seg"][j]["dest"]];
         } else {
           currentItin["itin"][i]["seg"][j]["dist"]=distances[currentItin["itin"][i]["seg"][j]["dest"]+currentItin["itin"][i]["seg"][j]["orig"]];
-        }          
-        legdistance+=currentItin["itin"][i]["seg"][j]["dist"];          
+        }
+        legdistance+=currentItin["itin"][i]["seg"][j]["dist"];
         currentItin["itin"][i]["seg"][j]["dist"]=Math.floor(currentItin["itin"][i]["seg"][j]["dist"]);
       }
      currentItin["itin"][i]["dist"]=Math.floor(legdistance);
@@ -1506,44 +1506,44 @@ function printMileages(){
       for (var i=0;i<currentItin["itin"].length;i++) {
       // walks each leg
       target = findItinTarget((i+1),1,"headline");
-      target.innerHTML = target.innerHTML.replace(target.firstChild.className, target.firstChild.className + '" style="display:inline-block')+'<div style="display:inline-block;float:right;"> '+currentItin["itin"][i]["dist"]+' miles</div>'; 
+      target.innerHTML = target.innerHTML.replace(target.firstChild.className, target.firstChild.className + '" style="display:inline-block')+'<div style="display:inline-block;float:right;"> '+currentItin["itin"][i]["dist"]+' miles</div>';
        for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
         //walks each segment of leg
          if (currentItin["itin"][i]["seg"].length>1) {
          target = findItinTarget((i+1),(j+1),"airportsdate");
-         target.innerHTML = target.innerHTML.replace(target.firstChild.className, target.firstChild.className + '" style="display:inline-block')+'<div style="display:inline-block;float:right;margin-right:110px;"> '+currentItin["itin"][i]["seg"][j]["dist"]+' miles</div>';       
+         target.innerHTML = target.innerHTML.replace(target.firstChild.className, target.firstChild.className + '" style="display:inline-block')+'<div style="display:inline-block;float:right;margin-right:110px;"> '+currentItin["itin"][i]["seg"][j]["dist"]+' miles</div>';
         }
       }
    }
-  } else {  
+  } else {
   var output="";
   output +='<tbody>';
-  output +='<tr><td colspan="4" style="text-align:center;">Mileage breakdown:</td></tr>';         
+  output +='<tr><td colspan="4" style="text-align:center;">Mileage breakdown:</td></tr>';
   for (var i=0;i<currentItin["itin"].length;i++) {
       // walks each leg
     output +='<tr><td style="border-bottom: 1px solid #878787;padding:2px 2px">Leg '+(i+1)+'</td><td style="border-bottom: 1px solid #878787;padding:2px 0">'+currentItin["itin"][i]["orig"]+'</td><td style="border-bottom: 1px solid #878787;padding:2px 0">'+currentItin["itin"][i]["dest"]+'</td><td style="border-bottom: 1px solid #878787;padding:2px 0;text-align:right;">'+currentItin["itin"][i]["dist"]+'</td></tr>';
        for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
         //walks each segment of leg
-        if (currentItin["itin"][i]["seg"].length>1) output +='<tr><td></td><td>'+currentItin["itin"][i]["seg"][j]["orig"]+'</td><td>'+currentItin["itin"][i]["seg"][j]["dest"]+'</td><td style="text-align:right;">'+currentItin["itin"][i]["seg"][j]["dist"]+'</td></tr>';       
+        if (currentItin["itin"][i]["seg"].length>1) output +='<tr><td></td><td>'+currentItin["itin"][i]["seg"][j]["orig"]+'</td><td>'+currentItin["itin"][i]["seg"][j]["dest"]+'</td><td style="text-align:right;">'+currentItin["itin"][i]["seg"][j]["dist"]+'</td></tr>';
       }
    }
-  output +="</tbody>"; 
+  output +="</tbody>";
   if (findtarget("pricebreakdown",1)===undefined){
       // create container
         var printtarget=findtarget(classSettings["resultpage"]["htbContainer"],1).parentNode.parentNode.parentNode;
         var newtr = document.createElement('tr');
         newtr.setAttribute('class','pricebreakdown');
         newtr.innerHTML = '<td><div><table style="float:left; margin-right:15px;">'+output+'</table></div></td>';
-        printtarget.parentNode.insertBefore(newtr, printtarget); 
+        printtarget.parentNode.insertBefore(newtr, printtarget);
     } else {
       // add to existing container
-      var printtarget = findtarget("pricebreakdown",1).firstChild.firstChild.firstChild; 
+      var printtarget = findtarget("pricebreakdown",1).firstChild.firstChild.firstChild;
       var newtable = document.createElement('table');
       newtable.setAttribute('style','float:left; margin-right:15px;');
       newtable.innerHTML = output;
-      printtarget.parentNode.insertBefore(newtable, printtarget);    
+      printtarget.parentNode.insertBefore(newtable, printtarget);
     }
-  }    
+  }
 }
 //*** Readfunction ****//
 function parseAddInfo(info){
@@ -1589,10 +1589,10 @@ function readItinerary(doReplace){
         legobj["seg"]= new Array();
         itin.push(legobj);
       }
-      // extract basefares     
+      // extract basefares
       var re=/Carrier\s([\w]{2})\s([\w]+).*?Covers\s([\w\(\)\s\-,]+)/g;
       temp = exRE(html,re);
-      tmp = {c:"",f:"",l:new Array()};  
+      tmp = {c:"",f:"",l:new Array()};
       for(i=0;i<temp.length;i+=3) {
           tmp.c=temp[i];
           tmp.f=temp[i+1];
@@ -1618,35 +1618,35 @@ function readItinerary(doReplace){
             temp["dep"]["month"]=monthnameToNumber(segs[i+3]);
             temp["dep"]["day"]=parseInt(segs[i+4]);
             temp["dep"]["year"]=getFlightYear(temp["dep"]["day"],temp["dep"]["month"]);
-            temp["fnr"]=segs[i+5];         
+            temp["fnr"]=segs[i+5];
             if (mptUsersettings["timeformat"]=="24h") {
                  replacementsold.push(segs[i+6]);
-                 replacementsold.push(segs[i+7]); 
+                 replacementsold.push(segs[i+7]);
                 }
             segs[i+6]=return12htime(segs[i+6]);
             segs[i+7]=return12htime(segs[i+7]);
-            if (mptUsersettings["timeformat"]=="24h") {          
+            if (mptUsersettings["timeformat"]=="24h") {
                   replacementsnew.push((segs[i+6].length==4? "0":"")+segs[i+6]) ;
                   replacementsnew.push((segs[i+7].length==4? "0":"")+segs[i+7]);
                 }
-            temp["dep"]["time"]=segs[i+6];  
-            temp["arr"]["time"]=segs[i+7];  
+            temp["dep"]["time"]=segs[i+6];
+            temp["arr"]["time"]=segs[i+7];
             temp["duration"]=parseInt(segs[i+8])*60 + parseInt(segs[i+9]);
             temp["aircraft"]=segs[i+10];
-            temp["cabin"]=getcabincode(segs[i+11]);   
+            temp["cabin"]=getcabincode(segs[i+11]);
             temp["bookingclass"]=segs[i+12];
-            var addinformations=parseAddInfo(segs[i+13]);       
+            var addinformations=parseAddInfo(segs[i+13]);
             if (addinformations["arrDate"]!=""){
             temp["arr"]["day"]=addinformations["arrDate"]["day"];
             temp["arr"]["month"]=addinformations["arrDate"]["month"];
-            temp["arr"]["year"]=addinformations["arrDate"]["year"]; 
+            temp["arr"]["year"]=addinformations["arrDate"]["year"];
             } else {
             temp["arr"]["day"]=temp["dep"]["day"];
             temp["arr"]["month"]=temp["dep"]["month"];
             temp["arr"]["year"]=temp["dep"]["year"];
             }
             temp["codeshare"]=addinformations["codeshare"];
-            temp["layoverduration"]=addinformations["layoverduration"];  
+            temp["layoverduration"]=addinformations["layoverduration"];
             temp["airportchange"]=addinformations["airportchange"];
             temp["farebase"]="";
             temp["farecarrier"]="";
@@ -1663,7 +1663,7 @@ function readItinerary(doReplace){
              }
             if (itin[legnr]===undefined) itin[legnr] = new Object();
             if (itin[legnr]["seg"]===undefined) itin[legnr]["seg"] = new Array();
-            itin[legnr]["seg"].push(temp);     
+            itin[legnr]["seg"].push(temp);
             // push carrier
             if (!inArray(temp["carrier"],carrieruarray)) {carrieruarray.push(temp["carrier"]);};
             // push dates and times into leg-array
@@ -1687,7 +1687,7 @@ function readItinerary(doReplace){
             }
 
       }
-      // We need to apply remaining fares (Not nonstop - but direct flights) 
+      // We need to apply remaining fares (Not nonstop - but direct flights)
       for (var i = 0; i<dirtyFare.length; i++){
         var curfare=dirtyFare[i].split("-");
         if (curfare.length > 1) {
@@ -1695,16 +1695,16 @@ function readItinerary(doReplace){
           //currently unused so walk through itin to find flights
           for (var legnr = 0; legnr<itin.length; legnr++){
              for (var segnr = 0; segnr<itin[legnr]["seg"].length; segnr++){
-                if (itin[legnr]["seg"][segnr]["orig"]==curfare[0] && 
+                if (itin[legnr]["seg"][segnr]["orig"]==curfare[0] &&
                     itin[legnr]["seg"][segnr]["dest"]==curfare[1] &&
                     itin[legnr]["seg"][segnr]["farebase"]=="") {
                   // found seg for fare
-                    itin[legnr]["seg"][segnr]["farebase"]=curfare[2]; 
+                    itin[legnr]["seg"][segnr]["farebase"]=curfare[2];
                     itin[legnr]["seg"][segnr]["farecarrier"]=curfare[3];
-                    dirtyFare[i]=curfare[2]; 
+                    dirtyFare[i]=curfare[2];
                     segnr=itin[legnr]["seg"].length;
-                    tmp=1;                  
-                } else if (itin[legnr]["seg"][segnr]["orig"]==curfare[0] && 
+                    tmp=1;
+                } else if (itin[legnr]["seg"][segnr]["orig"]==curfare[0] &&
                     itin[legnr]["seg"][segnr]["dest"]!=curfare[1] &&
                     itin[legnr]["seg"][segnr]["farebase"]==""){
                   // found start but multiple segs -> find end
@@ -1712,17 +1712,17 @@ function readItinerary(doReplace){
                      if (itin[legnr]["seg"][j]["dest"]==curfare[1] && itin[legnr]["seg"][j]["farebase"]==""){
                        //found end attach fares
                        for (var k = segnr; k<=j; k++) {
-                        itin[legnr]["seg"][k]["farebase"]=curfare[2]; 
+                        itin[legnr]["seg"][k]["farebase"]=curfare[2];
                         itin[legnr]["seg"][k]["farecarrier"]=curfare[3];
                         dirtyFare[i]=curfare[2];
                        }
-                       j=itin[legnr]["seg"].length; 
+                       j=itin[legnr]["seg"].length;
                        segnr=itin[legnr]["seg"].length;
-                       tmp=1;                       
+                       tmp=1;
                      } else if (itin[legnr]["seg"][(segnr+j)]["farebase"]!=""){
                        //farebase attached - skip
                        j=itin[legnr]["seg"].length;
-                     } 
+                     }
                    }
                 }
             }
@@ -1740,10 +1740,10 @@ function readItinerary(doReplace){
         if (matrixCurrencies[i].p.test(milepaxprice[2])===true){
               itinCur=matrixCurrencies[i].c;
               i=matrixCurrencies.length;
-            }        
+            }
       }
-      currentItin={itin:itin, price: Number(milepaxprice[3].replace(/\,/,"")), numPax:Number(milepaxprice[1]) , carriers:carrieruarray, cur : itinCur, farebases:farebases, dist:Number(milepaxprice[0].replace(/\,/,""))}; 
-      //console.log(currentItin); //Remove to see flightstructure 
+      currentItin={itin:itin, price: Number(milepaxprice[3].replace(/\,/,"")), numPax:Number(milepaxprice[1]) , carriers:carrieruarray, cur : itinCur, farebases:farebases, dist:Number(milepaxprice[0].replace(/\,/,""))};
+      //console.log(currentItin); //Remove to see flightstructure
       // lets do the time-replacement
        if(replacementsold.length>0 && doReplace ===true) {
          target=findtarget(classSettings["resultpage"]["itin"],1).nextSibling.nextSibling;
@@ -1752,7 +1752,7 @@ function readItinerary(doReplace){
            target.innerHTML = target.innerHTML.replace(re, replacementsnew[i]);
          }
        }
-}  
+}
 //*** Printfunctions ****//
 function translate(page,lang,target){
        if (translations[lang]===undefined){
@@ -1766,7 +1766,7 @@ function translate(page,lang,target){
       for (i in translations[lang][page]) {
            re = new RegExp(i,"g");
            target.innerHTML = target.innerHTML.replace(re, translations[lang][page][i]);
-       }  
+       }
 }
 
 function printCPM(){
@@ -1808,20 +1808,20 @@ function getAmadeusUrl(config){
                 var k=0;
                 // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
                 while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
                      currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440 || config["enablesegskip"] == 0) break;
                  k++;
-                }               
+                }
                 curseg++;
                 if (curseg>3 || (currentItin["itin"][i]["seg"][j]["cabin"] != lastcabin && config["sepcabin"]==1)) {
                   if (lastdest!= '') {
                     //close prior flight
                     url += '&E_LOCATION_'   + curleg + '='+lastdest;
-                    url += '&E_DATE_'   + curleg + '='+lastarrtime;    
+                    url += '&E_DATE_'   + curleg + '='+lastarrtime;
                   }
                  curseg=1;
                  curleg++;
-                 url += '&B_LOCATION_'   + curleg + '='+currentItin['itin'][i]['seg'][j]['orig'];     
+                 url += '&B_LOCATION_'   + curleg + '='+currentItin['itin'][i]['seg'][j]['orig'];
                  url += '&B_ANY_TIME_'   + curleg + '=FALSE';
                  url += '&B_DATE_'       + curleg + '='+currentItin['itin'][i]['seg'][j]['dep']['year']+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+(config["inctimes"]==1?('0'+currentItin['itin'][i]['seg'][j]['dep']['time'].replace(':','')).slice(-4):"0000");
                  url += '&CABIN_'        + curleg + '='+cabins[currentItin["itin"][i]["seg"][j]["cabin"]];
@@ -1829,9 +1829,9 @@ function getAmadeusUrl(config){
                  url += '&DATE_RANGE_VALUE_'        + curleg + '=0';
                 }
                 lastarrtime=currentItin['itin'][i]['seg'][j+k]['arr']['year']+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['day']).slice(-2)+(config["inctimes"]==1?('0'+currentItin['itin'][i]['seg'][j+k]['arr']['time'].replace(':','')).slice(-4):"0000");
-                if (config["detailed"]===1){ 
-                  url += '&B_LOCATION_'   + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['orig'];     
-                  url += '&B_LOCATION_CITY_'   + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['orig'];     
+                if (config["detailed"]===1){
+                  url += '&B_LOCATION_'   + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['orig'];
+                  url += '&B_LOCATION_CITY_'   + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['orig'];
                   url += '&B_DATE_'       + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['dep']['year']+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+(config["inctimes"]==1?('0'+currentItin['itin'][i]['seg'][j]['dep']['time'].replace(':','')).slice(-4):"0000");
                   url += '&E_LOCATION_'   + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j+k]['dest'];
                   url += '&E_LOCATION_CITY_'   + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j+k]['dest'];
@@ -1869,7 +1869,7 @@ function getAmadeusPax(pax,config){
       } else if (pax.children[i] >= 12) {
        pax.adults++;
       } else {
-       tmpPax.c++; 
+       tmpPax.c++;
       }
     }
     for (i=0;i<pax.adults;i++){
@@ -1904,8 +1904,8 @@ function printAA(){
     var legs = new Array();
     var leg ="";
     var segs = new Array();
-    var seg = ""; 
-    
+    var seg = "";
+
     //Build multi-city search based on legs
     for (var i=0;i<currentItin["itin"].length;i++) {
       // walks each leg
@@ -1915,13 +1915,13 @@ function printAA(){
                 var k=0;
                 // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
                 while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
                      currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
                  k++;
                 }
                 seg    = currentItin['itin'][i]['seg'][j+k]['arr']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['day']).slice(-2)+'T'+('0'+currentItin['itin'][i]['seg'][j+k]['arr']['time']).slice(-5)+(typeof(currentItin['itin'][i]['seg'][j+k]['arr']['offset'])=="undefined" ? "+00:00" : currentItin['itin'][i]['seg'][j+k]['arr']['offset'])+',';
                 seg   += currentItin['itin'][i]['seg'][j]['bookingclass']+",";
-                seg   += currentItin['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+'T'+('0'+currentItin['itin'][i]['seg'][j]['dep']['time']).slice(-5)+(typeof(currentItin['itin'][i]['seg'][j]['dep']['offset'])=="undefined" ? "+00:00" : currentItin['itin'][i]['seg'][j]['dep']['offset'])+',';                
+                seg   += currentItin['itin'][i]['seg'][j]['dep']['year']+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['seg'][j]['dep']['day']).slice(-2)+'T'+('0'+currentItin['itin'][i]['seg'][j]['dep']['time']).slice(-5)+(typeof(currentItin['itin'][i]['seg'][j]['dep']['offset'])=="undefined" ? "+00:00" : currentItin['itin'][i]['seg'][j]['dep']['offset'])+',';
                 seg   += currentItin['itin'][i]['seg'][j+k]['dest']+",";
                 seg   += currentItin['itin'][i]['seg'][j]['carrier']+currentItin['itin'][i]['seg'][j]['fnr']+",";
                 seg   += currentItin['itin'][i]['seg'][j]['orig']; // NO , here!
@@ -1933,7 +1933,7 @@ function printAA(){
       leg =currentItin["itin"][i]["dep"]['year']+"-"+("0"+currentItin["itin"][i]["dep"]['month']).slice(-2)+"-"+("0"+currentItin["itin"][i]["dep"]['day']).slice(-2)+",";
       leg+=currentItin["itin"][i]["dest"]+",,";
       leg+=currentItin["itin"][i]["orig"]+","; // USE , here!
-      legs.push(leg);     
+      legs.push(leg);
     }
     search+="DIRECT,";
     search+=edition[0].toUpperCase()+","; // Language
@@ -1948,13 +1948,13 @@ function printAA(){
     search+=pax.children.length+",";  // Child
     search+=pax.infLap+",";  // Inf
     search+="0,";  // Senior
-    search+=edition[1].toUpperCase()+","; // Country  
+    search+=edition[1].toUpperCase()+","; // Country
     // push outer search
-    search+=currentItin["itin"].length+","+legs.join();  
+    search+=currentItin["itin"].length+","+legs.join();
     url+=encodeURIComponent(search);
     return url;
   };
-  
+
   // get edition
   var edition=mptUsersettings["aaEdition"].split("_");
   if (edition.length!=2) {
@@ -1968,12 +1968,12 @@ function printAA(){
   var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   extra += aaEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value.split("_")) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
   extra += '</span></span>';
-  
+
   if (mptUsersettings["enableInlinemode"]==1){
     printUrlInline(url,"American","Europe/Asia/Pacific",null,extra);
   } else {
     printUrl(url,"American","Europe/Asia/Pacific",extra);
-  } 
+  }
 }
 
 function printAAc1(){
@@ -2064,35 +2064,35 @@ function printAAc1(){
 function printAC(){
   var createUrl = function (edition) {
     var acUrl = 'https://book.aircanada.com/pl/AConline/en/RedirectionServlet?FareRequest=YES&PRICING_MODE=0&fromThirdParty=YES';
-    acUrl += '&country=' + edition + '&countryOfResidence=' + edition + (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"?'&language=de':'&language=en');   
+    acUrl += '&country=' + edition + '&countryOfResidence=' + edition + (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"?'&language=de':'&language=en');
     // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
     var pax=validatePaxcount({maxPaxcount:9, countInf:true, childAsAdult:16, sepInfSeat:false, childMinAge:2});
     if (pax===false){
       printNotification("Error: Failed to validate Passengers in printAC");
       return false;
-    }    
+    }
     var paxConfig={allowinf:0, youthage:12}; // AC does not allow booking of infants for int. flights
     var amadeusConfig =  {sepcabin:1,detailed:1,allowpremium:1};
     var tmpPax=getAmadeusPax(pax,paxConfig);
     acUrl += tmpPax.url;
     acUrl += '&numberOfAdults=' + tmpPax.adults;
-    acUrl += '&numberOfInfants=' +tmpPax.infants;    
+    acUrl += '&numberOfInfants=' +tmpPax.infants;
     acUrl += '&numberOfYouth='+tmpPax.youth;
-    acUrl += '&numberOfChildren='+tmpPax.children;    
+    acUrl += '&numberOfChildren='+tmpPax.children;
     acUrl += '&tripType=' + getAmadeusTriptype();
     for (var i=0; i < currentItin['itin'].length; i++) {
-       acUrl += '&departure'+(i+1)+'='+('0'+currentItin['itin'][i]['dep']['day']).slice(-2)+'/'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'/'+currentItin['itin'][i]['dep']['year']+'&org'+(i+1)+'='+currentItin['itin'][i]['orig']+'&dest'+(i+1)+'='+currentItin['itin'][i]['dest'];      
-    }    
-    acUrl +=getAmadeusUrl(amadeusConfig);      
+       acUrl += '&departure'+(i+1)+'='+('0'+currentItin['itin'][i]['dep']['day']).slice(-2)+'/'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'/'+currentItin['itin'][i]['dep']['year']+'&org'+(i+1)+'='+currentItin['itin'][i]['orig']+'&dest'+(i+1)+'='+currentItin['itin'][i]['dest'];
+    }
+    acUrl +=getAmadeusUrl(amadeusConfig);
     return acUrl;
-  }; 
+  };
   var acUrl = createUrl(mptUsersettings["acEdition"].toUpperCase());
   if (acUrl === false) {
     return false;
-  }  
+  }
   var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   extra += acEditions.map(function (edition, i) { return '<a href="' + createUrl(edition.toUpperCase()) + '" target="_blank">' + edition +'</a>'; }).join('<br/>');
-  extra += '</span></span>';  
+  extra += '</span></span>';
   if (mptUsersettings["enableInlinemode"]==1){
     printUrlInline(acUrl,"Air Canada","",null,extra);
   } else {
@@ -2111,7 +2111,7 @@ function printAF() {
         afUrl += '&to='+currentItin['itin'][i]['dest'];
         afUrl += '&outboundDate='+currentItin['itin'][i]['dep']['year']+'-'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['dep']['day']).slice(-2);
         afUrl += '&firstOutboundHour='+('0'+currentItin['itin'][i]['dep']['time']).slice(-5);
-        
+
         flights = '';
         for (var j=0; j < currentItin['itin'][i]['seg'].length; j++) {
           if (j > 0) flights += '|';
@@ -2122,12 +2122,12 @@ function printAF() {
       else if (i == 1) {
         afUrl += '&inboundDate='+currentItin['itin'][i]['dep']['year']+'-'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['dep']['day']).slice(-2);
         afUrl += '&firstInboundHour='+('0'+currentItin['itin'][i]['dep']['time']).slice(-5);
-        
+
         flights = '';
         for (var j=0; j < currentItin['itin'][i]['seg'].length; j++) {
           if (j > 0) flights += '|';
           flights += currentItin['itin'][i]['seg'][j]['carrier'] + ('000'+currentItin['itin'][i]['seg'][j]['fnr']).slice(-4);
-          if (currentItin["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};  
+          if (currentItin["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};
         }
         afUrl += '&flightInbound=' + flights;
       }
@@ -2143,7 +2143,7 @@ function printAF() {
       if (pax.children[i]>11){
        tmpPax.y++;
       } else {
-       tmpPax.c++; 
+       tmpPax.c++;
       }
     }
     var curPax=0;
@@ -2161,7 +2161,7 @@ function printAF() {
       for (i=0;i<tmpPax.y;i++){
        afUrl += '&paxTypoList=CHD';
        curPax++;
-    }  
+    }
     afUrl+='&nbBebes='+pax.infLap;
       for (i=0;i<pax.infLap;i++){
        afUrl += '&paxTypoList=INF';
@@ -2169,7 +2169,7 @@ function printAF() {
       }
     afUrl += '&nbPassenger='+curPax+'&nbPax='+curPax;
     return afUrl;
-  }; 
+  };
   // get edition
   var edition=mptUsersettings["afEdition"];
   var url = createUrl(edition);
@@ -2179,12 +2179,12 @@ function printAF() {
   var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   extra += afEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
   extra += '</span></span>';
-  
+
   if (mptUsersettings["enableInlinemode"]==1){
     printUrlInline(url,"Air France","",null,extra);
   } else {
     printUrl(url,"Air France","",extra);
-  }     
+  }
 }
 
 function printAS(){
@@ -2257,9 +2257,9 @@ function printAZ() {
     printNotification("Error: Failed to validate Passengers in printAZ");
     return false;
   }
-  azUrl += '&children_number='+pax.children.length+'&newborn_number='+pax.infLap+'&adult_number='+pax.adults; 
+  azUrl += '&children_number='+pax.children.length+'&newborn_number='+pax.infLap+'&adult_number='+pax.adults;
     return azUrl;
-  };  
+  };
   // get edition
   var edition=mptUsersettings["azEdition"];
   var azUrl = createUrl(edition);
@@ -2268,12 +2268,12 @@ function printAZ() {
   }
   var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   extra += azEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
-  extra += '</span></span>';  
+  extra += '</span></span>';
   if (mptUsersettings["enableInlinemode"]==1){
    printUrlInline(azUrl,"Alitalia","",null,extra);
   } else {
    printUrl(azUrl,"Alitalia","",extra);
-  } 
+  }
 }
 
 function printBA(){
@@ -2290,20 +2290,20 @@ function printBA(){
         if (pax.children[i]>11){
          tmpPax.y++;
         } else {
-         tmpPax.c++; 
+         tmpPax.c++;
         }
-      }  
+      }
       var url = "https://www.britishairways.com/travel/fx/public/"+language+"_"+edition+"?eId=111054&data=F"+pax.adults+tmpPax.y+tmpPax.c+pax.infLap+"LF";
       var mincabin=3;
       //Build multi-city search based on legs
       for (var i=0;i<currentItin["itin"].length;i++) {
-        // walks each leg          
+        // walks each leg
               for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
              //walks each segment of leg
                   var k=0;
                   // lets have a look if we need to skip segments - fnr has to be the same and it must be just a layover
                   while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-                   if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+                   if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
                        currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
                    k++;
                   }
@@ -2312,17 +2312,17 @@ function printBA(){
                   url +=cabins[currentItin["itin"][i]["seg"][j]["cabin"]];
                   url +=currentItin['itin'][i]['seg'][j]['orig']+currentItin['itin'][i]['seg'][(j+k)]['dest'];
                   if (currentItin["itin"].length == 2 && i == 1 ) {
-                   url +='F'; 
+                   url +='F';
                   } else {
                    url +='T';
                   }
                   if (currentItin["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};
                   j+=k;
         }
-      }  
+      }
       url += "&p=EUR6666.66&e=FP&c="+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())]+"&source=FareQuoteEmail&isEmailHBOFareQuote=false";
       return url;
-    };    
+    };
   // get edition
   var url = createUrl(mptUsersettings["baEdition"],mptUsersettings["baLanguage"]);
   if (url === false) {
@@ -2330,12 +2330,12 @@ function printBA(){
   }
   var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   extra += baEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value,mptUsersettings["baLanguage"]) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
-  extra += '</span></span>';  
+  extra += '</span></span>';
   if (mptUsersettings["enableInlinemode"]==1){
     printUrlInline(url,"British Airways","",null,extra);
   } else {
     printUrl(url,"British Airways","",extra);
-  }     
+  }
 }
 
 function printCZ(){
@@ -2345,16 +2345,16 @@ function printCZ(){
     if (pax===false){
       printNotification("Error: Failed to validate Passengers in printCZ");
       return false;
-    }   
+    }
     var amadeusConfig =  {sepcabin:0,detailed:0,allowpremium:0,inctimes:0};
     var url = "http://global.csair.com/CZPortal/dyn/portal/doEnc?SITE=J00YJ00Y&BOOKING_FLOW=REVENUE&IS_FLEXIBLE=FALSE&LANGUAGE="+edition[1]+"&PRICING_TYPE=O&COUNTRY_SITE="+edition[0]+"&DISPLAY_TYPE=1";
     var tmpPax=getAmadeusPax(pax,paxConfig);
     url += tmpPax.url;
     url += '&NB_ADT=' + tmpPax.adults;
     url += '&NB_INF=' +tmpPax.infants;
-    url += '&NB_CHD='+tmpPax.children;    
+    url += '&NB_CHD='+tmpPax.children;
     url += '&TRIP_TYPE=M';
-    url +=getAmadeusUrl(amadeusConfig);      
+    url +=getAmadeusUrl(amadeusConfig);
     return url;
   };
   // get edition
@@ -2374,7 +2374,7 @@ function printCZ(){
     printUrlInline(url,"China Southern","",null,extra);
   } else {
     printUrl(url,"China Southern","",extra);
-  } 
+  }
 }
 
 function printDL(){
@@ -2391,7 +2391,7 @@ function printDL(){
         printNotification("Error: Failed to validate Passengers in printDL");
         return false;
       }
-           
+
       var deltaURL ="http://"+edition[0]+".delta.com/air-shopping/priceTripAction.action?tripType=multiCity";
       deltaURL +="&currencyCd=" + (currentItin["cur"]=="EUR" ? "EUR" : "USD");
       deltaURL +="&exitCountry="+edition[1];
@@ -2417,7 +2417,7 @@ function printDL(){
               break;
             default:
           }
-          segcounter++; 
+          segcounter++;
         }
       }
       deltaURL += "&cabin="+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())];
@@ -2426,7 +2426,7 @@ function printDL(){
       deltaURL += "&numOfSegments=" + segcounter.toString() + "&paxCount=" + (pax.adults+pax.children.length+pax.infLap);
       deltaURL += "&vendorRedirectFlag=true&vendorID=Google";
       return deltaURL;
-     };   
+     };
   // get edition
   var edition=mptUsersettings["dlEdition"].split("_");
   if (edition.length!=2) {
@@ -2440,18 +2440,18 @@ function printDL(){
   var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   extra += dlEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value.split("_")) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
   extra += '</span></span>';
-  
+
   if (mptUsersettings["enableInlinemode"]==1){
     printUrlInline(url,"Delta","",null,extra);
   } else {
     printUrl(url,"Delta","",extra);
-  }     
+  }
 }
 
 function printIB(){
   var createUrl = function (edition,currency) {
       // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-      var cabins = ['Economy', 'Economy', 'Business', 'First'];   
+      var cabins = ['Economy', 'Economy', 'Business', 'First'];
       var pax=validatePaxcount({maxPaxcount:9, countInf:false, childAsAdult:12, sepInfSeat:false, childMinAge:2});
       if (pax===false){
         printNotification("Error: Failed to validate Passengers in printIB");
@@ -2459,13 +2459,13 @@ function printIB(){
       }
       var url = "http://www.iberia.com/web/partnerLink.do?Adult="+pax.adults+"&Child="+pax.children.length+"&Infant=0&InfantLap="+pax.infLap+"&PointOfSaleCountry="+edition[1]+"&UserCurrency="+currency+"&UserLanguage="+edition[0]+"&TripType=";
       if (currentItin["itin"].length == 1){
-       url+="OneWay";  
+       url+="OneWay";
       } else if (currentItin["itin"].length == 2 &&
           currentItin["itin"][0]["orig"] == currentItin["itin"][1]["dest"] &&
           currentItin["itin"][0]["dest"] == currentItin["itin"][1]["orig"]) {
-       url+="RoundTrip";  
+       url+="RoundTrip";
       } else {
-       url+="MultiCity"; 
+       url+="MultiCity";
       }
 
       var seg=0;
@@ -2473,17 +2473,17 @@ function printIB(){
       var slicestr="";
       //Build multi-city search based on legs
         for (var i=0;i<currentItin["itin"].length;i++) {
-          // walks each leg          
+          // walks each leg
                 for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
-                seg++;  
+                seg++;
                //walks each segment of leg
                     var k=0;
                     // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
                     while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-                     if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+                     if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
                          currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
                      k++;
-                    }               
+                    }
                     url += "&Origin"+seg+"="+currentItin['itin'][i]['seg'][j]['orig'];
                     url += "&Destination"+seg+"="+currentItin['itin'][i]['seg'][j+k]['dest'];
                     url += "&Carrier"+seg+"="+currentItin['itin'][i]['seg'][j]['carrier'];
@@ -2497,7 +2497,7 @@ function printIB(){
           url += "&Slice"+slice+"="+slicestr;
           slice++;
           slicestr="";
-        } 
+        }
         return url;
     };
   // get edition
@@ -2509,7 +2509,7 @@ function printIB(){
   var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   extra += ibEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value.split("-"),mptUsersettings["ibCurrency"]) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
   extra += '</span></span>';
-  
+
   if (mptUsersettings["enableInlinemode"]==1){
     printUrlInline(url,"Iberia","",null,extra);
   } else {
@@ -2533,7 +2533,7 @@ function printKL() {
     for (var i=0; i < currentItin['itin'].length; i++) {
       klUrl += '&c['+i+'].os='+currentItin['itin'][i]['orig'];
       klUrl += '&c['+i+'].ds='+currentItin['itin'][i]['dest'];
-      klUrl += '&c['+i+'].dd='+currentItin['itin'][i]['dep']['year']+'-'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['dep']['day']).slice(-2);   
+      klUrl += '&c['+i+'].dd='+currentItin['itin'][i]['dep']['year']+'-'+('0'+currentItin['itin'][i]['dep']['month']).slice(-2)+'-'+('0'+currentItin['itin'][i]['dep']['day']).slice(-2);
       if (i > 0) oper += '..';
       for (var j=0; j < currentItin['itin'][i]['seg'].length; j++) {
         klUrl += '&c['+i+'].s['+j+'].os='+currentItin['itin'][i]['seg'][j]['orig'];
@@ -2542,17 +2542,17 @@ function printKL() {
         klUrl += '&c['+i+'].s['+j+'].dt='+('0'+currentItin['itin'][i]['seg'][j]['dep']['time'].replace(':','')).slice(-4);
         klUrl += '&c['+i+'].s['+j+'].mc='+currentItin['itin'][i]['seg'][j]['carrier'];
         klUrl += '&c['+i+'].s['+j+'].fn='+('000'+currentItin['itin'][i]['seg'][j]['fnr']).slice(-4);
-        
+
         if (j > 0) oper += '.';
         oper += currentItin['itin'][i]['seg'][j]['carrier'];
       }
     }
-    
+
     for (var i=0; i < currentItin['farebases'].length; i++) {
       if (i > 0) fb += ',';
       fb += currentItin['farebases'][i];
     }
-    
+
     klUrl += '&ref=fb='+fb;//+',oper='+oper;
     return klUrl;
   };
@@ -2569,12 +2569,12 @@ function printKL() {
   var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   extra += klEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value.split("_")) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
   extra += '</span></span>';
-  
+
   if (mptUsersettings["enableInlinemode"]==1){
     printUrlInline(url,"KLM","",null,extra);
   } else {
     printUrl(url,"KLM","",extra);
-  } 
+  }
 }
 
 function printLA(){
@@ -2583,7 +2583,7 @@ function printLA(){
     if (pax===false){
       printNotification("Error: Failed to validate Passengers in printLA");
       return false;
-    }  
+    }
     var laUrl='{"apikey":null,"trip":{"flights":[';
         for (var i=0;i<currentItin["itin"].length;i++) {
           var mincabin=3;
@@ -2594,13 +2594,13 @@ function printLA(){
               var k = 0;
              // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
               while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-              if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+              if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
                        currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
                      k++;
               }
               laUrl+='{"marketing_airline":"'+currentItin["itin"][i]["seg"][j]["carrier"]+'","flight_number":"'+currentItin["itin"][i]["seg"][j]["fnr"]+'","departure_date":"'+ currentItin["itin"][i]["seg"][j]["dep"]["year"].toString() +'-'+ ('0'+currentItin["itin"][i]["seg"][j]["dep"]["month"].toString()).slice(-2) +'-'+ ('0'+currentItin["itin"][i]["seg"][j]["dep"]["day"].toString()).slice(-2) +'","departure_airport":"'+currentItin["itin"][i]["seg"][j]["orig"]+'","arrival_airport":"'+currentItin["itin"][i]["seg"][j+k]["dest"]+'","class":"'+currentItin["itin"][i]["seg"][j]["bookingclass"]+'"},';
               if (currentItin["itin"][i]["seg"][j]["cabin"] < mincabin) {mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};
-              j+=k; 
+              j+=k;
           }
           laUrl = laUrl.substring(0,laUrl.length-1)+']},';
         }
@@ -2625,7 +2625,7 @@ function printLA(){
     printUrlInline(url,"LAN",desc,null,extra);
   } else {
     printUrl(url,"LAN",desc,extra);
-  } 
+  }
 
 }
 
@@ -2637,23 +2637,23 @@ function printLH(){
     if (pax===false){
       printNotification("Error: Failed to validate Passengers in printLH");
       return false;
-    }   
+    }
     var amadeusConfig =  {sepcabin:0,detailed:0,allowpremium:1,inctimes:0};
     if (style==0) {
      var url = "https://book.lufthansa.com/lh/dyn/air-lh/revenue/availThenFare?";
-     url += "WDS_MSE_PRICE_CURRENCY=EUR&WDS_MSE_TOTAL_PRICE=1.00&";     
+     url += "WDS_MSE_PRICE_CURRENCY=EUR&WDS_MSE_TOTAL_PRICE=1.00&";
     } else {
-     var url = "https://book.lufthansa.com/lh/dyn/air-lh/revenue/viewFlights?";      
+     var url = "https://book.lufthansa.com/lh/dyn/air-lh/revenue/viewFlights?";
     }
     url += "PORTAL=LH&COUNTRY_SITE="+edition[0].toUpperCase()+"&POS="+edition[0].toUpperCase()+"&LANGUAGE="+edition[1].toUpperCase()+"&SECURE=TRUE&SITE=LUFTLUFT&SO_SITE_LH_FRONTEND_URL=www.lufthansa.com&WDS_WR_CHANNEL=LHCOM";
     var tmpPax=getAmadeusPax(pax,paxConfig);
     url += tmpPax.url;
     url += '&NB_ADT=' + tmpPax.adults;
     url += '&NB_INF=' +tmpPax.infants;
-    url += '&NB_CHD='+tmpPax.children;    
-    url += '&TRIP_TYPE=' + getAmadeusTriptype();  
-    url +=getAmadeusUrl(amadeusConfig);  
-    
+    url += '&NB_CHD='+tmpPax.children;
+    url += '&TRIP_TYPE=' + getAmadeusTriptype();
+    url +=getAmadeusUrl(amadeusConfig);
+
     return url;
   };
   // get edition
@@ -2669,17 +2669,17 @@ function printLH(){
   var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   extra += lhEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value.split("-")) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
   extra += '</span></span>';
-  
+
   if (mptUsersettings["enableInlinemode"]==1){
     printUrlInline(url,"Lufthansa","",null,extra);
   } else {
     printUrl(url,"Lufthansa","",extra);
-  } 
+  }
 }
 
 function printLX() {
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-  var cabins = ['', '', '/class-business', '/class-first'];  
+  var cabins = ['', '', '/class-business', '/class-first'];
   var mincabin = 3;
   var createUrl = function (edition) {
     var url = 'https://www.swiss.com/'+edition[0]+'/'+edition[1]+'/Book/Combined';
@@ -2688,7 +2688,7 @@ function printLX() {
       printNotification("Error: Failed to validate Passengers in printLX");
       return false;
     }
-    //Build multi-city search based on legs  
+    //Build multi-city search based on legs
     for (var i=0;i<currentItin["itin"].length;i++) {
       // walks each leg
       url += '/'+currentItin["itin"][i]["orig"]+'-'+currentItin["itin"][i]["dest"]+"/";
@@ -2697,16 +2697,16 @@ function printLX() {
         var k=0;
         // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
         while ((j+k)<currentItin["itin"][i]["seg"].length-1) {
-          if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+          if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
               currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
           k++;
-        }               
+        }
         url += currentItin["itin"][i]["seg"][j]["carrier"]+currentItin["itin"][i]["seg"][j]["fnr"]+"-";
         if (currentItin["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};
         j+=k;
       }
-     url = url.substring(0,url.length-1); 
-     url += '/'+(i>0?"to":"from")+'-'+currentItin.itin[i].dep.year+"-"+('0'+currentItin.itin[i].dep.month).slice(-2)+"-"+('0'+currentItin.itin[i].dep.day).slice(-2);      
+     url = url.substring(0,url.length-1);
+     url += '/'+(i>0?"to":"from")+'-'+currentItin.itin[i].dep.year+"-"+('0'+currentItin.itin[i].dep.month).slice(-2)+"-"+('0'+currentItin.itin[i].dep.day).slice(-2);
     }
     url += '/adults-'+pax.adults+'/children-'+pax.children.length+'/infants-'+pax.infLap;
     url += cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())];
@@ -2725,12 +2725,12 @@ function printLX() {
   var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   extra += lxEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value.split("_")) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
   extra += '</span></span>';
-  
+
   if (mptUsersettings["enableInlinemode"]==1){
     printUrlInline(url,"Swiss","",null,extra);
   } else {
     printUrl(url,"Swiss","",extra);
-  } 
+  }
 }
 
 function printTK(){
@@ -2739,15 +2739,15 @@ function printTK(){
   var lastcabin=0;
   var curseg=0;
   var lastdest="";
-  var url = "https://book.eu2.amadeus.com/plnext/turkishairlines/Override.action?"; 
+  var url = "https://book.eu2.amadeus.com/plnext/turkishairlines/Override.action?";
   var paxConfig={allowinf:1, youthage:0};
   var pax=validatePaxcount({maxPaxcount:9, countInf:false, childAsAdult:12, sepInfSeat:false, childMinAge:2});
   if (pax===false){
       printNotification("Error: Failed to validate Passengers in printTK");
       return false;
   }
-  var amadeusConfig =  {sepcabin:0,detailed:0,allowpremium:1,inctimes:1};  
-  var tmpPax=getAmadeusPax(pax,paxConfig); 
+  var amadeusConfig =  {sepcabin:0,detailed:0,allowpremium:1,inctimes:1};
+  var tmpPax=getAmadeusPax(pax,paxConfig);
   url += 'TRIP_TYPE=' + getAmadeusTriptype();
   url += tmpPax.url;
   url += getAmadeusUrl(amadeusConfig);
@@ -2759,7 +2759,7 @@ function printTK(){
       printUrlInline(url,"Turkish Airlines","");
     } else {
       printUrl(url,"Turkish Airlines","");
-    } 
+    }
 }
 
 function printCheapOair(){
@@ -2780,7 +2780,7 @@ function printCheapOair(){
       seg++;
       if (slices[i]) slices[i] += ',';
       slices[i] += seg;
-      
+
       coaUrl += '&cbn'        +seg+'='+cabins[currentItin.itin[i].seg[j].cabin];
       coaUrl += '&carr'      +seg+'='+currentItin.itin[i].seg[j].carrier;
       coaUrl += '&dd'+seg+'='+currentItin.itin[i].seg[j].dep.year+('0'+currentItin.itin[i].seg[j].dep.month).slice(-2)+('0'+currentItin.itin[i].seg[j].dep.day).slice(-2);
@@ -2789,10 +2789,10 @@ function printCheapOair(){
       coaUrl += '&fbc'  +seg+'='+currentItin.itin[i].seg[j].bookingclass;
       coaUrl += '&fnum' +seg+'='+currentItin.itin[i].seg[j].fnr;
     }
-    
+
     coaUrl += '&Slice'+(i+1)+'='+slices[i];
   }
-  
+
   if (currentItin.itin.length == 1) {
     coaUrl += '&tt=OneWay';
   }
@@ -2802,7 +2802,7 @@ function printCheapOair(){
   else {
     coaUrl += '&tt=MultiCity';
   }
-  
+
   if (mptUsersettings["enableInlinemode"]==1){
     printUrlInline(coaUrl,"CheapOair","");
   } else {
@@ -2815,17 +2815,17 @@ function printPriceline(){
     var pricelineurl = "https://www.priceline.com/m/fly/search";
     var searchparam="~";
     for (var i=0;i<currentItin["itin"].length;i++) {
-      // walks each leg     
-      searchparam=searchparam.substring(0,searchparam.length-1)+"-";     
+      // walks each leg
+      searchparam=searchparam.substring(0,searchparam.length-1)+"-";
       pricelineurl+="/"+currentItin["itin"][i]["orig"];
       pricelineurl+="-"+currentItin["itin"][i]["dest"];
       pricelineurl+="-"+currentItin["itin"][i]["arr"]["year"].toString()+("0"+currentItin["itin"][i]["dep"]["month"]).slice(-2)+("0"+currentItin["itin"][i]["dep"]["day"]).slice(-2);
-      for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) { 
+      for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
                 //walks each segment of leg
                 var k=0;
                 // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
                 while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-                if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+                if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
                          currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
                        k++;
                 }
@@ -2834,7 +2834,7 @@ function printPriceline(){
                 searchparam+=currentItin["itin"][i]["seg"][j+k]["dest"];
                 searchparam+=currentItin["itin"][i]["seg"][j+k]["arr"]["year"].toString()+("0"+currentItin["itin"][i]["seg"][j+k]["arr"]["month"]).slice(-2)+("0"+currentItin["itin"][i]["seg"][j+k]["arr"]["day"]).slice(-2)+("0"+currentItin["itin"][i]["seg"][j+k]["arr"]["time"].replace(":","")).slice(-4);
                 searchparam+=currentItin["itin"][i]["seg"][j]["bookingclass"]+currentItin["itin"][i]["seg"][j]["carrier"]+currentItin["itin"][i]["seg"][j]["fnr"];
-                searchparam+="~";         
+                searchparam+="~";
                 j+=k;
       }
     }
@@ -2854,27 +2854,27 @@ function printPriceline(){
 
 function printEtraveli () {
   if (currentItin.itin.length > 2) return; // no multi segments
-  if (currentItin.itin.length == 2 && !(currentItin.itin[0].orig == currentItin.itin[1].dest && currentItin.itin[0].dest == currentItin.itin[1].orig)) return; // no open jaws  
-  var editions = [{name:"Seat24.se",host:"www.seat24.se"},{name:"Seat24.de",host:"www.seat24.de"},{name:"Seat24.dk",host:"www.seat24.dk"},{name:"Seat24.fi",host:"www.seat24.fi"},{name:"Seat24.no",host:"www.seat24.no"},{name:"Flygvaruhuset.se",host:"www.flygvaruhuset.se"},{name:"Travelpartner.se",host:"www.travelpartner.se"},{name:"Travelpartner.fi",host:"www.travelpartner.fi"},{name:"Travelpartner.no",host:"www.travelpartner.no"},{name:"Budjet.se",host:"www.budjet.se"},{name:"Budjet.fi",host:"www.budjet.fi"},{name:"Budjet.no",host:"www.budjet.no"},{name:"Budjet.dk",host:"www.budjet.dk"},{name:"Goleif.dk",host:"www.goleif.dk"},{name:"Travelfinder.se",host:"www.travelfinder.se"},{name:"Gotogate.no",host:"www.gotogate.no"},{name:"Gotogate.at",host:"www.gotogate.at"},{name:"Gotogate.be",host:"be.gotogate.com"},{name:"Gotogate.bg",host:"bg.gotogate.com"},{name:"Gotogate.ch",host:"www.gotogate.ch"},{name:"Gotogate.cz",host:"cz.gotogate.com"},{name:"Gotogate.es",host:"www.gotogate.es"},{name:"Gotogate.fr",host:"www.gotogate.fr"},{name:"Gotogate.gr",host:"www.gotogate.gr"},{name:"Gotogate.hu",host:"hu.gotogate.com"},{name:"Gotogate.ie",host:"ie.gotogate.com"},{name:"Gotogate.it",host:"www.gotogate.it"},{name:"Gotogate.pl",host:"www.gotogate.pl"},{name:"Gotogate.pt",host:"www.gotogate.pt"},{name:"Gotogate.ro",host:"ro.gotogate.com"},{name:"Gotogate.sk",host:"www.gotogate.sk"},{name:"Gotogate.tr",host:"tr.gotogate.com"},{name:"Gotogate.com.ua",host:"www.gotogate.com.ua"},{name:"Gotogate.co.uk",host:"www.gotogate.co.uk"},{name:"Flybillet.dk",host:"www.flybillet.dk"},{name:"Travelstart.se",host:"www.travelstart.se"},{name:"Travelstart.de",host:"www.travelstart.de"},{name:"Travelstart.dk",host:"www.travelstart.dk"},{name:"Travelstart.fi",host:"www.travelstart.fi"},{name:"Travelstart.no",host:"www.travelstart.no"},{name:"Supersaver.se",host:"www.supersavertravel.se"},{name:"Supersaver.dk",host:"www.supersaver.dk"},{name:"Supersaver.fi",host:"www.supersaver.fi"},{name:"Supersaver.nl",host:"www.supersaver.nl"},{name:"Supersaver.no",host:"www.supersaver.no"},{name:"Supersaver.ru",host:"www.supersaver.ru"}];  
+  if (currentItin.itin.length == 2 && !(currentItin.itin[0].orig == currentItin.itin[1].dest && currentItin.itin[0].dest == currentItin.itin[1].orig)) return; // no open jaws
+  var editions = [{name:"Seat24.se",host:"www.seat24.se"},{name:"Seat24.de",host:"www.seat24.de"},{name:"Seat24.dk",host:"www.seat24.dk"},{name:"Seat24.fi",host:"www.seat24.fi"},{name:"Seat24.no",host:"www.seat24.no"},{name:"Flygvaruhuset.se",host:"www.flygvaruhuset.se"},{name:"Travelpartner.se",host:"www.travelpartner.se"},{name:"Travelpartner.fi",host:"www.travelpartner.fi"},{name:"Travelpartner.no",host:"www.travelpartner.no"},{name:"Budjet.se",host:"www.budjet.se"},{name:"Budjet.fi",host:"www.budjet.fi"},{name:"Budjet.no",host:"www.budjet.no"},{name:"Budjet.dk",host:"www.budjet.dk"},{name:"Goleif.dk",host:"www.goleif.dk"},{name:"Travelfinder.se",host:"www.travelfinder.se"},{name:"Gotogate.no",host:"www.gotogate.no"},{name:"Gotogate.at",host:"www.gotogate.at"},{name:"Gotogate.be",host:"be.gotogate.com"},{name:"Gotogate.bg",host:"bg.gotogate.com"},{name:"Gotogate.ch",host:"www.gotogate.ch"},{name:"Gotogate.cz",host:"cz.gotogate.com"},{name:"Gotogate.es",host:"www.gotogate.es"},{name:"Gotogate.fr",host:"www.gotogate.fr"},{name:"Gotogate.gr",host:"www.gotogate.gr"},{name:"Gotogate.hu",host:"hu.gotogate.com"},{name:"Gotogate.ie",host:"ie.gotogate.com"},{name:"Gotogate.it",host:"www.gotogate.it"},{name:"Gotogate.pl",host:"www.gotogate.pl"},{name:"Gotogate.pt",host:"www.gotogate.pt"},{name:"Gotogate.ro",host:"ro.gotogate.com"},{name:"Gotogate.sk",host:"www.gotogate.sk"},{name:"Gotogate.tr",host:"tr.gotogate.com"},{name:"Gotogate.com.ua",host:"www.gotogate.com.ua"},{name:"Gotogate.co.uk",host:"www.gotogate.co.uk"},{name:"Flybillet.dk",host:"www.flybillet.dk"},{name:"Travelstart.se",host:"www.travelstart.se"},{name:"Travelstart.de",host:"www.travelstart.de"},{name:"Travelstart.dk",host:"www.travelstart.dk"},{name:"Travelstart.fi",host:"www.travelstart.fi"},{name:"Travelstart.no",host:"www.travelstart.no"},{name:"Supersaver.se",host:"www.supersavertravel.se"},{name:"Supersaver.dk",host:"www.supersaver.dk"},{name:"Supersaver.fi",host:"www.supersaver.fi"},{name:"Supersaver.nl",host:"www.supersaver.nl"},{name:"Supersaver.no",host:"www.supersaver.no"},{name:"Supersaver.ru",host:"www.supersaver.ru"}];
   var convertDate = function (date, withYear) {
     return ('0'+date.day).slice(-2) + monthnumberToName(date.month) + (withYear ? date.year.toString().slice(-2) : '');
-  };  
+  };
   var createUrl = function (host) {
-    var ggUrl = 'http://' + host + '/air/';   
-    ggUrl += currentItin.itin[0].orig + currentItin.itin[0].dest + convertDate(currentItin.itin[0].dep, false);   
-    if (currentItin.itin.length > 1) ggUrl += convertDate(currentItin.itin[1].dep, false); 
+    var ggUrl = 'http://' + host + '/air/';
+    ggUrl += currentItin.itin[0].orig + currentItin.itin[0].dest + convertDate(currentItin.itin[0].dep, false);
+    if (currentItin.itin.length > 1) ggUrl += convertDate(currentItin.itin[1].dep, false);
     ggUrl += '/' + currentItin.numPax;
-    ggUrl += '?selectionKey=' + currentItin.itin.map(function (itin) { 
+    ggUrl += '?selectionKey=' + currentItin.itin.map(function (itin) {
       return itin.seg.map(function (seg) { return seg.carrier + seg.fnr + '-' + convertDate(seg.dep, true) + '-' + seg.bookingclass; }).join('_');
     }).join('_');
-    
+
     return ggUrl;
-  };  
+  };
   // picked seat24 as main one, but could be any of them
-  var ggUrl = createUrl('www.seat24.de');  
+  var ggUrl = createUrl('www.seat24.de');
   var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   extra += editions.map(function (obj, i) { return '<a href="' + createUrl(obj.host) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
-  extra += '</span></span>';  
+  extra += '</span></span>';
   if (mptUsersettings["enableInlinemode"]==1){
     printUrlInline(ggUrl,'Seat24.de',"",null,extra);
   } else {
@@ -2884,57 +2884,51 @@ function printEtraveli () {
 /***  META ***/
 function printHipmunk(){
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-    var cabins = ['Coach', 'Coach', 'Business', 'First'];  
+    var cabins = ['Coach', 'Coach', 'Business', 'First'];
     var url = "https://www.hipmunk.com/search/flights?";
     var mincabin=3;
     var pax=validatePaxcount({maxPaxcount:9, countInf:true, childAsAdult:18, sepInfSeat:true, childMinAge:2});
     if (pax===false){
       printNotification("Error: Failed to validate Passengers in printHipmunk");
       return false;
-    } 
+    }
     //Build multi-city search based on legs
     for (var i=0;i<currentItin["itin"].length;i++) {
       // walks each leg
-            url += "&from"+i+"=" + currentItin["itin"][i]["orig"];            
+            url += "&from"+i+"=" + currentItin["itin"][i]["orig"];
             for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
            //walks each segment of leg
                 var k=0;
                 // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
                 while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
                      currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
                  k++;
-                }               
+                }
                 url += ( j>0 ? "%20"+currentItin["itin"][i]["seg"][j]["orig"]+"%20":"%3A%3A")+currentItin["itin"][i]["seg"][j]["carrier"] + currentItin["itin"][i]["seg"][j]["fnr"];
-                if (currentItin["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};  
+                if (currentItin["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};
                 j+=k;
       }
-      url += "&date"+i+"="+currentItin["itin"][i]["dep"]["year"]+"-"+( Number(currentItin["itin"][i]["dep"]["month"]) <= 9 ? "0":"") +currentItin["itin"][i]["dep"]["month"].toString()+"-"+ ( Number(currentItin["itin"][i]["dep"]["day"]) <= 9 ? "0":"") +currentItin["itin"][i]["dep"]["day"].toString();  
+      url += "&date"+i+"="+currentItin["itin"][i]["dep"]["year"]+"-"+( Number(currentItin["itin"][i]["dep"]["month"]) <= 9 ? "0":"") +currentItin["itin"][i]["dep"]["month"].toString()+"-"+ ( Number(currentItin["itin"][i]["dep"]["day"]) <= 9 ? "0":"") +currentItin["itin"][i]["dep"]["day"].toString();
       url += "&to"+i+"="+currentItin["itin"][i]["dest"];
-    }  
+    }
     url += '&pax='+pax.adults+'&cabin='+cabins[(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin())]+'&infant_lap='+pax.infLap+'&infant_seat='+pax.infSeat+'&seniors=0&children='+pax.children.length;
     if (mptUsersettings["enableInlinemode"]==1){
       printUrlInline(url,"Hipmunk","");
     } else {
       printUrl(url,"Hipmunk","");
-    } 
+    }
 }
 function printMomondo() {
     //example http://www.Momondo.ru/flightsearch/?...false&NA=false
-    //pax # &AD=2&CA=0,8 – not working with children (total amount of adults + kids goes to adult)  
+    //pax # &AD=2&CA=0,8 – not working with children (total amount of adults + kids goes to adult)
     var MomondoEditions = [{name:"Momondo.com",host:"Momondo.com"},{name:"Momondo.de",host:"Momondo.de"},{name:"Momondo.it",host:"Momondo.it"},{name:"Momondo.es",host:"Momondo.es"},{name:"Momondo.co.uk",host:"Momondo.co.uk"},{name:"Momondo.dk",host:"Momondo.dk"},{name:"Momondo.mx",host:"Momondo.mx"},{name:"Momondo.fi",host:"Momondo.fi"},{name:"Momondo.fr",host:"Momondo.fr"}, {name:"Momondo.no",host:"Momondo.no"},{name:"Momondo.nl",host:"Momondo.nl"},{name:"Momondo.pt",host: "Momondo.pt"},{name:"Momondo.se",host:"Momondo.se" },{name:"Momondo.ru",host:"Momondo.ru"}];
     var MomondoCreateUrl = function(host) {
-        var MomondoUrl = 'http://www.' + host + '/flightsearch/?Search=true&TripType=4';
-        var seg = 0;
-        MomondoUrl += '&SegNo=' + currentItin['itin'].length;
+        var MomondoUrl = 'http://www.' + host + '/flight-search/';
         for (var i = 0; i < currentItin['itin'].length; i++) {
-            MomondoUrl += '&SO' + seg + '=' + currentItin['itin'][i]['orig'];
-            MomondoUrl += '&SD' + seg + '=' + currentItin['itin'][i]['dest'];
-            MomondoUrl += '&SDP' + seg + '=' + ('0' + currentItin['itin'][i]['dep']['day']).slice(-2) + '-' + ('0' + currentItin['itin'][i]['dep']['month']).slice(-2) + '-' + currentItin['itin'][i]['dep']['year'];
-            seg++;
+            MomondoUrl += currentItin['itin'][i]['orig'] + '-' + currentItin['itin'][i]['dest'] + '/' + currentItin['itin'][i]['dep']['year'] + '-' + ('0' + currentItin['itin'][i]['dep']['month']).slice(-2) + '-' + ('0' + currentItin['itin'][i]['dep']['day']).slice(-2) + '/';
         }
-        MomondoUrl += '&AD=' + currentItin['numPax'] + '&TK=' + getMomondoCabin(currentItin['itin']['cabin']);
-        return MomondoUrl;
+        return MomondoUrl + currentItin['numPax'] + 'adults=';
     };
     var MomondoUrl = MomondoCreateUrl("Momondo.com");
     var MomondoExtra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
@@ -3003,7 +2997,7 @@ function printKayak(method) {
             }
         }
         if(currentItin['numPax']>1){
-          KayakUrl += '/' + currentItin['numPax'] + 'adults'; 
+          KayakUrl += '/' + currentItin['numPax'] + 'adults';
         }
 
         KayakUrl += getKayakCabin();
@@ -3042,25 +3036,25 @@ function printKayak(method) {
     }
 }
 function printSkyscanner() {
-    //example https://www.skyscanner.ru/transport/d/stoc/2017-09-02/akl/akl/2017-09-16/stoc/akl/2017-09-29/syd?adults=1&children=0&adultsv2=1&childrenv2=&infants=0&cabinclass=economy&ref=day-view#results  
-    var SkyscannerEditions = [{name:"Skyscanner.com",host:"Skyscanner.com"},{name:"Skyscanner.de",host:"Skyscanner.de"},{name:"Skyscanner.it",host:"Skyscanner.it"},{name:"Skyscanner.es",host:"Skyscanner.es"},{name:"Skyscanner.co.uk",host:"Skyscanner.co.uk"},{name:"Skyscanner.dk",host:"Skyscanner.dk"},{name:"Skyscanner.mx",host:"Skyscanner.mx"},{name:"Skyscanner.fi",host:"Skyscanner.fi"},{name:"Skyscanner.fr",host:"Skyscanner.fr"}, {name:"Skyscanner.no",host:"Skyscanner.no"},{name:"Skyscanner.nl",host:"Skyscanner.nl"},{name:"Skyscanner.pt",host: "Skyscanner.pt"},{name:"Skyscanner.se",host:"Skyscanner.se" },{name:"Skyscanner.ru",host:"Skyscanner.ru"}];
-    var SkyscannerCreateUrl = function(host) {
-        var SkyscannerUrl = 'http://www.' + host + '/transport/d/';
-        var seg = 0;
-        for (var i = 0; i < currentItin['itin'].length; i++) {
-            SkyscannerUrl += '/' + currentItin['itin'][i]['orig'];
-            SkyscannerUrl += '/' + ('0' + currentItin['itin'][i]['dep']['day']).slice(-2) + '-' + ('0' + currentItin['itin'][i]['dep']['month']).slice(-2) + '-' + currentItin['itin'][i]['dep']['year'];
-			SkyscannerUrl += '/' + currentItin['itin'][i]['dest'];
-            seg++;
-        }
+    //example https://www.skyscanner.ru/transport/d/stoc/2017-09-02/akl/akl/2017-09-16/stoc/akl/2017-09-29/syd?adults=1&children=0&adultsv2=1&childrenv2=&infants=0&cabinclass=economy&ref=day-view#results
+    var SkyscannerEditions = [{name:"Skyscanner.com",market:"US"},{name:"Skyscanner.de",market:"DE"},{name:"Skyscanner.it",market:"IT"},{name:"Skyscanner.es",market:"ES"},{name:"Skyscanner.co.uk",market:"UK"},{name:"Skyscanner.dk",market:"DK"},{name:"Skyscanner.mx",market:"MX"},{name:"Skyscanner.fi",market:"FI"},{name:"Skyscanner.fr",market:"FR"}, {name:"Skyscanner.no",market:"NO"},{name:"Skyscanner.nl",market:"NL"},{name:"Skyscanner.pt",market: "PT"},{name:"Skyscanner.se",market:"SE" },{name:"Skyscanner.ru",market:"RU"}];
+    var SkyscannerCreateUrl = function(market) {
+      var SkyscannerUrl = 'http://www.skyscanner.com/transport/d/';
+      var seg = 0;
+      for (var i = 0; i < currentItin['itin'].length; i++) {
+        SkyscannerUrl += '/' + currentItin['itin'][i]['orig'];
+        SkyscannerUrl += '/' + currentItin['itin'][i]['dep']['year'] + '-' + ('0' + currentItin['itin'][i]['dep']['month']).slice(-2) + '-' + ('0' + currentItin['itin'][i]['dep']['day']).slice(-2);
+        SkyscannerUrl += '/' + currentItin['itin'][i]['dest'];
+        seg++;
+      }
         //SkyscannerUrl += '&AD=' + currentItin['numPax'] + '&TK=' + getSkyscannerCabin(currentItin['itin']['cabin']);
-		SkyscannerUrl += '?adults=' + currentItin['numPax'] + '&ref=day-view#results';
-        return SkyscannerUrl;
+      SkyscannerUrl += '?adults=' + currentItin['numPax'] + 'adultsv2=' + currentItin['numPax'] + '&ref=day-view&market=' + market;
+      return SkyscannerUrl;
     };
     var SkyscannerUrl = SkyscannerCreateUrl("Skyscanner.com");
     var SkyscannerExtra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
     SkyscannerExtra += SkyscannerEditions.map(function(obj, i) {
-        return '<a href="' + SkyscannerCreateUrl(obj.host) + '" target="_blank">' + obj.name + '</a>';
+        return '<a href="' + SkyscannerCreateUrl(obj.market) + '" target="_blank">' + obj.name + '</a>';
     }).join('<br/>');
     SkyscannerExtra += '</span></span>';
     if (mptUsersettings["enableInlinemode"] == 1) {
@@ -3075,7 +3069,7 @@ function printFarefreaks (method){
 // method: 0 = based on leg; 1 = based on segment
     var carrieruarray = new Array();
     var mincabin=3;
-    var segsize=0;  
+    var segsize=0;
     var farefreaksurl = "https://www.farefreaks.com/landing/landing.php?";
     if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
     farefreaksurl +="lang=de";
@@ -3089,14 +3083,14 @@ function printFarefreaks (method){
           farefreaksurl += "&dest["+segsize+"]=" + currentItin["itin"][i]["dest"];
           farefreaksurl += "&date["+segsize+"]="+currentItin["itin"][i]["dep"]["year"].toString() + "-" + currentItin["itin"][i]["dep"]["month"] + "-" + currentItin["itin"][i]["dep"]["day"] + "_"+currentItin["itin"][i]["dep"]["time"]+":00";
           farefreaksurl += "&validtime["+segsize+"]=1";
-          segsize++; 
-        } 
+          segsize++;
+        }
        for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
         if (method==1){
           var k=0;
           // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
           while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-          if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+          if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
                    currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
                  k++;
           }
@@ -3105,18 +3099,18 @@ function printFarefreaks (method){
           farefreaksurl += "&date["+segsize+"]="+currentItin["itin"][i]["seg"][j]["dep"]["year"].toString() + "-" + currentItin["itin"][i]["seg"][j]["dep"]["month"] + "-" + currentItin["itin"][i]["seg"][j]["dep"]["day"] + "_"+currentItin["itin"][i]["seg"][j]["dep"]["time"]+":00";
           farefreaksurl += "&validtime["+segsize+"]=1";
           segsize++;
-          j+=k;  
-        }         
-        if (currentItin["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};  
-        if (!inArray(currentItin["itin"][i]["seg"][j]["carrier"],carrieruarray)){carrieruarray.push(currentItin["itin"][i]["seg"][j]["carrier"]);};  
+          j+=k;
+        }
+        if (currentItin["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=currentItin["itin"][i]["seg"][j]["cabin"];};
+        if (!inArray(currentItin["itin"][i]["seg"][j]["carrier"],carrieruarray)){carrieruarray.push(currentItin["itin"][i]["seg"][j]["carrier"]);};
       }
     }
     var pax=validatePaxcount({maxPaxcount:9, countInf:true, childAsAdult:18, sepInfSeat:true, childMinAge:2});
     if (pax===false){
       printNotification("Error: Failed to validate Passengers in printFareFreaks");
       return false;
-    }  
-    farefreaksurl += "&adult="+pax.adults;  
+    }
+    farefreaksurl += "&adult="+pax.adults;
     farefreaksurl += "&cabin="+(mptSettings["cabin"]==="Auto" ? mincabin:getForcedCabin());
     farefreaksurl += "&flexible=0";
     farefreaksurl += "&child="+(pax.infLap+pax.infSeat+pax.children.length);
@@ -3125,23 +3119,23 @@ function printFarefreaks (method){
     }
     for (i=0;i<pax.infSeat;i++){
        farefreaksurl += "&childage[]=1";
-    }   
+    }
     for (i=0;i<pax.children.length;i++){
        farefreaksurl += "&childage[]="+pax.children[i];
-    } 
-    if (method==1){  
+    }
+    if (method==1){
       farefreaksurl += "&nonstop=1";
       if (mptUsersettings["language"]=="de"){
         desc="Benutze "+segsize+" Segment(e)";
       } else {
         desc="Based on "+segsize+" segment(s)";
       }
-      
+
     } else {
       if (segsize==1) {
         return false;
       }
-      farefreaksurl += "&nonstop=0";  
+      farefreaksurl += "&nonstop=0";
       if (mptUsersettings["language"]=="de"){
         desc="Benutze "+segsize+" Abschnitt(e)";
       } else {
@@ -3149,18 +3143,18 @@ function printFarefreaks (method){
       }
     }
     if (carrieruarray.length <= 3) {farefreaksurl += "&carrier="+ carrieruarray.toString();}
-    
+
     if (mptUsersettings["enableInlinemode"]==1 && segsize<=6){
       printUrlInline(farefreaksurl,"Farefreaks",desc);
     } else if (segsize<=6) {
       printUrl(farefreaksurl,"Farefreaks",desc);
-    }    
+    }
 }
 
 function printGCM (){
     var url = '';
     // Build multi-city search based on segments
-    // Keeping continous path as long as possible 
+    // Keeping continous path as long as possible
     for (var i=0;i<currentItin["itin"].length;i++) {
       for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
         url+=currentItin["itin"][i]["seg"][j]["orig"]+"-";
@@ -3168,7 +3162,7 @@ function printGCM (){
           if (currentItin["itin"][i]["seg"][j]["dest"] != currentItin["itin"][i]["seg"][(j+1)]["orig"]){url+=currentItin["itin"][i]["seg"][j]["dest"]+";";};
         } else {
          url+=currentItin["itin"][i]["seg"][j]["dest"]+";";
-        }    
+        }
       }
     }
   if (mptUsersettings["enableInlinemode"]==1){
@@ -3180,9 +3174,9 @@ function printGCM (){
 function getForcedCabin(){
   switch (mptSettings["cabin"]){
        case "Y":
-        return 0;   
+        return 0;
        case "Y+":
-        return 1;      
+        return 1;
        case "C":
         return 2;
        case "F":
@@ -3194,7 +3188,7 @@ function getForcedCabin(){
 function getKayakCabin(){
   switch (mptSettings["cabin"]){
        case "Y+":
-        return "/premium";      
+        return "/premium";
        case "C":
         return "/business";
        case "F":
@@ -3205,16 +3199,16 @@ function getKayakCabin(){
 }
 function bindSeatguru(){
   for (var i=0;i<currentItin["itin"].length;i++) {
-  // walks each leg      
+  // walks each leg
     for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
        //walks each segment of leg
              var k=0;
              // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
              while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
                      currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
                  k++;
-                }  
+                }
          // build the search to identify flight:
           var target = findItinTarget((i+1),(j+1),"plane");
           if (target===false) {
@@ -3226,20 +3220,20 @@ function bindSeatguru(){
           }
         j+=k;
       }
-   }  
+   }
 }
 function bindPlanefinder(){
   for (var i=0;i<currentItin["itin"].length;i++) {
-  // walks each leg      
+  // walks each leg
     for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
        //walks each segment of leg
              var k=0;
              // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
              while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+                 if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
                      currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
                  k++;
-                }  
+                }
          // build the search to identify flight:
           var target = findItinTarget((i+1),(j+1),"flight");
           if (target===false) {
@@ -3251,19 +3245,19 @@ function bindPlanefinder(){
           }
         j+=k;
       }
-   }  
+   }
 }
 
 function createFareFreaksContainer(){
   // create links & container
   var printtarget= findtarget(classSettings["resultpage"]["itin"],1);
   var content = '<div>Itinerary';
-  content += '<div style="display:inline-block;margin-left:20px;color: #000;font-size: smaller;" class="ff-links">';  
+  content += '<div style="display:inline-block;margin-left:20px;color: #000;font-size: smaller;" class="ff-links">';
     content += '<div style="display:inline-block;"><label id="ff-createroutingcodes" style="cursor:pointer;">Routing Codes</label></div>';
     content += '<div style="display:inline-block;margin-left:20px"><label id="ff-createflightplan" style="cursor:pointer;">Flight Manager</label></div>';
   content += '</div>';
-  content += '<div style="color: #000;font-size: smaller;" class="ff-plancontainer">'; 
-    content += '<div id="ff-flightplanoutput" class="invis" style="display: none;margin-top:2px"><input id="ff-flightplanlinkinput" type="text" style="width:600px"> <a id="ff-flightplanlinklink" href="" target="_blank" style="margin-left:20px">Open</a> <label id="ff-closeflightplancontainer" style="cursor:pointer;margin-left:15px">Close</label></div></td>'; 
+  content += '<div style="color: #000;font-size: smaller;" class="ff-plancontainer">';
+    content += '<div id="ff-flightplanoutput" class="invis" style="display: none;margin-top:2px"><input id="ff-flightplanlinkinput" type="text" style="width:600px"> <a id="ff-flightplanlinklink" href="" target="_blank" style="margin-left:20px">Open</a> <label id="ff-closeflightplancontainer" style="cursor:pointer;margin-left:15px">Close</label></div></td>';
   content += '</div>';
   printtarget.innerHTML=content;
   // build routing codes container
@@ -3271,7 +3265,7 @@ function createFareFreaksContainer(){
   div.setAttribute('id', 'ff-routingcodescontainer');
   div.setAttribute('class', 'invis');
   div.setAttribute('style', 'display: none;border-bottom: 1px dashed grey;');
-  content = '<div style="display:inline-block; width:85%" id="ff-routingcodesoutput"></div>'; 
+  content = '<div style="display:inline-block; width:85%" id="ff-routingcodesoutput"></div>';
   content += '<div style="display:inline-block; width:14%;text-align:center;"><label id="ff-closeroutingcodescontainer" style="cursor:pointer">Close</label></div>';
   div.innerHTML=content;
   document.getElementById("contentwrapper").parentNode.insertBefore(div, document.getElementById("contentwrapper"));
@@ -3279,7 +3273,7 @@ function createFareFreaksContainer(){
   document.getElementById('ff-createflightplan').onclick=function(){
      if (document.getElementById('ff-flightplanlinkinput').value==""){
        document.getElementById('ff-flightplanlinkinput').value="Loading... Please wait..";
-       createFareFreaksPlanlink(); 
+       createFareFreaksPlanlink();
      }
      toggleVis(document.getElementById("ff-flightplanoutput"));
    };
@@ -3291,7 +3285,7 @@ function createFareFreaksContainer(){
      }
      toggleVis(document.getElementById("ff-routingcodescontainer"));
    };
-  document.getElementById('ff-closeroutingcodescontainer').onclick=function(){ toggleVis(document.getElementById("ff-routingcodescontainer"));};  
+  document.getElementById('ff-closeroutingcodescontainer').onclick=function(){ toggleVis(document.getElementById("ff-routingcodescontainer"));};
 }
 
 function getFareFreaksPlan(){
@@ -3301,17 +3295,17 @@ function getFareFreaksPlan(){
      return hours+'h '+minutes+'m';
   }
   var plan=new Array();
-  var cabins = ['Economy', 'Premium Economy', 'Business', 'First'];  
+  var cabins = ['Economy', 'Premium Economy', 'Business', 'First'];
   for (var i=0;i<currentItin["itin"].length;i++) {
   // walks each leg
-  var leg = new Array(); 
+  var leg = new Array();
     for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
        //walks each segment of leg
          var temp= new Object();
          var k=0;
          // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
          while ((j+k)<currentItin["itin"][i]["seg"].length-1){
-            if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] || 
+            if (currentItin["itin"][i]["seg"][j+k]["fnr"] != currentItin["itin"][i]["seg"][j+k+1]["fnr"] ||
                 currentItin["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
              k++;
          }
@@ -3324,9 +3318,9 @@ function getFareFreaksPlan(){
          temp.cabin = currentItin["itin"][i]["seg"][j]["cabin"];
          temp.codeshare = currentItin["itin"][i]["seg"][j]["codeshare"];
          temp.depdate = currentItin["itin"][i]["seg"][j]["dep"]["year"]+"-"+("0"+currentItin["itin"][i]["seg"][j]["dep"]["month"]).slice(-2)+"-"+("0"+currentItin["itin"][i]["seg"][j]["dep"]["day"]).slice(-2);
-         temp.deptime = ("00"+currentItin["itin"][i]["seg"][j]["dep"]["time"]).slice(-5);      
-         temp.dest = currentItin["itin"][i]["seg"][j+k]["dest"]; 
-         temp.orig = currentItin["itin"][i]["seg"][j]["orig"]; 
+         temp.deptime = ("00"+currentItin["itin"][i]["seg"][j]["dep"]["time"]).slice(-5);
+         temp.dest = currentItin["itin"][i]["seg"][j+k]["dest"];
+         temp.orig = currentItin["itin"][i]["seg"][j]["orig"];
          temp.duration = formatDuration(currentItin["itin"][i]["seg"][j]["duration"]);
          temp.farebase = currentItin["itin"][i]["seg"][j]["farebase"];
          temp.farecarrier = currentItin["itin"][i]["seg"][j]["farecarrier"];
@@ -3335,12 +3329,12 @@ function getFareFreaksPlan(){
          if (k>0) {
            temp.stops=new Array();
            var combinedduration = currentItin["itin"][i]["seg"][j]["duration"];
-         }      
+         }
          for (var l=0;l<k;l++) {
            var tmpstop=new Object();
            tmpstop.apt =currentItin["itin"][i]["seg"][j+l]["dest"];
            tmpstop.arrdate = currentItin["itin"][i]["seg"][j+l]["arr"]["year"]+"-"+("0"+currentItin["itin"][i]["seg"][j+l]["arr"]["month"]).slice(-2)+"-"+("0"+currentItin["itin"][i]["seg"][j+l]["arr"]["day"]).slice(-2);
-           tmpstop.arrtime = ("00"+currentItin["itin"][i]["seg"][j+l]["arr"]["time"]).slice(-5); 
+           tmpstop.arrtime = ("00"+currentItin["itin"][i]["seg"][j+l]["arr"]["time"]).slice(-5);
            tmpstop.depdate = currentItin["itin"][i]["seg"][(j+l+1)]["dep"]["year"]+"-"+("0"+currentItin["itin"][i]["seg"][(j+l+1)]["dep"]["month"]).slice(-2)+"-"+("0"+currentItin["itin"][i]["seg"][(j+l+1)]["dep"]["day"]).slice(-2);
            tmpstop.deptime = ("00"+currentItin["itin"][i]["seg"][(j+l+1)]["dep"]["time"]).slice(-5);
            tmpstop.duration = formatDuration(currentItin["itin"][i]["seg"][j+l]["layoverduration"]);
@@ -3352,7 +3346,7 @@ function getFareFreaksPlan(){
          j+=k;
          leg.push(temp);
       }
-   plan.push({segs:leg}); 
+   plan.push({segs:leg});
    }
   return plan;
 }
@@ -3361,7 +3355,7 @@ function getFareFreaksRoutingcodes(){
   var options = {};
   options.mode="post";
   options.headers=[{name:'Accept', val:'application/json;charset=UTF-8'}, {name:'Content-Type', val:'application/x-www-form-urlencoded'}];
-  options.data="data="+JSON.stringify({action:"creatematrix",plan:getFareFreaksPlan(),type:"matrix",mci_autofocus:1,mci_bcfromfare:1,mci_carriersleg:1,mci_carriersseg:1,mci_fnr:1,mci_inclbc:1,mci_inclcontime:1,mci_inclfare:1}); 
+  options.data="data="+JSON.stringify({action:"creatematrix",plan:getFareFreaksPlan(),type:"matrix",mci_autofocus:1,mci_bcfromfare:1,mci_carriersleg:1,mci_carriersseg:1,mci_fnr:1,mci_inclbc:1,mci_inclcontime:1,mci_inclfare:1});
   doHttpRequest("https://www.farefreaks.com/flightmanager/ajax/planhandler.php",options,function(xmlHttpObject) {
      var response=false;
      if (typeof(JSON) !== "undefined"){
@@ -3374,7 +3368,7 @@ function getFareFreaksRoutingcodes(){
        // do not(!) use eval here :-/
        printNotification("Error: Failed saving plan - Browser not supporting JSON");
        return false;
-     }     
+     }
      if (typeof(response) !== "object"){
       printNotification("Error: Failed getting routing codes");
       return false;
@@ -3385,7 +3379,7 @@ function getFareFreaksRoutingcodes(){
      }
      if (response["success"]!=="1"){
       printNotification("Error: "+response["error"]+" while retrieving routing codes");
-      return false; 
+      return false;
      } else {
        var div = document.createElement('div');
        for (var i = 0; i < response["data"].length; i++){
@@ -3398,14 +3392,14 @@ function getFareFreaksRoutingcodes(){
        document.getElementById('ff-routingcodesoutput').innerHTML="";
        document.getElementById('ff-routingcodesoutput').appendChild(div);
      }
-    });   
+    });
 }
 
 function createFareFreaksPlanlink(){
   var options = {};
   options.mode="post";
   options.headers=[{name:'Accept', val:'application/json;charset=UTF-8'}, {name:'Content-Type', val:'application/x-www-form-urlencoded'}];
-  options.data="data="+JSON.stringify({action:"createplan",plan:getFareFreaksPlan(),type:"matrix"});  
+  options.data="data="+JSON.stringify({action:"createplan",plan:getFareFreaksPlan(),type:"matrix"});
   doHttpRequest("https://www.farefreaks.com/flightmanager/ajax/planhandler.php",options,function(xmlHttpObject) {
      var response=false;
      if (typeof(JSON) !== "undefined"){
@@ -3418,7 +3412,7 @@ function createFareFreaksPlanlink(){
        // do not(!) use eval here :-/
        printNotification("Error: Failed saving plan - Browser not supporting JSON");
        return false;
-     }     
+     }
      if (typeof(response) !== "object"){
       printNotification("Error: Failed saving plan");
       return false;
@@ -3429,12 +3423,12 @@ function createFareFreaksPlanlink(){
      }
      if (response["success"]!=="1"){
       printNotification("Error: "+response["error"]+" while retrieving flight plan");
-      return false; 
+      return false;
      } else {
        document.getElementById('ff-flightplanlinkinput').value = response["url"];
        document.getElementById('ff-flightplanlinklink').href = response["url"];
      }
-    });   
+    });
 }
 
 function resolveTimezones(){
@@ -3442,7 +3436,7 @@ function resolveTimezones(){
   document.getElementById('timezone-container').style.display = 'inline';
   options.mode="post";
   options.headers=[{name:'Accept', val:'application/json;charset=UTF-8'}, {name:'Content-Type', val:'application/x-www-form-urlencoded'}];
-  options.data="data="+JSON.stringify({action:"resolvetimezones",plan:getTimezoneData("small"),type:"matrix"});  
+  options.data="data="+JSON.stringify({action:"resolvetimezones",plan:getTimezoneData("small"),type:"matrix"});
   doHttpRequest("https://www.farefreaks.com/ajax/timezone.php",options,function(xmlHttpObject) {
      var response=false;
      document.getElementById('timezone-container').style.display = 'none';
@@ -3456,7 +3450,7 @@ function resolveTimezones(){
        // do not(!) use eval here :-/
        printNotification("Error: Failed retrieving timezones - Browser not supporting JSON");
        return false;
-     }     
+     }
      if (typeof(response) !== "object"){
       printNotification("Error: Failed retrieving timezones");
       return false;
@@ -3467,7 +3461,7 @@ function resolveTimezones(){
      }
      if (response["success"]!=="1"){
       printNotification("Error: "+response["error"]+" while retrieving timezone data");
-      return false; 
+      return false;
      } else {
        for (var i=0;i<currentItin["itin"].length;i++) {
         // walks each leg
@@ -3487,17 +3481,17 @@ function resolveTimezones(){
               if(temp===null){
                     printNotification("Error: Failed retrieving timezones - invalid response");
                     return false;
-              }     
+              }
               currentItin["itin"][i]["seg"][j]["arr"]["offset"]=response["data"][i][j]["arroffset"];
             }
           }
           if (typeof(response["data"][i][j-1]["arroffset"])!=="undefined"){
             currentItin["itin"][i]["arr"]["offset"]=response["data"][i][j-1]["arroffset"];
-          }          
+          }
        }
      }
      printLinksContainer();
-    });   
+    });
 }
 
 function printTimezones(){
@@ -3509,7 +3503,7 @@ function printTimezones(){
   } else {
       printUrl('javascript: void(0);', 'Resolve Timezones', '', extra);
       container = document.getElementById('powertoolslinkcontainer');
-  } 
+  }
   var links = container.getElementsByTagName('a');
   var link = links[0];
   link.innerHTML = 'Resolve Timezones';
@@ -3518,10 +3512,10 @@ function printTimezones(){
 }
 
 function getTimezoneData(mode){
-  var plan=new Array(); 
+  var plan=new Array();
   for (var i=0;i<currentItin["itin"].length;i++) {
   // walks each leg
-  var leg = new Array(); 
+  var leg = new Array();
     for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
        //walks each segment of leg
          var temp= new Object();
@@ -3529,11 +3523,11 @@ function getTimezoneData(mode){
          temp.depdatetime = currentItin["itin"][i]["seg"][j]["dep"]["year"]+"-"+("0"+currentItin["itin"][i]["seg"][j]["dep"]["month"]).slice(-2)+"-"+("0"+currentItin["itin"][i]["seg"][j]["dep"]["day"]).slice(-2)+"T"+("00"+currentItin["itin"][i]["seg"][j]["dep"]["time"]).slice(-5);
          if(mode==="full"){
            temp.dest = currentItin["itin"][i]["seg"][j]["dest"];
-           temp.arrdatetime = currentItin["itin"][i]["seg"][j]["arr"]["year"]+"-"+("0"+currentItin["itin"][i]["seg"][j]["arr"]["month"]).slice(-2)+"-"+("0"+currentItin["itin"][i]["seg"][j]["arr"]["day"]).slice(-2)+"T"+("00"+currentItin["itin"][i]["seg"][j]["arr"]["time"]).slice(-5);          
+           temp.arrdatetime = currentItin["itin"][i]["seg"][j]["arr"]["year"]+"-"+("0"+currentItin["itin"][i]["seg"][j]["arr"]["month"]).slice(-2)+"-"+("0"+currentItin["itin"][i]["seg"][j]["arr"]["day"]).slice(-2)+"T"+("00"+currentItin["itin"][i]["seg"][j]["arr"]["time"]).slice(-5);
          }
          leg.push(temp);
       }
-   plan.push({segs:leg}); 
+   plan.push({segs:leg});
    }
   return plan;
 }
@@ -3541,7 +3535,7 @@ function getTimezoneData(mode){
 function openWheretocredit(link) {
   var container = document.getElementById('wheretocredit-container');
   container.style.display = 'inline';
-  
+
   var itin = {
     ticketingCarrier: currentItin.carriers.length == 1 ? currentItin.carriers[0] : null,
     baseFareUSD: currentItin.basefares + currentItin.surcharges,
@@ -3560,7 +3554,7 @@ function openWheretocredit(link) {
       });
     }
   }
-  
+
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '//www.wheretocredit.com/api/beta/calculate');
   xhr.setRequestHeader('Accept', 'application/json;charset=UTF-8');
@@ -3577,7 +3571,7 @@ function openWheretocredit(link) {
       } catch (e) {
         data = xhr.responseText;
       }
-      
+
       if (xhr.status === 200 && data && data.success && data.value && data.value.length && data.value[0].success) {
           data.value[0].value.totals.sort(function (a, b) {
             if (a.value === b.value) {
@@ -3585,11 +3579,11 @@ function openWheretocredit(link) {
             }
             return b.value - a.value; // desc
           });
-          
+
          result = document.createElement("div");
          temp = data.value[0].value.totals.map(function (seg, i) { return parseInt(seg.value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + seg.name + ' miles'; });
          for (var i = 0 ; i<temp.length;i++){
-           result.appendChild(document.createTextNode(temp[i])); 
+           result.appendChild(document.createTextNode(temp[i]));
            result.appendChild(document.createElement("br"));
          }
          result.removeChild(result.lastChild);
@@ -3608,7 +3602,7 @@ function openWheretocredit(link) {
 
 function printWheretocredit() {
   var extra = '<span id="wheretocredit-container" style="display: none;">&nbsp;<img src="data:image/gif;base64,R0lGODlhIAAgAMQAAKurq/Hx8f39/e3t7enp6Xh4eOHh4d3d3eXl5dXV1Wtra5GRkYqKitHR0bm5ucnJydnZ2bS0tKGhofb29sHBwZmZmZWVlbGxsb29vcXFxfr6+s3NzZ2dnaampmZmZv///yH/C05FVFNDQVBFMi4wAwEAAAAh+QQECgAAACwAAAAAIAAgAAAF/+AnjiR5ecxQrmwrnp6CuTSpHRRQeDyq1qxJA7Ao7noxhwBIMkSK0CMSRVgCEx1odMpjEDRWV0Ji0RqnCodGM5mEV4aOpVy0RBodpHfdbr9HEw5zcwsXBy88Mh8CfH1uKwkVknMOASMnDAYjjI4TGiUaEZKSF5aXFyucbQGPIwajFRyHTAITAbcBnyMPHKMOTIC4rCQOHL0VCcAiGsKmIgDGxj/AAgED184fEtvGutTX4CQd29vetODXJADkEtNMGgTxBO4Y7BDKHxPy8yR4Hf8Z8A1AQBBBNgT//gHQxGQCAgMGCE6wgaEDgIsUsrWABxFilRIHLop8oBEUgQMHOnaWnJBB5IULDxC0CGAAAsqUH1cQcPDyZQQHDQwEEFBrgIEESCHYNDCxhQGeFyL8dICBAoUMDzY0aIA0gc2SJQxQkOqgbNWrD7JuRXoArM4NZamexaqWK1NlGgw8oGoVbdYNBwaYAwbvQIMHWBtAEPoHn+PHj0MAACH5BAQKAAAALAEAAAAeAB8AAAX/4CeOZGme6CiIw0AYwfBpIp2W2nRQ0SUBnQsmQfgcOpNbLRHhVCyMBSPKqAAiEg9DiXBwFpWFxbIomxkFhccjOwkgF8uzEiZTy+m154IyAJx0YBI/ABUSCwUFeh4FNiQDHXQcch1DMAYDEA55iwcmGIYcThEHbSoRnHodKyICBoMSXw4ErCMTDQyLegVFIhMUsBwASSYBHQqKaXkKDqwEAMGeKBsHDg0ZGBsVDhYQNG8SHR0SzUqtH0lJAisaD+IdAAm15jMfAhoa9xTw8Aj0KhMCBhTwCx6AC6boERQ4gSAFABAjJDS3UOC9DBcyRuj1j2AAiwI2ZMx4YJ6SHAFSrDY00iNChAyOzE1IqZKFA5cRHCAwiUIDzZQ2QuZ04OBBAIoxWgwIUIsA0acbiLnxSUDpAKn2EjjAgIEChgcD8pFYN5OAWRdMSwR4QKFtBgoZDhBQmXIAgrtmq8YcMYAt3AeAEyQ4cMCAgcIG8BLAqpZtBsAbNjQQDIGwYcNXeZLQkADwA8mTE1QufADB1X8EIHRusEHw4MJz1/1DF+DF5btXxc7enCPHCs0jQgAAIfkEBAoAAAAsAQABAB8AHgAABf/gJ47kGBBBMH1C6b4j8UTX1QFOBg1wHySXSkVSsQgXwssm0OrFKACJlMMRCi2WBedyaMIEhoh0TMUWsdmFJKHpGWydjrQoAQA4koVez1h7SQQON3EcHRgHAQMEBAkUeXtaBn8fEw92doYGJS0Tb5AMFwEkAgcRlwAUTF8DDhYMehWHCZwZNReook6UGAwMBb8LBSuBNQARCLoiBBi/Cgoe0A0fEBHVFw9tTgeCDM/P0AUCGhvVEQ6augkM0OzsEuIPDvIOPLqdBe3sGZQZ8xm5ySZI+AaORyUHGHIADJiB4AIR4zBQoIBhYTINBwo8u9CkwUSKyJKNguALwwgDFDKfZKAwSyTENhA21KOU8oFNiz0ETNj5QYMXAQls2jywQpe4nTsF/CHQ4MGGDQ0MTJg0CinSSRMOOG3QIIGBANlKaJiQAqlPFxMScE3A9gCKCRrikk1RVgVVEQEgdE0A4cABAwgIKBI8gK6KsC4EBDjAtu9fA4AJFy571skEBAf6Qo68aIDnwyKVBkCwGXLgznZdjhibqLNnuKoTs1BaOVkIACH5BAQKAAAALAEAAQAfAB4AAAX/4CeOpPBN6BCQbOt+AZJkWOTcD/LuwnRkF4Ck05EYKxVAYrUjETYOgBRALBolHIlD1xQgKJFLkGq9cjgVS+eg2REol/A46IhILBU0siJJuAQDGTdyERsHAyoBBxh3ewsSBi0TCTd1ETkTHyYkBhF7aRFMIwiCGDcbAZstAgEOSBZ4DaoCGxS2DhuZTTARsBYLAKIBtrYYBLsjBhwLzBUQmwYUGRkUssgiGg7MzBkjCQ8P1MfXIgkVzAwXmRrf4A+65ATnzB0rkw8bDwnwTQMmEx0YMOOwgt2GBhv2IRMQ5qCEBRYYdDim4UCDiwp3CQCgoICFAgUYMADQRoCBBglSqQ64BsGDSw8dCyyA0IZAypQIVO3QUOAlTJgVugWAkAAChAOieHTw6bObBgNGDxwg0GbXA6ZAdSmSasDAgKo7AvR8WSBCCQIHuhpAMIDfCAECNEywQDYBWBETEKhFgIBAgAlw4WqQO/gCTAupXORd25cAogB/UUj+QEHguD8TCDR2nAiy5AkaBhxCFpoA586fUcAl12MAZ8iwUQzWSU4u7MgaVpN7EVj3rhAAIfkEBAoAAAAsAQAAAB8AHwAABf/gJ47kKJRoqn7aFwTEEGvaua6BkTwU5VCYB2Qwsd1Mhw0l4rg4ARcAwNEYGG8Bpc/hiESeUkkncpgcCbweBuN9dqSdDgewMacEhM0jkwE6+ns+AGJxYhsqAQ0PixkYFAcIEwEaMgkOABwSmhwHVywHD3o8CRMtJRMDGx2aEhUdASUDDQ0begdHiRWZrQ+mLAazswe+KwIUuhwVAAQjARAJ0AmwRyIBABXYHAkjA8/QBp43D9gVCxQnAggQ6xDT1CIGrdgXsBoIB/gGdu8uHRbYr1jcy0eMmrUFFSxIYJbugIGH+95NALDAwoKFH/A8NBCJn4gBEixYDChgwEMECAK1hCvhLoHFBQsu2JnAEUGMlSMIkIwAE+Y5ERoICBUaEcWFAhQmEHhZEYIJGDEGWFEhoIAHBhQo9gQQMWjUAZPCIfBAlkGBcjATeAogFWyAUgKuXCBLtgCDBQwuFMzI1u1buHE1WCWrQEGBBQAQqNDwovFfuBDoElbAwMANDZJeTNgMt4NkuhYs3xCw+XEpBAUUfPaA9B0NzpsfpLarwMJhBkWLCaBBI0CGA1U4Trjl0YQRdEdCAAAh+QQECgAAACwBAAAAHgAgAAAF/+AnjmRpnmiqrqMQGFDzZE9zEBpLasOxbY8ZZYhxPAw51sSQaDSAQgqm6HBsCKvAIdF8BjPEqiMSoRhSWgi3CwRLq+TLxXE2LQ8QNdcwmAhcBg1jcnIOWCQCBAYHjBAGASgID3IAlRkTJC8GizdJKAEPlaIHLYqbBjgsARSiHRhJEwgImwiYOgYAHbodCCIBsrIDOiMZux0NIgMEywS2wxAS0RIYycypwx8D0hIAyQPfAwLYHxrbHd7g4tgaHBzSvuAB6sMD7e3dHwH6+p46CRUV2jkQMWFfAGc6HAAM+ECEBoN+hh3gsLBCHQEFJ2jUMG+EnEwXKkbwpEGjSY4jDHMw8HBhRAAHFiwsTIDI5EaUGBR4YCniwIUFMWM6QPgB40kNBFbu9HAsgoUFUGN2qFPCqAYNDnQu9VAAqlegEmiiEIBU6VauX6F2EJsikdmtXb9GoLpCQNazcRcAaECUxYC3BQBQONBv3IecO1saRvGXJ4sQACH5BAQKAAAALAEAAQAeAB8AAAX/4CeO5CdoU4qaZesKwjQgyGHYxhC4vBkQt0Ni2GhsGgmDoEeSIQxByDBhfFgbu15s9oRChNTNxpqhUBA9zYBAg7qhQ+ujbFa2BGsCG0HQTVBODxR0GBkELQEDinoDfy0oCRgUGBgODxMkaoprARpMH5GVDg4HSyYTAYk6pkwTDaMOERSYHxqpt56fIgEYEb4OBiK2t7S6Ig2+vg0wqLjGIwgRF9OzMSkprMYBDgAXAA4B1tfZuhMYAOgRA+LYz7sOHejg7BPknwEX8d87Kxr2nwYAdBiIAdMSNDBqKWQiIIMECR0kPFgi4MBDDg8kOsDQAEOuFgMiPgRwYESCAgoKp3hI6UFlh5ItJkSwcDFCFhEMPOjc6YHBrBJ4KFjg8FBCgmwPeK5UAGBApgAGMFSoQLTChWIiJihQWqBDkhxCKEioYGEqhw6HWlTYqSAlAw4LInaAu2Dq1A4QeEBgW2DBAgZ//da1u+DC0R5bCxQALLixBQsMJDhA8G/EBQ8SKklgAFlwhQUSIiQIp8tBgw8BDmxw4A2ArwwGOrmjtSTABAI/DLpj+CwEACH5BAQKAAAALAAAAQAfAB8AAAX/4CeOJKlpgqB9Qum+oxYMNGEPwQrDwjTbBATCQDQgBqidyUcbAIfEA+RgCLR2Kl9gVoMaDlJIAjK4vjTabY1AE4Ih4kZiwPOlt5PUaWYQJxpyViU9E4V4OoMTBn8NGw8HEyVohZRmZwaNjhsIJCmUE0lKHxMHD6YPDWYqo4WWSgGnGRQBI7ANLIiiLBAUGbIHIxQFDKm6JQMYFMrFAhEeCgUJkcYiE8oUGA/TCx7dCg6CxrAOGA4PtAEF3d4WtMYTGQ7yFJEP6/fR06/y8hmRHffuMdigy4CDCBEubEChztszBh0wAFOiYcMFhBESfICwTgG0Ag7o6EKQ8MIFBwhSohRYwKDAMAbgXLkIQAEAgAsA6Img8oDDApYLLhCQKUIATZs2IxywFMABg58/AUCI5MoAhg4dkGobhEAC1J8VHDRAwGYABAcSOGAF0MEBARgHJDz9yqGCTQ4WKkiQgLVDBANYIHT4aaFw3sIcOOxd/JcoCYM+C1eYXCGxYr4U3urqkSBC3QWT80qYHGEqtVoGHmDAidDBBs2nO7GagCO2bVEhAAAh+QQECgAAACwAAAEAHwAeAAAF/+AnjuQonGepruWpTVMgB5PG3p8Lz8HgE4OJAEc6wY4xmW9AAE6InwBk8Dryfk0EQXgbWAqOD9K6JCAQBsRTJQhYFB5AraZBCWKDs2FvWI80CQUegww1QysaeXwHBDYjDoKDHgoERAIDeweaAyIaFXCSgxhQAgSaEBAGNhuhoRyOOBMGqKgBHw8VggqgHgV+N6UJwgmVAgZfBbweDVBREMINqjkXDAwFBRYMCh2wNxMJDeEQNgMdDBYLHOEOF90s3xsNGwk2ExIMCwwSth+cUN8PNjxI8GRChwUIFyBoNmLCg4cDC0bAt8ACM4b9KGR4mODQg4QLIrgDlkBjBgoHRq8cqJCwQspmAyjIlMkvCoCK6C74i7XBwcwNh3IkqGDBQoUKDgYEbRGggQMHGBxkMFBiggOjRytEoKpiAoIHESI8ddDglwgEB7Na4OBgyhIIYC9cEOtT6YoDHbJW4EBUwgUHAC4ACDz3AoWFLIwBMMqBg4THjzt0GCw3wuGlKwhgkOAYsuTJgwE4eEAA87sEF4567iAhcIYDXDB+ILAhqoMIGDIkMFBTNokJQWDkwBECACH5BAQKAAAALAAAAQAfAB4AAAX/4CeOo/BN5yesK+m+4uRAFJVdTpVo2sS3MFegoPAUjB6P4tKbOJ3A4CexSFqTBUPTGQhApSqJoniV+J7c7sQEEyQsxKsnIeD1unhv0MCxMI5WBWsqdRN4A4goLhMXDAsLRGQdLiuGiJdsIw2PC35wSRBtE5cEBAGZEwCOjxEQHQoFGlIBBAOlA7IiBxWcFgYfBgsAYAK2pQSKHw8WnBcmAg8DYB8BCNYGA88OFswWDSO5YBMECAYGBLKM3BYcv9MkGuXmCLIBAJ0WEgTv8AgH5gZQpFpQgR0CfiX8HfiHQkOEChArHEAoQoOBAxD+ydJAISKHDZneBYBAEoKBZ28iuwJI9s5AgpcJ9okgAKACB4gJEAaA+TLAiAkUOHCQUEHfuwkQGihtcCCcAAIShkqwcEGLlAkJHmzYoFSaiwdFJXSQECEmyx4EHlB4wPbBgZAxIkiVIAEABabkECR1YCMD2wQ+YQxwMLaD4Q4XIkSgEAHD4hoZMmzw2oYABbEdAGgGcCGxAwcYMNTYEBhMgAYRMmvurPgz3ww7KCLY4CAx5wgXMDh4EJOiiBUDDijV2iABNpa+K/o4hQKuixAAOw==" style="width: 1em; height: 1em;"></span>';
-  
+
   var container;
   if (mptUsersettings["enableInlinemode"]==1){
       printUrlInline('javascript: void(0);', 'wheretocredit.com', '', 1, extra);
@@ -3617,7 +3611,7 @@ function printWheretocredit() {
       printUrl('javascript: void(0);', 'wheretocredit.com', '', extra);
       container = document.getElementById('powertoolslinkcontainer');
   }
-  
+
   var links = container.getElementsByTagName('a');
   var link = links[links.length - 1];
   link.target = '_self';
@@ -3626,7 +3620,7 @@ function printWheretocredit() {
 
 function bindWheretocredit(){
   for (var i=0;i<currentItin["itin"].length;i++) {
-  // walks each leg      
+  // walks each leg
     for (var j=0;j<currentItin["itin"][i]["seg"].length;j++) {
        //walks each segment of leg
           var target = findItinTarget((i+1),(j+1),"cabin");
@@ -3635,10 +3629,10 @@ function bindWheretocredit(){
             return false;
           } else {
             var url='http://www.wheretocredit.com/'+currentItin['itin'][i]['seg'][j]['carrier'].toLowerCase()+'/'+currentItin['itin'][i]['seg'][j]['bookingclass'].toLowerCase();
-            target.children[0].innerHTML= target.children[0].innerHTML.replace(/<a.*?\/a>/,'('+currentItin['itin'][i]['seg'][j]['bookingclass']+')').replace('('+currentItin['itin'][i]['seg'][j]['bookingclass']+')','<a href="'+url+'" target="_blank" style="text-decoration:none;color:black">('+currentItin['itin'][i]['seg'][j]['bookingclass']+")</a>");        
+            target.children[0].innerHTML= target.children[0].innerHTML.replace(/<a.*?\/a>/,'('+currentItin['itin'][i]['seg'][j]['bookingclass']+')').replace('('+currentItin['itin'][i]['seg'][j]['bookingclass']+')','<a href="'+url+'" target="_blank" style="text-decoration:none;color:black">('+currentItin['itin'][i]['seg'][j]['bookingclass']+")</a>");
           }
       }
-   }  
+   }
 }
 
 function bindLinkClicks(){
@@ -3648,7 +3642,7 @@ function bindLinkClicks(){
       container = getSidebarContainer(1);
   } else {
       container = document.getElementById('powertoolslinkcontainer');
-  } 
+  }
   var links = container.getElementsByTagName('a');
   if (typeof(currentItin["itin"][0]["dep"]["offset"])==="undefined") {
     links[linkid].onclick=function () {
@@ -3658,7 +3652,7 @@ function bindLinkClicks(){
   }
   if (mptUsersettings["enableInlinemode"]!=1){
       linkid = links.length - 1;
-  }  
+  }
   links[linkid].onclick = function () {
      links[linkid].onclick = null;
      openWheretocredit(links[linkid]);
@@ -3676,7 +3670,7 @@ function printUrlInline(url,text,desc,nth,extra){
     }
   }
   otext+=(valid===false ? "Open with":"");
-  otext+=' '+text+'</a>' + (extra||''); 
+  otext+=' '+text+'</a>' + (extra||'');
   printItemInline(otext,desc,nth);
 }
 function printItemInline(text,desc,nth){
@@ -3686,7 +3680,7 @@ function printItemInline(text,desc,nth){
 function printImageInline(src,url,nth){
   div = getSidebarContainer(nth).parentNode;
   if (mptUsersettings["enableIMGautoload"] == 1) {
-    div.innerHTML = div.innerHTML + (url?'<a href="'+url+ '" target="_blank" class="powertoolsitem">':'')+'<img src="'+src+'" style="margin-top:10px;"'+(!url?' class="powertoolsitem"':'')+'/>'+(url?'</a>':'');      
+    div.innerHTML = div.innerHTML + (url?'<a href="'+url+ '" target="_blank" class="powertoolsitem">':'')+'<img src="'+src+'" style="margin-top:10px;"'+(!url?' class="powertoolsitem"':'')+'/>'+(url?'</a>':'');
    } else {
      var id=Math.random();
      div.innerHTML = div.innerHTML + '<div id="'+id+'" class="powertoolsitem" style="width:184px;height:100px;background-color:white;cursor:pointer;text-align:center;margin-top:10px;padding-top:84px;"><span>Click</span></div>';
@@ -3695,8 +3689,8 @@ function printImageInline(src,url,nth){
        newdiv.setAttribute('class','powertoolsitem');
        newdiv.innerHTML =(url?'<a href="'+url+ '" target="_blank">':'')+'<img src="'+src+'" style="margin-top:10px;"'+(!url?' class="powertoolsitem"':'')+'/>'+(url?'</a>':'');
        document.getElementById(id).parentNode.replaceChild(newdiv,document.getElementById(id));
-      };   
-   } 
+      };
+   }
 }
 function getSidebarContainer(nth){
   var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget(classSettings["resultpage"]["mcHeader"], nth).nextElementSibling;
@@ -3723,7 +3717,7 @@ function printUrl(url,name,desc,extra) {
     }
   }
   text+=(valid===false ? "Use ":"");
-  text+=" "+name+"</a></label>"+(extra||'')+(desc ? '<br><label style="font-size:'+(Number(mptUsersettings["linkFontsize"])-15)+'%">('+desc+")</label>" : "")+"</div>";  
+  text+=" "+name+"</a></label>"+(extra||'')+(desc ? '<br><label style="font-size:'+(Number(mptUsersettings["linkFontsize"])-15)+'%">('+desc+")</label>" : "")+"</div>";
   var target = document.getElementById('powertoolslinkcontainer');
   target.innerHTML = target.innerHTML + text;
 }
@@ -3747,7 +3741,7 @@ function injectCss() {
 
   css += '.pt-hover-menu { position:absolute; padding: 8px; background-color: #FFF; border: 1px solid #808080; display:none; }';
   css += '.pt-hover-container:hover .pt-hover-menu { display:inline; }';
-    
+
   if (style.styleSheet){
     style.styleSheet.cssText = css;
   } else {
