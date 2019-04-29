@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.30
+// @version 0.31
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
 // @grant GM_setValue
@@ -16,6 +16,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.31 ****
+# 2019-04-26 Edited by bench-marc (add cabinclass for expedia)
 **** Version 0.30 ****
 # 2019-04-16 Edited by bench-marc (fix momondo and skyscanner urls; fix wheretocredit; add expedia deeplinki)
 **** Version 0.29 ****
@@ -157,7 +159,7 @@ mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
 // General settings
 var mptSettings = new Object();
 mptSettings["itaLanguage"]="en";
-mptSettings["version"]="0.30";
+mptSettings["version"]="0.31";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
