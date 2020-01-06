@@ -257,6 +257,34 @@ export function getCurrentSegs() {
     }, []);
 }
 
+export function combineTechnicalStops(allSegs) {
+  if (allSegs.length <= 1) return allSegs;
+
+  const segs = [];
+
+  for (let i = 0; i < allSegs.length; i++) {
+    const currSeg = allSegs[i];
+    const nextSeg = allSegs[i + 1];
+
+    if (
+      nextSeg &&
+      nextSeg.fnr === currSeg.fnr &&
+      nextSeg.orig === currSeg.dest
+    ) {
+      segs.push({
+        ...currSeg,
+        dest: nextSeg.dest,
+        arr: nextSeg.arr
+      });
+      i++;
+    } else {
+      segs.push(currSeg);
+    }
+  }
+
+  return segs;
+}
+
 /**************************************** General Functions *****************************************/
 function getcabincode(cabin) {
   switch (cabin) {
