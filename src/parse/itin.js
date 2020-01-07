@@ -186,6 +186,10 @@ function readItinerary() {
       }
     }
   }
+  // Combine technical stops into a single segment
+  itin.forEach(itin => {
+    if (itin.seg) itin.seg = combineTechnicalStops(itin.seg);
+  });
   // extract mileage paxcount and total price
   var milepaxprice = new Array();
   var re = /Mileage.*?([0-9,]+)\stotal\smiles.*?Total\scost\sfor\s([0-9])\spassenger.*?<div.*?>(.*?([1-9][0-9,.]+)[^\<]*)/g;
@@ -257,7 +261,7 @@ export function getCurrentSegs() {
     }, []);
 }
 
-export function combineTechnicalStops(allSegs) {
+function combineTechnicalStops(allSegs) {
   if (allSegs.length <= 1) return allSegs;
 
   const segs = [];
