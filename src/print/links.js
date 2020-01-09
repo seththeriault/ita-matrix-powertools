@@ -43,16 +43,21 @@ export function printLinksContainer() {
   }
 
   for (let group in links) {
-    for (let i = 0; i < links[group].length; i++) {
-      const link = links[group][i](currentItin);
-      if (!link) continue;
+    const groupLinks = links[group]
+      .map(link => link(currentItin))
+      .sort((a, b) => {
+        return a.title.localeCompare(b.title);
+      });
+    groupLinks.forEach(link => {
+      if (!link) return;
 
       if (mptUserSettings.enableInlineMode == 1) {
         printUrlInline(link.url, link.title, link.desc, link.nth, link.extra);
       } else {
         printUrl(link.url, link.title, link.desc, link.extra);
       }
-    }
+    });
+
     mptUserSettings.enableDeviders == 1 &&
       links[group].length &&
       printSeperator();
