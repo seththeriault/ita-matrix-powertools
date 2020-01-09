@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.41.0
+// @version 0.41.1
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
 // @grant GM_setValue
@@ -728,16 +728,21 @@ function printLinksContainer() {
   }
 
   for (let group in links) {
-    for (let i = 0; i < links[group].length; i++) {
-      const link = links[group][i](_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"]);
-      if (!link) continue;
+    const groupLinks = links[group]
+      .map(link => link(_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"]))
+      .sort((a, b) => {
+        return a.title.localeCompare(b.title);
+      });
+    groupLinks.forEach(link => {
+      if (!link) return;
 
       if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1) {
         printUrlInline(link.url, link.title, link.desc, link.nth, link.extra);
       } else {
         printUrl(link.url, link.title, link.desc, link.extra);
       }
-    }
+    });
+
     _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableDeviders == 1 &&
       links[group].length &&
       printSeperator();
@@ -1122,7 +1127,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.41.0",
+  version: "0.41.1",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
