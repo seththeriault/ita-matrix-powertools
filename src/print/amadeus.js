@@ -194,7 +194,7 @@ export function getAmadeusPax(pax, config) {
     }
   }
   for (let i = 0; i < pax.adults; i++) {
-    url += "&TRAVELER_TYPE_" + curPax + "=ADT";
+    url += "&TRAVELLER_TYPE_" + curPax + "=ADT";
     url +=
       "&HAS_INFANT_" +
       curPax +
@@ -204,13 +204,13 @@ export function getAmadeusPax(pax, config) {
     curPax++;
   }
   for (let i = 0; i < tmpPax.y; i++) {
-    url += "&TRAVELER_TYPE_" + curPax + "=ADT";
+    url += "&TRAVELLER_TYPE_" + curPax + "=ADT";
     url += "&HAS_INFANT_" + curPax + "=False";
     url += "&IS_YOUTH_" + curPax + "=True";
     curPax++;
   }
   for (let i = 0; i < tmpPax.c; i++) {
-    url += "&TRAVELER_TYPE_" + curPax + "=CHD";
+    url += "&TRAVELLER_TYPE_" + curPax + "=CHD";
     url += "&HAS_INFANT_" + curPax + "=False";
     url += "&IS_YOUTH_" + curPax + "=False";
     curPax++;
