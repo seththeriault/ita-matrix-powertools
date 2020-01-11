@@ -1,6 +1,6 @@
 import mptSettings, { reset } from "./settings/appSettings";
 import { loadUserSettings } from "./settings/userSettings";
-import classSettings from "./settings/itaSettings";
+import classSettings, { findTargetSetVersion } from "./settings/itaSettings";
 import { printNotification, findtarget } from "./utils";
 
 import { readItinerary } from "./parse/itin";
@@ -65,7 +65,7 @@ function getPageLang() {
 /********************************************* Start page *********************************************/
 function startPage() {
   // try to get content
-  if (findtarget(classSettings.startpage.maindiv, 1) === undefined) {
+  if (!findTargetSetVersion(settings => settings.startpage.maindiv, 1)) {
     printNotification("Error: Unable to find content on start page.");
     return false;
   } else {
@@ -82,7 +82,7 @@ function startPage() {
 //Primary function for extracting flight data from ITA/Matrix
 function fePS() {
   // try to get content
-  const itin = findtarget(classSettings.resultpage.itin, 1);
+  const itin = findTargetSetVersion(settings => settings.resultpage.itin, 1);
   if (!itin) {
     printNotification("Error: Unable to find Content on result page.");
     return false;
