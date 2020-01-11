@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.41.1
+// @version 0.41.2
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
 // @grant GM_setValue
@@ -311,6 +311,10 @@ function readItinerary() {
       }
     }
   }
+  // Combine technical stops into a single segment
+  itin.forEach(itin => {
+    if (itin.seg) itin.seg = combineTechnicalStops(itin.seg);
+  });
   // extract mileage paxcount and total price
   var milepaxprice = new Array();
   var re = /Mileage.*?([0-9,]+)\stotal\smiles.*?Total\scost\sfor\s([0-9])\spassenger.*?<div.*?>(.*?([1-9][0-9,.]+)[^\<]*)/g;
@@ -380,6 +384,34 @@ function getCurrentSegs() {
     .reduce(function(a, b) {
       return a.concat(b);
     }, []);
+}
+
+function combineTechnicalStops(allSegs) {
+  if (allSegs.length <= 1) return allSegs;
+
+  const segs = [];
+
+  for (let i = 0; i < allSegs.length; i++) {
+    const currSeg = allSegs[i];
+    const nextSeg = allSegs[i + 1];
+
+    if (
+      nextSeg &&
+      nextSeg.fnr === currSeg.fnr &&
+      nextSeg.orig === currSeg.dest
+    ) {
+      segs.push({
+        ...currSeg,
+        dest: nextSeg.dest,
+        arr: nextSeg.arr
+      });
+      i++;
+    } else {
+      segs.push(currSeg);
+    }
+  }
+
+  return segs;
 }
 
 /**************************************** General Functions *****************************************/
@@ -1127,7 +1159,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.41.1",
+  version: "0.41.2",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -1172,26 +1204,67 @@ function getForcedCabin() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return findTargetSetVersion; });
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+
+
 // ITA Matrix CSS class definitions:
-/* harmony default export */ __webpack_exports__["a"] = ({
-  startpage: {
-    maindiv: "KIR33AB-w-d" //Container of main content. Unfortunately id "contentwrapper" is used twice
+const itaSettings = [
+  {
+    startpage: {
+      maindiv: "KIR33AB-w-d" //Container of main content. Unfortunately id "contentwrapper" is used twice
+    },
+    resultpage: {
+      itin: "KIR33AB-v-d", //Container with headline: "Itinerary"
+      itinRow: "KIR33AB-j-i", // TR in itin with Orig, Dest and date
+      milagecontainer: "KIR33AB-v-e", // TD-Container on the right
+      rulescontainer: "KIR33AB-k-d", // First container before rulelinks (the one with Fare X:)
+      htbContainer: "KIR33AB-k-k", // full "how to buy"-container inner div (td=>div=>div)
+      htbLeft: "KIR33AB-k-g", // Left column in the "how to buy"-container
+      htbRight: "KIR33AB-k-f", // Class for normal right column
+      htbGreyBorder: "KIR33AB-k-l", // Class for right cell with light grey border (used for subtotal of passenger)
+      //inline
+      mcDiv: "KIR33AB-y-d", // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+      mcHeader: "KIR33AB-y-b", // Right menu header class ("Mileage", etc.)
+      mcLinkList: "KIR33AB-y-c" // Right menu ul list class (immediately following header)
+    }
   },
-  resultpage: {
-    itin: "KIR33AB-v-d", //Container with headline: "Itinerary"
-    itinRow: "KIR33AB-j-i", // TR in itin with Orig, Dest and date
-    milagecontainer: "KIR33AB-v-e", // TD-Container on the right
-    rulescontainer: "KIR33AB-k-d", // First container before rulelinks (the one with Fare X:)
-    htbContainer: "KIR33AB-k-k", // full "how to buy"-container inner div (td=>div=>div)
-    htbLeft: "KIR33AB-k-g", // Left column in the "how to buy"-container
-    htbRight: "KIR33AB-k-f", // Class for normal right column
-    htbGreyBorder: "KIR33AB-k-l", // Class for right cell with light grey border (used for subtotal of passenger)
-    //inline
-    mcDiv: "KIR33AB-y-d", // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
-    mcHeader: "KIR33AB-y-b", // Right menu header class ("Mileage", etc.)
-    mcLinkList: "KIR33AB-y-c" // Right menu ul list class (immediately following header)
+  {
+    startpage: {
+      maindiv: "IR6M2QD-w-d" //Container of main content. Unfortunately id "contentwrapper" is used twice
+    },
+    resultpage: {
+      itin: "IR6M2QD-v-d", //Container with headline: "Itinerary"
+      itinRow: "IR6M2QD-j-i", // TR in itin with Orig, Dest and date
+      milagecontainer: "IR6M2QD-v-e", // TD-Container on the right
+      rulescontainer: "IR6M2QD-k-d", // First container before rulelinks (the one with Fare X:)
+      htbContainer: "IR6M2QD-k-k", // full "how to buy"-container inner div (td=>div=>div)
+      htbLeft: "IR6M2QD-k-g", // Left column in the "how to buy"-container
+      htbRight: "IR6M2QD-k-f", // Class for normal right column
+      htbGreyBorder: "IR6M2QD-k-l", // Class for right cell with light grey border (used for subtotal of passenger)
+      //inline
+      mcDiv: "IR6M2QD-y-d", // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+      mcHeader: "IR6M2QD-y-b", // Right menu header class ("Mileage", etc.)
+      mcLinkList: "IR6M2QD-y-c" // Right menu ul list class (immediately following header)
+    }
   }
-});
+];
+
+const classSettings = itaSettings[0];
+
+function findTargetSetVersion(classSelector, nth) {
+  for (let setting of itaSettings) {
+    const className = classSelector(setting);
+    const target = Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* findtarget */ "c"])(className, nth);
+    if (target) {
+      console.log(`ITA Version detected: ${className}`);
+      Object.assign(classSettings, setting);
+      return target;
+    }
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (classSettings);
 
 
 /***/ }),
@@ -1414,7 +1487,7 @@ function getAmadeusPax(pax, config) {
     }
   }
   for (let i = 0; i < pax.adults; i++) {
-    url += "&TRAVELER_TYPE_" + curPax + "=ADT";
+    url += "&TRAVELLER_TYPE_" + curPax + "=ADT";
     url +=
       "&HAS_INFANT_" +
       curPax +
@@ -1424,13 +1497,13 @@ function getAmadeusPax(pax, config) {
     curPax++;
   }
   for (let i = 0; i < tmpPax.y; i++) {
-    url += "&TRAVELER_TYPE_" + curPax + "=ADT";
+    url += "&TRAVELLER_TYPE_" + curPax + "=ADT";
     url += "&HAS_INFANT_" + curPax + "=False";
     url += "&IS_YOUTH_" + curPax + "=True";
     curPax++;
   }
   for (let i = 0; i < tmpPax.c; i++) {
-    url += "&TRAVELER_TYPE_" + curPax + "=CHD";
+    url += "&TRAVELLER_TYPE_" + curPax + "=CHD";
     url += "&HAS_INFANT_" + curPax + "=False";
     url += "&IS_YOUTH_" + curPax + "=False";
     curPax++;
@@ -6658,7 +6731,7 @@ function getPageLang() {
 /********************************************* Start page *********************************************/
 function startPage() {
   // try to get content
-  if (Object(utils["c" /* findtarget */])(itaSettings["a" /* default */].startpage.maindiv, 1) === undefined) {
+  if (!Object(itaSettings["b" /* findTargetSetVersion */])(settings => settings.startpage.maindiv, 1)) {
     Object(utils["h" /* printNotification */])("Error: Unable to find content on start page.");
     return false;
   } else {
@@ -6675,7 +6748,7 @@ function startPage() {
 //Primary function for extracting flight data from ITA/Matrix
 function fePS() {
   // try to get content
-  const itin = Object(utils["c" /* findtarget */])(itaSettings["a" /* default */].resultpage.itin, 1);
+  const itin = Object(itaSettings["b" /* findTargetSetVersion */])(settings => settings.resultpage.itin, 1);
   if (!itin) {
     Object(utils["h" /* printNotification */])("Error: Unable to find Content on result page.");
     return false;
