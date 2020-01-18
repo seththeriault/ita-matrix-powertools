@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.41.2
+// @version 0.41.3
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
 // @grant GM_setValue
@@ -1159,7 +1159,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.41.2",
+  version: "0.41.3",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -4906,7 +4906,8 @@ function getKayakCabin() {
   }
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta", printKayak);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta", () => printKayak(0));
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta", () => printKayak(1));
 
 
 /***/ }),
