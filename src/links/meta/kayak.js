@@ -130,4 +130,5 @@ function getKayakCabin() {
   }
 }
 
-registerLink("meta", printKayak);
+registerLink("meta", () => printKayak(0));
+registerLink("meta", () => printKayak(1));
