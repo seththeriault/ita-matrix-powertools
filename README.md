@@ -69,9 +69,8 @@ You need to access the command line of your browser to execute the script. You c
 1. Fork it!
 1. Run `npm install` to install dependencies
 1. Update javascript files `./src` _(the main userscript is now auto-generated)_
-1. Bump version number in `package.json`
 1. Add change log
-1. Build the userscript with `npm run build`
+1. Bump version number with `npm version [major|minor|patch]` (this automatically runs a build as well)
 1. Commit and create PR
 
 Thanks to all that have [contributed](./AUTHORS) so far!

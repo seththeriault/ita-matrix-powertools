@@ -9,6 +9,7 @@
     "type-check": "tsc",
     "build": "webpack && npm run minify",
     "minify": "uglifyjs ita-matrix-powertools.user.js -o script_minified.js",
+    "version": "npm run build && git add ita-matrix-powertools.user.js script_minified.js",
     "release": "webstore upload --source=dist/ita-matrix-powertools.webext.zip --auto-publish"
   },
   "dependencies": {
