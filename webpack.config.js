@@ -28,6 +28,7 @@ module.exports = {
     new CopyWebpackPlugin([
       {
         from: "manifest.json",
+        to: "dist/manifest.json",
         transform(content, path) {
           return content
             .toString()
