@@ -10,13 +10,16 @@
     "build": "webpack && npm run minify",
     "minify": "uglifyjs ita-matrix-powertools.user.js -o script_minified.js",
     "version": "npm run build && git add ita-matrix-powertools.user.js script_minified.js",
-    "release": "webstore upload --source=dist/ita-matrix-powertools.webext.zip --auto-publish"
+    "release": "npm run release:chrome && npm run release:firefox",
+    "release:chrome": "webstore upload --source dist/ita-matrix-powertools.webext.zip --auto-publish",
+    "release:firefox": "node scripts/amo-deploy.js"
   },
   "dependencies": {
     "@types/greasemonkey": "^4.0.0",
     "@types/webpack-env": "^1.15.0",
     "chrome-webstore-upload-cli": "^1.2.0",
     "copy-webpack-plugin": "^5.1.1",
+    "firefox-extension-deploy": "^1.1.2",
     "husky": "^4.2.1",
     "path": "^0.12.7",
     "prettier": "^1.19.1",
