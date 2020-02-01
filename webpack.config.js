@@ -41,7 +41,11 @@ module.exports = {
     new ZipPlugin({
       path: "dist",
       filename: "ita-matrix-powertools.webext.zip",
-      include: [/\.js$/, /\.json$/, /\.png$/]
+      include: [/\.js$/, /\.json$/, /\.png$/],
+      pathMapper: function(assetPath) {
+        if (assetPath.startsWith("dist")) return path.basename(assetPath);
+        return assetPath;
+      }
     })
   ]
 };
