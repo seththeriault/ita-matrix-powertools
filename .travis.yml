@@ -12,4 +12,4 @@ deploy:
     branch: master
 stages:
   - name: deploy
-    if: commit_message = /^\d+\.\d+(\.\d+)?(-\S*)?$/
+    if: commit_message =~ /^\d+\.\d+(\.\d+)?(-\S*)?$/
