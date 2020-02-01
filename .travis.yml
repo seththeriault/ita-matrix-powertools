@@ -10,4 +10,6 @@ deploy:
   script: npm run release
   on:
     branch: master
-    tags: true
+stages:
+  - name: deploy
+    if: commit_message = /^\d+\.\d+(\.\d+)?(-\S*)?$/
