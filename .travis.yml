@@ -3,14 +3,16 @@ node_js:
   - lts/*
 env:
   - EXTENSION_ID=menecfddnlmanmpadcalononkolnplpp
-script:
-  - npm run build
-deploy:
-  skip_cleanup: true
-  provider: script
-  script: npm run release
-  on:
-    branch: master
+jobs:
+  include:
+    - stage: build
+      script: npm run build
+    - stage: deploy
+      script: skip
+      deploy:
+        skip_cleanup: true
+        provider: script
+        script: npm run release
 stages:
   - name: deploy
-    if: commit_message =~ /^\d+\.\d+(\.\d+)?(-\S*)?$/
+    if: branch = master AND commit_message =~ /^\d+\.\d+(\.\d+)?(-\S*)?$/
