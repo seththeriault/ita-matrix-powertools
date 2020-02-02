@@ -14,5 +14,6 @@ jobs:
         provider: script
         script: npm run release
 stages:
+  - build
   - name: deploy
     if: branch = master AND commit_message =~ /^\d+\.\d+(\.\d+)?(-\S*)?$/
