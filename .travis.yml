@@ -5,15 +5,12 @@ env:
   - EXTENSION_ID=menecfddnlmanmpadcalononkolnplpp
 jobs:
   include:
-    - stage: build
-      script: npm run build
     - stage: deploy
-      script: skip
+      script: npm run build
       deploy:
         skip_cleanup: true
         provider: script
         script: npm run release
 stages:
-  - build
   - name: deploy
     if: branch = master AND commit_message =~ /^\d+\.\d+(\.\d+)?(-\S*)?$/
