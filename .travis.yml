@@ -5,12 +5,15 @@ env:
   - EXTENSION_ID=menecfddnlmanmpadcalononkolnplpp
 jobs:
   include:
-    - stage: deploy
+    - stage: build
       script: npm run build
+    - stage: deploy
+      script: npm run package:webext
       deploy:
         skip_cleanup: true
         provider: script
         script: npm run release
 stages:
+  - build
   - name: deploy
     if: branch = master AND commit_message =~ /^\d+\.\d+(\.\d+)?(-\S*)?$/
