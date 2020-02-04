@@ -1,5 +1,5 @@
-var fs = require("fs");
-var deploy = require("firefox-extension-deploy");
+const fs = require("fs");
+const deploy = require("firefox-extension-deploy");
 
 deploy({
   // obtained by following the instructions here:
@@ -22,5 +22,7 @@ deploy({
   },
   function(err) {
     // failure :(
+    console.error(err);
+    throw err;
   }
 );

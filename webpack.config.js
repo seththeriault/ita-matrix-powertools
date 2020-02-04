@@ -2,8 +2,7 @@ const webpack = require("webpack");
 const fs = require("fs");
 const path = require("path");
 
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const ZipPlugin = require("zip-webpack-plugin");
+const replaceTokens = require("./scripts/replaceTokens");
 
 module.exports = {
   entry: "./src/index.js",
@@ -16,36 +15,13 @@ module.exports = {
   },
   plugins: [
     new webpack.BannerPlugin({
-      banner: fs
-        .readFileSync(path.resolve(__dirname, "header.js"), "utf8")
-        .replace("__DESCRIPTION__", process.env.npm_package_description)
-        .replace("__VERSION__", process.env.npm_package_version),
+      banner: replaceTokens(
+        fs.readFileSync(path.resolve(__dirname, "header.js"), "utf8")
+      ),
       raw: true
     }),
     new webpack.DefinePlugin({
       __VERSION__: JSON.stringify(process.env.npm_package_version)
-    }),
-    new CopyWebpackPlugin([
-      {
-        from: "manifest.json",
-        to: "dist/manifest.json",
-        transform(content, path) {
-          return content
-            .toString()
-            .replace("__DESCRIPTION__", process.env.npm_package_description)
-            .replace("__VERSION__", process.env.npm_package_version);
-        }
-      },
-      "icons/*.png"
-    ]),
-    new ZipPlugin({
-      path: "dist",
-      filename: "ita-matrix-powertools.webext.zip",
-      include: [/\.js$/, /\.json$/, /\.png$/],
-      pathMapper: function(assetPath) {
-        if (assetPath.startsWith("dist")) return path.basename(assetPath);
-        return assetPath;
-      }
     })
   ]
 };
