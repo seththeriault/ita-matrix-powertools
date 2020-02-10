@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Edited by wylek
 
 - minor BA parameter updates for multi-city construction
+- minor AA (US site) URL corrections
 
 ## [0.43.0] - 2020-02-02
 
