@@ -53,13 +53,7 @@ function printAAc1() {
     url += ",0";
 
     for (var i = 0; i < currentItin.itin.length; i++) {
-      url +=
-        ",false," +
-        dateToEpoch(
-          currentItin.itin[i].seg[0].dep.year,
-          currentItin.itin[i].seg[0].dep.month,
-          currentItin.itin[i].seg[0].dep.day
-        );
+      url += ",0,0";
     }
 
     if (currentItin.itin.length > 1) {
