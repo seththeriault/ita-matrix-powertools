@@ -1894,13 +1894,7 @@ function printAAc1() {
     url += ",0";
 
     for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length; i++) {
-      url +=
-        ",false," +
-        dateToEpoch(
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[0].dep.year,
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[0].dep.month,
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[0].dep.day
-        );
+      url += ",0,0";
     }
 
     if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length > 1) {
