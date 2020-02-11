@@ -4,12 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.43.1] - 2020-02-10
+## [0.43.1] - 2020-02-11
 
 Edited by wylek
 
 - minor BA parameter updates for multi-city construction
-- minor AA (US site) URL corrections
+- AA (US site) corrections for one-way and multi-city URL construction, departure timezone handling re-implemented (previous handling via farefreaks was removed)
+- Added AA editions for Puerto Rico, Bahamas, and British Virgin Islands
 
 ## [0.43.0] - 2020-02-02
 
