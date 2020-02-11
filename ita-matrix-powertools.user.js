@@ -18582,9 +18582,12 @@ function printAaSabre() {
     let datetimeStr =
       y +
       "-" +
-      ("0" + m).slice(-2) + "-" +
-      ("0" + d).slice(-2) + "T" +
-      t + ":00";
+      ("0" + m).slice(-2) +
+      "-" +
+      ("0" + d).slice(-2) +
+      "T" +
+      t +
+      ":00";
 
     // use Moment Timezone to adjust for (if needed) DST of airport:
     // (data is filtered to only +2 years to reduce file size)
@@ -18637,13 +18640,15 @@ function printAaSabre() {
       url += ",0,0";
     } else if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length == 1) {
       // insert the departure time before the price for oneWay only:
-      url += "," + datetimeToEpoch(
-        _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].dep.year,
-        _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].dep.month,
-        _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].dep.day,
-        _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].dep.time24,
-        _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].orig
-      );
+      url +=
+        "," +
+        datetimeToEpoch(
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].dep.year,
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].dep.month,
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].dep.day,
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].dep.time24,
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].orig
+        );
     }
     url += "," + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].price + ",1,";
 
@@ -18688,18 +18693,24 @@ function printAaSabre() {
           k++;
         }
         let itinseg =
-          "#" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].carrier +
-          "|" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].fnr +
-          "|" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].bookingclass +
-          "|" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].orig +
-          "|" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].dest +
-          "|" + datetimeToEpoch(
+          "#" +
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].carrier +
+          "|" +
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].fnr +
+          "|" +
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].bookingclass +
+          "|" +
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].orig +
+          "|" +
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].dest +
+          "|" +
+          datetimeToEpoch(
             _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.year,
             _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.month,
             _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.day,
             _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.time24,
             _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].orig
-        );
+          );
         itinseg += "|" + i;
         itinsegs.push(itinseg);
         j += k;
@@ -18736,7 +18747,12 @@ function printAaSabre() {
 }
 
 Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printAaSabre);
-Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("American (America & UK)", "aaSabreEdition", aaSabreEditions, "US");
+Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])(
+  "American (America & UK)",
+  "aaSabreEdition",
+  aaSabreEditions,
+  "US"
+);
 
 
 /***/ }),
