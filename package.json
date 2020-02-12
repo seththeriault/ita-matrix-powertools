@@ -37,6 +37,7 @@
     }
   },
   "devDependencies": {
+    "moment-locales-webpack-plugin": "^1.1.2",
     "moment-timezone-data-webpack-plugin": "^1.1.0"
   }
 }

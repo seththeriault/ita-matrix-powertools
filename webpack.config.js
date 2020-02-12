@@ -4,8 +4,9 @@ const path = require("path");
 
 const replaceTokens = require("./scripts/replaceTokens");
 
-// Moment Timezone (for AA US site):
+// Moment Timezone (for AA Sabre):
 const MomentTimezoneDataPlugin = require("moment-timezone-data-webpack-plugin");
+const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
 const currentYear = new Date().getFullYear();
 
 module.exports = {
@@ -30,6 +31,11 @@ module.exports = {
     new MomentTimezoneDataPlugin({
       startYear: currentYear,
       endYear: currentYear + 2
+    }),
+    // Strip all Moment locales except “en”, “es-us” and “de”
+    // (“en” is built into Moment and can’t be removed)
+    new MomentLocalesPlugin({
+      localesToKeep: ["de"]
     })
   ]
 };

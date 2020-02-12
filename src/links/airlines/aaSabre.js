@@ -14,17 +14,6 @@ const aaSabreEditions = [
 ];
 
 function printAaSabre() {
-  var dateToEpoch = function(y, m, d) {
-    var dateStr =
-      y +
-      "-" +
-      ("0" + m).slice(-2) +
-      "-" +
-      ("0" + d).slice(-2) +
-      "T00:00:00-06:00";
-    return Date.parse(dateStr);
-  };
-
   let datetimeToEpoch = function(y, m, d, t, ap) {
     /**
      * This function converts a datetime from the local timezone of the
