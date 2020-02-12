@@ -16,4 +16,4 @@ jobs:
 stages:
   - build
   - name: deploy
-    if: branch = master AND commit_message =~ /^\d+\.\d+(\.\d+)?(-\S*)?$/
+    if: branch = master AND commit_message =~ /v?\d+\.\d+(\.\d+)?(-\S*)?$/
