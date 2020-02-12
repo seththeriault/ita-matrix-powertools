@@ -312,7 +312,7 @@ function printBA() {
       }
     }
     url +=
-      "&p=EUR6666.66&e=FP&c=" +
+      "&p=EUR6666.66&e=SL&c=" +
       cabins[mptSettings.cabin === "Auto" ? mincabin : getForcedCabin()] +
       "&source=FareQuoteEmail&isEmailHBOFareQuote=false";
     return url;

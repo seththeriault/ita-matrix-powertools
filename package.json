@@ -1,6 +1,6 @@
 {
   "name": "ita-matrix-powertools",
-  "version": "0.43.0",
+  "version": "0.43.1",
   "description": "Adds new features and builds fare purchase links for ITA Matrix",
   "main": "ita-matrix-powertools.user.js",
   "scripts": {
@@ -22,6 +22,7 @@
     "chrome-webstore-upload-cli": "^1.2.0",
     "firefox-extension-deploy": "^1.1.2",
     "husky": "^4.2.1",
+    "moment-timezone": "^0.5.27",
     "path": "^0.12.7",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",
@@ -34,5 +35,9 @@
     "hooks": {
       "pre-commit": "npm run prettier"
     }
+  },
+  "devDependencies": {
+    "moment-locales-webpack-plugin": "^1.1.2",
+    "moment-timezone-data-webpack-plugin": "^1.1.0"
   }
 }

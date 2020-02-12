@@ -21,7 +21,7 @@ function printAS() {
       childMinAge: 2
     });
     if (!pax) {
-      printNotification("Error: Failed to validate Passengers in printAAc1");
+      printNotification("Error: Failed to validate Passengers in printAS");
       return;
     }
     var url = "https://www.alaskaair.com/planbook/shoppingstart?";

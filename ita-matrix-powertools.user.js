@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.43.0
+// @version 0.43.1
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -113,7 +113,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 37);
+/******/ 	return __webpack_require__(__webpack_require__.s = 45);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -732,7 +732,7 @@ const links = {
   otas: []
 };
 
-__webpack_require__(9);
+__webpack_require__(10);
 
 /**
  * Registers a link
@@ -1167,7 +1167,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.43.0",
+  version: "0.43.1",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -1582,7 +1582,4615 @@ const de = {
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const req = __webpack_require__(10);
+/* WEBPACK VAR INJECTION */(function(module) {var require;//! moment.js
+
+;(function (global, factory) {
+     true ? module.exports = factory() :
+    undefined
+}(this, (function () { 'use strict';
+
+    var hookCallback;
+
+    function hooks () {
+        return hookCallback.apply(null, arguments);
+    }
+
+    // This is done to register the method called with moment()
+    // without creating circular dependencies.
+    function setHookCallback (callback) {
+        hookCallback = callback;
+    }
+
+    function isArray(input) {
+        return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
+    }
+
+    function isObject(input) {
+        // IE8 will treat undefined and null as object if it wasn't for
+        // input != null
+        return input != null && Object.prototype.toString.call(input) === '[object Object]';
+    }
+
+    function isObjectEmpty(obj) {
+        if (Object.getOwnPropertyNames) {
+            return (Object.getOwnPropertyNames(obj).length === 0);
+        } else {
+            var k;
+            for (k in obj) {
+                if (obj.hasOwnProperty(k)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    function isUndefined(input) {
+        return input === void 0;
+    }
+
+    function isNumber(input) {
+        return typeof input === 'number' || Object.prototype.toString.call(input) === '[object Number]';
+    }
+
+    function isDate(input) {
+        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
+    }
+
+    function map(arr, fn) {
+        var res = [], i;
+        for (i = 0; i < arr.length; ++i) {
+            res.push(fn(arr[i], i));
+        }
+        return res;
+    }
+
+    function hasOwnProp(a, b) {
+        return Object.prototype.hasOwnProperty.call(a, b);
+    }
+
+    function extend(a, b) {
+        for (var i in b) {
+            if (hasOwnProp(b, i)) {
+                a[i] = b[i];
+            }
+        }
+
+        if (hasOwnProp(b, 'toString')) {
+            a.toString = b.toString;
+        }
+
+        if (hasOwnProp(b, 'valueOf')) {
+            a.valueOf = b.valueOf;
+        }
+
+        return a;
+    }
+
+    function createUTC (input, format, locale, strict) {
+        return createLocalOrUTC(input, format, locale, strict, true).utc();
+    }
+
+    function defaultParsingFlags() {
+        // We need to deep clone this object.
+        return {
+            empty           : false,
+            unusedTokens    : [],
+            unusedInput     : [],
+            overflow        : -2,
+            charsLeftOver   : 0,
+            nullInput       : false,
+            invalidMonth    : null,
+            invalidFormat   : false,
+            userInvalidated : false,
+            iso             : false,
+            parsedDateParts : [],
+            meridiem        : null,
+            rfc2822         : false,
+            weekdayMismatch : false
+        };
+    }
+
+    function getParsingFlags(m) {
+        if (m._pf == null) {
+            m._pf = defaultParsingFlags();
+        }
+        return m._pf;
+    }
+
+    var some;
+    if (Array.prototype.some) {
+        some = Array.prototype.some;
+    } else {
+        some = function (fun) {
+            var t = Object(this);
+            var len = t.length >>> 0;
+
+            for (var i = 0; i < len; i++) {
+                if (i in t && fun.call(this, t[i], i, t)) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+    }
+
+    function isValid(m) {
+        if (m._isValid == null) {
+            var flags = getParsingFlags(m);
+            var parsedParts = some.call(flags.parsedDateParts, function (i) {
+                return i != null;
+            });
+            var isNowValid = !isNaN(m._d.getTime()) &&
+                flags.overflow < 0 &&
+                !flags.empty &&
+                !flags.invalidMonth &&
+                !flags.invalidWeekday &&
+                !flags.weekdayMismatch &&
+                !flags.nullInput &&
+                !flags.invalidFormat &&
+                !flags.userInvalidated &&
+                (!flags.meridiem || (flags.meridiem && parsedParts));
+
+            if (m._strict) {
+                isNowValid = isNowValid &&
+                    flags.charsLeftOver === 0 &&
+                    flags.unusedTokens.length === 0 &&
+                    flags.bigHour === undefined;
+            }
+
+            if (Object.isFrozen == null || !Object.isFrozen(m)) {
+                m._isValid = isNowValid;
+            }
+            else {
+                return isNowValid;
+            }
+        }
+        return m._isValid;
+    }
+
+    function createInvalid (flags) {
+        var m = createUTC(NaN);
+        if (flags != null) {
+            extend(getParsingFlags(m), flags);
+        }
+        else {
+            getParsingFlags(m).userInvalidated = true;
+        }
+
+        return m;
+    }
+
+    // Plugins that add properties should also add the key here (null value),
+    // so we can properly clone ourselves.
+    var momentProperties = hooks.momentProperties = [];
+
+    function copyConfig(to, from) {
+        var i, prop, val;
+
+        if (!isUndefined(from._isAMomentObject)) {
+            to._isAMomentObject = from._isAMomentObject;
+        }
+        if (!isUndefined(from._i)) {
+            to._i = from._i;
+        }
+        if (!isUndefined(from._f)) {
+            to._f = from._f;
+        }
+        if (!isUndefined(from._l)) {
+            to._l = from._l;
+        }
+        if (!isUndefined(from._strict)) {
+            to._strict = from._strict;
+        }
+        if (!isUndefined(from._tzm)) {
+            to._tzm = from._tzm;
+        }
+        if (!isUndefined(from._isUTC)) {
+            to._isUTC = from._isUTC;
+        }
+        if (!isUndefined(from._offset)) {
+            to._offset = from._offset;
+        }
+        if (!isUndefined(from._pf)) {
+            to._pf = getParsingFlags(from);
+        }
+        if (!isUndefined(from._locale)) {
+            to._locale = from._locale;
+        }
+
+        if (momentProperties.length > 0) {
+            for (i = 0; i < momentProperties.length; i++) {
+                prop = momentProperties[i];
+                val = from[prop];
+                if (!isUndefined(val)) {
+                    to[prop] = val;
+                }
+            }
+        }
+
+        return to;
+    }
+
+    var updateInProgress = false;
+
+    // Moment prototype object
+    function Moment(config) {
+        copyConfig(this, config);
+        this._d = new Date(config._d != null ? config._d.getTime() : NaN);
+        if (!this.isValid()) {
+            this._d = new Date(NaN);
+        }
+        // Prevent infinite loop in case updateOffset creates new moment
+        // objects.
+        if (updateInProgress === false) {
+            updateInProgress = true;
+            hooks.updateOffset(this);
+            updateInProgress = false;
+        }
+    }
+
+    function isMoment (obj) {
+        return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
+    }
+
+    function absFloor (number) {
+        if (number < 0) {
+            // -0 -> 0
+            return Math.ceil(number) || 0;
+        } else {
+            return Math.floor(number);
+        }
+    }
+
+    function toInt(argumentForCoercion) {
+        var coercedNumber = +argumentForCoercion,
+            value = 0;
+
+        if (coercedNumber !== 0 && isFinite(coercedNumber)) {
+            value = absFloor(coercedNumber);
+        }
+
+        return value;
+    }
+
+    // compare two arrays, return the number of differences
+    function compareArrays(array1, array2, dontConvert) {
+        var len = Math.min(array1.length, array2.length),
+            lengthDiff = Math.abs(array1.length - array2.length),
+            diffs = 0,
+            i;
+        for (i = 0; i < len; i++) {
+            if ((dontConvert && array1[i] !== array2[i]) ||
+                (!dontConvert && toInt(array1[i]) !== toInt(array2[i]))) {
+                diffs++;
+            }
+        }
+        return diffs + lengthDiff;
+    }
+
+    function warn(msg) {
+        if (hooks.suppressDeprecationWarnings === false &&
+                (typeof console !==  'undefined') && console.warn) {
+            console.warn('Deprecation warning: ' + msg);
+        }
+    }
+
+    function deprecate(msg, fn) {
+        var firstTime = true;
+
+        return extend(function () {
+            if (hooks.deprecationHandler != null) {
+                hooks.deprecationHandler(null, msg);
+            }
+            if (firstTime) {
+                var args = [];
+                var arg;
+                for (var i = 0; i < arguments.length; i++) {
+                    arg = '';
+                    if (typeof arguments[i] === 'object') {
+                        arg += '\n[' + i + '] ';
+                        for (var key in arguments[0]) {
+                            arg += key + ': ' + arguments[0][key] + ', ';
+                        }
+                        arg = arg.slice(0, -2); // Remove trailing comma and space
+                    } else {
+                        arg = arguments[i];
+                    }
+                    args.push(arg);
+                }
+                warn(msg + '\nArguments: ' + Array.prototype.slice.call(args).join('') + '\n' + (new Error()).stack);
+                firstTime = false;
+            }
+            return fn.apply(this, arguments);
+        }, fn);
+    }
+
+    var deprecations = {};
+
+    function deprecateSimple(name, msg) {
+        if (hooks.deprecationHandler != null) {
+            hooks.deprecationHandler(name, msg);
+        }
+        if (!deprecations[name]) {
+            warn(msg);
+            deprecations[name] = true;
+        }
+    }
+
+    hooks.suppressDeprecationWarnings = false;
+    hooks.deprecationHandler = null;
+
+    function isFunction(input) {
+        return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
+    }
+
+    function set (config) {
+        var prop, i;
+        for (i in config) {
+            prop = config[i];
+            if (isFunction(prop)) {
+                this[i] = prop;
+            } else {
+                this['_' + i] = prop;
+            }
+        }
+        this._config = config;
+        // Lenient ordinal parsing accepts just a number in addition to
+        // number + (possibly) stuff coming from _dayOfMonthOrdinalParse.
+        // TODO: Remove "ordinalParse" fallback in next major release.
+        this._dayOfMonthOrdinalParseLenient = new RegExp(
+            (this._dayOfMonthOrdinalParse.source || this._ordinalParse.source) +
+                '|' + (/\d{1,2}/).source);
+    }
+
+    function mergeConfigs(parentConfig, childConfig) {
+        var res = extend({}, parentConfig), prop;
+        for (prop in childConfig) {
+            if (hasOwnProp(childConfig, prop)) {
+                if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
+                    res[prop] = {};
+                    extend(res[prop], parentConfig[prop]);
+                    extend(res[prop], childConfig[prop]);
+                } else if (childConfig[prop] != null) {
+                    res[prop] = childConfig[prop];
+                } else {
+                    delete res[prop];
+                }
+            }
+        }
+        for (prop in parentConfig) {
+            if (hasOwnProp(parentConfig, prop) &&
+                    !hasOwnProp(childConfig, prop) &&
+                    isObject(parentConfig[prop])) {
+                // make sure changes to properties don't modify parent config
+                res[prop] = extend({}, res[prop]);
+            }
+        }
+        return res;
+    }
+
+    function Locale(config) {
+        if (config != null) {
+            this.set(config);
+        }
+    }
+
+    var keys;
+
+    if (Object.keys) {
+        keys = Object.keys;
+    } else {
+        keys = function (obj) {
+            var i, res = [];
+            for (i in obj) {
+                if (hasOwnProp(obj, i)) {
+                    res.push(i);
+                }
+            }
+            return res;
+        };
+    }
+
+    var defaultCalendar = {
+        sameDay : '[Today at] LT',
+        nextDay : '[Tomorrow at] LT',
+        nextWeek : 'dddd [at] LT',
+        lastDay : '[Yesterday at] LT',
+        lastWeek : '[Last] dddd [at] LT',
+        sameElse : 'L'
+    };
+
+    function calendar (key, mom, now) {
+        var output = this._calendar[key] || this._calendar['sameElse'];
+        return isFunction(output) ? output.call(mom, now) : output;
+    }
+
+    var defaultLongDateFormat = {
+        LTS  : 'h:mm:ss A',
+        LT   : 'h:mm A',
+        L    : 'MM/DD/YYYY',
+        LL   : 'MMMM D, YYYY',
+        LLL  : 'MMMM D, YYYY h:mm A',
+        LLLL : 'dddd, MMMM D, YYYY h:mm A'
+    };
+
+    function longDateFormat (key) {
+        var format = this._longDateFormat[key],
+            formatUpper = this._longDateFormat[key.toUpperCase()];
+
+        if (format || !formatUpper) {
+            return format;
+        }
+
+        this._longDateFormat[key] = formatUpper.replace(/MMMM|MM|DD|dddd/g, function (val) {
+            return val.slice(1);
+        });
+
+        return this._longDateFormat[key];
+    }
+
+    var defaultInvalidDate = 'Invalid date';
+
+    function invalidDate () {
+        return this._invalidDate;
+    }
+
+    var defaultOrdinal = '%d';
+    var defaultDayOfMonthOrdinalParse = /\d{1,2}/;
+
+    function ordinal (number) {
+        return this._ordinal.replace('%d', number);
+    }
+
+    var defaultRelativeTime = {
+        future : 'in %s',
+        past   : '%s ago',
+        s  : 'a few seconds',
+        ss : '%d seconds',
+        m  : 'a minute',
+        mm : '%d minutes',
+        h  : 'an hour',
+        hh : '%d hours',
+        d  : 'a day',
+        dd : '%d days',
+        M  : 'a month',
+        MM : '%d months',
+        y  : 'a year',
+        yy : '%d years'
+    };
+
+    function relativeTime (number, withoutSuffix, string, isFuture) {
+        var output = this._relativeTime[string];
+        return (isFunction(output)) ?
+            output(number, withoutSuffix, string, isFuture) :
+            output.replace(/%d/i, number);
+    }
+
+    function pastFuture (diff, output) {
+        var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
+        return isFunction(format) ? format(output) : format.replace(/%s/i, output);
+    }
+
+    var aliases = {};
+
+    function addUnitAlias (unit, shorthand) {
+        var lowerCase = unit.toLowerCase();
+        aliases[lowerCase] = aliases[lowerCase + 's'] = aliases[shorthand] = unit;
+    }
+
+    function normalizeUnits(units) {
+        return typeof units === 'string' ? aliases[units] || aliases[units.toLowerCase()] : undefined;
+    }
+
+    function normalizeObjectUnits(inputObject) {
+        var normalizedInput = {},
+            normalizedProp,
+            prop;
+
+        for (prop in inputObject) {
+            if (hasOwnProp(inputObject, prop)) {
+                normalizedProp = normalizeUnits(prop);
+                if (normalizedProp) {
+                    normalizedInput[normalizedProp] = inputObject[prop];
+                }
+            }
+        }
+
+        return normalizedInput;
+    }
+
+    var priorities = {};
+
+    function addUnitPriority(unit, priority) {
+        priorities[unit] = priority;
+    }
+
+    function getPrioritizedUnits(unitsObj) {
+        var units = [];
+        for (var u in unitsObj) {
+            units.push({unit: u, priority: priorities[u]});
+        }
+        units.sort(function (a, b) {
+            return a.priority - b.priority;
+        });
+        return units;
+    }
+
+    function zeroFill(number, targetLength, forceSign) {
+        var absNumber = '' + Math.abs(number),
+            zerosToFill = targetLength - absNumber.length,
+            sign = number >= 0;
+        return (sign ? (forceSign ? '+' : '') : '-') +
+            Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
+    }
+
+    var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
+
+    var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
+
+    var formatFunctions = {};
+
+    var formatTokenFunctions = {};
+
+    // token:    'M'
+    // padded:   ['MM', 2]
+    // ordinal:  'Mo'
+    // callback: function () { this.month() + 1 }
+    function addFormatToken (token, padded, ordinal, callback) {
+        var func = callback;
+        if (typeof callback === 'string') {
+            func = function () {
+                return this[callback]();
+            };
+        }
+        if (token) {
+            formatTokenFunctions[token] = func;
+        }
+        if (padded) {
+            formatTokenFunctions[padded[0]] = function () {
+                return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
+            };
+        }
+        if (ordinal) {
+            formatTokenFunctions[ordinal] = function () {
+                return this.localeData().ordinal(func.apply(this, arguments), token);
+            };
+        }
+    }
+
+    function removeFormattingTokens(input) {
+        if (input.match(/\[[\s\S]/)) {
+            return input.replace(/^\[|\]$/g, '');
+        }
+        return input.replace(/\\/g, '');
+    }
+
+    function makeFormatFunction(format) {
+        var array = format.match(formattingTokens), i, length;
+
+        for (i = 0, length = array.length; i < length; i++) {
+            if (formatTokenFunctions[array[i]]) {
+                array[i] = formatTokenFunctions[array[i]];
+            } else {
+                array[i] = removeFormattingTokens(array[i]);
+            }
+        }
+
+        return function (mom) {
+            var output = '', i;
+            for (i = 0; i < length; i++) {
+                output += isFunction(array[i]) ? array[i].call(mom, format) : array[i];
+            }
+            return output;
+        };
+    }
+
+    // format date using native date object
+    function formatMoment(m, format) {
+        if (!m.isValid()) {
+            return m.localeData().invalidDate();
+        }
+
+        format = expandFormat(format, m.localeData());
+        formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
+
+        return formatFunctions[format](m);
+    }
+
+    function expandFormat(format, locale) {
+        var i = 5;
+
+        function replaceLongDateFormatTokens(input) {
+            return locale.longDateFormat(input) || input;
+        }
+
+        localFormattingTokens.lastIndex = 0;
+        while (i >= 0 && localFormattingTokens.test(format)) {
+            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
+            localFormattingTokens.lastIndex = 0;
+            i -= 1;
+        }
+
+        return format;
+    }
+
+    var match1         = /\d/;            //       0 - 9
+    var match2         = /\d\d/;          //      00 - 99
+    var match3         = /\d{3}/;         //     000 - 999
+    var match4         = /\d{4}/;         //    0000 - 9999
+    var match6         = /[+-]?\d{6}/;    // -999999 - 999999
+    var match1to2      = /\d\d?/;         //       0 - 99
+    var match3to4      = /\d\d\d\d?/;     //     999 - 9999
+    var match5to6      = /\d\d\d\d\d\d?/; //   99999 - 999999
+    var match1to3      = /\d{1,3}/;       //       0 - 999
+    var match1to4      = /\d{1,4}/;       //       0 - 9999
+    var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
+
+    var matchUnsigned  = /\d+/;           //       0 - inf
+    var matchSigned    = /[+-]?\d+/;      //    -inf - inf
+
+    var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
+    var matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi; // +00 -00 +00:00 -00:00 +0000 -0000 or Z
+
+    var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
+
+    // any word (or two) characters or numbers including two/three word month in arabic.
+    // includes scottish gaelic two word and hyphenated months
+    var matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFF07\uFF10-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i;
+
+    var regexes = {};
+
+    function addRegexToken (token, regex, strictRegex) {
+        regexes[token] = isFunction(regex) ? regex : function (isStrict, localeData) {
+            return (isStrict && strictRegex) ? strictRegex : regex;
+        };
+    }
+
+    function getParseRegexForToken (token, config) {
+        if (!hasOwnProp(regexes, token)) {
+            return new RegExp(unescapeFormat(token));
+        }
+
+        return regexes[token](config._strict, config._locale);
+    }
+
+    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
+    function unescapeFormat(s) {
+        return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
+            return p1 || p2 || p3 || p4;
+        }));
+    }
+
+    function regexEscape(s) {
+        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    }
+
+    var tokens = {};
+
+    function addParseToken (token, callback) {
+        var i, func = callback;
+        if (typeof token === 'string') {
+            token = [token];
+        }
+        if (isNumber(callback)) {
+            func = function (input, array) {
+                array[callback] = toInt(input);
+            };
+        }
+        for (i = 0; i < token.length; i++) {
+            tokens[token[i]] = func;
+        }
+    }
+
+    function addWeekParseToken (token, callback) {
+        addParseToken(token, function (input, array, config, token) {
+            config._w = config._w || {};
+            callback(input, config._w, config, token);
+        });
+    }
+
+    function addTimeToArrayFromToken(token, input, config) {
+        if (input != null && hasOwnProp(tokens, token)) {
+            tokens[token](input, config._a, config, token);
+        }
+    }
+
+    var YEAR = 0;
+    var MONTH = 1;
+    var DATE = 2;
+    var HOUR = 3;
+    var MINUTE = 4;
+    var SECOND = 5;
+    var MILLISECOND = 6;
+    var WEEK = 7;
+    var WEEKDAY = 8;
+
+    // FORMATTING
+
+    addFormatToken('Y', 0, 0, function () {
+        var y = this.year();
+        return y <= 9999 ? '' + y : '+' + y;
+    });
+
+    addFormatToken(0, ['YY', 2], 0, function () {
+        return this.year() % 100;
+    });
+
+    addFormatToken(0, ['YYYY',   4],       0, 'year');
+    addFormatToken(0, ['YYYYY',  5],       0, 'year');
+    addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
+
+    // ALIASES
+
+    addUnitAlias('year', 'y');
+
+    // PRIORITIES
+
+    addUnitPriority('year', 1);
+
+    // PARSING
+
+    addRegexToken('Y',      matchSigned);
+    addRegexToken('YY',     match1to2, match2);
+    addRegexToken('YYYY',   match1to4, match4);
+    addRegexToken('YYYYY',  match1to6, match6);
+    addRegexToken('YYYYYY', match1to6, match6);
+
+    addParseToken(['YYYYY', 'YYYYYY'], YEAR);
+    addParseToken('YYYY', function (input, array) {
+        array[YEAR] = input.length === 2 ? hooks.parseTwoDigitYear(input) : toInt(input);
+    });
+    addParseToken('YY', function (input, array) {
+        array[YEAR] = hooks.parseTwoDigitYear(input);
+    });
+    addParseToken('Y', function (input, array) {
+        array[YEAR] = parseInt(input, 10);
+    });
+
+    // HELPERS
+
+    function daysInYear(year) {
+        return isLeapYear(year) ? 366 : 365;
+    }
+
+    function isLeapYear(year) {
+        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+    }
+
+    // HOOKS
+
+    hooks.parseTwoDigitYear = function (input) {
+        return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
+    };
+
+    // MOMENTS
+
+    var getSetYear = makeGetSet('FullYear', true);
+
+    function getIsLeapYear () {
+        return isLeapYear(this.year());
+    }
+
+    function makeGetSet (unit, keepTime) {
+        return function (value) {
+            if (value != null) {
+                set$1(this, unit, value);
+                hooks.updateOffset(this, keepTime);
+                return this;
+            } else {
+                return get(this, unit);
+            }
+        };
+    }
+
+    function get (mom, unit) {
+        return mom.isValid() ?
+            mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
+    }
+
+    function set$1 (mom, unit, value) {
+        if (mom.isValid() && !isNaN(value)) {
+            if (unit === 'FullYear' && isLeapYear(mom.year()) && mom.month() === 1 && mom.date() === 29) {
+                mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value, mom.month(), daysInMonth(value, mom.month()));
+            }
+            else {
+                mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
+            }
+        }
+    }
+
+    // MOMENTS
+
+    function stringGet (units) {
+        units = normalizeUnits(units);
+        if (isFunction(this[units])) {
+            return this[units]();
+        }
+        return this;
+    }
+
+
+    function stringSet (units, value) {
+        if (typeof units === 'object') {
+            units = normalizeObjectUnits(units);
+            var prioritized = getPrioritizedUnits(units);
+            for (var i = 0; i < prioritized.length; i++) {
+                this[prioritized[i].unit](units[prioritized[i].unit]);
+            }
+        } else {
+            units = normalizeUnits(units);
+            if (isFunction(this[units])) {
+                return this[units](value);
+            }
+        }
+        return this;
+    }
+
+    function mod(n, x) {
+        return ((n % x) + x) % x;
+    }
+
+    var indexOf;
+
+    if (Array.prototype.indexOf) {
+        indexOf = Array.prototype.indexOf;
+    } else {
+        indexOf = function (o) {
+            // I know
+            var i;
+            for (i = 0; i < this.length; ++i) {
+                if (this[i] === o) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+    }
+
+    function daysInMonth(year, month) {
+        if (isNaN(year) || isNaN(month)) {
+            return NaN;
+        }
+        var modMonth = mod(month, 12);
+        year += (month - modMonth) / 12;
+        return modMonth === 1 ? (isLeapYear(year) ? 29 : 28) : (31 - modMonth % 7 % 2);
+    }
+
+    // FORMATTING
+
+    addFormatToken('M', ['MM', 2], 'Mo', function () {
+        return this.month() + 1;
+    });
+
+    addFormatToken('MMM', 0, 0, function (format) {
+        return this.localeData().monthsShort(this, format);
+    });
+
+    addFormatToken('MMMM', 0, 0, function (format) {
+        return this.localeData().months(this, format);
+    });
+
+    // ALIASES
+
+    addUnitAlias('month', 'M');
+
+    // PRIORITY
+
+    addUnitPriority('month', 8);
+
+    // PARSING
+
+    addRegexToken('M',    match1to2);
+    addRegexToken('MM',   match1to2, match2);
+    addRegexToken('MMM',  function (isStrict, locale) {
+        return locale.monthsShortRegex(isStrict);
+    });
+    addRegexToken('MMMM', function (isStrict, locale) {
+        return locale.monthsRegex(isStrict);
+    });
+
+    addParseToken(['M', 'MM'], function (input, array) {
+        array[MONTH] = toInt(input) - 1;
+    });
+
+    addParseToken(['MMM', 'MMMM'], function (input, array, config, token) {
+        var month = config._locale.monthsParse(input, token, config._strict);
+        // if we didn't find a month name, mark the date as invalid.
+        if (month != null) {
+            array[MONTH] = month;
+        } else {
+            getParsingFlags(config).invalidMonth = input;
+        }
+    });
+
+    // LOCALES
+
+    var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s)+MMMM?/;
+    var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
+    function localeMonths (m, format) {
+        if (!m) {
+            return isArray(this._months) ? this._months :
+                this._months['standalone'];
+        }
+        return isArray(this._months) ? this._months[m.month()] :
+            this._months[(this._months.isFormat || MONTHS_IN_FORMAT).test(format) ? 'format' : 'standalone'][m.month()];
+    }
+
+    var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
+    function localeMonthsShort (m, format) {
+        if (!m) {
+            return isArray(this._monthsShort) ? this._monthsShort :
+                this._monthsShort['standalone'];
+        }
+        return isArray(this._monthsShort) ? this._monthsShort[m.month()] :
+            this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
+    }
+
+    function handleStrictParse(monthName, format, strict) {
+        var i, ii, mom, llc = monthName.toLocaleLowerCase();
+        if (!this._monthsParse) {
+            // this is not used
+            this._monthsParse = [];
+            this._longMonthsParse = [];
+            this._shortMonthsParse = [];
+            for (i = 0; i < 12; ++i) {
+                mom = createUTC([2000, i]);
+                this._shortMonthsParse[i] = this.monthsShort(mom, '').toLocaleLowerCase();
+                this._longMonthsParse[i] = this.months(mom, '').toLocaleLowerCase();
+            }
+        }
+
+        if (strict) {
+            if (format === 'MMM') {
+                ii = indexOf.call(this._shortMonthsParse, llc);
+                return ii !== -1 ? ii : null;
+            } else {
+                ii = indexOf.call(this._longMonthsParse, llc);
+                return ii !== -1 ? ii : null;
+            }
+        } else {
+            if (format === 'MMM') {
+                ii = indexOf.call(this._shortMonthsParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._longMonthsParse, llc);
+                return ii !== -1 ? ii : null;
+            } else {
+                ii = indexOf.call(this._longMonthsParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._shortMonthsParse, llc);
+                return ii !== -1 ? ii : null;
+            }
+        }
+    }
+
+    function localeMonthsParse (monthName, format, strict) {
+        var i, mom, regex;
+
+        if (this._monthsParseExact) {
+            return handleStrictParse.call(this, monthName, format, strict);
+        }
+
+        if (!this._monthsParse) {
+            this._monthsParse = [];
+            this._longMonthsParse = [];
+            this._shortMonthsParse = [];
+        }
+
+        // TODO: add sorting
+        // Sorting makes sure if one month (or abbr) is a prefix of another
+        // see sorting in computeMonthsParse
+        for (i = 0; i < 12; i++) {
+            // make the regex if we don't have it already
+            mom = createUTC([2000, i]);
+            if (strict && !this._longMonthsParse[i]) {
+                this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
+                this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
+            }
+            if (!strict && !this._monthsParse[i]) {
+                regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
+                this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
+            }
+            // test the regex
+            if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
+                return i;
+            } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
+                return i;
+            } else if (!strict && this._monthsParse[i].test(monthName)) {
+                return i;
+            }
+        }
+    }
+
+    // MOMENTS
+
+    function setMonth (mom, value) {
+        var dayOfMonth;
+
+        if (!mom.isValid()) {
+            // No op
+            return mom;
+        }
+
+        if (typeof value === 'string') {
+            if (/^\d+$/.test(value)) {
+                value = toInt(value);
+            } else {
+                value = mom.localeData().monthsParse(value);
+                // TODO: Another silent failure?
+                if (!isNumber(value)) {
+                    return mom;
+                }
+            }
+        }
+
+        dayOfMonth = Math.min(mom.date(), daysInMonth(mom.year(), value));
+        mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
+        return mom;
+    }
+
+    function getSetMonth (value) {
+        if (value != null) {
+            setMonth(this, value);
+            hooks.updateOffset(this, true);
+            return this;
+        } else {
+            return get(this, 'Month');
+        }
+    }
+
+    function getDaysInMonth () {
+        return daysInMonth(this.year(), this.month());
+    }
+
+    var defaultMonthsShortRegex = matchWord;
+    function monthsShortRegex (isStrict) {
+        if (this._monthsParseExact) {
+            if (!hasOwnProp(this, '_monthsRegex')) {
+                computeMonthsParse.call(this);
+            }
+            if (isStrict) {
+                return this._monthsShortStrictRegex;
+            } else {
+                return this._monthsShortRegex;
+            }
+        } else {
+            if (!hasOwnProp(this, '_monthsShortRegex')) {
+                this._monthsShortRegex = defaultMonthsShortRegex;
+            }
+            return this._monthsShortStrictRegex && isStrict ?
+                this._monthsShortStrictRegex : this._monthsShortRegex;
+        }
+    }
+
+    var defaultMonthsRegex = matchWord;
+    function monthsRegex (isStrict) {
+        if (this._monthsParseExact) {
+            if (!hasOwnProp(this, '_monthsRegex')) {
+                computeMonthsParse.call(this);
+            }
+            if (isStrict) {
+                return this._monthsStrictRegex;
+            } else {
+                return this._monthsRegex;
+            }
+        } else {
+            if (!hasOwnProp(this, '_monthsRegex')) {
+                this._monthsRegex = defaultMonthsRegex;
+            }
+            return this._monthsStrictRegex && isStrict ?
+                this._monthsStrictRegex : this._monthsRegex;
+        }
+    }
+
+    function computeMonthsParse () {
+        function cmpLenRev(a, b) {
+            return b.length - a.length;
+        }
+
+        var shortPieces = [], longPieces = [], mixedPieces = [],
+            i, mom;
+        for (i = 0; i < 12; i++) {
+            // make the regex if we don't have it already
+            mom = createUTC([2000, i]);
+            shortPieces.push(this.monthsShort(mom, ''));
+            longPieces.push(this.months(mom, ''));
+            mixedPieces.push(this.months(mom, ''));
+            mixedPieces.push(this.monthsShort(mom, ''));
+        }
+        // Sorting makes sure if one month (or abbr) is a prefix of another it
+        // will match the longer piece.
+        shortPieces.sort(cmpLenRev);
+        longPieces.sort(cmpLenRev);
+        mixedPieces.sort(cmpLenRev);
+        for (i = 0; i < 12; i++) {
+            shortPieces[i] = regexEscape(shortPieces[i]);
+            longPieces[i] = regexEscape(longPieces[i]);
+        }
+        for (i = 0; i < 24; i++) {
+            mixedPieces[i] = regexEscape(mixedPieces[i]);
+        }
+
+        this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+        this._monthsShortRegex = this._monthsRegex;
+        this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
+        this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+    }
+
+    function createDate (y, m, d, h, M, s, ms) {
+        // can't just apply() to create a date:
+        // https://stackoverflow.com/q/181348
+        var date;
+        // the date constructor remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0) {
+            // preserve leap years using a full 400 year cycle, then reset
+            date = new Date(y + 400, m, d, h, M, s, ms);
+            if (isFinite(date.getFullYear())) {
+                date.setFullYear(y);
+            }
+        } else {
+            date = new Date(y, m, d, h, M, s, ms);
+        }
+
+        return date;
+    }
+
+    function createUTCDate (y) {
+        var date;
+        // the Date.UTC function remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0) {
+            var args = Array.prototype.slice.call(arguments);
+            // preserve leap years using a full 400 year cycle, then reset
+            args[0] = y + 400;
+            date = new Date(Date.UTC.apply(null, args));
+            if (isFinite(date.getUTCFullYear())) {
+                date.setUTCFullYear(y);
+            }
+        } else {
+            date = new Date(Date.UTC.apply(null, arguments));
+        }
+
+        return date;
+    }
+
+    // start-of-first-week - start-of-year
+    function firstWeekOffset(year, dow, doy) {
+        var // first-week day -- which january is always in the first week (4 for iso, 1 for other)
+            fwd = 7 + dow - doy,
+            // first-week day local weekday -- which local weekday is fwd
+            fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
+
+        return -fwdlw + fwd - 1;
+    }
+
+    // https://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
+    function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
+        var localWeekday = (7 + weekday - dow) % 7,
+            weekOffset = firstWeekOffset(year, dow, doy),
+            dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset,
+            resYear, resDayOfYear;
+
+        if (dayOfYear <= 0) {
+            resYear = year - 1;
+            resDayOfYear = daysInYear(resYear) + dayOfYear;
+        } else if (dayOfYear > daysInYear(year)) {
+            resYear = year + 1;
+            resDayOfYear = dayOfYear - daysInYear(year);
+        } else {
+            resYear = year;
+            resDayOfYear = dayOfYear;
+        }
+
+        return {
+            year: resYear,
+            dayOfYear: resDayOfYear
+        };
+    }
+
+    function weekOfYear(mom, dow, doy) {
+        var weekOffset = firstWeekOffset(mom.year(), dow, doy),
+            week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1,
+            resWeek, resYear;
+
+        if (week < 1) {
+            resYear = mom.year() - 1;
+            resWeek = week + weeksInYear(resYear, dow, doy);
+        } else if (week > weeksInYear(mom.year(), dow, doy)) {
+            resWeek = week - weeksInYear(mom.year(), dow, doy);
+            resYear = mom.year() + 1;
+        } else {
+            resYear = mom.year();
+            resWeek = week;
+        }
+
+        return {
+            week: resWeek,
+            year: resYear
+        };
+    }
+
+    function weeksInYear(year, dow, doy) {
+        var weekOffset = firstWeekOffset(year, dow, doy),
+            weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
+        return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
+    }
+
+    // FORMATTING
+
+    addFormatToken('w', ['ww', 2], 'wo', 'week');
+    addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
+
+    // ALIASES
+
+    addUnitAlias('week', 'w');
+    addUnitAlias('isoWeek', 'W');
+
+    // PRIORITIES
+
+    addUnitPriority('week', 5);
+    addUnitPriority('isoWeek', 5);
+
+    // PARSING
+
+    addRegexToken('w',  match1to2);
+    addRegexToken('ww', match1to2, match2);
+    addRegexToken('W',  match1to2);
+    addRegexToken('WW', match1to2, match2);
+
+    addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
+        week[token.substr(0, 1)] = toInt(input);
+    });
+
+    // HELPERS
+
+    // LOCALES
+
+    function localeWeek (mom) {
+        return weekOfYear(mom, this._week.dow, this._week.doy).week;
+    }
+
+    var defaultLocaleWeek = {
+        dow : 0, // Sunday is the first day of the week.
+        doy : 6  // The week that contains Jan 6th is the first week of the year.
+    };
+
+    function localeFirstDayOfWeek () {
+        return this._week.dow;
+    }
+
+    function localeFirstDayOfYear () {
+        return this._week.doy;
+    }
+
+    // MOMENTS
+
+    function getSetWeek (input) {
+        var week = this.localeData().week(this);
+        return input == null ? week : this.add((input - week) * 7, 'd');
+    }
+
+    function getSetISOWeek (input) {
+        var week = weekOfYear(this, 1, 4).week;
+        return input == null ? week : this.add((input - week) * 7, 'd');
+    }
+
+    // FORMATTING
+
+    addFormatToken('d', 0, 'do', 'day');
+
+    addFormatToken('dd', 0, 0, function (format) {
+        return this.localeData().weekdaysMin(this, format);
+    });
+
+    addFormatToken('ddd', 0, 0, function (format) {
+        return this.localeData().weekdaysShort(this, format);
+    });
+
+    addFormatToken('dddd', 0, 0, function (format) {
+        return this.localeData().weekdays(this, format);
+    });
+
+    addFormatToken('e', 0, 0, 'weekday');
+    addFormatToken('E', 0, 0, 'isoWeekday');
+
+    // ALIASES
+
+    addUnitAlias('day', 'd');
+    addUnitAlias('weekday', 'e');
+    addUnitAlias('isoWeekday', 'E');
+
+    // PRIORITY
+    addUnitPriority('day', 11);
+    addUnitPriority('weekday', 11);
+    addUnitPriority('isoWeekday', 11);
+
+    // PARSING
+
+    addRegexToken('d',    match1to2);
+    addRegexToken('e',    match1to2);
+    addRegexToken('E',    match1to2);
+    addRegexToken('dd',   function (isStrict, locale) {
+        return locale.weekdaysMinRegex(isStrict);
+    });
+    addRegexToken('ddd',   function (isStrict, locale) {
+        return locale.weekdaysShortRegex(isStrict);
+    });
+    addRegexToken('dddd',   function (isStrict, locale) {
+        return locale.weekdaysRegex(isStrict);
+    });
+
+    addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config, token) {
+        var weekday = config._locale.weekdaysParse(input, token, config._strict);
+        // if we didn't get a weekday name, mark the date as invalid
+        if (weekday != null) {
+            week.d = weekday;
+        } else {
+            getParsingFlags(config).invalidWeekday = input;
+        }
+    });
+
+    addWeekParseToken(['d', 'e', 'E'], function (input, week, config, token) {
+        week[token] = toInt(input);
+    });
+
+    // HELPERS
+
+    function parseWeekday(input, locale) {
+        if (typeof input !== 'string') {
+            return input;
+        }
+
+        if (!isNaN(input)) {
+            return parseInt(input, 10);
+        }
+
+        input = locale.weekdaysParse(input);
+        if (typeof input === 'number') {
+            return input;
+        }
+
+        return null;
+    }
+
+    function parseIsoWeekday(input, locale) {
+        if (typeof input === 'string') {
+            return locale.weekdaysParse(input) % 7 || 7;
+        }
+        return isNaN(input) ? null : input;
+    }
+
+    // LOCALES
+    function shiftWeekdays (ws, n) {
+        return ws.slice(n, 7).concat(ws.slice(0, n));
+    }
+
+    var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
+    function localeWeekdays (m, format) {
+        var weekdays = isArray(this._weekdays) ? this._weekdays :
+            this._weekdays[(m && m !== true && this._weekdays.isFormat.test(format)) ? 'format' : 'standalone'];
+        return (m === true) ? shiftWeekdays(weekdays, this._week.dow)
+            : (m) ? weekdays[m.day()] : weekdays;
+    }
+
+    var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
+    function localeWeekdaysShort (m) {
+        return (m === true) ? shiftWeekdays(this._weekdaysShort, this._week.dow)
+            : (m) ? this._weekdaysShort[m.day()] : this._weekdaysShort;
+    }
+
+    var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
+    function localeWeekdaysMin (m) {
+        return (m === true) ? shiftWeekdays(this._weekdaysMin, this._week.dow)
+            : (m) ? this._weekdaysMin[m.day()] : this._weekdaysMin;
+    }
+
+    function handleStrictParse$1(weekdayName, format, strict) {
+        var i, ii, mom, llc = weekdayName.toLocaleLowerCase();
+        if (!this._weekdaysParse) {
+            this._weekdaysParse = [];
+            this._shortWeekdaysParse = [];
+            this._minWeekdaysParse = [];
+
+            for (i = 0; i < 7; ++i) {
+                mom = createUTC([2000, 1]).day(i);
+                this._minWeekdaysParse[i] = this.weekdaysMin(mom, '').toLocaleLowerCase();
+                this._shortWeekdaysParse[i] = this.weekdaysShort(mom, '').toLocaleLowerCase();
+                this._weekdaysParse[i] = this.weekdays(mom, '').toLocaleLowerCase();
+            }
+        }
+
+        if (strict) {
+            if (format === 'dddd') {
+                ii = indexOf.call(this._weekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            } else if (format === 'ddd') {
+                ii = indexOf.call(this._shortWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            } else {
+                ii = indexOf.call(this._minWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            }
+        } else {
+            if (format === 'dddd') {
+                ii = indexOf.call(this._weekdaysParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._shortWeekdaysParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._minWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            } else if (format === 'ddd') {
+                ii = indexOf.call(this._shortWeekdaysParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._weekdaysParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._minWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            } else {
+                ii = indexOf.call(this._minWeekdaysParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._weekdaysParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._shortWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            }
+        }
+    }
+
+    function localeWeekdaysParse (weekdayName, format, strict) {
+        var i, mom, regex;
+
+        if (this._weekdaysParseExact) {
+            return handleStrictParse$1.call(this, weekdayName, format, strict);
+        }
+
+        if (!this._weekdaysParse) {
+            this._weekdaysParse = [];
+            this._minWeekdaysParse = [];
+            this._shortWeekdaysParse = [];
+            this._fullWeekdaysParse = [];
+        }
+
+        for (i = 0; i < 7; i++) {
+            // make the regex if we don't have it already
+
+            mom = createUTC([2000, 1]).day(i);
+            if (strict && !this._fullWeekdaysParse[i]) {
+                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\\.?') + '$', 'i');
+                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\\.?') + '$', 'i');
+                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\\.?') + '$', 'i');
+            }
+            if (!this._weekdaysParse[i]) {
+                regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
+                this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
+            }
+            // test the regex
+            if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) {
+                return i;
+            } else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) {
+                return i;
+            } else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) {
+                return i;
+            } else if (!strict && this._weekdaysParse[i].test(weekdayName)) {
+                return i;
+            }
+        }
+    }
+
+    // MOMENTS
+
+    function getSetDayOfWeek (input) {
+        if (!this.isValid()) {
+            return input != null ? this : NaN;
+        }
+        var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
+        if (input != null) {
+            input = parseWeekday(input, this.localeData());
+            return this.add(input - day, 'd');
+        } else {
+            return day;
+        }
+    }
+
+    function getSetLocaleDayOfWeek (input) {
+        if (!this.isValid()) {
+            return input != null ? this : NaN;
+        }
+        var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
+        return input == null ? weekday : this.add(input - weekday, 'd');
+    }
+
+    function getSetISODayOfWeek (input) {
+        if (!this.isValid()) {
+            return input != null ? this : NaN;
+        }
+
+        // behaves the same as moment#day except
+        // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
+        // as a setter, sunday should belong to the previous week.
+
+        if (input != null) {
+            var weekday = parseIsoWeekday(input, this.localeData());
+            return this.day(this.day() % 7 ? weekday : weekday - 7);
+        } else {
+            return this.day() || 7;
+        }
+    }
+
+    var defaultWeekdaysRegex = matchWord;
+    function weekdaysRegex (isStrict) {
+        if (this._weekdaysParseExact) {
+            if (!hasOwnProp(this, '_weekdaysRegex')) {
+                computeWeekdaysParse.call(this);
+            }
+            if (isStrict) {
+                return this._weekdaysStrictRegex;
+            } else {
+                return this._weekdaysRegex;
+            }
+        } else {
+            if (!hasOwnProp(this, '_weekdaysRegex')) {
+                this._weekdaysRegex = defaultWeekdaysRegex;
+            }
+            return this._weekdaysStrictRegex && isStrict ?
+                this._weekdaysStrictRegex : this._weekdaysRegex;
+        }
+    }
+
+    var defaultWeekdaysShortRegex = matchWord;
+    function weekdaysShortRegex (isStrict) {
+        if (this._weekdaysParseExact) {
+            if (!hasOwnProp(this, '_weekdaysRegex')) {
+                computeWeekdaysParse.call(this);
+            }
+            if (isStrict) {
+                return this._weekdaysShortStrictRegex;
+            } else {
+                return this._weekdaysShortRegex;
+            }
+        } else {
+            if (!hasOwnProp(this, '_weekdaysShortRegex')) {
+                this._weekdaysShortRegex = defaultWeekdaysShortRegex;
+            }
+            return this._weekdaysShortStrictRegex && isStrict ?
+                this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
+        }
+    }
+
+    var defaultWeekdaysMinRegex = matchWord;
+    function weekdaysMinRegex (isStrict) {
+        if (this._weekdaysParseExact) {
+            if (!hasOwnProp(this, '_weekdaysRegex')) {
+                computeWeekdaysParse.call(this);
+            }
+            if (isStrict) {
+                return this._weekdaysMinStrictRegex;
+            } else {
+                return this._weekdaysMinRegex;
+            }
+        } else {
+            if (!hasOwnProp(this, '_weekdaysMinRegex')) {
+                this._weekdaysMinRegex = defaultWeekdaysMinRegex;
+            }
+            return this._weekdaysMinStrictRegex && isStrict ?
+                this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
+        }
+    }
+
+
+    function computeWeekdaysParse () {
+        function cmpLenRev(a, b) {
+            return b.length - a.length;
+        }
+
+        var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [],
+            i, mom, minp, shortp, longp;
+        for (i = 0; i < 7; i++) {
+            // make the regex if we don't have it already
+            mom = createUTC([2000, 1]).day(i);
+            minp = this.weekdaysMin(mom, '');
+            shortp = this.weekdaysShort(mom, '');
+            longp = this.weekdays(mom, '');
+            minPieces.push(minp);
+            shortPieces.push(shortp);
+            longPieces.push(longp);
+            mixedPieces.push(minp);
+            mixedPieces.push(shortp);
+            mixedPieces.push(longp);
+        }
+        // Sorting makes sure if one weekday (or abbr) is a prefix of another it
+        // will match the longer piece.
+        minPieces.sort(cmpLenRev);
+        shortPieces.sort(cmpLenRev);
+        longPieces.sort(cmpLenRev);
+        mixedPieces.sort(cmpLenRev);
+        for (i = 0; i < 7; i++) {
+            shortPieces[i] = regexEscape(shortPieces[i]);
+            longPieces[i] = regexEscape(longPieces[i]);
+            mixedPieces[i] = regexEscape(mixedPieces[i]);
+        }
+
+        this._weekdaysRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+        this._weekdaysShortRegex = this._weekdaysRegex;
+        this._weekdaysMinRegex = this._weekdaysRegex;
+
+        this._weekdaysStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
+        this._weekdaysShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+        this._weekdaysMinStrictRegex = new RegExp('^(' + minPieces.join('|') + ')', 'i');
+    }
+
+    // FORMATTING
+
+    function hFormat() {
+        return this.hours() % 12 || 12;
+    }
+
+    function kFormat() {
+        return this.hours() || 24;
+    }
+
+    addFormatToken('H', ['HH', 2], 0, 'hour');
+    addFormatToken('h', ['hh', 2], 0, hFormat);
+    addFormatToken('k', ['kk', 2], 0, kFormat);
+
+    addFormatToken('hmm', 0, 0, function () {
+        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
+    });
+
+    addFormatToken('hmmss', 0, 0, function () {
+        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) +
+            zeroFill(this.seconds(), 2);
+    });
+
+    addFormatToken('Hmm', 0, 0, function () {
+        return '' + this.hours() + zeroFill(this.minutes(), 2);
+    });
+
+    addFormatToken('Hmmss', 0, 0, function () {
+        return '' + this.hours() + zeroFill(this.minutes(), 2) +
+            zeroFill(this.seconds(), 2);
+    });
+
+    function meridiem (token, lowercase) {
+        addFormatToken(token, 0, 0, function () {
+            return this.localeData().meridiem(this.hours(), this.minutes(), lowercase);
+        });
+    }
+
+    meridiem('a', true);
+    meridiem('A', false);
+
+    // ALIASES
+
+    addUnitAlias('hour', 'h');
+
+    // PRIORITY
+    addUnitPriority('hour', 13);
+
+    // PARSING
+
+    function matchMeridiem (isStrict, locale) {
+        return locale._meridiemParse;
+    }
+
+    addRegexToken('a',  matchMeridiem);
+    addRegexToken('A',  matchMeridiem);
+    addRegexToken('H',  match1to2);
+    addRegexToken('h',  match1to2);
+    addRegexToken('k',  match1to2);
+    addRegexToken('HH', match1to2, match2);
+    addRegexToken('hh', match1to2, match2);
+    addRegexToken('kk', match1to2, match2);
+
+    addRegexToken('hmm', match3to4);
+    addRegexToken('hmmss', match5to6);
+    addRegexToken('Hmm', match3to4);
+    addRegexToken('Hmmss', match5to6);
+
+    addParseToken(['H', 'HH'], HOUR);
+    addParseToken(['k', 'kk'], function (input, array, config) {
+        var kInput = toInt(input);
+        array[HOUR] = kInput === 24 ? 0 : kInput;
+    });
+    addParseToken(['a', 'A'], function (input, array, config) {
+        config._isPm = config._locale.isPM(input);
+        config._meridiem = input;
+    });
+    addParseToken(['h', 'hh'], function (input, array, config) {
+        array[HOUR] = toInt(input);
+        getParsingFlags(config).bigHour = true;
+    });
+    addParseToken('hmm', function (input, array, config) {
+        var pos = input.length - 2;
+        array[HOUR] = toInt(input.substr(0, pos));
+        array[MINUTE] = toInt(input.substr(pos));
+        getParsingFlags(config).bigHour = true;
+    });
+    addParseToken('hmmss', function (input, array, config) {
+        var pos1 = input.length - 4;
+        var pos2 = input.length - 2;
+        array[HOUR] = toInt(input.substr(0, pos1));
+        array[MINUTE] = toInt(input.substr(pos1, 2));
+        array[SECOND] = toInt(input.substr(pos2));
+        getParsingFlags(config).bigHour = true;
+    });
+    addParseToken('Hmm', function (input, array, config) {
+        var pos = input.length - 2;
+        array[HOUR] = toInt(input.substr(0, pos));
+        array[MINUTE] = toInt(input.substr(pos));
+    });
+    addParseToken('Hmmss', function (input, array, config) {
+        var pos1 = input.length - 4;
+        var pos2 = input.length - 2;
+        array[HOUR] = toInt(input.substr(0, pos1));
+        array[MINUTE] = toInt(input.substr(pos1, 2));
+        array[SECOND] = toInt(input.substr(pos2));
+    });
+
+    // LOCALES
+
+    function localeIsPM (input) {
+        // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
+        // Using charAt should be more compatible.
+        return ((input + '').toLowerCase().charAt(0) === 'p');
+    }
+
+    var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i;
+    function localeMeridiem (hours, minutes, isLower) {
+        if (hours > 11) {
+            return isLower ? 'pm' : 'PM';
+        } else {
+            return isLower ? 'am' : 'AM';
+        }
+    }
+
+
+    // MOMENTS
+
+    // Setting the hour should keep the time, because the user explicitly
+    // specified which hour they want. So trying to maintain the same hour (in
+    // a new timezone) makes sense. Adding/subtracting hours does not follow
+    // this rule.
+    var getSetHour = makeGetSet('Hours', true);
+
+    var baseConfig = {
+        calendar: defaultCalendar,
+        longDateFormat: defaultLongDateFormat,
+        invalidDate: defaultInvalidDate,
+        ordinal: defaultOrdinal,
+        dayOfMonthOrdinalParse: defaultDayOfMonthOrdinalParse,
+        relativeTime: defaultRelativeTime,
+
+        months: defaultLocaleMonths,
+        monthsShort: defaultLocaleMonthsShort,
+
+        week: defaultLocaleWeek,
+
+        weekdays: defaultLocaleWeekdays,
+        weekdaysMin: defaultLocaleWeekdaysMin,
+        weekdaysShort: defaultLocaleWeekdaysShort,
+
+        meridiemParse: defaultLocaleMeridiemParse
+    };
+
+    // internal storage for locale config files
+    var locales = {};
+    var localeFamilies = {};
+    var globalLocale;
+
+    function normalizeLocale(key) {
+        return key ? key.toLowerCase().replace('_', '-') : key;
+    }
+
+    // pick the locale from the array
+    // try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
+    // substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
+    function chooseLocale(names) {
+        var i = 0, j, next, locale, split;
+
+        while (i < names.length) {
+            split = normalizeLocale(names[i]).split('-');
+            j = split.length;
+            next = normalizeLocale(names[i + 1]);
+            next = next ? next.split('-') : null;
+            while (j > 0) {
+                locale = loadLocale(split.slice(0, j).join('-'));
+                if (locale) {
+                    return locale;
+                }
+                if (next && next.length >= j && compareArrays(split, next, true) >= j - 1) {
+                    //the next array item is better than a shallower substring of this one
+                    break;
+                }
+                j--;
+            }
+            i++;
+        }
+        return globalLocale;
+    }
+
+    function loadLocale(name) {
+        var oldLocale = null;
+        // TODO: Find a better way to register and load all the locales in Node
+        if (!locales[name] && (typeof module !== 'undefined') &&
+                module && module.exports) {
+            try {
+                oldLocale = globalLocale._abbr;
+                var aliasedRequire = require;
+                __webpack_require__(19)("./" + name);
+                getSetGlobalLocale(oldLocale);
+            } catch (e) {}
+        }
+        return locales[name];
+    }
+
+    // This function will load locale and then set the global locale.  If
+    // no arguments are passed in, it will simply return the current global
+    // locale key.
+    function getSetGlobalLocale (key, values) {
+        var data;
+        if (key) {
+            if (isUndefined(values)) {
+                data = getLocale(key);
+            }
+            else {
+                data = defineLocale(key, values);
+            }
+
+            if (data) {
+                // moment.duration._locale = moment._locale = data;
+                globalLocale = data;
+            }
+            else {
+                if ((typeof console !==  'undefined') && console.warn) {
+                    //warn user if arguments are passed but the locale could not be set
+                    console.warn('Locale ' + key +  ' not found. Did you forget to load it?');
+                }
+            }
+        }
+
+        return globalLocale._abbr;
+    }
+
+    function defineLocale (name, config) {
+        if (config !== null) {
+            var locale, parentConfig = baseConfig;
+            config.abbr = name;
+            if (locales[name] != null) {
+                deprecateSimple('defineLocaleOverride',
+                        'use moment.updateLocale(localeName, config) to change ' +
+                        'an existing locale. moment.defineLocale(localeName, ' +
+                        'config) should only be used for creating a new locale ' +
+                        'See http://momentjs.com/guides/#/warnings/define-locale/ for more info.');
+                parentConfig = locales[name]._config;
+            } else if (config.parentLocale != null) {
+                if (locales[config.parentLocale] != null) {
+                    parentConfig = locales[config.parentLocale]._config;
+                } else {
+                    locale = loadLocale(config.parentLocale);
+                    if (locale != null) {
+                        parentConfig = locale._config;
+                    } else {
+                        if (!localeFamilies[config.parentLocale]) {
+                            localeFamilies[config.parentLocale] = [];
+                        }
+                        localeFamilies[config.parentLocale].push({
+                            name: name,
+                            config: config
+                        });
+                        return null;
+                    }
+                }
+            }
+            locales[name] = new Locale(mergeConfigs(parentConfig, config));
+
+            if (localeFamilies[name]) {
+                localeFamilies[name].forEach(function (x) {
+                    defineLocale(x.name, x.config);
+                });
+            }
+
+            // backwards compat for now: also set the locale
+            // make sure we set the locale AFTER all child locales have been
+            // created, so we won't end up with the child locale set.
+            getSetGlobalLocale(name);
+
+
+            return locales[name];
+        } else {
+            // useful for testing
+            delete locales[name];
+            return null;
+        }
+    }
+
+    function updateLocale(name, config) {
+        if (config != null) {
+            var locale, tmpLocale, parentConfig = baseConfig;
+            // MERGE
+            tmpLocale = loadLocale(name);
+            if (tmpLocale != null) {
+                parentConfig = tmpLocale._config;
+            }
+            config = mergeConfigs(parentConfig, config);
+            locale = new Locale(config);
+            locale.parentLocale = locales[name];
+            locales[name] = locale;
+
+            // backwards compat for now: also set the locale
+            getSetGlobalLocale(name);
+        } else {
+            // pass null for config to unupdate, useful for tests
+            if (locales[name] != null) {
+                if (locales[name].parentLocale != null) {
+                    locales[name] = locales[name].parentLocale;
+                } else if (locales[name] != null) {
+                    delete locales[name];
+                }
+            }
+        }
+        return locales[name];
+    }
+
+    // returns locale data
+    function getLocale (key) {
+        var locale;
+
+        if (key && key._locale && key._locale._abbr) {
+            key = key._locale._abbr;
+        }
+
+        if (!key) {
+            return globalLocale;
+        }
+
+        if (!isArray(key)) {
+            //short-circuit everything else
+            locale = loadLocale(key);
+            if (locale) {
+                return locale;
+            }
+            key = [key];
+        }
+
+        return chooseLocale(key);
+    }
+
+    function listLocales() {
+        return keys(locales);
+    }
+
+    function checkOverflow (m) {
+        var overflow;
+        var a = m._a;
+
+        if (a && getParsingFlags(m).overflow === -2) {
+            overflow =
+                a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
+                a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
+                a[HOUR]        < 0 || a[HOUR]        > 24 || (a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0)) ? HOUR :
+                a[MINUTE]      < 0 || a[MINUTE]      > 59  ? MINUTE :
+                a[SECOND]      < 0 || a[SECOND]      > 59  ? SECOND :
+                a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
+                -1;
+
+            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
+                overflow = DATE;
+            }
+            if (getParsingFlags(m)._overflowWeeks && overflow === -1) {
+                overflow = WEEK;
+            }
+            if (getParsingFlags(m)._overflowWeekday && overflow === -1) {
+                overflow = WEEKDAY;
+            }
+
+            getParsingFlags(m).overflow = overflow;
+        }
+
+        return m;
+    }
+
+    // Pick the first defined of two or three arguments.
+    function defaults(a, b, c) {
+        if (a != null) {
+            return a;
+        }
+        if (b != null) {
+            return b;
+        }
+        return c;
+    }
+
+    function currentDateArray(config) {
+        // hooks is actually the exported moment object
+        var nowValue = new Date(hooks.now());
+        if (config._useUTC) {
+            return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
+        }
+        return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
+    }
+
+    // convert an array to a date.
+    // the array should mirror the parameters below
+    // note: all values past the year are optional and will default to the lowest possible value.
+    // [year, month, day , hour, minute, second, millisecond]
+    function configFromArray (config) {
+        var i, date, input = [], currentDate, expectedWeekday, yearToUse;
+
+        if (config._d) {
+            return;
+        }
+
+        currentDate = currentDateArray(config);
+
+        //compute day of the year from weeks and weekdays
+        if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
+            dayOfYearFromWeekInfo(config);
+        }
+
+        //if the day of the year is set, figure out what it is
+        if (config._dayOfYear != null) {
+            yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
+
+            if (config._dayOfYear > daysInYear(yearToUse) || config._dayOfYear === 0) {
+                getParsingFlags(config)._overflowDayOfYear = true;
+            }
+
+            date = createUTCDate(yearToUse, 0, config._dayOfYear);
+            config._a[MONTH] = date.getUTCMonth();
+            config._a[DATE] = date.getUTCDate();
+        }
+
+        // Default to current date.
+        // * if no year, month, day of month are given, default to today
+        // * if day of month is given, default month and year
+        // * if month is given, default only year
+        // * if year is given, don't default anything
+        for (i = 0; i < 3 && config._a[i] == null; ++i) {
+            config._a[i] = input[i] = currentDate[i];
+        }
+
+        // Zero out whatever was not defaulted, including time
+        for (; i < 7; i++) {
+            config._a[i] = input[i] = (config._a[i] == null) ? (i === 2 ? 1 : 0) : config._a[i];
+        }
+
+        // Check for 24:00:00.000
+        if (config._a[HOUR] === 24 &&
+                config._a[MINUTE] === 0 &&
+                config._a[SECOND] === 0 &&
+                config._a[MILLISECOND] === 0) {
+            config._nextDay = true;
+            config._a[HOUR] = 0;
+        }
+
+        config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
+        expectedWeekday = config._useUTC ? config._d.getUTCDay() : config._d.getDay();
+
+        // Apply timezone offset from input. The actual utcOffset can be changed
+        // with parseZone.
+        if (config._tzm != null) {
+            config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
+        }
+
+        if (config._nextDay) {
+            config._a[HOUR] = 24;
+        }
+
+        // check for mismatching day of week
+        if (config._w && typeof config._w.d !== 'undefined' && config._w.d !== expectedWeekday) {
+            getParsingFlags(config).weekdayMismatch = true;
+        }
+    }
+
+    function dayOfYearFromWeekInfo(config) {
+        var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
+
+        w = config._w;
+        if (w.GG != null || w.W != null || w.E != null) {
+            dow = 1;
+            doy = 4;
+
+            // TODO: We need to take the current isoWeekYear, but that depends on
+            // how we interpret now (local, utc, fixed offset). So create
+            // a now version of current config (take local/utc/offset flags, and
+            // create now).
+            weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(createLocal(), 1, 4).year);
+            week = defaults(w.W, 1);
+            weekday = defaults(w.E, 1);
+            if (weekday < 1 || weekday > 7) {
+                weekdayOverflow = true;
+            }
+        } else {
+            dow = config._locale._week.dow;
+            doy = config._locale._week.doy;
+
+            var curWeek = weekOfYear(createLocal(), dow, doy);
+
+            weekYear = defaults(w.gg, config._a[YEAR], curWeek.year);
+
+            // Default to current week.
+            week = defaults(w.w, curWeek.week);
+
+            if (w.d != null) {
+                // weekday -- low day numbers are considered next week
+                weekday = w.d;
+                if (weekday < 0 || weekday > 6) {
+                    weekdayOverflow = true;
+                }
+            } else if (w.e != null) {
+                // local weekday -- counting starts from beginning of week
+                weekday = w.e + dow;
+                if (w.e < 0 || w.e > 6) {
+                    weekdayOverflow = true;
+                }
+            } else {
+                // default to beginning of week
+                weekday = dow;
+            }
+        }
+        if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
+            getParsingFlags(config)._overflowWeeks = true;
+        } else if (weekdayOverflow != null) {
+            getParsingFlags(config)._overflowWeekday = true;
+        } else {
+            temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
+            config._a[YEAR] = temp.year;
+            config._dayOfYear = temp.dayOfYear;
+        }
+    }
+
+    // iso 8601 regex
+    // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
+    var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
+    var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
+
+    var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
+
+    var isoDates = [
+        ['YYYYYY-MM-DD', /[+-]\d{6}-\d\d-\d\d/],
+        ['YYYY-MM-DD', /\d{4}-\d\d-\d\d/],
+        ['GGGG-[W]WW-E', /\d{4}-W\d\d-\d/],
+        ['GGGG-[W]WW', /\d{4}-W\d\d/, false],
+        ['YYYY-DDD', /\d{4}-\d{3}/],
+        ['YYYY-MM', /\d{4}-\d\d/, false],
+        ['YYYYYYMMDD', /[+-]\d{10}/],
+        ['YYYYMMDD', /\d{8}/],
+        // YYYYMM is NOT allowed by the standard
+        ['GGGG[W]WWE', /\d{4}W\d{3}/],
+        ['GGGG[W]WW', /\d{4}W\d{2}/, false],
+        ['YYYYDDD', /\d{7}/]
+    ];
+
+    // iso time formats and regexes
+    var isoTimes = [
+        ['HH:mm:ss.SSSS', /\d\d:\d\d:\d\d\.\d+/],
+        ['HH:mm:ss,SSSS', /\d\d:\d\d:\d\d,\d+/],
+        ['HH:mm:ss', /\d\d:\d\d:\d\d/],
+        ['HH:mm', /\d\d:\d\d/],
+        ['HHmmss.SSSS', /\d\d\d\d\d\d\.\d+/],
+        ['HHmmss,SSSS', /\d\d\d\d\d\d,\d+/],
+        ['HHmmss', /\d\d\d\d\d\d/],
+        ['HHmm', /\d\d\d\d/],
+        ['HH', /\d\d/]
+    ];
+
+    var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
+
+    // date from iso format
+    function configFromISO(config) {
+        var i, l,
+            string = config._i,
+            match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
+            allowTime, dateFormat, timeFormat, tzFormat;
+
+        if (match) {
+            getParsingFlags(config).iso = true;
+
+            for (i = 0, l = isoDates.length; i < l; i++) {
+                if (isoDates[i][1].exec(match[1])) {
+                    dateFormat = isoDates[i][0];
+                    allowTime = isoDates[i][2] !== false;
+                    break;
+                }
+            }
+            if (dateFormat == null) {
+                config._isValid = false;
+                return;
+            }
+            if (match[3]) {
+                for (i = 0, l = isoTimes.length; i < l; i++) {
+                    if (isoTimes[i][1].exec(match[3])) {
+                        // match[2] should be 'T' or space
+                        timeFormat = (match[2] || ' ') + isoTimes[i][0];
+                        break;
+                    }
+                }
+                if (timeFormat == null) {
+                    config._isValid = false;
+                    return;
+                }
+            }
+            if (!allowTime && timeFormat != null) {
+                config._isValid = false;
+                return;
+            }
+            if (match[4]) {
+                if (tzRegex.exec(match[4])) {
+                    tzFormat = 'Z';
+                } else {
+                    config._isValid = false;
+                    return;
+                }
+            }
+            config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
+            configFromStringAndFormat(config);
+        } else {
+            config._isValid = false;
+        }
+    }
+
+    // RFC 2822 regex: For details see https://tools.ietf.org/html/rfc2822#section-3.3
+    var rfc2822 = /^(?:(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s)?(\d{1,2})\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{2,4})\s(\d\d):(\d\d)(?::(\d\d))?\s(?:(UT|GMT|[ECMP][SD]T)|([Zz])|([+-]\d{4}))$/;
+
+    function extractFromRFC2822Strings(yearStr, monthStr, dayStr, hourStr, minuteStr, secondStr) {
+        var result = [
+            untruncateYear(yearStr),
+            defaultLocaleMonthsShort.indexOf(monthStr),
+            parseInt(dayStr, 10),
+            parseInt(hourStr, 10),
+            parseInt(minuteStr, 10)
+        ];
+
+        if (secondStr) {
+            result.push(parseInt(secondStr, 10));
+        }
+
+        return result;
+    }
+
+    function untruncateYear(yearStr) {
+        var year = parseInt(yearStr, 10);
+        if (year <= 49) {
+            return 2000 + year;
+        } else if (year <= 999) {
+            return 1900 + year;
+        }
+        return year;
+    }
+
+    function preprocessRFC2822(s) {
+        // Remove comments and folding whitespace and replace multiple-spaces with a single space
+        return s.replace(/\([^)]*\)|[\n\t]/g, ' ').replace(/(\s\s+)/g, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    }
+
+    function checkWeekday(weekdayStr, parsedInput, config) {
+        if (weekdayStr) {
+            // TODO: Replace the vanilla JS Date object with an indepentent day-of-week check.
+            var weekdayProvided = defaultLocaleWeekdaysShort.indexOf(weekdayStr),
+                weekdayActual = new Date(parsedInput[0], parsedInput[1], parsedInput[2]).getDay();
+            if (weekdayProvided !== weekdayActual) {
+                getParsingFlags(config).weekdayMismatch = true;
+                config._isValid = false;
+                return false;
+            }
+        }
+        return true;
+    }
+
+    var obsOffsets = {
+        UT: 0,
+        GMT: 0,
+        EDT: -4 * 60,
+        EST: -5 * 60,
+        CDT: -5 * 60,
+        CST: -6 * 60,
+        MDT: -6 * 60,
+        MST: -7 * 60,
+        PDT: -7 * 60,
+        PST: -8 * 60
+    };
+
+    function calculateOffset(obsOffset, militaryOffset, numOffset) {
+        if (obsOffset) {
+            return obsOffsets[obsOffset];
+        } else if (militaryOffset) {
+            // the only allowed military tz is Z
+            return 0;
+        } else {
+            var hm = parseInt(numOffset, 10);
+            var m = hm % 100, h = (hm - m) / 100;
+            return h * 60 + m;
+        }
+    }
+
+    // date and time from ref 2822 format
+    function configFromRFC2822(config) {
+        var match = rfc2822.exec(preprocessRFC2822(config._i));
+        if (match) {
+            var parsedArray = extractFromRFC2822Strings(match[4], match[3], match[2], match[5], match[6], match[7]);
+            if (!checkWeekday(match[1], parsedArray, config)) {
+                return;
+            }
+
+            config._a = parsedArray;
+            config._tzm = calculateOffset(match[8], match[9], match[10]);
+
+            config._d = createUTCDate.apply(null, config._a);
+            config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
+
+            getParsingFlags(config).rfc2822 = true;
+        } else {
+            config._isValid = false;
+        }
+    }
+
+    // date from iso format or fallback
+    function configFromString(config) {
+        var matched = aspNetJsonRegex.exec(config._i);
+
+        if (matched !== null) {
+            config._d = new Date(+matched[1]);
+            return;
+        }
+
+        configFromISO(config);
+        if (config._isValid === false) {
+            delete config._isValid;
+        } else {
+            return;
+        }
+
+        configFromRFC2822(config);
+        if (config._isValid === false) {
+            delete config._isValid;
+        } else {
+            return;
+        }
+
+        // Final attempt, use Input Fallback
+        hooks.createFromInputFallback(config);
+    }
+
+    hooks.createFromInputFallback = deprecate(
+        'value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), ' +
+        'which is not reliable across all browsers and versions. Non RFC2822/ISO date formats are ' +
+        'discouraged and will be removed in an upcoming major release. Please refer to ' +
+        'http://momentjs.com/guides/#/warnings/js-date/ for more info.',
+        function (config) {
+            config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
+        }
+    );
+
+    // constant that refers to the ISO standard
+    hooks.ISO_8601 = function () {};
+
+    // constant that refers to the RFC 2822 form
+    hooks.RFC_2822 = function () {};
+
+    // date from string and format string
+    function configFromStringAndFormat(config) {
+        // TODO: Move this to another part of the creation flow to prevent circular deps
+        if (config._f === hooks.ISO_8601) {
+            configFromISO(config);
+            return;
+        }
+        if (config._f === hooks.RFC_2822) {
+            configFromRFC2822(config);
+            return;
+        }
+        config._a = [];
+        getParsingFlags(config).empty = true;
+
+        // This array is used to make a Date, either with `new Date` or `Date.UTC`
+        var string = '' + config._i,
+            i, parsedInput, tokens, token, skipped,
+            stringLength = string.length,
+            totalParsedInputLength = 0;
+
+        tokens = expandFormat(config._f, config._locale).match(formattingTokens) || [];
+
+        for (i = 0; i < tokens.length; i++) {
+            token = tokens[i];
+            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
+            // console.log('token', token, 'parsedInput', parsedInput,
+            //         'regex', getParseRegexForToken(token, config));
+            if (parsedInput) {
+                skipped = string.substr(0, string.indexOf(parsedInput));
+                if (skipped.length > 0) {
+                    getParsingFlags(config).unusedInput.push(skipped);
+                }
+                string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
+                totalParsedInputLength += parsedInput.length;
+            }
+            // don't parse if it's not a known token
+            if (formatTokenFunctions[token]) {
+                if (parsedInput) {
+                    getParsingFlags(config).empty = false;
+                }
+                else {
+                    getParsingFlags(config).unusedTokens.push(token);
+                }
+                addTimeToArrayFromToken(token, parsedInput, config);
+            }
+            else if (config._strict && !parsedInput) {
+                getParsingFlags(config).unusedTokens.push(token);
+            }
+        }
+
+        // add remaining unparsed input length to the string
+        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
+        if (string.length > 0) {
+            getParsingFlags(config).unusedInput.push(string);
+        }
+
+        // clear _12h flag if hour is <= 12
+        if (config._a[HOUR] <= 12 &&
+            getParsingFlags(config).bigHour === true &&
+            config._a[HOUR] > 0) {
+            getParsingFlags(config).bigHour = undefined;
+        }
+
+        getParsingFlags(config).parsedDateParts = config._a.slice(0);
+        getParsingFlags(config).meridiem = config._meridiem;
+        // handle meridiem
+        config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
+
+        configFromArray(config);
+        checkOverflow(config);
+    }
+
+
+    function meridiemFixWrap (locale, hour, meridiem) {
+        var isPm;
+
+        if (meridiem == null) {
+            // nothing to do
+            return hour;
+        }
+        if (locale.meridiemHour != null) {
+            return locale.meridiemHour(hour, meridiem);
+        } else if (locale.isPM != null) {
+            // Fallback
+            isPm = locale.isPM(meridiem);
+            if (isPm && hour < 12) {
+                hour += 12;
+            }
+            if (!isPm && hour === 12) {
+                hour = 0;
+            }
+            return hour;
+        } else {
+            // this is not supposed to happen
+            return hour;
+        }
+    }
+
+    // date from string and array of format strings
+    function configFromStringAndArray(config) {
+        var tempConfig,
+            bestMoment,
+
+            scoreToBeat,
+            i,
+            currentScore;
+
+        if (config._f.length === 0) {
+            getParsingFlags(config).invalidFormat = true;
+            config._d = new Date(NaN);
+            return;
+        }
+
+        for (i = 0; i < config._f.length; i++) {
+            currentScore = 0;
+            tempConfig = copyConfig({}, config);
+            if (config._useUTC != null) {
+                tempConfig._useUTC = config._useUTC;
+            }
+            tempConfig._f = config._f[i];
+            configFromStringAndFormat(tempConfig);
+
+            if (!isValid(tempConfig)) {
+                continue;
+            }
+
+            // if there is any input that was not parsed add a penalty for that format
+            currentScore += getParsingFlags(tempConfig).charsLeftOver;
+
+            //or tokens
+            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
+
+            getParsingFlags(tempConfig).score = currentScore;
+
+            if (scoreToBeat == null || currentScore < scoreToBeat) {
+                scoreToBeat = currentScore;
+                bestMoment = tempConfig;
+            }
+        }
+
+        extend(config, bestMoment || tempConfig);
+    }
+
+    function configFromObject(config) {
+        if (config._d) {
+            return;
+        }
+
+        var i = normalizeObjectUnits(config._i);
+        config._a = map([i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond], function (obj) {
+            return obj && parseInt(obj, 10);
+        });
+
+        configFromArray(config);
+    }
+
+    function createFromConfig (config) {
+        var res = new Moment(checkOverflow(prepareConfig(config)));
+        if (res._nextDay) {
+            // Adding is smart enough around DST
+            res.add(1, 'd');
+            res._nextDay = undefined;
+        }
+
+        return res;
+    }
+
+    function prepareConfig (config) {
+        var input = config._i,
+            format = config._f;
+
+        config._locale = config._locale || getLocale(config._l);
+
+        if (input === null || (format === undefined && input === '')) {
+            return createInvalid({nullInput: true});
+        }
+
+        if (typeof input === 'string') {
+            config._i = input = config._locale.preparse(input);
+        }
+
+        if (isMoment(input)) {
+            return new Moment(checkOverflow(input));
+        } else if (isDate(input)) {
+            config._d = input;
+        } else if (isArray(format)) {
+            configFromStringAndArray(config);
+        } else if (format) {
+            configFromStringAndFormat(config);
+        }  else {
+            configFromInput(config);
+        }
+
+        if (!isValid(config)) {
+            config._d = null;
+        }
+
+        return config;
+    }
+
+    function configFromInput(config) {
+        var input = config._i;
+        if (isUndefined(input)) {
+            config._d = new Date(hooks.now());
+        } else if (isDate(input)) {
+            config._d = new Date(input.valueOf());
+        } else if (typeof input === 'string') {
+            configFromString(config);
+        } else if (isArray(input)) {
+            config._a = map(input.slice(0), function (obj) {
+                return parseInt(obj, 10);
+            });
+            configFromArray(config);
+        } else if (isObject(input)) {
+            configFromObject(config);
+        } else if (isNumber(input)) {
+            // from milliseconds
+            config._d = new Date(input);
+        } else {
+            hooks.createFromInputFallback(config);
+        }
+    }
+
+    function createLocalOrUTC (input, format, locale, strict, isUTC) {
+        var c = {};
+
+        if (locale === true || locale === false) {
+            strict = locale;
+            locale = undefined;
+        }
+
+        if ((isObject(input) && isObjectEmpty(input)) ||
+                (isArray(input) && input.length === 0)) {
+            input = undefined;
+        }
+        // object construction must be done this way.
+        // https://github.com/moment/moment/issues/1423
+        c._isAMomentObject = true;
+        c._useUTC = c._isUTC = isUTC;
+        c._l = locale;
+        c._i = input;
+        c._f = format;
+        c._strict = strict;
+
+        return createFromConfig(c);
+    }
+
+    function createLocal (input, format, locale, strict) {
+        return createLocalOrUTC(input, format, locale, strict, false);
+    }
+
+    var prototypeMin = deprecate(
+        'moment().min is deprecated, use moment.max instead. http://momentjs.com/guides/#/warnings/min-max/',
+        function () {
+            var other = createLocal.apply(null, arguments);
+            if (this.isValid() && other.isValid()) {
+                return other < this ? this : other;
+            } else {
+                return createInvalid();
+            }
+        }
+    );
+
+    var prototypeMax = deprecate(
+        'moment().max is deprecated, use moment.min instead. http://momentjs.com/guides/#/warnings/min-max/',
+        function () {
+            var other = createLocal.apply(null, arguments);
+            if (this.isValid() && other.isValid()) {
+                return other > this ? this : other;
+            } else {
+                return createInvalid();
+            }
+        }
+    );
+
+    // Pick a moment m from moments so that m[fn](other) is true for all
+    // other. This relies on the function fn to be transitive.
+    //
+    // moments should either be an array of moment objects or an array, whose
+    // first element is an array of moment objects.
+    function pickBy(fn, moments) {
+        var res, i;
+        if (moments.length === 1 && isArray(moments[0])) {
+            moments = moments[0];
+        }
+        if (!moments.length) {
+            return createLocal();
+        }
+        res = moments[0];
+        for (i = 1; i < moments.length; ++i) {
+            if (!moments[i].isValid() || moments[i][fn](res)) {
+                res = moments[i];
+            }
+        }
+        return res;
+    }
+
+    // TODO: Use [].sort instead?
+    function min () {
+        var args = [].slice.call(arguments, 0);
+
+        return pickBy('isBefore', args);
+    }
+
+    function max () {
+        var args = [].slice.call(arguments, 0);
+
+        return pickBy('isAfter', args);
+    }
+
+    var now = function () {
+        return Date.now ? Date.now() : +(new Date());
+    };
+
+    var ordering = ['year', 'quarter', 'month', 'week', 'day', 'hour', 'minute', 'second', 'millisecond'];
+
+    function isDurationValid(m) {
+        for (var key in m) {
+            if (!(indexOf.call(ordering, key) !== -1 && (m[key] == null || !isNaN(m[key])))) {
+                return false;
+            }
+        }
+
+        var unitHasDecimal = false;
+        for (var i = 0; i < ordering.length; ++i) {
+            if (m[ordering[i]]) {
+                if (unitHasDecimal) {
+                    return false; // only allow non-integers for smallest unit
+                }
+                if (parseFloat(m[ordering[i]]) !== toInt(m[ordering[i]])) {
+                    unitHasDecimal = true;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    function isValid$1() {
+        return this._isValid;
+    }
+
+    function createInvalid$1() {
+        return createDuration(NaN);
+    }
+
+    function Duration (duration) {
+        var normalizedInput = normalizeObjectUnits(duration),
+            years = normalizedInput.year || 0,
+            quarters = normalizedInput.quarter || 0,
+            months = normalizedInput.month || 0,
+            weeks = normalizedInput.week || normalizedInput.isoWeek || 0,
+            days = normalizedInput.day || 0,
+            hours = normalizedInput.hour || 0,
+            minutes = normalizedInput.minute || 0,
+            seconds = normalizedInput.second || 0,
+            milliseconds = normalizedInput.millisecond || 0;
+
+        this._isValid = isDurationValid(normalizedInput);
+
+        // representation for dateAddRemove
+        this._milliseconds = +milliseconds +
+            seconds * 1e3 + // 1000
+            minutes * 6e4 + // 1000 * 60
+            hours * 1000 * 60 * 60; //using 1000 * 60 * 60 instead of 36e5 to avoid floating point rounding errors https://github.com/moment/moment/issues/2978
+        // Because of dateAddRemove treats 24 hours as different from a
+        // day when working around DST, we need to store them separately
+        this._days = +days +
+            weeks * 7;
+        // It is impossible to translate months into days without knowing
+        // which months you are are talking about, so we have to store
+        // it separately.
+        this._months = +months +
+            quarters * 3 +
+            years * 12;
+
+        this._data = {};
+
+        this._locale = getLocale();
+
+        this._bubble();
+    }
+
+    function isDuration (obj) {
+        return obj instanceof Duration;
+    }
+
+    function absRound (number) {
+        if (number < 0) {
+            return Math.round(-1 * number) * -1;
+        } else {
+            return Math.round(number);
+        }
+    }
+
+    // FORMATTING
+
+    function offset (token, separator) {
+        addFormatToken(token, 0, 0, function () {
+            var offset = this.utcOffset();
+            var sign = '+';
+            if (offset < 0) {
+                offset = -offset;
+                sign = '-';
+            }
+            return sign + zeroFill(~~(offset / 60), 2) + separator + zeroFill(~~(offset) % 60, 2);
+        });
+    }
+
+    offset('Z', ':');
+    offset('ZZ', '');
+
+    // PARSING
+
+    addRegexToken('Z',  matchShortOffset);
+    addRegexToken('ZZ', matchShortOffset);
+    addParseToken(['Z', 'ZZ'], function (input, array, config) {
+        config._useUTC = true;
+        config._tzm = offsetFromString(matchShortOffset, input);
+    });
+
+    // HELPERS
+
+    // timezone chunker
+    // '+10:00' > ['10',  '00']
+    // '-1530'  > ['-15', '30']
+    var chunkOffset = /([\+\-]|\d\d)/gi;
+
+    function offsetFromString(matcher, string) {
+        var matches = (string || '').match(matcher);
+
+        if (matches === null) {
+            return null;
+        }
+
+        var chunk   = matches[matches.length - 1] || [];
+        var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
+        var minutes = +(parts[1] * 60) + toInt(parts[2]);
+
+        return minutes === 0 ?
+          0 :
+          parts[0] === '+' ? minutes : -minutes;
+    }
+
+    // Return a moment from input, that is local/utc/zone equivalent to model.
+    function cloneWithOffset(input, model) {
+        var res, diff;
+        if (model._isUTC) {
+            res = model.clone();
+            diff = (isMoment(input) || isDate(input) ? input.valueOf() : createLocal(input).valueOf()) - res.valueOf();
+            // Use low-level api, because this fn is low-level api.
+            res._d.setTime(res._d.valueOf() + diff);
+            hooks.updateOffset(res, false);
+            return res;
+        } else {
+            return createLocal(input).local();
+        }
+    }
+
+    function getDateOffset (m) {
+        // On Firefox.24 Date#getTimezoneOffset returns a floating point.
+        // https://github.com/moment/moment/pull/1871
+        return -Math.round(m._d.getTimezoneOffset() / 15) * 15;
+    }
+
+    // HOOKS
+
+    // This function will be called whenever a moment is mutated.
+    // It is intended to keep the offset in sync with the timezone.
+    hooks.updateOffset = function () {};
+
+    // MOMENTS
+
+    // keepLocalTime = true means only change the timezone, without
+    // affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
+    // 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
+    // +0200, so we adjust the time as needed, to be valid.
+    //
+    // Keeping the time actually adds/subtracts (one hour)
+    // from the actual represented time. That is why we call updateOffset
+    // a second time. In case it wants us to change the offset again
+    // _changeInProgress == true case, then we have to adjust, because
+    // there is no such time in the given timezone.
+    function getSetOffset (input, keepLocalTime, keepMinutes) {
+        var offset = this._offset || 0,
+            localAdjust;
+        if (!this.isValid()) {
+            return input != null ? this : NaN;
+        }
+        if (input != null) {
+            if (typeof input === 'string') {
+                input = offsetFromString(matchShortOffset, input);
+                if (input === null) {
+                    return this;
+                }
+            } else if (Math.abs(input) < 16 && !keepMinutes) {
+                input = input * 60;
+            }
+            if (!this._isUTC && keepLocalTime) {
+                localAdjust = getDateOffset(this);
+            }
+            this._offset = input;
+            this._isUTC = true;
+            if (localAdjust != null) {
+                this.add(localAdjust, 'm');
+            }
+            if (offset !== input) {
+                if (!keepLocalTime || this._changeInProgress) {
+                    addSubtract(this, createDuration(input - offset, 'm'), 1, false);
+                } else if (!this._changeInProgress) {
+                    this._changeInProgress = true;
+                    hooks.updateOffset(this, true);
+                    this._changeInProgress = null;
+                }
+            }
+            return this;
+        } else {
+            return this._isUTC ? offset : getDateOffset(this);
+        }
+    }
+
+    function getSetZone (input, keepLocalTime) {
+        if (input != null) {
+            if (typeof input !== 'string') {
+                input = -input;
+            }
+
+            this.utcOffset(input, keepLocalTime);
+
+            return this;
+        } else {
+            return -this.utcOffset();
+        }
+    }
+
+    function setOffsetToUTC (keepLocalTime) {
+        return this.utcOffset(0, keepLocalTime);
+    }
+
+    function setOffsetToLocal (keepLocalTime) {
+        if (this._isUTC) {
+            this.utcOffset(0, keepLocalTime);
+            this._isUTC = false;
+
+            if (keepLocalTime) {
+                this.subtract(getDateOffset(this), 'm');
+            }
+        }
+        return this;
+    }
+
+    function setOffsetToParsedOffset () {
+        if (this._tzm != null) {
+            this.utcOffset(this._tzm, false, true);
+        } else if (typeof this._i === 'string') {
+            var tZone = offsetFromString(matchOffset, this._i);
+            if (tZone != null) {
+                this.utcOffset(tZone);
+            }
+            else {
+                this.utcOffset(0, true);
+            }
+        }
+        return this;
+    }
+
+    function hasAlignedHourOffset (input) {
+        if (!this.isValid()) {
+            return false;
+        }
+        input = input ? createLocal(input).utcOffset() : 0;
+
+        return (this.utcOffset() - input) % 60 === 0;
+    }
+
+    function isDaylightSavingTime () {
+        return (
+            this.utcOffset() > this.clone().month(0).utcOffset() ||
+            this.utcOffset() > this.clone().month(5).utcOffset()
+        );
+    }
+
+    function isDaylightSavingTimeShifted () {
+        if (!isUndefined(this._isDSTShifted)) {
+            return this._isDSTShifted;
+        }
+
+        var c = {};
+
+        copyConfig(c, this);
+        c = prepareConfig(c);
+
+        if (c._a) {
+            var other = c._isUTC ? createUTC(c._a) : createLocal(c._a);
+            this._isDSTShifted = this.isValid() &&
+                compareArrays(c._a, other.toArray()) > 0;
+        } else {
+            this._isDSTShifted = false;
+        }
+
+        return this._isDSTShifted;
+    }
+
+    function isLocal () {
+        return this.isValid() ? !this._isUTC : false;
+    }
+
+    function isUtcOffset () {
+        return this.isValid() ? this._isUTC : false;
+    }
+
+    function isUtc () {
+        return this.isValid() ? this._isUTC && this._offset === 0 : false;
+    }
+
+    // ASP.NET json date format regex
+    var aspNetRegex = /^(\-|\+)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)(\.\d*)?)?$/;
+
+    // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
+    // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
+    // and further modified to allow for strings containing both week and day
+    var isoRegex = /^(-|\+)?P(?:([-+]?[0-9,.]*)Y)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)W)?(?:([-+]?[0-9,.]*)D)?(?:T(?:([-+]?[0-9,.]*)H)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)S)?)?$/;
+
+    function createDuration (input, key) {
+        var duration = input,
+            // matching against regexp is expensive, do it on demand
+            match = null,
+            sign,
+            ret,
+            diffRes;
+
+        if (isDuration(input)) {
+            duration = {
+                ms : input._milliseconds,
+                d  : input._days,
+                M  : input._months
+            };
+        } else if (isNumber(input)) {
+            duration = {};
+            if (key) {
+                duration[key] = input;
+            } else {
+                duration.milliseconds = input;
+            }
+        } else if (!!(match = aspNetRegex.exec(input))) {
+            sign = (match[1] === '-') ? -1 : 1;
+            duration = {
+                y  : 0,
+                d  : toInt(match[DATE])                         * sign,
+                h  : toInt(match[HOUR])                         * sign,
+                m  : toInt(match[MINUTE])                       * sign,
+                s  : toInt(match[SECOND])                       * sign,
+                ms : toInt(absRound(match[MILLISECOND] * 1000)) * sign // the millisecond decimal point is included in the match
+            };
+        } else if (!!(match = isoRegex.exec(input))) {
+            sign = (match[1] === '-') ? -1 : 1;
+            duration = {
+                y : parseIso(match[2], sign),
+                M : parseIso(match[3], sign),
+                w : parseIso(match[4], sign),
+                d : parseIso(match[5], sign),
+                h : parseIso(match[6], sign),
+                m : parseIso(match[7], sign),
+                s : parseIso(match[8], sign)
+            };
+        } else if (duration == null) {// checks for null or undefined
+            duration = {};
+        } else if (typeof duration === 'object' && ('from' in duration || 'to' in duration)) {
+            diffRes = momentsDifference(createLocal(duration.from), createLocal(duration.to));
+
+            duration = {};
+            duration.ms = diffRes.milliseconds;
+            duration.M = diffRes.months;
+        }
+
+        ret = new Duration(duration);
+
+        if (isDuration(input) && hasOwnProp(input, '_locale')) {
+            ret._locale = input._locale;
+        }
+
+        return ret;
+    }
+
+    createDuration.fn = Duration.prototype;
+    createDuration.invalid = createInvalid$1;
+
+    function parseIso (inp, sign) {
+        // We'd normally use ~~inp for this, but unfortunately it also
+        // converts floats to ints.
+        // inp may be undefined, so careful calling replace on it.
+        var res = inp && parseFloat(inp.replace(',', '.'));
+        // apply sign while we're at it
+        return (isNaN(res) ? 0 : res) * sign;
+    }
+
+    function positiveMomentsDifference(base, other) {
+        var res = {};
+
+        res.months = other.month() - base.month() +
+            (other.year() - base.year()) * 12;
+        if (base.clone().add(res.months, 'M').isAfter(other)) {
+            --res.months;
+        }
+
+        res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
+
+        return res;
+    }
+
+    function momentsDifference(base, other) {
+        var res;
+        if (!(base.isValid() && other.isValid())) {
+            return {milliseconds: 0, months: 0};
+        }
+
+        other = cloneWithOffset(other, base);
+        if (base.isBefore(other)) {
+            res = positiveMomentsDifference(base, other);
+        } else {
+            res = positiveMomentsDifference(other, base);
+            res.milliseconds = -res.milliseconds;
+            res.months = -res.months;
+        }
+
+        return res;
+    }
+
+    // TODO: remove 'name' arg after deprecation is removed
+    function createAdder(direction, name) {
+        return function (val, period) {
+            var dur, tmp;
+            //invert the arguments, but complain about it
+            if (period !== null && !isNaN(+period)) {
+                deprecateSimple(name, 'moment().' + name  + '(period, number) is deprecated. Please use moment().' + name + '(number, period). ' +
+                'See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.');
+                tmp = val; val = period; period = tmp;
+            }
+
+            val = typeof val === 'string' ? +val : val;
+            dur = createDuration(val, period);
+            addSubtract(this, dur, direction);
+            return this;
+        };
+    }
+
+    function addSubtract (mom, duration, isAdding, updateOffset) {
+        var milliseconds = duration._milliseconds,
+            days = absRound(duration._days),
+            months = absRound(duration._months);
+
+        if (!mom.isValid()) {
+            // No op
+            return;
+        }
+
+        updateOffset = updateOffset == null ? true : updateOffset;
+
+        if (months) {
+            setMonth(mom, get(mom, 'Month') + months * isAdding);
+        }
+        if (days) {
+            set$1(mom, 'Date', get(mom, 'Date') + days * isAdding);
+        }
+        if (milliseconds) {
+            mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
+        }
+        if (updateOffset) {
+            hooks.updateOffset(mom, days || months);
+        }
+    }
+
+    var add      = createAdder(1, 'add');
+    var subtract = createAdder(-1, 'subtract');
+
+    function getCalendarFormat(myMoment, now) {
+        var diff = myMoment.diff(now, 'days', true);
+        return diff < -6 ? 'sameElse' :
+                diff < -1 ? 'lastWeek' :
+                diff < 0 ? 'lastDay' :
+                diff < 1 ? 'sameDay' :
+                diff < 2 ? 'nextDay' :
+                diff < 7 ? 'nextWeek' : 'sameElse';
+    }
+
+    function calendar$1 (time, formats) {
+        // We want to compare the start of today, vs this.
+        // Getting start-of-today depends on whether we're local/utc/offset or not.
+        var now = time || createLocal(),
+            sod = cloneWithOffset(now, this).startOf('day'),
+            format = hooks.calendarFormat(this, sod) || 'sameElse';
+
+        var output = formats && (isFunction(formats[format]) ? formats[format].call(this, now) : formats[format]);
+
+        return this.format(output || this.localeData().calendar(format, this, createLocal(now)));
+    }
+
+    function clone () {
+        return new Moment(this);
+    }
+
+    function isAfter (input, units) {
+        var localInput = isMoment(input) ? input : createLocal(input);
+        if (!(this.isValid() && localInput.isValid())) {
+            return false;
+        }
+        units = normalizeUnits(units) || 'millisecond';
+        if (units === 'millisecond') {
+            return this.valueOf() > localInput.valueOf();
+        } else {
+            return localInput.valueOf() < this.clone().startOf(units).valueOf();
+        }
+    }
+
+    function isBefore (input, units) {
+        var localInput = isMoment(input) ? input : createLocal(input);
+        if (!(this.isValid() && localInput.isValid())) {
+            return false;
+        }
+        units = normalizeUnits(units) || 'millisecond';
+        if (units === 'millisecond') {
+            return this.valueOf() < localInput.valueOf();
+        } else {
+            return this.clone().endOf(units).valueOf() < localInput.valueOf();
+        }
+    }
+
+    function isBetween (from, to, units, inclusivity) {
+        var localFrom = isMoment(from) ? from : createLocal(from),
+            localTo = isMoment(to) ? to : createLocal(to);
+        if (!(this.isValid() && localFrom.isValid() && localTo.isValid())) {
+            return false;
+        }
+        inclusivity = inclusivity || '()';
+        return (inclusivity[0] === '(' ? this.isAfter(localFrom, units) : !this.isBefore(localFrom, units)) &&
+            (inclusivity[1] === ')' ? this.isBefore(localTo, units) : !this.isAfter(localTo, units));
+    }
+
+    function isSame (input, units) {
+        var localInput = isMoment(input) ? input : createLocal(input),
+            inputMs;
+        if (!(this.isValid() && localInput.isValid())) {
+            return false;
+        }
+        units = normalizeUnits(units) || 'millisecond';
+        if (units === 'millisecond') {
+            return this.valueOf() === localInput.valueOf();
+        } else {
+            inputMs = localInput.valueOf();
+            return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
+        }
+    }
+
+    function isSameOrAfter (input, units) {
+        return this.isSame(input, units) || this.isAfter(input, units);
+    }
+
+    function isSameOrBefore (input, units) {
+        return this.isSame(input, units) || this.isBefore(input, units);
+    }
+
+    function diff (input, units, asFloat) {
+        var that,
+            zoneDelta,
+            output;
+
+        if (!this.isValid()) {
+            return NaN;
+        }
+
+        that = cloneWithOffset(input, this);
+
+        if (!that.isValid()) {
+            return NaN;
+        }
+
+        zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4;
+
+        units = normalizeUnits(units);
+
+        switch (units) {
+            case 'year': output = monthDiff(this, that) / 12; break;
+            case 'month': output = monthDiff(this, that); break;
+            case 'quarter': output = monthDiff(this, that) / 3; break;
+            case 'second': output = (this - that) / 1e3; break; // 1000
+            case 'minute': output = (this - that) / 6e4; break; // 1000 * 60
+            case 'hour': output = (this - that) / 36e5; break; // 1000 * 60 * 60
+            case 'day': output = (this - that - zoneDelta) / 864e5; break; // 1000 * 60 * 60 * 24, negate dst
+            case 'week': output = (this - that - zoneDelta) / 6048e5; break; // 1000 * 60 * 60 * 24 * 7, negate dst
+            default: output = this - that;
+        }
+
+        return asFloat ? output : absFloor(output);
+    }
+
+    function monthDiff (a, b) {
+        // difference in months
+        var wholeMonthDiff = ((b.year() - a.year()) * 12) + (b.month() - a.month()),
+            // b is in (anchor - 1 month, anchor + 1 month)
+            anchor = a.clone().add(wholeMonthDiff, 'months'),
+            anchor2, adjust;
+
+        if (b - anchor < 0) {
+            anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
+            // linear across the month
+            adjust = (b - anchor) / (anchor - anchor2);
+        } else {
+            anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
+            // linear across the month
+            adjust = (b - anchor) / (anchor2 - anchor);
+        }
+
+        //check for negative zero, return zero if negative zero
+        return -(wholeMonthDiff + adjust) || 0;
+    }
+
+    hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
+    hooks.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]';
+
+    function toString () {
+        return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
+    }
+
+    function toISOString(keepOffset) {
+        if (!this.isValid()) {
+            return null;
+        }
+        var utc = keepOffset !== true;
+        var m = utc ? this.clone().utc() : this;
+        if (m.year() < 0 || m.year() > 9999) {
+            return formatMoment(m, utc ? 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYYYY-MM-DD[T]HH:mm:ss.SSSZ');
+        }
+        if (isFunction(Date.prototype.toISOString)) {
+            // native implementation is ~50x faster, use it when we can
+            if (utc) {
+                return this.toDate().toISOString();
+            } else {
+                return new Date(this.valueOf() + this.utcOffset() * 60 * 1000).toISOString().replace('Z', formatMoment(m, 'Z'));
+            }
+        }
+        return formatMoment(m, utc ? 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYY-MM-DD[T]HH:mm:ss.SSSZ');
+    }
+
+    /**
+     * Return a human readable representation of a moment that can
+     * also be evaluated to get a new moment which is the same
+     *
+     * @link https://nodejs.org/dist/latest/docs/api/util.html#util_custom_inspect_function_on_objects
+     */
+    function inspect () {
+        if (!this.isValid()) {
+            return 'moment.invalid(/* ' + this._i + ' */)';
+        }
+        var func = 'moment';
+        var zone = '';
+        if (!this.isLocal()) {
+            func = this.utcOffset() === 0 ? 'moment.utc' : 'moment.parseZone';
+            zone = 'Z';
+        }
+        var prefix = '[' + func + '("]';
+        var year = (0 <= this.year() && this.year() <= 9999) ? 'YYYY' : 'YYYYYY';
+        var datetime = '-MM-DD[T]HH:mm:ss.SSS';
+        var suffix = zone + '[")]';
+
+        return this.format(prefix + year + datetime + suffix);
+    }
+
+    function format (inputString) {
+        if (!inputString) {
+            inputString = this.isUtc() ? hooks.defaultFormatUtc : hooks.defaultFormat;
+        }
+        var output = formatMoment(this, inputString);
+        return this.localeData().postformat(output);
+    }
+
+    function from (time, withoutSuffix) {
+        if (this.isValid() &&
+                ((isMoment(time) && time.isValid()) ||
+                 createLocal(time).isValid())) {
+            return createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
+        } else {
+            return this.localeData().invalidDate();
+        }
+    }
+
+    function fromNow (withoutSuffix) {
+        return this.from(createLocal(), withoutSuffix);
+    }
+
+    function to (time, withoutSuffix) {
+        if (this.isValid() &&
+                ((isMoment(time) && time.isValid()) ||
+                 createLocal(time).isValid())) {
+            return createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
+        } else {
+            return this.localeData().invalidDate();
+        }
+    }
+
+    function toNow (withoutSuffix) {
+        return this.to(createLocal(), withoutSuffix);
+    }
+
+    // If passed a locale key, it will set the locale for this
+    // instance.  Otherwise, it will return the locale configuration
+    // variables for this instance.
+    function locale (key) {
+        var newLocaleData;
+
+        if (key === undefined) {
+            return this._locale._abbr;
+        } else {
+            newLocaleData = getLocale(key);
+            if (newLocaleData != null) {
+                this._locale = newLocaleData;
+            }
+            return this;
+        }
+    }
+
+    var lang = deprecate(
+        'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
+        function (key) {
+            if (key === undefined) {
+                return this.localeData();
+            } else {
+                return this.locale(key);
+            }
+        }
+    );
+
+    function localeData () {
+        return this._locale;
+    }
+
+    var MS_PER_SECOND = 1000;
+    var MS_PER_MINUTE = 60 * MS_PER_SECOND;
+    var MS_PER_HOUR = 60 * MS_PER_MINUTE;
+    var MS_PER_400_YEARS = (365 * 400 + 97) * 24 * MS_PER_HOUR;
+
+    // actual modulo - handles negative numbers (for dates before 1970):
+    function mod$1(dividend, divisor) {
+        return (dividend % divisor + divisor) % divisor;
+    }
+
+    function localStartOfDate(y, m, d) {
+        // the date constructor remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0) {
+            // preserve leap years using a full 400 year cycle, then reset
+            return new Date(y + 400, m, d) - MS_PER_400_YEARS;
+        } else {
+            return new Date(y, m, d).valueOf();
+        }
+    }
+
+    function utcStartOfDate(y, m, d) {
+        // Date.UTC remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0) {
+            // preserve leap years using a full 400 year cycle, then reset
+            return Date.UTC(y + 400, m, d) - MS_PER_400_YEARS;
+        } else {
+            return Date.UTC(y, m, d);
+        }
+    }
+
+    function startOf (units) {
+        var time;
+        units = normalizeUnits(units);
+        if (units === undefined || units === 'millisecond' || !this.isValid()) {
+            return this;
+        }
+
+        var startOfDate = this._isUTC ? utcStartOfDate : localStartOfDate;
+
+        switch (units) {
+            case 'year':
+                time = startOfDate(this.year(), 0, 1);
+                break;
+            case 'quarter':
+                time = startOfDate(this.year(), this.month() - this.month() % 3, 1);
+                break;
+            case 'month':
+                time = startOfDate(this.year(), this.month(), 1);
+                break;
+            case 'week':
+                time = startOfDate(this.year(), this.month(), this.date() - this.weekday());
+                break;
+            case 'isoWeek':
+                time = startOfDate(this.year(), this.month(), this.date() - (this.isoWeekday() - 1));
+                break;
+            case 'day':
+            case 'date':
+                time = startOfDate(this.year(), this.month(), this.date());
+                break;
+            case 'hour':
+                time = this._d.valueOf();
+                time -= mod$1(time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE), MS_PER_HOUR);
+                break;
+            case 'minute':
+                time = this._d.valueOf();
+                time -= mod$1(time, MS_PER_MINUTE);
+                break;
+            case 'second':
+                time = this._d.valueOf();
+                time -= mod$1(time, MS_PER_SECOND);
+                break;
+        }
+
+        this._d.setTime(time);
+        hooks.updateOffset(this, true);
+        return this;
+    }
+
+    function endOf (units) {
+        var time;
+        units = normalizeUnits(units);
+        if (units === undefined || units === 'millisecond' || !this.isValid()) {
+            return this;
+        }
+
+        var startOfDate = this._isUTC ? utcStartOfDate : localStartOfDate;
+
+        switch (units) {
+            case 'year':
+                time = startOfDate(this.year() + 1, 0, 1) - 1;
+                break;
+            case 'quarter':
+                time = startOfDate(this.year(), this.month() - this.month() % 3 + 3, 1) - 1;
+                break;
+            case 'month':
+                time = startOfDate(this.year(), this.month() + 1, 1) - 1;
+                break;
+            case 'week':
+                time = startOfDate(this.year(), this.month(), this.date() - this.weekday() + 7) - 1;
+                break;
+            case 'isoWeek':
+                time = startOfDate(this.year(), this.month(), this.date() - (this.isoWeekday() - 1) + 7) - 1;
+                break;
+            case 'day':
+            case 'date':
+                time = startOfDate(this.year(), this.month(), this.date() + 1) - 1;
+                break;
+            case 'hour':
+                time = this._d.valueOf();
+                time += MS_PER_HOUR - mod$1(time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE), MS_PER_HOUR) - 1;
+                break;
+            case 'minute':
+                time = this._d.valueOf();
+                time += MS_PER_MINUTE - mod$1(time, MS_PER_MINUTE) - 1;
+                break;
+            case 'second':
+                time = this._d.valueOf();
+                time += MS_PER_SECOND - mod$1(time, MS_PER_SECOND) - 1;
+                break;
+        }
+
+        this._d.setTime(time);
+        hooks.updateOffset(this, true);
+        return this;
+    }
+
+    function valueOf () {
+        return this._d.valueOf() - ((this._offset || 0) * 60000);
+    }
+
+    function unix () {
+        return Math.floor(this.valueOf() / 1000);
+    }
+
+    function toDate () {
+        return new Date(this.valueOf());
+    }
+
+    function toArray () {
+        var m = this;
+        return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
+    }
+
+    function toObject () {
+        var m = this;
+        return {
+            years: m.year(),
+            months: m.month(),
+            date: m.date(),
+            hours: m.hours(),
+            minutes: m.minutes(),
+            seconds: m.seconds(),
+            milliseconds: m.milliseconds()
+        };
+    }
+
+    function toJSON () {
+        // new Date(NaN).toJSON() === null
+        return this.isValid() ? this.toISOString() : null;
+    }
+
+    function isValid$2 () {
+        return isValid(this);
+    }
+
+    function parsingFlags () {
+        return extend({}, getParsingFlags(this));
+    }
+
+    function invalidAt () {
+        return getParsingFlags(this).overflow;
+    }
+
+    function creationData() {
+        return {
+            input: this._i,
+            format: this._f,
+            locale: this._locale,
+            isUTC: this._isUTC,
+            strict: this._strict
+        };
+    }
+
+    // FORMATTING
+
+    addFormatToken(0, ['gg', 2], 0, function () {
+        return this.weekYear() % 100;
+    });
+
+    addFormatToken(0, ['GG', 2], 0, function () {
+        return this.isoWeekYear() % 100;
+    });
+
+    function addWeekYearFormatToken (token, getter) {
+        addFormatToken(0, [token, token.length], 0, getter);
+    }
+
+    addWeekYearFormatToken('gggg',     'weekYear');
+    addWeekYearFormatToken('ggggg',    'weekYear');
+    addWeekYearFormatToken('GGGG',  'isoWeekYear');
+    addWeekYearFormatToken('GGGGG', 'isoWeekYear');
+
+    // ALIASES
+
+    addUnitAlias('weekYear', 'gg');
+    addUnitAlias('isoWeekYear', 'GG');
+
+    // PRIORITY
+
+    addUnitPriority('weekYear', 1);
+    addUnitPriority('isoWeekYear', 1);
+
+
+    // PARSING
+
+    addRegexToken('G',      matchSigned);
+    addRegexToken('g',      matchSigned);
+    addRegexToken('GG',     match1to2, match2);
+    addRegexToken('gg',     match1to2, match2);
+    addRegexToken('GGGG',   match1to4, match4);
+    addRegexToken('gggg',   match1to4, match4);
+    addRegexToken('GGGGG',  match1to6, match6);
+    addRegexToken('ggggg',  match1to6, match6);
+
+    addWeekParseToken(['gggg', 'ggggg', 'GGGG', 'GGGGG'], function (input, week, config, token) {
+        week[token.substr(0, 2)] = toInt(input);
+    });
+
+    addWeekParseToken(['gg', 'GG'], function (input, week, config, token) {
+        week[token] = hooks.parseTwoDigitYear(input);
+    });
+
+    // MOMENTS
+
+    function getSetWeekYear (input) {
+        return getSetWeekYearHelper.call(this,
+                input,
+                this.week(),
+                this.weekday(),
+                this.localeData()._week.dow,
+                this.localeData()._week.doy);
+    }
+
+    function getSetISOWeekYear (input) {
+        return getSetWeekYearHelper.call(this,
+                input, this.isoWeek(), this.isoWeekday(), 1, 4);
+    }
+
+    function getISOWeeksInYear () {
+        return weeksInYear(this.year(), 1, 4);
+    }
+
+    function getWeeksInYear () {
+        var weekInfo = this.localeData()._week;
+        return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
+    }
+
+    function getSetWeekYearHelper(input, week, weekday, dow, doy) {
+        var weeksTarget;
+        if (input == null) {
+            return weekOfYear(this, dow, doy).year;
+        } else {
+            weeksTarget = weeksInYear(input, dow, doy);
+            if (week > weeksTarget) {
+                week = weeksTarget;
+            }
+            return setWeekAll.call(this, input, week, weekday, dow, doy);
+        }
+    }
+
+    function setWeekAll(weekYear, week, weekday, dow, doy) {
+        var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy),
+            date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
+
+        this.year(date.getUTCFullYear());
+        this.month(date.getUTCMonth());
+        this.date(date.getUTCDate());
+        return this;
+    }
+
+    // FORMATTING
+
+    addFormatToken('Q', 0, 'Qo', 'quarter');
+
+    // ALIASES
+
+    addUnitAlias('quarter', 'Q');
+
+    // PRIORITY
+
+    addUnitPriority('quarter', 7);
+
+    // PARSING
+
+    addRegexToken('Q', match1);
+    addParseToken('Q', function (input, array) {
+        array[MONTH] = (toInt(input) - 1) * 3;
+    });
+
+    // MOMENTS
+
+    function getSetQuarter (input) {
+        return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
+    }
+
+    // FORMATTING
+
+    addFormatToken('D', ['DD', 2], 'Do', 'date');
+
+    // ALIASES
+
+    addUnitAlias('date', 'D');
+
+    // PRIORITY
+    addUnitPriority('date', 9);
+
+    // PARSING
+
+    addRegexToken('D',  match1to2);
+    addRegexToken('DD', match1to2, match2);
+    addRegexToken('Do', function (isStrict, locale) {
+        // TODO: Remove "ordinalParse" fallback in next major release.
+        return isStrict ?
+          (locale._dayOfMonthOrdinalParse || locale._ordinalParse) :
+          locale._dayOfMonthOrdinalParseLenient;
+    });
+
+    addParseToken(['D', 'DD'], DATE);
+    addParseToken('Do', function (input, array) {
+        array[DATE] = toInt(input.match(match1to2)[0]);
+    });
+
+    // MOMENTS
+
+    var getSetDayOfMonth = makeGetSet('Date', true);
+
+    // FORMATTING
+
+    addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
+
+    // ALIASES
+
+    addUnitAlias('dayOfYear', 'DDD');
+
+    // PRIORITY
+    addUnitPriority('dayOfYear', 4);
+
+    // PARSING
+
+    addRegexToken('DDD',  match1to3);
+    addRegexToken('DDDD', match3);
+    addParseToken(['DDD', 'DDDD'], function (input, array, config) {
+        config._dayOfYear = toInt(input);
+    });
+
+    // HELPERS
+
+    // MOMENTS
+
+    function getSetDayOfYear (input) {
+        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
+        return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
+    }
+
+    // FORMATTING
+
+    addFormatToken('m', ['mm', 2], 0, 'minute');
+
+    // ALIASES
+
+    addUnitAlias('minute', 'm');
+
+    // PRIORITY
+
+    addUnitPriority('minute', 14);
+
+    // PARSING
+
+    addRegexToken('m',  match1to2);
+    addRegexToken('mm', match1to2, match2);
+    addParseToken(['m', 'mm'], MINUTE);
+
+    // MOMENTS
+
+    var getSetMinute = makeGetSet('Minutes', false);
+
+    // FORMATTING
+
+    addFormatToken('s', ['ss', 2], 0, 'second');
+
+    // ALIASES
+
+    addUnitAlias('second', 's');
+
+    // PRIORITY
+
+    addUnitPriority('second', 15);
+
+    // PARSING
+
+    addRegexToken('s',  match1to2);
+    addRegexToken('ss', match1to2, match2);
+    addParseToken(['s', 'ss'], SECOND);
+
+    // MOMENTS
+
+    var getSetSecond = makeGetSet('Seconds', false);
+
+    // FORMATTING
+
+    addFormatToken('S', 0, 0, function () {
+        return ~~(this.millisecond() / 100);
+    });
+
+    addFormatToken(0, ['SS', 2], 0, function () {
+        return ~~(this.millisecond() / 10);
+    });
+
+    addFormatToken(0, ['SSS', 3], 0, 'millisecond');
+    addFormatToken(0, ['SSSS', 4], 0, function () {
+        return this.millisecond() * 10;
+    });
+    addFormatToken(0, ['SSSSS', 5], 0, function () {
+        return this.millisecond() * 100;
+    });
+    addFormatToken(0, ['SSSSSS', 6], 0, function () {
+        return this.millisecond() * 1000;
+    });
+    addFormatToken(0, ['SSSSSSS', 7], 0, function () {
+        return this.millisecond() * 10000;
+    });
+    addFormatToken(0, ['SSSSSSSS', 8], 0, function () {
+        return this.millisecond() * 100000;
+    });
+    addFormatToken(0, ['SSSSSSSSS', 9], 0, function () {
+        return this.millisecond() * 1000000;
+    });
+
+
+    // ALIASES
+
+    addUnitAlias('millisecond', 'ms');
+
+    // PRIORITY
+
+    addUnitPriority('millisecond', 16);
+
+    // PARSING
+
+    addRegexToken('S',    match1to3, match1);
+    addRegexToken('SS',   match1to3, match2);
+    addRegexToken('SSS',  match1to3, match3);
+
+    var token;
+    for (token = 'SSSS'; token.length <= 9; token += 'S') {
+        addRegexToken(token, matchUnsigned);
+    }
+
+    function parseMs(input, array) {
+        array[MILLISECOND] = toInt(('0.' + input) * 1000);
+    }
+
+    for (token = 'S'; token.length <= 9; token += 'S') {
+        addParseToken(token, parseMs);
+    }
+    // MOMENTS
+
+    var getSetMillisecond = makeGetSet('Milliseconds', false);
+
+    // FORMATTING
+
+    addFormatToken('z',  0, 0, 'zoneAbbr');
+    addFormatToken('zz', 0, 0, 'zoneName');
+
+    // MOMENTS
+
+    function getZoneAbbr () {
+        return this._isUTC ? 'UTC' : '';
+    }
+
+    function getZoneName () {
+        return this._isUTC ? 'Coordinated Universal Time' : '';
+    }
+
+    var proto = Moment.prototype;
+
+    proto.add               = add;
+    proto.calendar          = calendar$1;
+    proto.clone             = clone;
+    proto.diff              = diff;
+    proto.endOf             = endOf;
+    proto.format            = format;
+    proto.from              = from;
+    proto.fromNow           = fromNow;
+    proto.to                = to;
+    proto.toNow             = toNow;
+    proto.get               = stringGet;
+    proto.invalidAt         = invalidAt;
+    proto.isAfter           = isAfter;
+    proto.isBefore          = isBefore;
+    proto.isBetween         = isBetween;
+    proto.isSame            = isSame;
+    proto.isSameOrAfter     = isSameOrAfter;
+    proto.isSameOrBefore    = isSameOrBefore;
+    proto.isValid           = isValid$2;
+    proto.lang              = lang;
+    proto.locale            = locale;
+    proto.localeData        = localeData;
+    proto.max               = prototypeMax;
+    proto.min               = prototypeMin;
+    proto.parsingFlags      = parsingFlags;
+    proto.set               = stringSet;
+    proto.startOf           = startOf;
+    proto.subtract          = subtract;
+    proto.toArray           = toArray;
+    proto.toObject          = toObject;
+    proto.toDate            = toDate;
+    proto.toISOString       = toISOString;
+    proto.inspect           = inspect;
+    proto.toJSON            = toJSON;
+    proto.toString          = toString;
+    proto.unix              = unix;
+    proto.valueOf           = valueOf;
+    proto.creationData      = creationData;
+    proto.year       = getSetYear;
+    proto.isLeapYear = getIsLeapYear;
+    proto.weekYear    = getSetWeekYear;
+    proto.isoWeekYear = getSetISOWeekYear;
+    proto.quarter = proto.quarters = getSetQuarter;
+    proto.month       = getSetMonth;
+    proto.daysInMonth = getDaysInMonth;
+    proto.week           = proto.weeks        = getSetWeek;
+    proto.isoWeek        = proto.isoWeeks     = getSetISOWeek;
+    proto.weeksInYear    = getWeeksInYear;
+    proto.isoWeeksInYear = getISOWeeksInYear;
+    proto.date       = getSetDayOfMonth;
+    proto.day        = proto.days             = getSetDayOfWeek;
+    proto.weekday    = getSetLocaleDayOfWeek;
+    proto.isoWeekday = getSetISODayOfWeek;
+    proto.dayOfYear  = getSetDayOfYear;
+    proto.hour = proto.hours = getSetHour;
+    proto.minute = proto.minutes = getSetMinute;
+    proto.second = proto.seconds = getSetSecond;
+    proto.millisecond = proto.milliseconds = getSetMillisecond;
+    proto.utcOffset            = getSetOffset;
+    proto.utc                  = setOffsetToUTC;
+    proto.local                = setOffsetToLocal;
+    proto.parseZone            = setOffsetToParsedOffset;
+    proto.hasAlignedHourOffset = hasAlignedHourOffset;
+    proto.isDST                = isDaylightSavingTime;
+    proto.isLocal              = isLocal;
+    proto.isUtcOffset          = isUtcOffset;
+    proto.isUtc                = isUtc;
+    proto.isUTC                = isUtc;
+    proto.zoneAbbr = getZoneAbbr;
+    proto.zoneName = getZoneName;
+    proto.dates  = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
+    proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
+    proto.years  = deprecate('years accessor is deprecated. Use year instead', getSetYear);
+    proto.zone   = deprecate('moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/', getSetZone);
+    proto.isDSTShifted = deprecate('isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information', isDaylightSavingTimeShifted);
+
+    function createUnix (input) {
+        return createLocal(input * 1000);
+    }
+
+    function createInZone () {
+        return createLocal.apply(null, arguments).parseZone();
+    }
+
+    function preParsePostFormat (string) {
+        return string;
+    }
+
+    var proto$1 = Locale.prototype;
+
+    proto$1.calendar        = calendar;
+    proto$1.longDateFormat  = longDateFormat;
+    proto$1.invalidDate     = invalidDate;
+    proto$1.ordinal         = ordinal;
+    proto$1.preparse        = preParsePostFormat;
+    proto$1.postformat      = preParsePostFormat;
+    proto$1.relativeTime    = relativeTime;
+    proto$1.pastFuture      = pastFuture;
+    proto$1.set             = set;
+
+    proto$1.months            =        localeMonths;
+    proto$1.monthsShort       =        localeMonthsShort;
+    proto$1.monthsParse       =        localeMonthsParse;
+    proto$1.monthsRegex       = monthsRegex;
+    proto$1.monthsShortRegex  = monthsShortRegex;
+    proto$1.week = localeWeek;
+    proto$1.firstDayOfYear = localeFirstDayOfYear;
+    proto$1.firstDayOfWeek = localeFirstDayOfWeek;
+
+    proto$1.weekdays       =        localeWeekdays;
+    proto$1.weekdaysMin    =        localeWeekdaysMin;
+    proto$1.weekdaysShort  =        localeWeekdaysShort;
+    proto$1.weekdaysParse  =        localeWeekdaysParse;
+
+    proto$1.weekdaysRegex       =        weekdaysRegex;
+    proto$1.weekdaysShortRegex  =        weekdaysShortRegex;
+    proto$1.weekdaysMinRegex    =        weekdaysMinRegex;
+
+    proto$1.isPM = localeIsPM;
+    proto$1.meridiem = localeMeridiem;
+
+    function get$1 (format, index, field, setter) {
+        var locale = getLocale();
+        var utc = createUTC().set(setter, index);
+        return locale[field](utc, format);
+    }
+
+    function listMonthsImpl (format, index, field) {
+        if (isNumber(format)) {
+            index = format;
+            format = undefined;
+        }
+
+        format = format || '';
+
+        if (index != null) {
+            return get$1(format, index, field, 'month');
+        }
+
+        var i;
+        var out = [];
+        for (i = 0; i < 12; i++) {
+            out[i] = get$1(format, i, field, 'month');
+        }
+        return out;
+    }
+
+    // ()
+    // (5)
+    // (fmt, 5)
+    // (fmt)
+    // (true)
+    // (true, 5)
+    // (true, fmt, 5)
+    // (true, fmt)
+    function listWeekdaysImpl (localeSorted, format, index, field) {
+        if (typeof localeSorted === 'boolean') {
+            if (isNumber(format)) {
+                index = format;
+                format = undefined;
+            }
+
+            format = format || '';
+        } else {
+            format = localeSorted;
+            index = format;
+            localeSorted = false;
+
+            if (isNumber(format)) {
+                index = format;
+                format = undefined;
+            }
+
+            format = format || '';
+        }
+
+        var locale = getLocale(),
+            shift = localeSorted ? locale._week.dow : 0;
+
+        if (index != null) {
+            return get$1(format, (index + shift) % 7, field, 'day');
+        }
+
+        var i;
+        var out = [];
+        for (i = 0; i < 7; i++) {
+            out[i] = get$1(format, (i + shift) % 7, field, 'day');
+        }
+        return out;
+    }
+
+    function listMonths (format, index) {
+        return listMonthsImpl(format, index, 'months');
+    }
+
+    function listMonthsShort (format, index) {
+        return listMonthsImpl(format, index, 'monthsShort');
+    }
+
+    function listWeekdays (localeSorted, format, index) {
+        return listWeekdaysImpl(localeSorted, format, index, 'weekdays');
+    }
+
+    function listWeekdaysShort (localeSorted, format, index) {
+        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysShort');
+    }
+
+    function listWeekdaysMin (localeSorted, format, index) {
+        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysMin');
+    }
+
+    getSetGlobalLocale('en', {
+        dayOfMonthOrdinalParse: /\d{1,2}(th|st|nd|rd)/,
+        ordinal : function (number) {
+            var b = number % 10,
+                output = (toInt(number % 100 / 10) === 1) ? 'th' :
+                (b === 1) ? 'st' :
+                (b === 2) ? 'nd' :
+                (b === 3) ? 'rd' : 'th';
+            return number + output;
+        }
+    });
+
+    // Side effect imports
+
+    hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', getSetGlobalLocale);
+    hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', getLocale);
+
+    var mathAbs = Math.abs;
+
+    function abs () {
+        var data           = this._data;
+
+        this._milliseconds = mathAbs(this._milliseconds);
+        this._days         = mathAbs(this._days);
+        this._months       = mathAbs(this._months);
+
+        data.milliseconds  = mathAbs(data.milliseconds);
+        data.seconds       = mathAbs(data.seconds);
+        data.minutes       = mathAbs(data.minutes);
+        data.hours         = mathAbs(data.hours);
+        data.months        = mathAbs(data.months);
+        data.years         = mathAbs(data.years);
+
+        return this;
+    }
+
+    function addSubtract$1 (duration, input, value, direction) {
+        var other = createDuration(input, value);
+
+        duration._milliseconds += direction * other._milliseconds;
+        duration._days         += direction * other._days;
+        duration._months       += direction * other._months;
+
+        return duration._bubble();
+    }
+
+    // supports only 2.0-style add(1, 's') or add(duration)
+    function add$1 (input, value) {
+        return addSubtract$1(this, input, value, 1);
+    }
+
+    // supports only 2.0-style subtract(1, 's') or subtract(duration)
+    function subtract$1 (input, value) {
+        return addSubtract$1(this, input, value, -1);
+    }
+
+    function absCeil (number) {
+        if (number < 0) {
+            return Math.floor(number);
+        } else {
+            return Math.ceil(number);
+        }
+    }
+
+    function bubble () {
+        var milliseconds = this._milliseconds;
+        var days         = this._days;
+        var months       = this._months;
+        var data         = this._data;
+        var seconds, minutes, hours, years, monthsFromDays;
+
+        // if we have a mix of positive and negative values, bubble down first
+        // check: https://github.com/moment/moment/issues/2166
+        if (!((milliseconds >= 0 && days >= 0 && months >= 0) ||
+                (milliseconds <= 0 && days <= 0 && months <= 0))) {
+            milliseconds += absCeil(monthsToDays(months) + days) * 864e5;
+            days = 0;
+            months = 0;
+        }
+
+        // The following code bubbles up values, see the tests for
+        // examples of what that means.
+        data.milliseconds = milliseconds % 1000;
+
+        seconds           = absFloor(milliseconds / 1000);
+        data.seconds      = seconds % 60;
+
+        minutes           = absFloor(seconds / 60);
+        data.minutes      = minutes % 60;
+
+        hours             = absFloor(minutes / 60);
+        data.hours        = hours % 24;
+
+        days += absFloor(hours / 24);
+
+        // convert days to months
+        monthsFromDays = absFloor(daysToMonths(days));
+        months += monthsFromDays;
+        days -= absCeil(monthsToDays(monthsFromDays));
+
+        // 12 months -> 1 year
+        years = absFloor(months / 12);
+        months %= 12;
+
+        data.days   = days;
+        data.months = months;
+        data.years  = years;
+
+        return this;
+    }
+
+    function daysToMonths (days) {
+        // 400 years have 146097 days (taking into account leap year rules)
+        // 400 years have 12 months === 4800
+        return days * 4800 / 146097;
+    }
+
+    function monthsToDays (months) {
+        // the reverse of daysToMonths
+        return months * 146097 / 4800;
+    }
+
+    function as (units) {
+        if (!this.isValid()) {
+            return NaN;
+        }
+        var days;
+        var months;
+        var milliseconds = this._milliseconds;
+
+        units = normalizeUnits(units);
+
+        if (units === 'month' || units === 'quarter' || units === 'year') {
+            days = this._days + milliseconds / 864e5;
+            months = this._months + daysToMonths(days);
+            switch (units) {
+                case 'month':   return months;
+                case 'quarter': return months / 3;
+                case 'year':    return months / 12;
+            }
+        } else {
+            // handle milliseconds separately because of floating point math errors (issue #1867)
+            days = this._days + Math.round(monthsToDays(this._months));
+            switch (units) {
+                case 'week'   : return days / 7     + milliseconds / 6048e5;
+                case 'day'    : return days         + milliseconds / 864e5;
+                case 'hour'   : return days * 24    + milliseconds / 36e5;
+                case 'minute' : return days * 1440  + milliseconds / 6e4;
+                case 'second' : return days * 86400 + milliseconds / 1000;
+                // Math.floor prevents floating point math errors here
+                case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
+                default: throw new Error('Unknown unit ' + units);
+            }
+        }
+    }
+
+    // TODO: Use this.as('ms')?
+    function valueOf$1 () {
+        if (!this.isValid()) {
+            return NaN;
+        }
+        return (
+            this._milliseconds +
+            this._days * 864e5 +
+            (this._months % 12) * 2592e6 +
+            toInt(this._months / 12) * 31536e6
+        );
+    }
+
+    function makeAs (alias) {
+        return function () {
+            return this.as(alias);
+        };
+    }
+
+    var asMilliseconds = makeAs('ms');
+    var asSeconds      = makeAs('s');
+    var asMinutes      = makeAs('m');
+    var asHours        = makeAs('h');
+    var asDays         = makeAs('d');
+    var asWeeks        = makeAs('w');
+    var asMonths       = makeAs('M');
+    var asQuarters     = makeAs('Q');
+    var asYears        = makeAs('y');
+
+    function clone$1 () {
+        return createDuration(this);
+    }
+
+    function get$2 (units) {
+        units = normalizeUnits(units);
+        return this.isValid() ? this[units + 's']() : NaN;
+    }
+
+    function makeGetter(name) {
+        return function () {
+            return this.isValid() ? this._data[name] : NaN;
+        };
+    }
+
+    var milliseconds = makeGetter('milliseconds');
+    var seconds      = makeGetter('seconds');
+    var minutes      = makeGetter('minutes');
+    var hours        = makeGetter('hours');
+    var days         = makeGetter('days');
+    var months       = makeGetter('months');
+    var years        = makeGetter('years');
+
+    function weeks () {
+        return absFloor(this.days() / 7);
+    }
+
+    var round = Math.round;
+    var thresholds = {
+        ss: 44,         // a few seconds to seconds
+        s : 45,         // seconds to minute
+        m : 45,         // minutes to hour
+        h : 22,         // hours to day
+        d : 26,         // days to month
+        M : 11          // months to year
+    };
+
+    // helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
+    function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale) {
+        return locale.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
+    }
+
+    function relativeTime$1 (posNegDuration, withoutSuffix, locale) {
+        var duration = createDuration(posNegDuration).abs();
+        var seconds  = round(duration.as('s'));
+        var minutes  = round(duration.as('m'));
+        var hours    = round(duration.as('h'));
+        var days     = round(duration.as('d'));
+        var months   = round(duration.as('M'));
+        var years    = round(duration.as('y'));
+
+        var a = seconds <= thresholds.ss && ['s', seconds]  ||
+                seconds < thresholds.s   && ['ss', seconds] ||
+                minutes <= 1             && ['m']           ||
+                minutes < thresholds.m   && ['mm', minutes] ||
+                hours   <= 1             && ['h']           ||
+                hours   < thresholds.h   && ['hh', hours]   ||
+                days    <= 1             && ['d']           ||
+                days    < thresholds.d   && ['dd', days]    ||
+                months  <= 1             && ['M']           ||
+                months  < thresholds.M   && ['MM', months]  ||
+                years   <= 1             && ['y']           || ['yy', years];
+
+        a[2] = withoutSuffix;
+        a[3] = +posNegDuration > 0;
+        a[4] = locale;
+        return substituteTimeAgo.apply(null, a);
+    }
+
+    // This function allows you to set the rounding function for relative time strings
+    function getSetRelativeTimeRounding (roundingFunction) {
+        if (roundingFunction === undefined) {
+            return round;
+        }
+        if (typeof(roundingFunction) === 'function') {
+            round = roundingFunction;
+            return true;
+        }
+        return false;
+    }
+
+    // This function allows you to set a threshold for relative time strings
+    function getSetRelativeTimeThreshold (threshold, limit) {
+        if (thresholds[threshold] === undefined) {
+            return false;
+        }
+        if (limit === undefined) {
+            return thresholds[threshold];
+        }
+        thresholds[threshold] = limit;
+        if (threshold === 's') {
+            thresholds.ss = limit - 1;
+        }
+        return true;
+    }
+
+    function humanize (withSuffix) {
+        if (!this.isValid()) {
+            return this.localeData().invalidDate();
+        }
+
+        var locale = this.localeData();
+        var output = relativeTime$1(this, !withSuffix, locale);
+
+        if (withSuffix) {
+            output = locale.pastFuture(+this, output);
+        }
+
+        return locale.postformat(output);
+    }
+
+    var abs$1 = Math.abs;
+
+    function sign(x) {
+        return ((x > 0) - (x < 0)) || +x;
+    }
+
+    function toISOString$1() {
+        // for ISO strings we do not use the normal bubbling rules:
+        //  * milliseconds bubble up until they become hours
+        //  * days do not bubble at all
+        //  * months bubble up until they become years
+        // This is because there is no context-free conversion between hours and days
+        // (think of clock changes)
+        // and also not between days and months (28-31 days per month)
+        if (!this.isValid()) {
+            return this.localeData().invalidDate();
+        }
+
+        var seconds = abs$1(this._milliseconds) / 1000;
+        var days         = abs$1(this._days);
+        var months       = abs$1(this._months);
+        var minutes, hours, years;
+
+        // 3600 seconds -> 60 minutes -> 1 hour
+        minutes           = absFloor(seconds / 60);
+        hours             = absFloor(minutes / 60);
+        seconds %= 60;
+        minutes %= 60;
+
+        // 12 months -> 1 year
+        years  = absFloor(months / 12);
+        months %= 12;
+
+
+        // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
+        var Y = years;
+        var M = months;
+        var D = days;
+        var h = hours;
+        var m = minutes;
+        var s = seconds ? seconds.toFixed(3).replace(/\.?0+$/, '') : '';
+        var total = this.asSeconds();
+
+        if (!total) {
+            // this is the same as C#'s (Noda) and python (isodate)...
+            // but not other JS (goog.date)
+            return 'P0D';
+        }
+
+        var totalSign = total < 0 ? '-' : '';
+        var ymSign = sign(this._months) !== sign(total) ? '-' : '';
+        var daysSign = sign(this._days) !== sign(total) ? '-' : '';
+        var hmsSign = sign(this._milliseconds) !== sign(total) ? '-' : '';
+
+        return totalSign + 'P' +
+            (Y ? ymSign + Y + 'Y' : '') +
+            (M ? ymSign + M + 'M' : '') +
+            (D ? daysSign + D + 'D' : '') +
+            ((h || m || s) ? 'T' : '') +
+            (h ? hmsSign + h + 'H' : '') +
+            (m ? hmsSign + m + 'M' : '') +
+            (s ? hmsSign + s + 'S' : '');
+    }
+
+    var proto$2 = Duration.prototype;
+
+    proto$2.isValid        = isValid$1;
+    proto$2.abs            = abs;
+    proto$2.add            = add$1;
+    proto$2.subtract       = subtract$1;
+    proto$2.as             = as;
+    proto$2.asMilliseconds = asMilliseconds;
+    proto$2.asSeconds      = asSeconds;
+    proto$2.asMinutes      = asMinutes;
+    proto$2.asHours        = asHours;
+    proto$2.asDays         = asDays;
+    proto$2.asWeeks        = asWeeks;
+    proto$2.asMonths       = asMonths;
+    proto$2.asQuarters     = asQuarters;
+    proto$2.asYears        = asYears;
+    proto$2.valueOf        = valueOf$1;
+    proto$2._bubble        = bubble;
+    proto$2.clone          = clone$1;
+    proto$2.get            = get$2;
+    proto$2.milliseconds   = milliseconds;
+    proto$2.seconds        = seconds;
+    proto$2.minutes        = minutes;
+    proto$2.hours          = hours;
+    proto$2.days           = days;
+    proto$2.weeks          = weeks;
+    proto$2.months         = months;
+    proto$2.years          = years;
+    proto$2.humanize       = humanize;
+    proto$2.toISOString    = toISOString$1;
+    proto$2.toString       = toISOString$1;
+    proto$2.toJSON         = toISOString$1;
+    proto$2.locale         = locale;
+    proto$2.localeData     = localeData;
+
+    proto$2.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', toISOString$1);
+    proto$2.lang = lang;
+
+    // Side effect imports
+
+    // FORMATTING
+
+    addFormatToken('X', 0, 0, 'unix');
+    addFormatToken('x', 0, 0, 'valueOf');
+
+    // PARSING
+
+    addRegexToken('x', matchSigned);
+    addRegexToken('X', matchTimestamp);
+    addParseToken('X', function (input, array, config) {
+        config._d = new Date(parseFloat(input, 10) * 1000);
+    });
+    addParseToken('x', function (input, array, config) {
+        config._d = new Date(toInt(input));
+    });
+
+    // Side effect imports
+
+
+    hooks.version = '2.24.0';
+
+    setHookCallback(createLocal);
+
+    hooks.fn                    = proto;
+    hooks.min                   = min;
+    hooks.max                   = max;
+    hooks.now                   = now;
+    hooks.utc                   = createUTC;
+    hooks.unix                  = createUnix;
+    hooks.months                = listMonths;
+    hooks.isDate                = isDate;
+    hooks.locale                = getSetGlobalLocale;
+    hooks.invalid               = createInvalid;
+    hooks.duration              = createDuration;
+    hooks.isMoment              = isMoment;
+    hooks.weekdays              = listWeekdays;
+    hooks.parseZone             = createInZone;
+    hooks.localeData            = getLocale;
+    hooks.isDuration            = isDuration;
+    hooks.monthsShort           = listMonthsShort;
+    hooks.weekdaysMin           = listWeekdaysMin;
+    hooks.defineLocale          = defineLocale;
+    hooks.updateLocale          = updateLocale;
+    hooks.locales               = listLocales;
+    hooks.weekdaysShort         = listWeekdaysShort;
+    hooks.normalizeUnits        = normalizeUnits;
+    hooks.relativeTimeRounding  = getSetRelativeTimeRounding;
+    hooks.relativeTimeThreshold = getSetRelativeTimeThreshold;
+    hooks.calendarFormat        = getCalendarFormat;
+    hooks.prototype             = proto;
+
+    // currently HTML5 input type only supports 24-hour formats
+    hooks.HTML5_FMT = {
+        DATETIME_LOCAL: 'YYYY-MM-DDTHH:mm',             // <input type="datetime-local" />
+        DATETIME_LOCAL_SECONDS: 'YYYY-MM-DDTHH:mm:ss',  // <input type="datetime-local" step="1" />
+        DATETIME_LOCAL_MS: 'YYYY-MM-DDTHH:mm:ss.SSS',   // <input type="datetime-local" step="0.001" />
+        DATE: 'YYYY-MM-DD',                             // <input type="date" />
+        TIME: 'HH:mm',                                  // <input type="time" />
+        TIME_SECONDS: 'HH:mm:ss',                       // <input type="time" step="1" />
+        TIME_MS: 'HH:mm:ss.SSS',                        // <input type="time" step="0.001" />
+        WEEK: 'GGGG-[W]WW',                             // <input type="week" />
+        MONTH: 'YYYY-MM'                                // <input type="month" />
+    };
+
+    return hooks;
+
+})));
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)(module)))
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const req = __webpack_require__(13);
 
 const modules = req.keys().map(req);
 
@@ -1590,37 +6198,122 @@ module.exports = modules;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//! moment.js locale configuration
+
+;(function (global, factory) {
+    true ? factory(__webpack_require__(9)) :
+   undefined
+}(this, (function (moment) { 'use strict';
+
+
+    function processRelativeTime(number, withoutSuffix, key, isFuture) {
+        var format = {
+            'm': ['eine Minute', 'einer Minute'],
+            'h': ['eine Stunde', 'einer Stunde'],
+            'd': ['ein Tag', 'einem Tag'],
+            'dd': [number + ' Tage', number + ' Tagen'],
+            'M': ['ein Monat', 'einem Monat'],
+            'MM': [number + ' Monate', number + ' Monaten'],
+            'y': ['ein Jahr', 'einem Jahr'],
+            'yy': [number + ' Jahre', number + ' Jahren']
+        };
+        return withoutSuffix ? format[key][0] : format[key][1];
+    }
+
+    var de = moment.defineLocale('de', {
+        months : 'Januar_Februar_März_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember'.split('_'),
+        monthsShort : 'Jan._Feb._März_Apr._Mai_Juni_Juli_Aug._Sep._Okt._Nov._Dez.'.split('_'),
+        monthsParseExact : true,
+        weekdays : 'Sonntag_Montag_Dienstag_Mittwoch_Donnerstag_Freitag_Samstag'.split('_'),
+        weekdaysShort : 'So._Mo._Di._Mi._Do._Fr._Sa.'.split('_'),
+        weekdaysMin : 'So_Mo_Di_Mi_Do_Fr_Sa'.split('_'),
+        weekdaysParseExact : true,
+        longDateFormat : {
+            LT: 'HH:mm',
+            LTS: 'HH:mm:ss',
+            L : 'DD.MM.YYYY',
+            LL : 'D. MMMM YYYY',
+            LLL : 'D. MMMM YYYY HH:mm',
+            LLLL : 'dddd, D. MMMM YYYY HH:mm'
+        },
+        calendar : {
+            sameDay: '[heute um] LT [Uhr]',
+            sameElse: 'L',
+            nextDay: '[morgen um] LT [Uhr]',
+            nextWeek: 'dddd [um] LT [Uhr]',
+            lastDay: '[gestern um] LT [Uhr]',
+            lastWeek: '[letzten] dddd [um] LT [Uhr]'
+        },
+        relativeTime : {
+            future : 'in %s',
+            past : 'vor %s',
+            s : 'ein paar Sekunden',
+            ss : '%d Sekunden',
+            m : processRelativeTime,
+            mm : '%d Minuten',
+            h : processRelativeTime,
+            hh : '%d Stunden',
+            d : processRelativeTime,
+            dd : processRelativeTime,
+            M : processRelativeTime,
+            MM : processRelativeTime,
+            y : processRelativeTime,
+            yy : processRelativeTime
+        },
+        dayOfMonthOrdinalParse: /\d{1,2}\./,
+        ordinal : '%d.',
+        week : {
+            dow : 1, // Monday is the first day of the week.
+            doy : 4  // The week that contains Jan 4th is the first week of the year.
+        }
+    });
+
+    return de;
+
+})));
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"AAA\":{\"Timezone\":\"Pacific/Tahiti\"},\"AAC\":{\"Timezone\":\"Africa/Cairo\"},\"AAE\":{\"Timezone\":\"Africa/Algiers\"},\"AAF\":{\"Timezone\":\"America/New_York\"},\"AAH\":{\"Timezone\":\"Europe/Berlin\"},\"AAK\":{\"Timezone\":null},\"AAL\":{\"Timezone\":\"Europe/Copenhagen\"},\"AAM\":{\"Timezone\":\"Africa/Johannesburg\"},\"AAN\":{\"Timezone\":\"Asia/Dubai\"},\"AAO\":{\"Timezone\":\"America/Caracas\"},\"AAP\":{\"Timezone\":\"America/Chicago\"},\"AAQ\":{\"Timezone\":\"Europe/Moscow\"},\"AAR\":{\"Timezone\":\"Europe/Copenhagen\"},\"AAT\":{\"Timezone\":\"Asia/Shanghai\"},\"AAV\":{\"Timezone\":null},\"AAX\":{\"Timezone\":\"America/Sao_Paulo\"},\"AAY\":{\"Timezone\":\"Asia/Aden\"},\"AAZ\":{\"Timezone\":\"America/Guatemala\"},\"ABA\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"ABB\":{\"Timezone\":\"Africa/Lagos\"},\"ABC\":{\"Timezone\":\"Europe/Madrid\"},\"ABD\":{\"Timezone\":\"Asia/Tehran\"},\"ABE\":{\"Timezone\":\"America/New_York\"},\"ABF\":{\"Timezone\":\"Pacific/Tarawa\"},\"ABH\":{\"Timezone\":null},\"ABI\":{\"Timezone\":\"America/Chicago\"},\"ABJ\":{\"Timezone\":\"Africa/Abidjan\"},\"ABK\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"ABL\":{\"Timezone\":\"America/Anchorage\"},\"ABM\":{\"Timezone\":\"Australia/Brisbane\"},\"ABN\":{\"Timezone\":\"America/Paramaribo\"},\"ABQ\":{\"Timezone\":\"America/Denver\"},\"ABR\":{\"Timezone\":\"America/Chicago\"},\"ABS\":{\"Timezone\":\"Africa/Cairo\"},\"ABT\":{\"Timezone\":\"Asia/Riyadh\"},\"ABV\":{\"Timezone\":\"Africa/Lagos\"},\"ABX\":{\"Timezone\":\"Australia/Sydney\"},\"ABY\":{\"Timezone\":\"America/New_York\"},\"ABZ\":{\"Timezone\":\"Europe/London\"},\"ACA\":{\"Timezone\":\"America/Mexico_City\"},\"ACC\":{\"Timezone\":\"Africa/Accra\"},\"ACD\":{\"Timezone\":\"America/Bogota\"},\"ACE\":{\"Timezone\":\"Atlantic/Canary\"},\"ACF\":{\"Timezone\":\"Australia/Brisbane\"},\"ACH\":{\"Timezone\":\"Europe/Zurich\"},\"ACI\":{\"Timezone\":\"Europe/Guernsey\"},\"ACJ\":{\"Timezone\":\"Asia/Colombo\"},\"ACK\":{\"Timezone\":\"America/New_York\"},\"ACN\":{\"Timezone\":\"America/Mexico_City\"},\"ACP\":{\"Timezone\":\"Asia/Tehran\"},\"ACR\":{\"Timezone\":\"America/Bogota\"},\"ACS\":{\"Timezone\":null},\"ACT\":{\"Timezone\":\"America/Chicago\"},\"ACV\":{\"Timezone\":\"America/Los_Angeles\"},\"ACX\":{\"Timezone\":\"Asia/Shanghai\"},\"ACY\":{\"Timezone\":\"America/New_York\"},\"ACZ\":{\"Timezone\":\"Asia/Tehran\"},\"ADA\":{\"Timezone\":\"Europe/Istanbul\"},\"ADB\":{\"Timezone\":\"Europe/Istanbul\"},\"ADD\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"ADE\":{\"Timezone\":\"Asia/Aden\"},\"ADF\":{\"Timezone\":\"Europe/Istanbul\"},\"ADH\":{\"Timezone\":\"Asia/Yakutsk\"},\"ADI\":{\"Timezone\":null},\"ADJ\":{\"Timezone\":\"Asia/Amman\"},\"ADK\":{\"Timezone\":\"America/Adak\"},\"ADL\":{\"Timezone\":\"Australia/Adelaide\"},\"ADM\":{\"Timezone\":\"America/Chicago\"},\"ADP\":{\"Timezone\":\"Asia/Colombo\"},\"ADQ\":{\"Timezone\":\"America/Anchorage\"},\"ADS\":{\"Timezone\":\"America/Chicago\"},\"ADT\":{\"Timezone\":\"America/Chicago\"},\"ADU\":{\"Timezone\":\"Asia/Tehran\"},\"ADW\":{\"Timezone\":\"America/New_York\"},\"ADX\":{\"Timezone\":\"Europe/London\"},\"ADY\":{\"Timezone\":\"Africa/Johannesburg\"},\"ADZ\":{\"Timezone\":\"America/Bogota\"},\"AEA\":{\"Timezone\":\"Pacific/Tarawa\"},\"AEB\":{\"Timezone\":\"Asia/Shanghai\"},\"AEG\":{\"Timezone\":\"Asia/Jakarta\"},\"AEH\":{\"Timezone\":\"Africa/Ndjamena\"},\"AEI\":{\"Timezone\":null},\"AEO\":{\"Timezone\":\"Africa/Nouakchott\"},\"AEP\":{\"Timezone\":\"America/Buenos_Aires\"},\"AER\":{\"Timezone\":\"Europe/Moscow\"},\"AES\":{\"Timezone\":\"Europe/Oslo\"},\"AET\":{\"Timezone\":\"America/Anchorage\"},\"AEU\":{\"Timezone\":\"Asia/Tehran\"},\"AEX\":{\"Timezone\":\"America/Chicago\"},\"AEY\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"AFA\":{\"Timezone\":\"America/Mendoza\"},\"AFL\":{\"Timezone\":\"America/Campo_Grande\"},\"AFS\":{\"Timezone\":\"Asia/Samarkand\"},\"AFT\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"AFW\":{\"Timezone\":\"America/Chicago\"},\"AFY\":{\"Timezone\":\"Europe/Istanbul\"},\"AFZ\":{\"Timezone\":\"Asia/Tehran\"},\"AGA\":{\"Timezone\":\"Africa/Casablanca\"},\"AGB\":{\"Timezone\":\"Europe/Berlin\"},\"AGC\":{\"Timezone\":\"America/New_York\"},\"AGE\":{\"Timezone\":\"Europe/Berlin\"},\"AGF\":{\"Timezone\":\"Europe/Paris\"},\"AGH\":{\"Timezone\":\"Europe/Stockholm\"},\"AGI\":{\"Timezone\":\"America/Paramaribo\"},\"AGJ\":{\"Timezone\":\"Asia/Tokyo\"},\"AGN\":{\"Timezone\":\"America/Anchorage\"},\"AGP\":{\"Timezone\":\"Europe/Madrid\"},\"AGQ\":{\"Timezone\":\"Europe/Athens\"},\"AGR\":{\"Timezone\":\"Asia/Calcutta\"},\"AGS\":{\"Timezone\":\"America/New_York\"},\"AGT\":{\"Timezone\":\"America/Asuncion\"},\"AGU\":{\"Timezone\":\"America/Mexico_City\"},\"AGV\":{\"Timezone\":\"America/Caracas\"},\"AGX\":{\"Timezone\":\"Asia/Calcutta\"},\"AGZ\":{\"Timezone\":\"Africa/Johannesburg\"},\"AHB\":{\"Timezone\":\"Asia/Riyadh\"},\"AHE\":{\"Timezone\":\"Pacific/Tahiti\"},\"AHJ\":{\"Timezone\":null},\"AHN\":{\"Timezone\":\"America/New_York\"},\"AHO\":{\"Timezone\":\"Europe/Rome\"},\"AHS\":{\"Timezone\":\"America/Tegucigalpa\"},\"AHU\":{\"Timezone\":\"Africa/Casablanca\"},\"AIA\":{\"Timezone\":\"America/Denver\"},\"AID\":{\"Timezone\":null},\"AIK\":{\"Timezone\":\"America/New_York\"},\"AIN\":{\"Timezone\":\"America/Anchorage\"},\"AIP\":{\"Timezone\":null},\"AIR\":{\"Timezone\":null},\"AIS\":{\"Timezone\":\"Pacific/Tarawa\"},\"AIT\":{\"Timezone\":\"Pacific/Rarotonga\"},\"AIU\":{\"Timezone\":\"Pacific/Rarotonga\"},\"AIZ\":{\"Timezone\":\"America/Chicago\"},\"AJA\":{\"Timezone\":\"Europe/Paris\"},\"AJF\":{\"Timezone\":\"Asia/Riyadh\"},\"AJI\":{\"Timezone\":\"Europe/Istanbul\"},\"AJK\":{\"Timezone\":\"Asia/Tehran\"},\"AJL\":{\"Timezone\":\"Asia/Calcutta\"},\"AJN\":{\"Timezone\":\"Indian/Comoro\"},\"AJR\":{\"Timezone\":\"Europe/Stockholm\"},\"AJU\":{\"Timezone\":\"America/Fortaleza\"},\"AJY\":{\"Timezone\":\"Africa/Niamey\"},\"AKA\":{\"Timezone\":\"Asia/Shanghai\"},\"AKB\":{\"Timezone\":\"America/Adak\"},\"AKC\":{\"Timezone\":\"America/New_York\"},\"AKD\":{\"Timezone\":\"Asia/Calcutta\"},\"AKF\":{\"Timezone\":\"Africa/Tripoli\"},\"AKH\":{\"Timezone\":\"Asia/Riyadh\"},\"AKI\":{\"Timezone\":\"America/Anchorage\"},\"AKJ\":{\"Timezone\":\"Asia/Tokyo\"},\"AKK\":{\"Timezone\":\"America/Anchorage\"},\"AKL\":{\"Timezone\":\"Pacific/Auckland\"},\"AKN\":{\"Timezone\":\"America/Anchorage\"},\"AKO\":{\"Timezone\":\"America/Denver\"},\"AKP\":{\"Timezone\":\"America/Anchorage\"},\"AKR\":{\"Timezone\":\"Africa/Lagos\"},\"AKS\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"AKT\":{\"Timezone\":\"Europe/London\"},\"AKU\":{\"Timezone\":\"Asia/Shanghai\"},\"AKV\":{\"Timezone\":\"America/Toronto\"},\"AKW\":{\"Timezone\":\"Asia/Tehran\"},\"AKX\":{\"Timezone\":\"Asia/Oral\"},\"AKY\":{\"Timezone\":\"Asia/Rangoon\"},\"ALA\":{\"Timezone\":\"Asia/Qyzylorda\"},\"ALB\":{\"Timezone\":\"America/New_York\"},\"ALC\":{\"Timezone\":\"Europe/Madrid\"},\"ALE\":{\"Timezone\":null},\"ALF\":{\"Timezone\":\"Europe/Oslo\"},\"ALG\":{\"Timezone\":\"Africa/Algiers\"},\"ALH\":{\"Timezone\":\"Australia/Perth\"},\"ALI\":{\"Timezone\":\"America/Chicago\"},\"ALJ\":{\"Timezone\":\"Africa/Johannesburg\"},\"ALL\":{\"Timezone\":\"Europe/Rome\"},\"ALM\":{\"Timezone\":\"America/Denver\"},\"ALN\":{\"Timezone\":null},\"ALO\":{\"Timezone\":\"America/Chicago\"},\"ALP\":{\"Timezone\":\"Asia/Damascus\"},\"ALR\":{\"Timezone\":\"Pacific/Auckland\"},\"ALS\":{\"Timezone\":\"America/Denver\"},\"ALU\":{\"Timezone\":\"Africa/Mogadishu\"},\"ALW\":{\"Timezone\":\"America/Los_Angeles\"},\"ALX\":{\"Timezone\":null},\"ALY\":{\"Timezone\":\"Africa/Cairo\"},\"AMA\":{\"Timezone\":\"America/Chicago\"},\"AMB\":{\"Timezone\":\"Indian/Antananarivo\"},\"AMC\":{\"Timezone\":\"Africa/Ndjamena\"},\"AMD\":{\"Timezone\":\"Asia/Calcutta\"},\"AMH\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"AMI\":{\"Timezone\":\"Asia/Makassar\"},\"AMM\":{\"Timezone\":\"Asia/Amman\"},\"AMN\":{\"Timezone\":null},\"AMQ\":{\"Timezone\":\"Asia/Jayapura\"},\"AMS\":{\"Timezone\":\"Europe/Amsterdam\"},\"AMT\":{\"Timezone\":null},\"AMV\":{\"Timezone\":\"Europe/Moscow\"},\"AMZ\":{\"Timezone\":\"Pacific/Auckland\"},\"ANB\":{\"Timezone\":\"America/Chicago\"},\"ANC\":{\"Timezone\":\"America/Anchorage\"},\"AND\":{\"Timezone\":\"America/New_York\"},\"ANE\":{\"Timezone\":\"Europe/Paris\"},\"ANF\":{\"Timezone\":\"America/Santiago\"},\"ANG\":{\"Timezone\":\"Europe/Paris\"},\"ANI\":{\"Timezone\":\"America/Anchorage\"},\"ANK\":{\"Timezone\":\"Europe/Istanbul\"},\"ANM\":{\"Timezone\":\"Indian/Antananarivo\"},\"ANN\":{\"Timezone\":\"America/Anchorage\"},\"ANP\":{\"Timezone\":\"America/New_York\"},\"ANQ\":{\"Timezone\":\"America/New_York\"},\"ANR\":{\"Timezone\":\"Europe/Brussels\"},\"ANS\":{\"Timezone\":\"America/Lima\"},\"ANU\":{\"Timezone\":\"America/Antigua\"},\"ANV\":{\"Timezone\":\"America/Anchorage\"},\"ANX\":{\"Timezone\":\"Europe/Oslo\"},\"AOC\":{\"Timezone\":\"Europe/Berlin\"},\"AOE\":{\"Timezone\":\"Europe/Istanbul\"},\"AOG\":{\"Timezone\":\"Asia/Shanghai\"},\"AOH\":{\"Timezone\":\"America/New_York\"},\"AOI\":{\"Timezone\":\"Europe/Rome\"},\"AOJ\":{\"Timezone\":\"Asia/Tokyo\"},\"AOK\":{\"Timezone\":\"Europe/Athens\"},\"AOL\":{\"Timezone\":\"America/Cordoba\"},\"AOO\":{\"Timezone\":\"America/New_York\"},\"AOP\":{\"Timezone\":\"America/Lima\"},\"AOR\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"AOT\":{\"Timezone\":\"Europe/Rome\"},\"AOU\":{\"Timezone\":null},\"APA\":{\"Timezone\":\"America/Denver\"},\"APC\":{\"Timezone\":\"America/Los_Angeles\"},\"APF\":{\"Timezone\":\"America/New_York\"},\"APG\":{\"Timezone\":\"America/New_York\"},\"API\":{\"Timezone\":null},\"APK\":{\"Timezone\":\"Pacific/Tahiti\"},\"APL\":{\"Timezone\":\"Africa/Maputo\"},\"APN\":{\"Timezone\":\"America/New_York\"},\"APO\":{\"Timezone\":\"America/Bogota\"},\"APQ\":{\"Timezone\":null},\"APT\":{\"Timezone\":null},\"APW\":{\"Timezone\":\"Pacific/Apia\"},\"APZ\":{\"Timezone\":\"America/Argentina/Salta\"},\"AQA\":{\"Timezone\":\"America/Sao_Paulo\"},\"AQB\":{\"Timezone\":\"America/Guatemala\"},\"AQG\":{\"Timezone\":\"Asia/Shanghai\"},\"AQI\":{\"Timezone\":\"Asia/Riyadh\"},\"AQJ\":{\"Timezone\":\"Asia/Amman\"},\"AQP\":{\"Timezone\":\"America/Lima\"},\"ARA\":{\"Timezone\":\"America/Chicago\"},\"ARB\":{\"Timezone\":\"America/New_York\"},\"ARC\":{\"Timezone\":\"America/Anchorage\"},\"ARD\":{\"Timezone\":\"Asia/Makassar\"},\"ARE\":{\"Timezone\":\"America/Puerto_Rico\"},\"ARH\":{\"Timezone\":\"Europe/Moscow\"},\"ARI\":{\"Timezone\":\"America/Santiago\"},\"ARK\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"ARM\":{\"Timezone\":\"Australia/Sydney\"},\"ARN\":{\"Timezone\":\"Europe/Stockholm\"},\"ARR\":{\"Timezone\":\"America/Catamarca\"},\"ART\":{\"Timezone\":\"America/New_York\"},\"ARU\":{\"Timezone\":\"America/Sao_Paulo\"},\"ARV\":{\"Timezone\":\"America/Chicago\"},\"ARW\":{\"Timezone\":\"Europe/Bucharest\"},\"ARY\":{\"Timezone\":null},\"ASA\":{\"Timezone\":\"Africa/Asmera\"},\"ASB\":{\"Timezone\":\"Asia/Ashgabat\"},\"ASD\":{\"Timezone\":\"America/Nassau\"},\"ASE\":{\"Timezone\":\"America/Denver\"},\"ASF\":{\"Timezone\":\"Europe/Samara\"},\"ASH\":{\"Timezone\":\"America/New_York\"},\"ASI\":{\"Timezone\":\"Atlantic/St_Helena\"},\"ASJ\":{\"Timezone\":\"Asia/Tokyo\"},\"ASK\":{\"Timezone\":\"Africa/Abidjan\"},\"ASM\":{\"Timezone\":\"Africa/Asmera\"},\"ASN\":{\"Timezone\":null},\"ASO\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"ASP\":{\"Timezone\":\"Australia/Darwin\"},\"ASR\":{\"Timezone\":\"Europe/Istanbul\"},\"ASS\":{\"Timezone\":null},\"AST\":{\"Timezone\":\"America/Los_Angeles\"},\"ASU\":{\"Timezone\":\"America/Asuncion\"},\"ASV\":{\"Timezone\":\"Africa/Nairobi\"},\"ASW\":{\"Timezone\":\"Africa/Cairo\"},\"ATA\":{\"Timezone\":\"America/Lima\"},\"ATB\":{\"Timezone\":\"Africa/Khartoum\"},\"ATC\":{\"Timezone\":\"America/Nassau\"},\"ATD\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"ATF\":{\"Timezone\":\"America/Guayaquil\"},\"ATG\":{\"Timezone\":null},\"ATH\":{\"Timezone\":\"Europe/Athens\"},\"ATI\":{\"Timezone\":null},\"ATJ\":{\"Timezone\":\"Indian/Antananarivo\"},\"ATK\":{\"Timezone\":\"America/Anchorage\"},\"ATL\":{\"Timezone\":\"America/New_York\"},\"ATM\":{\"Timezone\":\"America/Belem\"},\"ATO\":{\"Timezone\":\"America/New_York\"},\"ATQ\":{\"Timezone\":\"Asia/Calcutta\"},\"ATR\":{\"Timezone\":\"Africa/Nouakchott\"},\"ATW\":{\"Timezone\":\"America/Chicago\"},\"ATY\":{\"Timezone\":\"America/Chicago\"},\"ATZ\":{\"Timezone\":\"Africa/Cairo\"},\"AUA\":{\"Timezone\":\"America/Aruba\"},\"AUC\":{\"Timezone\":\"America/Bogota\"},\"AUF\":{\"Timezone\":\"Europe/Paris\"},\"AUG\":{\"Timezone\":\"America/New_York\"},\"AUH\":{\"Timezone\":\"Asia/Dubai\"},\"AUK\":{\"Timezone\":\"America/Anchorage\"},\"AUO\":{\"Timezone\":\"America/Chicago\"},\"AUQ\":{\"Timezone\":\"Pacific/Marquesas\"},\"AUR\":{\"Timezone\":\"Europe/Paris\"},\"AUS\":{\"Timezone\":\"America/Chicago\"},\"AUU\":{\"Timezone\":\"Australia/Brisbane\"},\"AUW\":{\"Timezone\":\"America/Chicago\"},\"AUX\":{\"Timezone\":\"America/Fortaleza\"},\"AUY\":{\"Timezone\":\"Pacific/Efate\"},\"AVA\":{\"Timezone\":\"Asia/Shanghai\"},\"AVB\":{\"Timezone\":\"Europe/Rome\"},\"AVI\":{\"Timezone\":\"America/Havana\"},\"AVK\":{\"Timezone\":\"Asia/Ulaanbaatar\"},\"AVL\":{\"Timezone\":\"America/New_York\"},\"AVN\":{\"Timezone\":\"Europe/Paris\"},\"AVO\":{\"Timezone\":\"America/New_York\"},\"AVP\":{\"Timezone\":\"America/New_York\"},\"AVR\":{\"Timezone\":\"Europe/Lisbon\"},\"AVV\":{\"Timezone\":\"Australia/Hobart\"},\"AVW\":{\"Timezone\":\"America/Phoenix\"},\"AVX\":{\"Timezone\":\"America/Los_Angeles\"},\"AWA\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"AWD\":{\"Timezone\":\"Pacific/Efate\"},\"AWK\":{\"Timezone\":\"Pacific/Johnston\"},\"AWZ\":{\"Timezone\":\"Asia/Tehran\"},\"AXA\":{\"Timezone\":\"America/Anguilla\"},\"AXD\":{\"Timezone\":\"Europe/Athens\"},\"AXF\":{\"Timezone\":null},\"AXJ\":{\"Timezone\":\"Asia/Tokyo\"},\"AXK\":{\"Timezone\":\"Asia/Aden\"},\"AXM\":{\"Timezone\":\"America/Bogota\"},\"AXN\":{\"Timezone\":null},\"AXP\":{\"Timezone\":\"America/Nassau\"},\"AXR\":{\"Timezone\":\"Pacific/Tahiti\"},\"AXT\":{\"Timezone\":\"Asia/Tokyo\"},\"AXU\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"AYK\":{\"Timezone\":\"Asia/Qyzylorda\"},\"AYO\":{\"Timezone\":\"America/Asuncion\"},\"AYP\":{\"Timezone\":\"America/Lima\"},\"AYQ\":{\"Timezone\":\"Australia/Darwin\"},\"AYS\":{\"Timezone\":null},\"AYT\":{\"Timezone\":\"Europe/Istanbul\"},\"AYW\":{\"Timezone\":null},\"AZA\":{\"Timezone\":\"America/Phoenix\"},\"AZD\":{\"Timezone\":\"Asia/Tehran\"},\"AZI\":{\"Timezone\":\"Asia/Dubai\"},\"AZN\":{\"Timezone\":\"Asia/Samarkand\"},\"AZO\":{\"Timezone\":\"America/New_York\"},\"AZR\":{\"Timezone\":\"Africa/Algiers\"},\"AZS\":{\"Timezone\":\"America/Santo_Domingo\"},\"BAB\":{\"Timezone\":\"America/Los_Angeles\"},\"BAD\":{\"Timezone\":\"America/Chicago\"},\"BAF\":{\"Timezone\":\"America/New_York\"},\"BAG\":{\"Timezone\":\"Asia/Manila\"},\"BAH\":{\"Timezone\":\"Asia/Bahrain\"},\"BAI\":{\"Timezone\":\"America/Costa_Rica\"},\"BAL\":{\"Timezone\":\"Europe/Istanbul\"},\"BAQ\":{\"Timezone\":\"America/Bogota\"},\"BAR\":{\"Timezone\":null},\"BAS\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"BAT\":{\"Timezone\":null},\"BAU\":{\"Timezone\":\"America/Sao_Paulo\"},\"BAV\":{\"Timezone\":\"Asia/Shanghai\"},\"BAX\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"BAY\":{\"Timezone\":\"Europe/Bucharest\"},\"BAZ\":{\"Timezone\":\"America/Boa_Vista\"},\"BBA\":{\"Timezone\":\"America/Santiago\"},\"BBC\":{\"Timezone\":null},\"BBD\":{\"Timezone\":null},\"BBG\":{\"Timezone\":\"Pacific/Tarawa\"},\"BBH\":{\"Timezone\":\"Europe/Berlin\"},\"BBI\":{\"Timezone\":\"Asia/Calcutta\"},\"BBJ\":{\"Timezone\":\"Europe/Berlin\"},\"BBK\":{\"Timezone\":\"Africa/Gaborone\"},\"BBL\":{\"Timezone\":\"Australia/Brisbane\"},\"BBM\":{\"Timezone\":\"Asia/Phnom_Penh\"},\"BBN\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"BBO\":{\"Timezone\":\"Africa/Mogadishu\"},\"BBP\":{\"Timezone\":\"Europe/London\"},\"BBQ\":{\"Timezone\":\"America/Antigua\"},\"BBR\":{\"Timezone\":\"America/Guadeloupe\"},\"BBS\":{\"Timezone\":\"Europe/London\"},\"BBT\":{\"Timezone\":\"Africa/Bangui\"},\"BBU\":{\"Timezone\":\"Europe/Bucharest\"},\"BBX\":{\"Timezone\":\"America/New_York\"},\"BCA\":{\"Timezone\":\"America/Havana\"},\"BCD\":{\"Timezone\":\"Asia/Manila\"},\"BCE\":{\"Timezone\":\"America/Denver\"},\"BCH\":{\"Timezone\":\"Asia/Dili\"},\"BCI\":{\"Timezone\":\"Australia/Brisbane\"},\"BCL\":{\"Timezone\":\"America/Costa_Rica\"},\"BCM\":{\"Timezone\":\"Europe/Bucharest\"},\"BCN\":{\"Timezone\":\"Europe/Madrid\"},\"BCO\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"BCT\":{\"Timezone\":\"America/New_York\"},\"BCU\":{\"Timezone\":null},\"BDA\":{\"Timezone\":\"Atlantic/Bermuda\"},\"BDB\":{\"Timezone\":\"Australia/Brisbane\"},\"BDD\":{\"Timezone\":\"Australia/Brisbane\"},\"BDE\":{\"Timezone\":\"America/Chicago\"},\"BDH\":{\"Timezone\":\"Asia/Tehran\"},\"BDI\":{\"Timezone\":null},\"BDJ\":{\"Timezone\":\"Asia/Makassar\"},\"BDL\":{\"Timezone\":\"America/New_York\"},\"BDM\":{\"Timezone\":\"Europe/Istanbul\"},\"BDN\":{\"Timezone\":\"Asia/Karachi\"},\"BDO\":{\"Timezone\":\"Asia/Jakarta\"},\"BDP\":{\"Timezone\":\"Asia/Katmandu\"},\"BDQ\":{\"Timezone\":\"Asia/Calcutta\"},\"BDR\":{\"Timezone\":\"America/New_York\"},\"BDS\":{\"Timezone\":\"Europe/Rome\"},\"BDT\":{\"Timezone\":\"Africa/Kinshasa\"},\"BDU\":{\"Timezone\":\"Europe/Oslo\"},\"BEB\":{\"Timezone\":\"Europe/London\"},\"BEC\":{\"Timezone\":\"America/Chicago\"},\"BED\":{\"Timezone\":\"America/New_York\"},\"BEF\":{\"Timezone\":\"America/Managua\"},\"BEG\":{\"Timezone\":\"Europe/Belgrade\"},\"BEI\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"BEJ\":{\"Timezone\":\"Asia/Makassar\"},\"BEK\":{\"Timezone\":\"Asia/Calcutta\"},\"BEL\":{\"Timezone\":\"America/Belem\"},\"BEM\":{\"Timezone\":\"Africa/Casablanca\"},\"BEN\":{\"Timezone\":\"Africa/Tripoli\"},\"BEO\":{\"Timezone\":\"Australia/Sydney\"},\"BEP\":{\"Timezone\":\"Asia/Calcutta\"},\"BEQ\":{\"Timezone\":\"Europe/London\"},\"BES\":{\"Timezone\":\"Europe/Paris\"},\"BET\":{\"Timezone\":\"America/Anchorage\"},\"BEU\":{\"Timezone\":\"Australia/Brisbane\"},\"BEV\":{\"Timezone\":\"Asia/Jerusalem\"},\"BEW\":{\"Timezone\":\"Africa/Maputo\"},\"BEX\":{\"Timezone\":\"Europe/London\"},\"BEY\":{\"Timezone\":\"Asia/Beirut\"},\"BEZ\":{\"Timezone\":\"Pacific/Tarawa\"},\"BFD\":{\"Timezone\":\"America/New_York\"},\"BFE\":{\"Timezone\":\"Europe/Berlin\"},\"BFF\":{\"Timezone\":\"America/Denver\"},\"BFH\":{\"Timezone\":\"America/Sao_Paulo\"},\"BFI\":{\"Timezone\":\"America/Los_Angeles\"},\"BFJ\":{\"Timezone\":\"Asia/Shanghai\"},\"BFK\":{\"Timezone\":\"America/Denver\"},\"BFL\":{\"Timezone\":\"America/Los_Angeles\"},\"BFM\":{\"Timezone\":\"America/Chicago\"},\"BFN\":{\"Timezone\":\"Africa/Johannesburg\"},\"BFO\":{\"Timezone\":\"Africa/Harare\"},\"BFP\":{\"Timezone\":\"America/New_York\"},\"BFS\":{\"Timezone\":\"Europe/London\"},\"BFT\":{\"Timezone\":\"America/New_York\"},\"BFU\":{\"Timezone\":null},\"BFV\":{\"Timezone\":\"Asia/Bangkok\"},\"BFW\":{\"Timezone\":\"Africa/Algiers\"},\"BFX\":{\"Timezone\":\"Africa/Douala\"},\"BGA\":{\"Timezone\":\"America/Bogota\"},\"BGC\":{\"Timezone\":\"Europe/Lisbon\"},\"BGD\":{\"Timezone\":null},\"BGE\":{\"Timezone\":\"America/New_York\"},\"BGF\":{\"Timezone\":\"Africa/Bangui\"},\"BGG\":{\"Timezone\":\"Europe/Istanbul\"},\"BGI\":{\"Timezone\":\"America/Barbados\"},\"BGL\":{\"Timezone\":null},\"BGM\":{\"Timezone\":\"America/New_York\"},\"BGN\":{\"Timezone\":null},\"BGO\":{\"Timezone\":\"Europe/Oslo\"},\"BGR\":{\"Timezone\":\"America/New_York\"},\"BGW\":{\"Timezone\":\"Asia/Baghdad\"},\"BGX\":{\"Timezone\":\"America/Sao_Paulo\"},\"BGY\":{\"Timezone\":\"Europe/Rome\"},\"BGZ\":{\"Timezone\":\"Europe/Lisbon\"},\"BHB\":{\"Timezone\":\"America/New_York\"},\"BHD\":{\"Timezone\":\"Europe/London\"},\"BHE\":{\"Timezone\":\"Pacific/Auckland\"},\"BHG\":{\"Timezone\":\"America/Tegucigalpa\"},\"BHH\":{\"Timezone\":\"Asia/Riyadh\"},\"BHI\":{\"Timezone\":\"America/Buenos_Aires\"},\"BHJ\":{\"Timezone\":\"Asia/Calcutta\"},\"BHK\":{\"Timezone\":\"Asia/Samarkand\"},\"BHM\":{\"Timezone\":\"America/Chicago\"},\"BHN\":{\"Timezone\":\"Asia/Aden\"},\"BHO\":{\"Timezone\":\"Asia/Calcutta\"},\"BHP\":{\"Timezone\":\"Asia/Katmandu\"},\"BHQ\":{\"Timezone\":\"Australia/Adelaide\"},\"BHR\":{\"Timezone\":\"Asia/Katmandu\"},\"BHS\":{\"Timezone\":\"Australia/Sydney\"},\"BHU\":{\"Timezone\":\"Asia/Calcutta\"},\"BHV\":{\"Timezone\":\"Asia/Karachi\"},\"BHW\":{\"Timezone\":\"Asia/Karachi\"},\"BHX\":{\"Timezone\":\"Europe/London\"},\"BHY\":{\"Timezone\":\"Asia/Shanghai\"},\"BIA\":{\"Timezone\":\"Europe/Paris\"},\"BIB\":{\"Timezone\":null},\"BID\":{\"Timezone\":\"America/New_York\"},\"BIF\":{\"Timezone\":\"America/Denver\"},\"BIG\":{\"Timezone\":\"America/Anchorage\"},\"BIH\":{\"Timezone\":null},\"BIK\":{\"Timezone\":\"Asia/Jayapura\"},\"BIL\":{\"Timezone\":\"America/Denver\"},\"BIM\":{\"Timezone\":\"America/Nassau\"},\"BIN\":{\"Timezone\":\"Asia/Kabul\"},\"BIO\":{\"Timezone\":\"Europe/Madrid\"},\"BIQ\":{\"Timezone\":\"Europe/Paris\"},\"BIR\":{\"Timezone\":\"Asia/Katmandu\"},\"BIS\":{\"Timezone\":\"America/Chicago\"},\"BIU\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"BIX\":{\"Timezone\":\"America/Chicago\"},\"BIY\":{\"Timezone\":\"Africa/Johannesburg\"},\"BJA\":{\"Timezone\":\"Africa/Algiers\"},\"BJB\":{\"Timezone\":\"Asia/Tehran\"},\"BJC\":{\"Timezone\":\"America/Denver\"},\"BJF\":{\"Timezone\":\"Europe/Oslo\"},\"BJH\":{\"Timezone\":\"Asia/Katmandu\"},\"BJI\":{\"Timezone\":\"America/Chicago\"},\"BJL\":{\"Timezone\":\"Africa/Banjul\"},\"BJM\":{\"Timezone\":\"Africa/Bujumbura\"},\"BJO\":{\"Timezone\":\"America/La_Paz\"},\"BJP\":{\"Timezone\":\"America/Sao_Paulo\"},\"BJR\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"BJU\":{\"Timezone\":\"Asia/Katmandu\"},\"BJV\":{\"Timezone\":\"Europe/Istanbul\"},\"BJW\":{\"Timezone\":null},\"BJX\":{\"Timezone\":\"America/Mexico_City\"},\"BJY\":{\"Timezone\":null},\"BJZ\":{\"Timezone\":\"Europe/Madrid\"},\"BKA\":{\"Timezone\":\"Europe/Moscow\"},\"BKB\":{\"Timezone\":\"Asia/Calcutta\"},\"BKC\":{\"Timezone\":\"America/Anchorage\"},\"BKD\":{\"Timezone\":\"America/Chicago\"},\"BKE\":{\"Timezone\":null},\"BKG\":{\"Timezone\":\"America/Chicago\"},\"BKH\":{\"Timezone\":\"Pacific/Honolulu\"},\"BKI\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"BKK\":{\"Timezone\":\"Asia/Bangkok\"},\"BKL\":{\"Timezone\":\"America/New_York\"},\"BKM\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"BKO\":{\"Timezone\":\"Africa/Bamako\"},\"BKQ\":{\"Timezone\":\"Australia/Brisbane\"},\"BKS\":{\"Timezone\":\"Asia/Jakarta\"},\"BKW\":{\"Timezone\":\"America/New_York\"},\"BKY\":{\"Timezone\":\"Africa/Lubumbashi\"},\"BKZ\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"BLA\":{\"Timezone\":\"America/Caracas\"},\"BLB\":{\"Timezone\":\"America/Panama\"},\"BLE\":{\"Timezone\":\"Europe/Stockholm\"},\"BLF\":{\"Timezone\":\"America/New_York\"},\"BLG\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"BLH\":{\"Timezone\":\"America/Los_Angeles\"},\"BLI\":{\"Timezone\":\"America/Los_Angeles\"},\"BLJ\":{\"Timezone\":\"Africa/Algiers\"},\"BLK\":{\"Timezone\":\"Europe/London\"},\"BLL\":{\"Timezone\":\"Europe/Copenhagen\"},\"BLN\":{\"Timezone\":null},\"BLQ\":{\"Timezone\":\"Europe/Rome\"},\"BLR\":{\"Timezone\":\"Asia/Calcutta\"},\"BLT\":{\"Timezone\":\"Australia/Brisbane\"},\"BLV\":{\"Timezone\":\"America/Chicago\"},\"BLZ\":{\"Timezone\":\"Africa/Blantyre\"},\"BMA\":{\"Timezone\":\"Europe/Stockholm\"},\"BMB\":{\"Timezone\":null},\"BMC\":{\"Timezone\":\"America/Denver\"},\"BMD\":{\"Timezone\":\"Indian/Antananarivo\"},\"BME\":{\"Timezone\":\"Australia/Perth\"},\"BMG\":{\"Timezone\":\"America/New_York\"},\"BMI\":{\"Timezone\":\"America/Chicago\"},\"BMK\":{\"Timezone\":\"Europe/Berlin\"},\"BMM\":{\"Timezone\":\"Africa/Libreville\"},\"BMO\":{\"Timezone\":\"Asia/Rangoon\"},\"BMP\":{\"Timezone\":\"Australia/Brisbane\"},\"BMR\":{\"Timezone\":null},\"BMT\":{\"Timezone\":\"America/Chicago\"},\"BMU\":{\"Timezone\":\"Asia/Makassar\"},\"BMV\":{\"Timezone\":\"Asia/Saigon\"},\"BMW\":{\"Timezone\":\"Africa/Algiers\"},\"BMX\":{\"Timezone\":\"America/Anchorage\"},\"BMY\":{\"Timezone\":\"Pacific/Noumea\"},\"BNA\":{\"Timezone\":\"America/Chicago\"},\"BNB\":{\"Timezone\":null},\"BNC\":{\"Timezone\":null},\"BND\":{\"Timezone\":\"Asia/Tehran\"},\"BNE\":{\"Timezone\":\"Australia/Brisbane\"},\"BNG\":{\"Timezone\":null},\"BNI\":{\"Timezone\":\"Africa/Lagos\"},\"BNJ\":{\"Timezone\":null},\"BNK\":{\"Timezone\":\"Australia/Sydney\"},\"BNM\":{\"Timezone\":null},\"BNN\":{\"Timezone\":\"Europe/Oslo\"},\"BNO\":{\"Timezone\":\"America/Los_Angeles\"},\"BNP\":{\"Timezone\":\"Asia/Karachi\"},\"BNS\":{\"Timezone\":\"America/Caracas\"},\"BNU\":{\"Timezone\":\"America/Sao_Paulo\"},\"BNX\":{\"Timezone\":\"Europe/Sarajevo\"},\"BOA\":{\"Timezone\":\"Africa/Kinshasa\"},\"BOB\":{\"Timezone\":\"Pacific/Tahiti\"},\"BOC\":{\"Timezone\":\"America/Panama\"},\"BOD\":{\"Timezone\":\"Europe/Paris\"},\"BOG\":{\"Timezone\":\"America/Bogota\"},\"BOH\":{\"Timezone\":\"Europe/London\"},\"BOI\":{\"Timezone\":\"America/Denver\"},\"BOJ\":{\"Timezone\":\"Europe/Sofia\"},\"BOM\":{\"Timezone\":\"Asia/Calcutta\"},\"BON\":{\"Timezone\":\"America/Curacao\"},\"BOO\":{\"Timezone\":\"Europe/Oslo\"},\"BOR\":{\"Timezone\":\"Europe/Paris\"},\"BOS\":{\"Timezone\":\"America/New_York\"},\"BOU\":{\"Timezone\":\"Europe/Paris\"},\"BOW\":{\"Timezone\":\"America/New_York\"},\"BOX\":{\"Timezone\":null},\"BOY\":{\"Timezone\":\"Africa/Ouagadougou\"},\"BPC\":{\"Timezone\":\"Africa/Douala\"},\"BPE\":{\"Timezone\":\"Asia/Shanghai\"},\"BPF\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"BPG\":{\"Timezone\":\"America/Campo_Grande\"},\"BPH\":{\"Timezone\":null},\"BPI\":{\"Timezone\":null},\"BPL\":{\"Timezone\":null},\"BPM\":{\"Timezone\":\"Asia/Calcutta\"},\"BPN\":{\"Timezone\":\"Asia/Makassar\"},\"BPS\":{\"Timezone\":\"America/Fortaleza\"},\"BPT\":{\"Timezone\":\"America/Chicago\"},\"BPX\":{\"Timezone\":\"Asia/Shanghai\"},\"BPY\":{\"Timezone\":\"Indian/Antananarivo\"},\"BQA\":{\"Timezone\":\"Asia/Manila\"},\"BQB\":{\"Timezone\":\"Australia/Perth\"},\"BQE\":{\"Timezone\":null},\"BQG\":{\"Timezone\":null},\"BQH\":{\"Timezone\":\"Europe/London\"},\"BQJ\":{\"Timezone\":\"Asia/Vladivostok\"},\"BQK\":{\"Timezone\":\"America/New_York\"},\"BQL\":{\"Timezone\":\"Australia/Brisbane\"},\"BQN\":{\"Timezone\":\"America/Puerto_Rico\"},\"BQS\":{\"Timezone\":\"Asia/Yakutsk\"},\"BQT\":{\"Timezone\":\"Europe/Minsk\"},\"BQU\":{\"Timezone\":\"America/St_Vincent\"},\"BRA\":{\"Timezone\":\"America/Fortaleza\"},\"BRC\":{\"Timezone\":\"America/Argentina/Salta\"},\"BRD\":{\"Timezone\":\"America/Chicago\"},\"BRE\":{\"Timezone\":\"Europe/Berlin\"},\"BRI\":{\"Timezone\":\"Europe/Rome\"},\"BRK\":{\"Timezone\":\"Australia/Sydney\"},\"BRL\":{\"Timezone\":\"America/Chicago\"},\"BRM\":{\"Timezone\":\"America/Caracas\"},\"BRN\":{\"Timezone\":\"Europe/Zurich\"},\"BRO\":{\"Timezone\":\"America/Chicago\"},\"BRQ\":{\"Timezone\":\"Europe/Prague\"},\"BRR\":{\"Timezone\":\"Europe/London\"},\"BRS\":{\"Timezone\":\"Europe/London\"},\"BRT\":{\"Timezone\":\"Australia/Darwin\"},\"BRU\":{\"Timezone\":\"Europe/Brussels\"},\"BRV\":{\"Timezone\":\"Europe/Berlin\"},\"BRW\":{\"Timezone\":\"America/Anchorage\"},\"BRX\":{\"Timezone\":\"America/Santo_Domingo\"},\"BSA\":{\"Timezone\":\"Africa/Mogadishu\"},\"BSB\":{\"Timezone\":\"America/Sao_Paulo\"},\"BSC\":{\"Timezone\":\"America/Bogota\"},\"BSD\":{\"Timezone\":\"Asia/Shanghai\"},\"BSF\":{\"Timezone\":\"Pacific/Honolulu\"},\"BSG\":{\"Timezone\":\"Africa/Malabo\"},\"BSJ\":{\"Timezone\":\"Australia/Hobart\"},\"BSK\":{\"Timezone\":\"Africa/Algiers\"},\"BSL\":{\"Timezone\":\"Europe/Paris\"},\"BSO\":{\"Timezone\":null},\"BSR\":{\"Timezone\":\"Asia/Baghdad\"},\"BST\":{\"Timezone\":\"Asia/Kabul\"},\"BSU\":{\"Timezone\":\"Africa/Kinshasa\"},\"BSX\":{\"Timezone\":\"Asia/Rangoon\"},\"BTC\":{\"Timezone\":\"Asia/Colombo\"},\"BTE\":{\"Timezone\":\"Africa/Freetown\"},\"BTH\":{\"Timezone\":\"Asia/Jakarta\"},\"BTI\":{\"Timezone\":\"America/Anchorage\"},\"BTJ\":{\"Timezone\":\"Asia/Jakarta\"},\"BTK\":{\"Timezone\":\"Asia/Irkutsk\"},\"BTL\":{\"Timezone\":null},\"BTM\":{\"Timezone\":\"America/Denver\"},\"BTR\":{\"Timezone\":\"America/Chicago\"},\"BTS\":{\"Timezone\":\"Europe/Bratislava\"},\"BTT\":{\"Timezone\":\"America/Anchorage\"},\"BTU\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"BTV\":{\"Timezone\":\"America/New_York\"},\"BTW\":{\"Timezone\":\"Asia/Makassar\"},\"BTZ\":{\"Timezone\":\"Europe/Istanbul\"},\"BUA\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"BUC\":{\"Timezone\":\"Australia/Brisbane\"},\"BUD\":{\"Timezone\":\"Europe/Budapest\"},\"BUF\":{\"Timezone\":\"America/New_York\"},\"BUG\":{\"Timezone\":\"Africa/Luanda\"},\"BUI\":{\"Timezone\":\"Asia/Jayapura\"},\"BUJ\":{\"Timezone\":\"Africa/Algiers\"},\"BUL\":{\"Timezone\":null},\"BUN\":{\"Timezone\":\"America/Bogota\"},\"BUO\":{\"Timezone\":\"Africa/Mogadishu\"},\"BUP\":{\"Timezone\":\"Asia/Calcutta\"},\"BUQ\":{\"Timezone\":\"Africa/Harare\"},\"BUR\":{\"Timezone\":\"America/Los_Angeles\"},\"BUS\":{\"Timezone\":\"Asia/Tbilisi\"},\"BUT\":{\"Timezone\":null},\"BUU\":{\"Timezone\":null},\"BUW\":{\"Timezone\":null},\"BUX\":{\"Timezone\":\"Africa/Lubumbashi\"},\"BUY\":{\"Timezone\":null},\"BUZ\":{\"Timezone\":\"Asia/Tehran\"},\"BVA\":{\"Timezone\":\"Europe/Paris\"},\"BVB\":{\"Timezone\":\"America/Boa_Vista\"},\"BVC\":{\"Timezone\":\"Atlantic/Cape_Verde\"},\"BVE\":{\"Timezone\":\"Europe/Paris\"},\"BVG\":{\"Timezone\":\"Europe/Oslo\"},\"BVH\":{\"Timezone\":\"America/Boa_Vista\"},\"BVI\":{\"Timezone\":\"Australia/Brisbane\"},\"BVS\":{\"Timezone\":\"America/Belem\"},\"BVY\":{\"Timezone\":\"America/New_York\"},\"BWA\":{\"Timezone\":\"Asia/Katmandu\"},\"BWB\":{\"Timezone\":\"Australia/Perth\"},\"BWE\":{\"Timezone\":\"Europe/Berlin\"},\"BWF\":{\"Timezone\":\"Europe/London\"},\"BWG\":{\"Timezone\":\"America/Chicago\"},\"BWH\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"BWI\":{\"Timezone\":\"America/New_York\"},\"BWK\":{\"Timezone\":\"Europe/Zagreb\"},\"BWN\":{\"Timezone\":\"Asia/Brunei\"},\"BWO\":{\"Timezone\":\"Europe/Moscow\"},\"BWQ\":{\"Timezone\":null},\"BWT\":{\"Timezone\":\"Australia/Melbourne\"},\"BWU\":{\"Timezone\":\"Australia/Sydney\"},\"BWW\":{\"Timezone\":null},\"BWX\":{\"Timezone\":null},\"BXB\":{\"Timezone\":\"Asia/Jayapura\"},\"BXE\":{\"Timezone\":\"Africa/Dakar\"},\"BXG\":{\"Timezone\":\"Australia/Hobart\"},\"BXH\":{\"Timezone\":\"Asia/Qyzylorda\"},\"BXK\":{\"Timezone\":\"America/Phoenix\"},\"BXN\":{\"Timezone\":\"Europe/Istanbul\"},\"BXO\":{\"Timezone\":\"Europe/Zurich\"},\"BXP\":{\"Timezone\":null},\"BXR\":{\"Timezone\":\"Asia/Tehran\"},\"BXU\":{\"Timezone\":\"Asia/Manila\"},\"BXY\":{\"Timezone\":\"Asia/Qyzylorda\"},\"BYC\":{\"Timezone\":\"America/La_Paz\"},\"BYF\":{\"Timezone\":\"Europe/Paris\"},\"BYH\":{\"Timezone\":\"America/Chicago\"},\"BYI\":{\"Timezone\":null},\"BYJ\":{\"Timezone\":\"Europe/Lisbon\"},\"BYK\":{\"Timezone\":\"Africa/Abidjan\"},\"BYM\":{\"Timezone\":\"America/Havana\"},\"BYN\":{\"Timezone\":\"Asia/Ulaanbaatar\"},\"BYO\":{\"Timezone\":\"America/Campo_Grande\"},\"BYP\":{\"Timezone\":null},\"BYQ\":{\"Timezone\":null},\"BYR\":{\"Timezone\":\"Europe/Copenhagen\"},\"BYS\":{\"Timezone\":\"America/Los_Angeles\"},\"BYT\":{\"Timezone\":\"Europe/Dublin\"},\"BYU\":{\"Timezone\":\"Europe/Berlin\"},\"BZA\":{\"Timezone\":\"America/Managua\"},\"BZC\":{\"Timezone\":null},\"BZD\":{\"Timezone\":null},\"BZE\":{\"Timezone\":\"America/Belize\"},\"BZG\":{\"Timezone\":\"Europe/Warsaw\"},\"BZH\":{\"Timezone\":\"Africa/Harare\"},\"BZI\":{\"Timezone\":\"Europe/Istanbul\"},\"BZK\":{\"Timezone\":\"Europe/Moscow\"},\"BZL\":{\"Timezone\":\"Asia/Dhaka\"},\"BZN\":{\"Timezone\":\"America/Denver\"},\"BZO\":{\"Timezone\":\"Europe/Rome\"},\"BZR\":{\"Timezone\":\"Europe/Paris\"},\"BZU\":{\"Timezone\":\"Africa/Lubumbashi\"},\"BZV\":{\"Timezone\":\"Africa/Brazzaville\"},\"BZY\":{\"Timezone\":\"Europe/Chisinau\"},\"BZZ\":{\"Timezone\":\"Europe/London\"},\"CAB\":{\"Timezone\":\"Africa/Luanda\"},\"CAC\":{\"Timezone\":\"America/Sao_Paulo\"},\"CAE\":{\"Timezone\":\"America/New_York\"},\"CAF\":{\"Timezone\":\"America/Boa_Vista\"},\"CAG\":{\"Timezone\":\"Europe/Rome\"},\"CAH\":{\"Timezone\":\"Asia/Saigon\"},\"CAI\":{\"Timezone\":\"Africa/Cairo\"},\"CAJ\":{\"Timezone\":\"America/Caracas\"},\"CAK\":{\"Timezone\":\"America/New_York\"},\"CAL\":{\"Timezone\":\"Europe/London\"},\"CAN\":{\"Timezone\":\"Asia/Shanghai\"},\"CAP\":{\"Timezone\":\"America/Port-au-Prince\"},\"CAQ\":{\"Timezone\":\"America/Bogota\"},\"CAR\":{\"Timezone\":\"America/New_York\"},\"CAT\":{\"Timezone\":\"Europe/Lisbon\"},\"CAU\":{\"Timezone\":\"America/Fortaleza\"},\"CAW\":{\"Timezone\":\"America/Sao_Paulo\"},\"CAX\":{\"Timezone\":\"Europe/London\"},\"CAY\":{\"Timezone\":\"America/Cayenne\"},\"CAZ\":{\"Timezone\":\"Australia/Sydney\"},\"CBB\":{\"Timezone\":\"America/La_Paz\"},\"CBD\":{\"Timezone\":\"Asia/Calcutta\"},\"CBE\":{\"Timezone\":\"America/New_York\"},\"CBF\":{\"Timezone\":null},\"CBG\":{\"Timezone\":\"Europe/London\"},\"CBH\":{\"Timezone\":\"Africa/Algiers\"},\"CBJ\":{\"Timezone\":\"America/Santo_Domingo\"},\"CBL\":{\"Timezone\":\"America/Caracas\"},\"CBM\":{\"Timezone\":\"America/Chicago\"},\"CBN\":{\"Timezone\":\"Asia/Jakarta\"},\"CBO\":{\"Timezone\":\"Asia/Manila\"},\"CBQ\":{\"Timezone\":\"Africa/Lagos\"},\"CBR\":{\"Timezone\":\"Australia/Sydney\"},\"CBT\":{\"Timezone\":\"Africa/Luanda\"},\"CBU\":{\"Timezone\":\"Europe/Berlin\"},\"CBV\":{\"Timezone\":\"America/Guatemala\"},\"CCA\":{\"Timezone\":\"America/La_Paz\"},\"CCB\":{\"Timezone\":null},\"CCC\":{\"Timezone\":\"America/Havana\"},\"CCF\":{\"Timezone\":\"Europe/Paris\"},\"CCH\":{\"Timezone\":\"America/Santiago\"},\"CCI\":{\"Timezone\":\"America/Sao_Paulo\"},\"CCJ\":{\"Timezone\":\"Asia/Calcutta\"},\"CCK\":{\"Timezone\":\"Indian/Cocos\"},\"CCL\":{\"Timezone\":\"Australia/Brisbane\"},\"CCM\":{\"Timezone\":\"America/Sao_Paulo\"},\"CCN\":{\"Timezone\":\"Asia/Kabul\"},\"CCP\":{\"Timezone\":\"America/Santiago\"},\"CCR\":{\"Timezone\":\"America/Los_Angeles\"},\"CCS\":{\"Timezone\":\"America/Caracas\"},\"CCU\":{\"Timezone\":\"Asia/Calcutta\"},\"CCV\":{\"Timezone\":\"Pacific/Efate\"},\"CCX\":{\"Timezone\":null},\"CCY\":{\"Timezone\":null},\"CCZ\":{\"Timezone\":\"America/Nassau\"},\"CDA\":{\"Timezone\":\"Australia/Darwin\"},\"CDB\":{\"Timezone\":\"America/Anchorage\"},\"CDC\":{\"Timezone\":\"America/Denver\"},\"CDE\":{\"Timezone\":null},\"CDG\":{\"Timezone\":\"Europe/Paris\"},\"CDJ\":{\"Timezone\":\"America/Belem\"},\"CDN\":{\"Timezone\":\"America/New_York\"},\"CDP\":{\"Timezone\":\"Asia/Calcutta\"},\"CDR\":{\"Timezone\":\"America/Denver\"},\"CDS\":{\"Timezone\":\"America/Chicago\"},\"CDT\":{\"Timezone\":null},\"CDU\":{\"Timezone\":\"Australia/Sydney\"},\"CDV\":{\"Timezone\":\"America/Anchorage\"},\"CDW\":{\"Timezone\":\"America/New_York\"},\"CEB\":{\"Timezone\":\"Asia/Manila\"},\"CEC\":{\"Timezone\":\"America/Los_Angeles\"},\"CED\":{\"Timezone\":\"Australia/Adelaide\"},\"CEE\":{\"Timezone\":\"Europe/Moscow\"},\"CEF\":{\"Timezone\":\"America/New_York\"},\"CEG\":{\"Timezone\":\"Europe/London\"},\"CEI\":{\"Timezone\":\"Asia/Bangkok\"},\"CEJ\":{\"Timezone\":\"Europe/Kiev\"},\"CEK\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"CEM\":{\"Timezone\":\"America/Anchorage\"},\"CEN\":{\"Timezone\":\"America/Hermosillo\"},\"CEQ\":{\"Timezone\":\"Europe/Paris\"},\"CER\":{\"Timezone\":\"Europe/Paris\"},\"CES\":{\"Timezone\":\"Australia/Sydney\"},\"CET\":{\"Timezone\":\"Europe/Paris\"},\"CEU\":{\"Timezone\":\"America/New_York\"},\"CEW\":{\"Timezone\":\"America/Chicago\"},\"CEZ\":{\"Timezone\":\"America/Denver\"},\"CFB\":{\"Timezone\":\"America/Sao_Paulo\"},\"CFC\":{\"Timezone\":\"America/Sao_Paulo\"},\"CFD\":{\"Timezone\":\"America/Chicago\"},\"CFE\":{\"Timezone\":\"Europe/Paris\"},\"CFG\":{\"Timezone\":\"America/Havana\"},\"CFK\":{\"Timezone\":\"Africa/Algiers\"},\"CFN\":{\"Timezone\":\"Europe/Dublin\"},\"CFO\":{\"Timezone\":\"America/Campo_Grande\"},\"CFR\":{\"Timezone\":\"Europe/Paris\"},\"CFS\":{\"Timezone\":\"Australia/Sydney\"},\"CFU\":{\"Timezone\":\"Europe/Athens\"},\"CFV\":{\"Timezone\":null},\"CGB\":{\"Timezone\":\"America/Campo_Grande\"},\"CGD\":{\"Timezone\":\"Asia/Shanghai\"},\"CGF\":{\"Timezone\":\"America/New_York\"},\"CGH\":{\"Timezone\":\"America/Sao_Paulo\"},\"CGI\":{\"Timezone\":\"America/Chicago\"},\"CGJ\":{\"Timezone\":\"Africa/Lusaka\"},\"CGK\":{\"Timezone\":\"Asia/Jakarta\"},\"CGM\":{\"Timezone\":\"Asia/Manila\"},\"CGN\":{\"Timezone\":\"Europe/Berlin\"},\"CGO\":{\"Timezone\":\"Asia/Shanghai\"},\"CGP\":{\"Timezone\":\"Asia/Dhaka\"},\"CGQ\":{\"Timezone\":\"Asia/Shanghai\"},\"CGR\":{\"Timezone\":\"America/Campo_Grande\"},\"CGX\":{\"Timezone\":\"America/Chicago\"},\"CGZ\":{\"Timezone\":\"America/Phoenix\"},\"CHA\":{\"Timezone\":\"America/New_York\"},\"CHC\":{\"Timezone\":\"Pacific/Auckland\"},\"CHF\":{\"Timezone\":\"Asia/Seoul\"},\"CHG\":{\"Timezone\":\"Asia/Shanghai\"},\"CHH\":{\"Timezone\":\"America/Lima\"},\"CHM\":{\"Timezone\":\"America/Lima\"},\"CHN\":{\"Timezone\":\"Asia/Seoul\"},\"CHO\":{\"Timezone\":\"America/New_York\"},\"CHQ\":{\"Timezone\":\"Europe/Athens\"},\"CHR\":{\"Timezone\":\"Europe/Paris\"},\"CHS\":{\"Timezone\":\"America/New_York\"},\"CHT\":{\"Timezone\":\"Pacific/Chatham\"},\"CHU\":{\"Timezone\":\"America/Anchorage\"},\"CHX\":{\"Timezone\":\"America/Panama\"},\"CHY\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"CIA\":{\"Timezone\":\"Europe/Rome\"},\"CIC\":{\"Timezone\":\"America/Los_Angeles\"},\"CID\":{\"Timezone\":\"America/Chicago\"},\"CIF\":{\"Timezone\":\"Asia/Shanghai\"},\"CIH\":{\"Timezone\":\"Asia/Shanghai\"},\"CIJ\":{\"Timezone\":\"America/La_Paz\"},\"CIK\":{\"Timezone\":\"America/Anchorage\"},\"CIO\":{\"Timezone\":\"America/Asuncion\"},\"CIP\":{\"Timezone\":\"Africa/Lusaka\"},\"CIS\":{\"Timezone\":\"Pacific/Enderbury\"},\"CIT\":{\"Timezone\":\"Asia/Qyzylorda\"},\"CIU\":{\"Timezone\":\"America/New_York\"},\"CIW\":{\"Timezone\":\"America/St_Vincent\"},\"CIX\":{\"Timezone\":\"America/Lima\"},\"CIY\":{\"Timezone\":\"Europe/Rome\"},\"CIZ\":{\"Timezone\":\"America/Boa_Vista\"},\"CJA\":{\"Timezone\":\"America/Lima\"},\"CJB\":{\"Timezone\":\"Asia/Calcutta\"},\"CJC\":{\"Timezone\":\"America/Santiago\"},\"CJF\":{\"Timezone\":null},\"CJJ\":{\"Timezone\":\"Asia/Seoul\"},\"CJL\":{\"Timezone\":\"Asia/Karachi\"},\"CJM\":{\"Timezone\":\"Asia/Bangkok\"},\"CJN\":{\"Timezone\":\"Asia/Jakarta\"},\"CJS\":{\"Timezone\":\"America/Mazatlan\"},\"CJU\":{\"Timezone\":\"Asia/Seoul\"},\"CKB\":{\"Timezone\":\"America/New_York\"},\"CKC\":{\"Timezone\":\"Europe/Kiev\"},\"CKG\":{\"Timezone\":\"Asia/Shanghai\"},\"CKH\":{\"Timezone\":\"Asia/Srednekolymsk\"},\"CKI\":{\"Timezone\":null},\"CKL\":{\"Timezone\":\"Europe/Moscow\"},\"CKS\":{\"Timezone\":\"America/Belem\"},\"CKT\":{\"Timezone\":\"Asia/Tehran\"},\"CKV\":{\"Timezone\":\"America/Chicago\"},\"CKY\":{\"Timezone\":\"Africa/Conakry\"},\"CKZ\":{\"Timezone\":\"Europe/Istanbul\"},\"CLD\":{\"Timezone\":\"America/Los_Angeles\"},\"CLE\":{\"Timezone\":\"America/New_York\"},\"CLJ\":{\"Timezone\":\"Europe/Bucharest\"},\"CLL\":{\"Timezone\":\"America/Chicago\"},\"CLM\":{\"Timezone\":\"America/Los_Angeles\"},\"CLN\":{\"Timezone\":\"America/Fortaleza\"},\"CLO\":{\"Timezone\":\"America/Bogota\"},\"CLP\":{\"Timezone\":null},\"CLQ\":{\"Timezone\":\"America/Mexico_City\"},\"CLS\":{\"Timezone\":\"America/Los_Angeles\"},\"CLT\":{\"Timezone\":\"America/New_York\"},\"CLU\":{\"Timezone\":null},\"CLV\":{\"Timezone\":\"America/Sao_Paulo\"},\"CLW\":{\"Timezone\":\"America/New_York\"},\"CLY\":{\"Timezone\":\"Europe/Paris\"},\"CLZ\":{\"Timezone\":\"America/Caracas\"},\"CMA\":{\"Timezone\":\"Australia/Brisbane\"},\"CMB\":{\"Timezone\":\"Asia/Colombo\"},\"CMD\":{\"Timezone\":null},\"CME\":{\"Timezone\":\"America/Mexico_City\"},\"CMF\":{\"Timezone\":\"Europe/Paris\"},\"CMG\":{\"Timezone\":\"America/Campo_Grande\"},\"CMH\":{\"Timezone\":\"America/New_York\"},\"CMI\":{\"Timezone\":\"America/Chicago\"},\"CMJ\":{\"Timezone\":\"Asia/Taipei\"},\"CMK\":{\"Timezone\":\"Africa/Blantyre\"},\"CMN\":{\"Timezone\":\"Africa/Casablanca\"},\"CMP\":{\"Timezone\":\"America/Belem\"},\"CMQ\":{\"Timezone\":null},\"CMR\":{\"Timezone\":\"Europe/Paris\"},\"CMU\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"CMW\":{\"Timezone\":\"America/Havana\"},\"CMX\":{\"Timezone\":\"America/New_York\"},\"CNB\":{\"Timezone\":\"Australia/Sydney\"},\"CNC\":{\"Timezone\":\"Australia/Brisbane\"},\"CND\":{\"Timezone\":\"Europe/Bucharest\"},\"CNF\":{\"Timezone\":\"America/Sao_Paulo\"},\"CNG\":{\"Timezone\":\"Europe/Paris\"},\"CNI\":{\"Timezone\":\"Asia/Shanghai\"},\"CNJ\":{\"Timezone\":\"Australia/Brisbane\"},\"CNL\":{\"Timezone\":\"Europe/Copenhagen\"},\"CNM\":{\"Timezone\":\"America/Denver\"},\"CNN\":{\"Timezone\":null},\"CNO\":{\"Timezone\":null},\"CNP\":{\"Timezone\":\"America/Scoresbysund\"},\"CNQ\":{\"Timezone\":\"America/Cordoba\"},\"CNR\":{\"Timezone\":null},\"CNS\":{\"Timezone\":\"Australia/Brisbane\"},\"CNU\":{\"Timezone\":null},\"CNW\":{\"Timezone\":\"America/Chicago\"},\"CNX\":{\"Timezone\":\"Asia/Bangkok\"},\"CNY\":{\"Timezone\":\"America/Denver\"},\"COC\":{\"Timezone\":\"America/Cordoba\"},\"COD\":{\"Timezone\":\"America/Denver\"},\"COE\":{\"Timezone\":\"America/Los_Angeles\"},\"COF\":{\"Timezone\":\"America/New_York\"},\"COG\":{\"Timezone\":\"America/Bogota\"},\"COH\":{\"Timezone\":\"Asia/Calcutta\"},\"COJ\":{\"Timezone\":\"Australia/Sydney\"},\"COK\":{\"Timezone\":\"Asia/Calcutta\"},\"CON\":{\"Timezone\":\"America/New_York\"},\"COO\":{\"Timezone\":\"Africa/Porto-Novo\"},\"COQ\":{\"Timezone\":\"Asia/Ulaanbaatar\"},\"COR\":{\"Timezone\":\"America/Cordoba\"},\"COS\":{\"Timezone\":\"America/Denver\"},\"COT\":{\"Timezone\":\"America/Chicago\"},\"COU\":{\"Timezone\":\"America/Chicago\"},\"COX\":{\"Timezone\":\"America/Nassau\"},\"COZ\":{\"Timezone\":\"America/Santo_Domingo\"},\"CPA\":{\"Timezone\":\"Africa/Monrovia\"},\"CPB\":{\"Timezone\":\"America/Bogota\"},\"CPC\":{\"Timezone\":\"America/Argentina/Salta\"},\"CPD\":{\"Timezone\":\"Australia/Adelaide\"},\"CPE\":{\"Timezone\":\"America/Mexico_City\"},\"CPH\":{\"Timezone\":\"Europe/Copenhagen\"},\"CPQ\":{\"Timezone\":\"America/Sao_Paulo\"},\"CPR\":{\"Timezone\":\"America/Denver\"},\"CPT\":{\"Timezone\":\"Africa/Johannesburg\"},\"CPV\":{\"Timezone\":\"America/Fortaleza\"},\"CPX\":{\"Timezone\":\"America/Puerto_Rico\"},\"CQA\":{\"Timezone\":null},\"CQD\":{\"Timezone\":\"Asia/Tehran\"},\"CQF\":{\"Timezone\":\"Europe/Paris\"},\"CQM\":{\"Timezone\":\"Europe/Madrid\"},\"CQS\":{\"Timezone\":null},\"CRA\":{\"Timezone\":\"Europe/Bucharest\"},\"CRC\":{\"Timezone\":\"America/Bogota\"},\"CRD\":{\"Timezone\":\"America/Catamarca\"},\"CRE\":{\"Timezone\":\"America/New_York\"},\"CRG\":{\"Timezone\":null},\"CRI\":{\"Timezone\":\"America/Nassau\"},\"CRK\":{\"Timezone\":\"Asia/Manila\"},\"CRL\":{\"Timezone\":\"Europe/Brussels\"},\"CRM\":{\"Timezone\":\"Asia/Manila\"},\"CRP\":{\"Timezone\":\"America/Chicago\"},\"CRQ\":{\"Timezone\":\"America/Fortaleza\"},\"CRV\":{\"Timezone\":\"Europe/Rome\"},\"CRW\":{\"Timezone\":\"America/New_York\"},\"CRZ\":{\"Timezone\":\"Asia/Ashgabat\"},\"CSA\":{\"Timezone\":\"Europe/London\"},\"CSB\":{\"Timezone\":\"Europe/Bucharest\"},\"CSF\":{\"Timezone\":\"Europe/Paris\"},\"CSG\":{\"Timezone\":\"America/New_York\"},\"CSH\":{\"Timezone\":\"Europe/Moscow\"},\"CSK\":{\"Timezone\":\"Africa/Dakar\"},\"CSM\":{\"Timezone\":\"America/Chicago\"},\"CSO\":{\"Timezone\":\"Europe/Berlin\"},\"CSV\":{\"Timezone\":null},\"CSX\":{\"Timezone\":\"Asia/Shanghai\"},\"CSY\":{\"Timezone\":\"Europe/Moscow\"},\"CSZ\":{\"Timezone\":\"America/Buenos_Aires\"},\"CTA\":{\"Timezone\":\"Europe/Rome\"},\"CTB\":{\"Timezone\":\"America/Denver\"},\"CTC\":{\"Timezone\":\"America/Catamarca\"},\"CTD\":{\"Timezone\":\"America/Panama\"},\"CTG\":{\"Timezone\":\"America/Bogota\"},\"CTH\":{\"Timezone\":\"America/New_York\"},\"CTL\":{\"Timezone\":\"Australia/Brisbane\"},\"CTM\":{\"Timezone\":\"America/Cancun\"},\"CTN\":{\"Timezone\":\"Australia/Brisbane\"},\"CTS\":{\"Timezone\":\"Asia/Tokyo\"},\"CTT\":{\"Timezone\":\"Europe/Paris\"},\"CTU\":{\"Timezone\":\"Asia/Shanghai\"},\"CTY\":{\"Timezone\":\"America/New_York\"},\"CUA\":{\"Timezone\":\"America/Mazatlan\"},\"CUB\":{\"Timezone\":null},\"CUC\":{\"Timezone\":\"America/Bogota\"},\"CUD\":{\"Timezone\":null},\"CUE\":{\"Timezone\":\"America/Guayaquil\"},\"CUF\":{\"Timezone\":\"Europe/Rome\"},\"CUH\":{\"Timezone\":\"America/Chicago\"},\"CUL\":{\"Timezone\":\"America/Mazatlan\"},\"CUM\":{\"Timezone\":\"America/Caracas\"},\"CUN\":{\"Timezone\":\"America/Cancun\"},\"CUP\":{\"Timezone\":\"America/Caracas\"},\"CUQ\":{\"Timezone\":\"Australia/Brisbane\"},\"CUR\":{\"Timezone\":\"America/Curacao\"},\"CUT\":{\"Timezone\":\"America/Argentina/Salta\"},\"CUU\":{\"Timezone\":\"America/Mazatlan\"},\"CUZ\":{\"Timezone\":\"America/Lima\"},\"CVC\":{\"Timezone\":null},\"CVE\":{\"Timezone\":null},\"CVF\":{\"Timezone\":\"Europe/Paris\"},\"CVG\":{\"Timezone\":\"America/New_York\"},\"CVJ\":{\"Timezone\":\"America/Mexico_City\"},\"CVM\":{\"Timezone\":\"America/Mexico_City\"},\"CVN\":{\"Timezone\":\"America/Denver\"},\"CVO\":{\"Timezone\":\"America/Los_Angeles\"},\"CVQ\":{\"Timezone\":\"Australia/Perth\"},\"CVS\":{\"Timezone\":\"America/Denver\"},\"CVT\":{\"Timezone\":\"Europe/London\"},\"CVU\":{\"Timezone\":\"Atlantic/Azores\"},\"CWA\":{\"Timezone\":\"America/Chicago\"},\"CWB\":{\"Timezone\":\"America/Sao_Paulo\"},\"CWC\":{\"Timezone\":\"Europe/Kiev\"},\"CWE\":{\"Timezone\":\"Africa/Cairo\"},\"CWI\":{\"Timezone\":\"America/Chicago\"},\"CWJ\":{\"Timezone\":null},\"CWL\":{\"Timezone\":\"Europe/London\"},\"CWT\":{\"Timezone\":\"Australia/Sydney\"},\"CWW\":{\"Timezone\":null},\"CXA\":{\"Timezone\":\"America/Caracas\"},\"CXB\":{\"Timezone\":\"Asia/Dhaka\"},\"CXH\":{\"Timezone\":\"America/Vancouver\"},\"CXI\":{\"Timezone\":null},\"CXJ\":{\"Timezone\":\"America/Sao_Paulo\"},\"CXL\":{\"Timezone\":\"America/Los_Angeles\"},\"CXO\":{\"Timezone\":\"America/Chicago\"},\"CXP\":{\"Timezone\":\"Asia/Jakarta\"},\"CXR\":{\"Timezone\":\"Asia/Saigon\"},\"CYA\":{\"Timezone\":\"America/Port-au-Prince\"},\"CYB\":{\"Timezone\":\"America/Cayman\"},\"CYF\":{\"Timezone\":\"America/Anchorage\"},\"CYG\":{\"Timezone\":null},\"CYI\":{\"Timezone\":\"Asia/Taipei\"},\"CYO\":{\"Timezone\":\"America/Havana\"},\"CYP\":{\"Timezone\":\"Asia/Manila\"},\"CYR\":{\"Timezone\":\"America/Montevideo\"},\"CYS\":{\"Timezone\":\"America/Denver\"},\"CYT\":{\"Timezone\":\"America/Anchorage\"},\"CYU\":{\"Timezone\":\"Asia/Manila\"},\"CYW\":{\"Timezone\":\"America/Mexico_City\"},\"CYX\":{\"Timezone\":\"Asia/Srednekolymsk\"},\"CYZ\":{\"Timezone\":\"Asia/Manila\"},\"CZA\":{\"Timezone\":\"America/Mexico_City\"},\"CZE\":{\"Timezone\":\"America/Caracas\"},\"CZF\":{\"Timezone\":\"America/Anchorage\"},\"CZL\":{\"Timezone\":\"Africa/Algiers\"},\"CZM\":{\"Timezone\":\"America/Cancun\"},\"CZS\":{\"Timezone\":\"America/Rio_Branco\"},\"CZU\":{\"Timezone\":\"America/Bogota\"},\"CZX\":{\"Timezone\":\"Asia/Shanghai\"},\"DAA\":{\"Timezone\":null},\"DAB\":{\"Timezone\":\"America/New_York\"},\"DAC\":{\"Timezone\":\"Asia/Dhaka\"},\"DAD\":{\"Timezone\":\"Asia/Saigon\"},\"DAG\":{\"Timezone\":null},\"DAL\":{\"Timezone\":\"America/Chicago\"},\"DAM\":{\"Timezone\":\"Asia/Damascus\"},\"DAN\":{\"Timezone\":\"America/New_York\"},\"DAR\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"DAT\":{\"Timezone\":\"Asia/Shanghai\"},\"DAU\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"DAV\":{\"Timezone\":\"America/Panama\"},\"DAX\":{\"Timezone\":\"Asia/Shanghai\"},\"DAY\":{\"Timezone\":\"America/New_York\"},\"DBA\":{\"Timezone\":\"Asia/Karachi\"},\"DBB\":{\"Timezone\":\"Africa/Cairo\"},\"DBC\":{\"Timezone\":null},\"DBD\":{\"Timezone\":\"Asia/Calcutta\"},\"DBM\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"DBN\":{\"Timezone\":\"America/New_York\"},\"DBO\":{\"Timezone\":\"Australia/Sydney\"},\"DBQ\":{\"Timezone\":\"America/Chicago\"},\"DBT\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"DBV\":{\"Timezone\":\"Europe/Zagreb\"},\"DCA\":{\"Timezone\":\"America/New_York\"},\"DCF\":{\"Timezone\":\"America/Dominica\"},\"DCI\":{\"Timezone\":\"Europe/Rome\"},\"DCM\":{\"Timezone\":\"Europe/Paris\"},\"DCN\":{\"Timezone\":null},\"DCT\":{\"Timezone\":\"America/Nassau\"},\"DCU\":{\"Timezone\":null},\"DCY\":{\"Timezone\":\"Asia/Shanghai\"},\"DDC\":{\"Timezone\":\"America/Chicago\"},\"DDG\":{\"Timezone\":\"Asia/Shanghai\"},\"DEA\":{\"Timezone\":\"Asia/Karachi\"},\"DEB\":{\"Timezone\":\"Europe/Budapest\"},\"DEC\":{\"Timezone\":\"America/Chicago\"},\"DED\":{\"Timezone\":\"Asia/Calcutta\"},\"DEE\":{\"Timezone\":null},\"DEF\":{\"Timezone\":\"Asia/Tehran\"},\"DEL\":{\"Timezone\":\"Asia/Calcutta\"},\"DEM\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"DEN\":{\"Timezone\":\"America/Denver\"},\"DES\":{\"Timezone\":\"Indian/Mahe\"},\"DET\":{\"Timezone\":\"America/New_York\"},\"DEX\":{\"Timezone\":null},\"DEZ\":{\"Timezone\":\"Asia/Damascus\"},\"DFW\":{\"Timezone\":\"America/Chicago\"},\"DGE\":{\"Timezone\":\"Australia/Sydney\"},\"DGL\":{\"Timezone\":\"America/Phoenix\"},\"DGO\":{\"Timezone\":\"America/Mexico_City\"},\"DGP\":{\"Timezone\":null},\"DGT\":{\"Timezone\":\"Asia/Manila\"},\"DHA\":{\"Timezone\":\"Asia/Riyadh\"},\"DHF\":{\"Timezone\":\"Asia/Dubai\"},\"DHI\":{\"Timezone\":\"Asia/Katmandu\"},\"DHM\":{\"Timezone\":\"Asia/Calcutta\"},\"DHN\":{\"Timezone\":\"America/Chicago\"},\"DHR\":{\"Timezone\":\"Europe/Amsterdam\"},\"DHT\":{\"Timezone\":\"America/Chicago\"},\"DIA\":{\"Timezone\":\"Asia/Qatar\"},\"DIB\":{\"Timezone\":\"Asia/Calcutta\"},\"DIE\":{\"Timezone\":\"Indian/Antananarivo\"},\"DIG\":{\"Timezone\":\"Asia/Shanghai\"},\"DIJ\":{\"Timezone\":\"Europe/Paris\"},\"DIK\":{\"Timezone\":\"America/Denver\"},\"DIL\":{\"Timezone\":\"Asia/Dili\"},\"DIN\":{\"Timezone\":\"Asia/Saigon\"},\"DIQ\":{\"Timezone\":null},\"DIR\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"DIS\":{\"Timezone\":\"Africa/Brazzaville\"},\"DIU\":{\"Timezone\":\"Asia/Calcutta\"},\"DIY\":{\"Timezone\":\"Europe/Istanbul\"},\"DJB\":{\"Timezone\":\"Asia/Jakarta\"},\"DJE\":{\"Timezone\":\"Africa/Tunis\"},\"DJG\":{\"Timezone\":\"Africa/Algiers\"},\"DJJ\":{\"Timezone\":\"Asia/Jayapura\"},\"DJO\":{\"Timezone\":\"Africa/Abidjan\"},\"DKI\":{\"Timezone\":\"Australia/Brisbane\"},\"DKK\":{\"Timezone\":\"America/New_York\"},\"DKR\":{\"Timezone\":\"Africa/Dakar\"},\"DKS\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"DKV\":{\"Timezone\":null},\"DLA\":{\"Timezone\":\"Africa/Douala\"},\"DLC\":{\"Timezone\":\"Asia/Shanghai\"},\"DLD\":{\"Timezone\":\"Europe/Oslo\"},\"DLE\":{\"Timezone\":\"Europe/Paris\"},\"DLF\":{\"Timezone\":\"America/Chicago\"},\"DLG\":{\"Timezone\":\"America/Anchorage\"},\"DLH\":{\"Timezone\":\"America/Chicago\"},\"DLI\":{\"Timezone\":\"Asia/Saigon\"},\"DLK\":{\"Timezone\":null},\"DLM\":{\"Timezone\":\"Europe/Istanbul\"},\"DLS\":{\"Timezone\":\"America/Los_Angeles\"},\"DLU\":{\"Timezone\":\"Asia/Shanghai\"},\"DLY\":{\"Timezone\":\"Pacific/Efate\"},\"DLZ\":{\"Timezone\":\"Asia/Ulaanbaatar\"},\"DMA\":{\"Timezone\":\"America/Phoenix\"},\"DMB\":{\"Timezone\":\"Asia/Qyzylorda\"},\"DMD\":{\"Timezone\":\"Australia/Brisbane\"},\"DME\":{\"Timezone\":\"Europe/Moscow\"},\"DMK\":{\"Timezone\":\"Asia/Bangkok\"},\"DMM\":{\"Timezone\":\"Asia/Riyadh\"},\"DMN\":{\"Timezone\":null},\"DMT\":{\"Timezone\":\"America/Campo_Grande\"},\"DMU\":{\"Timezone\":\"Asia/Calcutta\"},\"DNA\":{\"Timezone\":\"Asia/Tokyo\"},\"DND\":{\"Timezone\":\"Europe/London\"},\"DNH\":{\"Timezone\":\"Asia/Shanghai\"},\"DNK\":{\"Timezone\":\"Europe/Kiev\"},\"DNL\":{\"Timezone\":\"America/New_York\"},\"DNN\":{\"Timezone\":\"America/New_York\"},\"DNP\":{\"Timezone\":\"Asia/Katmandu\"},\"DNQ\":{\"Timezone\":null},\"DNR\":{\"Timezone\":\"Europe/Paris\"},\"DNV\":{\"Timezone\":\"America/Chicago\"},\"DNZ\":{\"Timezone\":\"Europe/Istanbul\"},\"DOB\":{\"Timezone\":null},\"DOD\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"DOG\":{\"Timezone\":\"Africa/Khartoum\"},\"DOH\":{\"Timezone\":null},\"DOK\":{\"Timezone\":\"Europe/Kiev\"},\"DOL\":{\"Timezone\":\"Europe/Paris\"},\"DOM\":{\"Timezone\":\"America/Dominica\"},\"DOP\":{\"Timezone\":\"Asia/Katmandu\"},\"DOU\":{\"Timezone\":\"America/Campo_Grande\"},\"DOV\":{\"Timezone\":\"America/New_York\"},\"DOY\":{\"Timezone\":\"Asia/Shanghai\"},\"DPA\":{\"Timezone\":\"America/Chicago\"},\"DPL\":{\"Timezone\":\"Asia/Manila\"},\"DPO\":{\"Timezone\":\"Australia/Melbourne\"},\"DPS\":{\"Timezone\":\"Asia/Makassar\"},\"DQA\":{\"Timezone\":\"Asia/Shanghai\"},\"DQM\":{\"Timezone\":null},\"DRA\":{\"Timezone\":null},\"DRB\":{\"Timezone\":\"Australia/Perth\"},\"DRE\":{\"Timezone\":\"America/New_York\"},\"DRG\":{\"Timezone\":\"America/Anchorage\"},\"DRI\":{\"Timezone\":\"America/Chicago\"},\"DRJ\":{\"Timezone\":\"America/Paramaribo\"},\"DRK\":{\"Timezone\":\"America/Costa_Rica\"},\"DRN\":{\"Timezone\":null},\"DRO\":{\"Timezone\":\"America/Denver\"},\"DRS\":{\"Timezone\":\"Europe/Berlin\"},\"DRT\":{\"Timezone\":\"America/Chicago\"},\"DRV\":{\"Timezone\":null},\"DRW\":{\"Timezone\":\"Australia/Darwin\"},\"DSA\":{\"Timezone\":\"Europe/London\"},\"DSD\":{\"Timezone\":\"America/Guadeloupe\"},\"DSE\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"DSI\":{\"Timezone\":\"America/Chicago\"},\"DSK\":{\"Timezone\":\"Asia/Karachi\"},\"DSM\":{\"Timezone\":\"America/Chicago\"},\"DSN\":{\"Timezone\":\"Asia/Shanghai\"},\"DSO\":{\"Timezone\":\"Asia/Pyongyang\"},\"DSS\":{\"Timezone\":null},\"DTA\":{\"Timezone\":\"America/Denver\"},\"DTB\":{\"Timezone\":\"Asia/Jakarta\"},\"DTD\":{\"Timezone\":\"Asia/Makassar\"},\"DTE\":{\"Timezone\":\"Asia/Manila\"},\"DTI\":{\"Timezone\":\"America/Sao_Paulo\"},\"DTM\":{\"Timezone\":\"Europe/Berlin\"},\"DTN\":{\"Timezone\":\"America/Chicago\"},\"DTU\":{\"Timezone\":null},\"DTW\":{\"Timezone\":\"America/New_York\"},\"DU9\":{\"Timezone\":null},\"DUB\":{\"Timezone\":\"Europe/Dublin\"},\"DUC\":{\"Timezone\":\"America/Chicago\"},\"DUD\":{\"Timezone\":\"Pacific/Auckland\"},\"DUE\":{\"Timezone\":\"Africa/Luanda\"},\"DUG\":{\"Timezone\":\"America/Phoenix\"},\"DUJ\":{\"Timezone\":\"America/New_York\"},\"DUM\":{\"Timezone\":\"Asia/Jakarta\"},\"DUR\":{\"Timezone\":\"Africa/Johannesburg\"},\"DUS\":{\"Timezone\":\"Europe/Berlin\"},\"DUT\":{\"Timezone\":\"America/Anchorage\"},\"DVL\":{\"Timezone\":\"America/Chicago\"},\"DVO\":{\"Timezone\":\"Asia/Manila\"},\"DVT\":{\"Timezone\":\"America/Phoenix\"},\"DWA\":{\"Timezone\":null},\"DWB\":{\"Timezone\":\"Indian/Antananarivo\"},\"DWC\":{\"Timezone\":\"Asia/Dubai\"},\"DWD\":{\"Timezone\":null},\"DWH\":{\"Timezone\":\"America/Chicago\"},\"DXB\":{\"Timezone\":\"Asia/Dubai\"},\"DXR\":{\"Timezone\":\"America/New_York\"},\"DYA\":{\"Timezone\":null},\"DYG\":{\"Timezone\":\"Asia/Shanghai\"},\"DYL\":{\"Timezone\":\"America/New_York\"},\"DYR\":{\"Timezone\":\"Asia/Anadyr\"},\"DYS\":{\"Timezone\":\"America/Chicago\"},\"DYU\":{\"Timezone\":\"Asia/Dushanbe\"},\"DZA\":{\"Timezone\":\"Indian/Mayotte\"},\"DZN\":{\"Timezone\":\"Asia/Qyzylorda\"},\"DZO\":{\"Timezone\":\"America/Montevideo\"},\"EAA\":{\"Timezone\":\"America/Anchorage\"},\"EAE\":{\"Timezone\":\"Pacific/Efate\"},\"EAM\":{\"Timezone\":\"Asia/Riyadh\"},\"EAS\":{\"Timezone\":\"Europe/Madrid\"},\"EAT\":{\"Timezone\":\"America/Los_Angeles\"},\"EAU\":{\"Timezone\":\"America/Chicago\"},\"EBA\":{\"Timezone\":\"Europe/Rome\"},\"EBB\":{\"Timezone\":\"Africa/Kampala\"},\"EBD\":{\"Timezone\":\"Africa/Khartoum\"},\"EBG\":{\"Timezone\":\"America/Bogota\"},\"EBH\":{\"Timezone\":null},\"EBJ\":{\"Timezone\":\"Europe/Copenhagen\"},\"EBL\":{\"Timezone\":\"Asia/Baghdad\"},\"EBM\":{\"Timezone\":\"Africa/Tunis\"},\"EBU\":{\"Timezone\":\"Europe/Paris\"},\"ECA\":{\"Timezone\":\"America/New_York\"},\"ECG\":{\"Timezone\":\"America/New_York\"},\"ECH\":{\"Timezone\":null},\"ECI\":{\"Timezone\":null},\"ECN\":{\"Timezone\":\"Asia/Nicosia\"},\"ECP\":{\"Timezone\":\"America/Chicago\"},\"ECV\":{\"Timezone\":null},\"EDD\":{\"Timezone\":null},\"EDF\":{\"Timezone\":\"America/Anchorage\"},\"EDI\":{\"Timezone\":\"Europe/London\"},\"EDL\":{\"Timezone\":\"Africa/Nairobi\"},\"EDM\":{\"Timezone\":\"Europe/Paris\"},\"EDO\":{\"Timezone\":\"Europe/Istanbul\"},\"EDR\":{\"Timezone\":\"Australia/Brisbane\"},\"EDW\":{\"Timezone\":\"America/Los_Angeles\"},\"EED\":{\"Timezone\":null},\"EEK\":{\"Timezone\":\"America/Anchorage\"},\"EEN\":{\"Timezone\":\"America/New_York\"},\"EFD\":{\"Timezone\":\"America/Chicago\"},\"EFG\":{\"Timezone\":null},\"EFL\":{\"Timezone\":\"Europe/Athens\"},\"EGC\":{\"Timezone\":\"Europe/Paris\"},\"EGE\":{\"Timezone\":\"America/Denver\"},\"EGH\":{\"Timezone\":\"Africa/Cairo\"},\"EGI\":{\"Timezone\":null},\"EGM\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"EGN\":{\"Timezone\":\"Africa/Khartoum\"},\"EGO\":{\"Timezone\":\"Europe/Moscow\"},\"EGS\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"EGV\":{\"Timezone\":\"America/Chicago\"},\"EGX\":{\"Timezone\":\"America/Anchorage\"},\"EHL\":{\"Timezone\":\"America/Argentina/Salta\"},\"EHM\":{\"Timezone\":\"America/Anchorage\"},\"EIB\":{\"Timezone\":\"Europe/Berlin\"},\"EIE\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"EIK\":{\"Timezone\":\"Europe/Moscow\"},\"EIL\":{\"Timezone\":\"America/Anchorage\"},\"EIN\":{\"Timezone\":\"Europe/Amsterdam\"},\"EIS\":{\"Timezone\":\"America/Tortola\"},\"EIY\":{\"Timezone\":\"Asia/Jerusalem\"},\"EJA\":{\"Timezone\":\"America/Bogota\"},\"EJH\":{\"Timezone\":\"Asia/Riyadh\"},\"EJN\":{\"Timezone\":null},\"EKA\":{\"Timezone\":null},\"EKB\":{\"Timezone\":\"Asia/Qyzylorda\"},\"EKI\":{\"Timezone\":null},\"EKN\":{\"Timezone\":\"America/New_York\"},\"EKO\":{\"Timezone\":\"America/Los_Angeles\"},\"EKS\":{\"Timezone\":null},\"EKT\":{\"Timezone\":\"Europe/Stockholm\"},\"ELB\":{\"Timezone\":\"America/Bogota\"},\"ELC\":{\"Timezone\":\"Australia/Darwin\"},\"ELD\":{\"Timezone\":\"America/Chicago\"},\"ELF\":{\"Timezone\":\"Africa/Khartoum\"},\"ELG\":{\"Timezone\":\"Africa/Algiers\"},\"ELH\":{\"Timezone\":\"America/Nassau\"},\"ELI\":{\"Timezone\":\"America/Anchorage\"},\"ELM\":{\"Timezone\":\"America/New_York\"},\"ELO\":{\"Timezone\":\"America/Cordoba\"},\"ELP\":{\"Timezone\":\"America/Denver\"},\"ELQ\":{\"Timezone\":\"Asia/Riyadh\"},\"ELS\":{\"Timezone\":\"Africa/Johannesburg\"},\"ELT\":{\"Timezone\":\"Africa/Cairo\"},\"ELU\":{\"Timezone\":\"Africa/Algiers\"},\"ELV\":{\"Timezone\":\"America/Anchorage\"},\"ELY\":{\"Timezone\":\"America/Los_Angeles\"},\"EMA\":{\"Timezone\":\"Europe/London\"},\"EMD\":{\"Timezone\":\"Australia/Brisbane\"},\"EME\":{\"Timezone\":\"Europe/Berlin\"},\"EMK\":{\"Timezone\":\"America/Anchorage\"},\"EML\":{\"Timezone\":\"Europe/Zurich\"},\"EMN\":{\"Timezone\":\"Africa/Nouakchott\"},\"EMP\":{\"Timezone\":\"America/Chicago\"},\"EMT\":{\"Timezone\":null},\"ENA\":{\"Timezone\":\"America/Anchorage\"},\"ENC\":{\"Timezone\":\"Europe/Paris\"},\"END\":{\"Timezone\":\"America/Chicago\"},\"ENE\":{\"Timezone\":\"Asia/Makassar\"},\"ENF\":{\"Timezone\":\"Europe/Helsinki\"},\"ENH\":{\"Timezone\":\"Asia/Shanghai\"},\"ENK\":{\"Timezone\":\"Europe/London\"},\"ENN\":{\"Timezone\":null},\"ENO\":{\"Timezone\":null},\"ENS\":{\"Timezone\":\"Europe/Amsterdam\"},\"ENT\":{\"Timezone\":\"Pacific/Majuro\"},\"ENU\":{\"Timezone\":\"Africa/Lagos\"},\"ENV\":{\"Timezone\":\"America/Denver\"},\"ENW\":{\"Timezone\":\"America/Chicago\"},\"ENY\":{\"Timezone\":\"Asia/Shanghai\"},\"EOH\":{\"Timezone\":\"America/Bogota\"},\"EOI\":{\"Timezone\":\"Europe/London\"},\"EOK\":{\"Timezone\":\"America/Chicago\"},\"EOR\":{\"Timezone\":\"America/Caracas\"},\"EOZ\":{\"Timezone\":\"America/Caracas\"},\"EPA\":{\"Timezone\":\"America/Buenos_Aires\"},\"EPL\":{\"Timezone\":\"Europe/Paris\"},\"EPR\":{\"Timezone\":\"Australia/Perth\"},\"EPU\":{\"Timezone\":\"Europe/Tallinn\"},\"EQS\":{\"Timezone\":\"America/Catamarca\"},\"ERC\":{\"Timezone\":\"Europe/Istanbul\"},\"ERD\":{\"Timezone\":null},\"ERF\":{\"Timezone\":\"Europe/Berlin\"},\"ERG\":{\"Timezone\":\"Asia/Irkutsk\"},\"ERH\":{\"Timezone\":\"Africa/Casablanca\"},\"ERI\":{\"Timezone\":\"America/New_York\"},\"ERL\":{\"Timezone\":null},\"ERM\":{\"Timezone\":\"America/Sao_Paulo\"},\"ERN\":{\"Timezone\":\"America/Boa_Vista\"},\"ERS\":{\"Timezone\":\"Africa/Windhoek\"},\"ERV\":{\"Timezone\":\"America/Chicago\"},\"ERZ\":{\"Timezone\":\"Europe/Istanbul\"},\"ESB\":{\"Timezone\":\"Europe/Istanbul\"},\"ESC\":{\"Timezone\":\"America/New_York\"},\"ESD\":{\"Timezone\":\"America/Los_Angeles\"},\"ESE\":{\"Timezone\":\"America/Tijuana\"},\"ESF\":{\"Timezone\":\"America/Chicago\"},\"ESG\":{\"Timezone\":\"America/Asuncion\"},\"ESH\":{\"Timezone\":\"Europe/London\"},\"ESK\":{\"Timezone\":\"Europe/Istanbul\"},\"ESL\":{\"Timezone\":\"Europe/Moscow\"},\"ESM\":{\"Timezone\":\"America/Guayaquil\"},\"ESN\":{\"Timezone\":\"America/New_York\"},\"ESR\":{\"Timezone\":\"America/Santiago\"},\"ESS\":{\"Timezone\":\"Europe/Berlin\"},\"ESU\":{\"Timezone\":\"Africa/Casablanca\"},\"ETB\":{\"Timezone\":null},\"ETH\":{\"Timezone\":\"Asia/Jerusalem\"},\"ETR\":{\"Timezone\":\"America/Guayaquil\"},\"ETS\":{\"Timezone\":null},\"ETZ\":{\"Timezone\":\"Europe/Paris\"},\"EUA\":{\"Timezone\":\"Pacific/Tongatapu\"},\"EUF\":{\"Timezone\":\"America/Chicago\"},\"EUG\":{\"Timezone\":\"America/Los_Angeles\"},\"EUM\":{\"Timezone\":\"Europe/Berlin\"},\"EUN\":{\"Timezone\":\"Africa/El_Aaiun\"},\"EUQ\":{\"Timezone\":\"Asia/Manila\"},\"EUX\":{\"Timezone\":\"America/Curacao\"},\"EVE\":{\"Timezone\":\"Europe/Oslo\"},\"EVG\":{\"Timezone\":\"Europe/Stockholm\"},\"EVN\":{\"Timezone\":\"Asia/Yerevan\"},\"EVV\":{\"Timezone\":\"America/Chicago\"},\"EVW\":{\"Timezone\":\"America/Denver\"},\"EVX\":{\"Timezone\":\"Europe/Paris\"},\"EWB\":{\"Timezone\":\"America/New_York\"},\"EWK\":{\"Timezone\":\"America/Chicago\"},\"EWN\":{\"Timezone\":\"America/New_York\"},\"EWR\":{\"Timezone\":\"America/New_York\"},\"EXT\":{\"Timezone\":\"Europe/London\"},\"EYK\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"EYP\":{\"Timezone\":\"America/Bogota\"},\"EYW\":{\"Timezone\":\"America/New_York\"},\"EZE\":{\"Timezone\":\"America/Buenos_Aires\"},\"EZS\":{\"Timezone\":\"Europe/Istanbul\"},\"EZV\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"FAA\":{\"Timezone\":\"Africa/Conakry\"},\"FAB\":{\"Timezone\":\"Europe/London\"},\"FAC\":{\"Timezone\":null},\"FAE\":{\"Timezone\":\"Atlantic/Faeroe\"},\"FAF\":{\"Timezone\":\"America/New_York\"},\"FAH\":{\"Timezone\":null},\"FAI\":{\"Timezone\":\"America/Anchorage\"},\"FAJ\":{\"Timezone\":\"America/Puerto_Rico\"},\"FAN\":{\"Timezone\":\"Europe/Oslo\"},\"FAO\":{\"Timezone\":\"Europe/Lisbon\"},\"FAR\":{\"Timezone\":\"America/Chicago\"},\"FAT\":{\"Timezone\":\"America/Los_Angeles\"},\"FAV\":{\"Timezone\":\"Pacific/Tahiti\"},\"FAY\":{\"Timezone\":\"America/New_York\"},\"FAZ\":{\"Timezone\":\"Asia/Tehran\"},\"FBA\":{\"Timezone\":\"America/Boa_Vista\"},\"FBD\":{\"Timezone\":\"Asia/Kabul\"},\"FBE\":{\"Timezone\":\"America/Sao_Paulo\"},\"FBG\":{\"Timezone\":\"America/New_York\"},\"FBK\":{\"Timezone\":\"America/Anchorage\"},\"FBM\":{\"Timezone\":\"Africa/Lubumbashi\"},\"FBR\":{\"Timezone\":\"America/Denver\"},\"FBU\":{\"Timezone\":\"Europe/Oslo\"},\"FCA\":{\"Timezone\":\"America/Denver\"},\"FCB\":{\"Timezone\":\"Africa/Johannesburg\"},\"FCM\":{\"Timezone\":\"America/Chicago\"},\"FCN\":{\"Timezone\":\"Europe/Berlin\"},\"FCO\":{\"Timezone\":\"Europe/Rome\"},\"FCS\":{\"Timezone\":\"America/Denver\"},\"FDF\":{\"Timezone\":\"America/Martinique\"},\"FDH\":{\"Timezone\":\"Europe/Berlin\"},\"FDO\":{\"Timezone\":\"America/Buenos_Aires\"},\"FDU\":{\"Timezone\":\"Africa/Kinshasa\"},\"FDY\":{\"Timezone\":\"America/New_York\"},\"FEG\":{\"Timezone\":\"Asia/Samarkand\"},\"FEL\":{\"Timezone\":\"Europe/Berlin\"},\"FEN\":{\"Timezone\":\"America/Fortaleza\"},\"FET\":{\"Timezone\":null},\"FEZ\":{\"Timezone\":\"Africa/Casablanca\"},\"FFA\":{\"Timezone\":\"America/New_York\"},\"FFD\":{\"Timezone\":\"Europe/London\"},\"FFO\":{\"Timezone\":\"America/New_York\"},\"FFT\":{\"Timezone\":\"America/New_York\"},\"FFU\":{\"Timezone\":\"America/Santiago\"},\"FGI\":{\"Timezone\":\"Pacific/Apia\"},\"FGU\":{\"Timezone\":\"Pacific/Tahiti\"},\"FHU\":{\"Timezone\":\"America/Phoenix\"},\"FIE\":{\"Timezone\":\"Europe/London\"},\"FIG\":{\"Timezone\":\"Africa/Conakry\"},\"FIH\":{\"Timezone\":\"Africa/Kinshasa\"},\"FIK\":{\"Timezone\":null},\"FIZ\":{\"Timezone\":\"Australia/Perth\"},\"FJR\":{\"Timezone\":\"Asia/Dubai\"},\"FKB\":{\"Timezone\":\"Europe/Berlin\"},\"FKI\":{\"Timezone\":\"Africa/Lubumbashi\"},\"FKJ\":{\"Timezone\":\"Asia/Tokyo\"},\"FKL\":{\"Timezone\":\"America/New_York\"},\"FKQ\":{\"Timezone\":\"Asia/Jayapura\"},\"FKS\":{\"Timezone\":\"Asia/Tokyo\"},\"FLA\":{\"Timezone\":\"America/Bogota\"},\"FLB\":{\"Timezone\":null},\"FLD\":{\"Timezone\":\"America/Chicago\"},\"FLF\":{\"Timezone\":\"Europe/Berlin\"},\"FLG\":{\"Timezone\":\"America/Phoenix\"},\"FLL\":{\"Timezone\":\"America/New_York\"},\"FLN\":{\"Timezone\":\"America/Sao_Paulo\"},\"FLO\":{\"Timezone\":\"America/New_York\"},\"FLP\":{\"Timezone\":null},\"FLR\":{\"Timezone\":\"Europe/Rome\"},\"FLS\":{\"Timezone\":\"Australia/Melbourne\"},\"FLV\":{\"Timezone\":\"America/Chicago\"},\"FLW\":{\"Timezone\":\"Atlantic/Azores\"},\"FLZ\":{\"Timezone\":\"Asia/Jakarta\"},\"FMA\":{\"Timezone\":\"America/Cordoba\"},\"FME\":{\"Timezone\":\"America/New_York\"},\"FMH\":{\"Timezone\":\"America/New_York\"},\"FMI\":{\"Timezone\":\"Africa/Lubumbashi\"},\"FMM\":{\"Timezone\":\"Europe/Berlin\"},\"FMN\":{\"Timezone\":\"America/Denver\"},\"FMO\":{\"Timezone\":\"Europe/Berlin\"},\"FMY\":{\"Timezone\":\"America/New_York\"},\"FNA\":{\"Timezone\":\"Africa/Freetown\"},\"FNB\":{\"Timezone\":null},\"FNC\":{\"Timezone\":\"Europe/Lisbon\"},\"FNI\":{\"Timezone\":\"Europe/Paris\"},\"FNJ\":{\"Timezone\":\"Asia/Pyongyang\"},\"FNL\":{\"Timezone\":\"America/Denver\"},\"FNR\":{\"Timezone\":\"America/Anchorage\"},\"FNT\":{\"Timezone\":\"America/New_York\"},\"FNU\":{\"Timezone\":\"Europe/Rome\"},\"FOC\":{\"Timezone\":\"Asia/Shanghai\"},\"FOD\":{\"Timezone\":\"America/Chicago\"},\"FOE\":{\"Timezone\":\"America/Chicago\"},\"FOG\":{\"Timezone\":\"Europe/Rome\"},\"FOK\":{\"Timezone\":\"America/New_York\"},\"FOM\":{\"Timezone\":\"Africa/Douala\"},\"FON\":{\"Timezone\":\"America/Costa_Rica\"},\"FOR\":{\"Timezone\":\"America/Fortaleza\"},\"FOS\":{\"Timezone\":\"Australia/Perth\"},\"FPO\":{\"Timezone\":\"America/Nassau\"},\"FPR\":{\"Timezone\":\"America/New_York\"},\"FRA\":{\"Timezone\":\"Europe/Berlin\"},\"FRB\":{\"Timezone\":null},\"FRC\":{\"Timezone\":\"America/Sao_Paulo\"},\"FRD\":{\"Timezone\":\"America/Los_Angeles\"},\"FRE\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"FRG\":{\"Timezone\":\"America/New_York\"},\"FRI\":{\"Timezone\":\"America/Chicago\"},\"FRJ\":{\"Timezone\":\"Europe/Paris\"},\"FRL\":{\"Timezone\":\"Europe/Rome\"},\"FRN\":{\"Timezone\":\"America/Anchorage\"},\"FRO\":{\"Timezone\":\"Europe/Oslo\"},\"FRS\":{\"Timezone\":\"America/Guatemala\"},\"FRU\":{\"Timezone\":\"Asia/Bishkek\"},\"FRW\":{\"Timezone\":\"Africa/Gaborone\"},\"FRY\":{\"Timezone\":\"America/New_York\"},\"FRZ\":{\"Timezone\":\"Europe/Berlin\"},\"FSC\":{\"Timezone\":\"Europe/Paris\"},\"FSD\":{\"Timezone\":\"America/Chicago\"},\"FSI\":{\"Timezone\":\"America/Chicago\"},\"FSM\":{\"Timezone\":\"America/Chicago\"},\"FSP\":{\"Timezone\":\"America/Miquelon\"},\"FSS\":{\"Timezone\":null},\"FST\":{\"Timezone\":\"America/Chicago\"},\"FTA\":{\"Timezone\":\"Pacific/Efate\"},\"FTE\":{\"Timezone\":\"America/Argentina/Rio_Gallegos\"},\"FTI\":{\"Timezone\":\"Pacific/Pago_Pago\"},\"FTK\":{\"Timezone\":\"America/New_York\"},\"FTU\":{\"Timezone\":\"Indian/Antananarivo\"},\"FTW\":{\"Timezone\":\"America/Chicago\"},\"FTX\":{\"Timezone\":\"Africa/Brazzaville\"},\"FTY\":{\"Timezone\":\"America/New_York\"},\"FUE\":{\"Timezone\":\"Atlantic/Canary\"},\"FUG\":{\"Timezone\":\"Asia/Shanghai\"},\"FUJ\":{\"Timezone\":\"Asia/Tokyo\"},\"FUK\":{\"Timezone\":\"Asia/Tokyo\"},\"FUL\":{\"Timezone\":\"America/Los_Angeles\"},\"FUN\":{\"Timezone\":\"Pacific/Funafuti\"},\"FUO\":{\"Timezone\":\"Asia/Shanghai\"},\"FUT\":{\"Timezone\":\"Pacific/Wallis\"},\"FWA\":{\"Timezone\":\"America/New_York\"},\"FWH\":{\"Timezone\":\"America/Chicago\"},\"FXE\":{\"Timezone\":\"America/New_York\"},\"FXO\":{\"Timezone\":\"Africa/Maputo\"},\"FYJ\":{\"Timezone\":null},\"FYN\":{\"Timezone\":null},\"FYT\":{\"Timezone\":\"Africa/Ndjamena\"},\"FYU\":{\"Timezone\":\"America/Anchorage\"},\"FYV\":{\"Timezone\":\"America/Chicago\"},\"FZO\":{\"Timezone\":\"Europe/London\"},\"GAD\":{\"Timezone\":\"America/Chicago\"},\"GAE\":{\"Timezone\":\"Africa/Tunis\"},\"GAF\":{\"Timezone\":\"Africa/Tunis\"},\"GAH\":{\"Timezone\":\"Australia/Brisbane\"},\"GAI\":{\"Timezone\":\"America/New_York\"},\"GAJ\":{\"Timezone\":\"Asia/Tokyo\"},\"GAL\":{\"Timezone\":\"America/Anchorage\"},\"GAM\":{\"Timezone\":\"America/Anchorage\"},\"GAN\":{\"Timezone\":\"Indian/Maldives\"},\"GAO\":{\"Timezone\":\"America/Havana\"},\"GAQ\":{\"Timezone\":\"Africa/Bamako\"},\"GAS\":{\"Timezone\":\"Africa/Nairobi\"},\"GAU\":{\"Timezone\":\"Asia/Calcutta\"},\"GAY\":{\"Timezone\":\"Asia/Calcutta\"},\"GBA\":{\"Timezone\":\"Europe/London\"},\"GBB\":{\"Timezone\":\"Asia/Baku\"},\"GBD\":{\"Timezone\":\"America/Chicago\"},\"GBE\":{\"Timezone\":\"Africa/Gaborone\"},\"GBG\":{\"Timezone\":null},\"GBJ\":{\"Timezone\":\"America/Guadeloupe\"},\"GBK\":{\"Timezone\":\"Africa/Freetown\"},\"GBT\":{\"Timezone\":\"Asia/Tehran\"},\"GBZ\":{\"Timezone\":\"Pacific/Auckland\"},\"GCC\":{\"Timezone\":\"America/Denver\"},\"GCH\":{\"Timezone\":\"Asia/Tehran\"},\"GCI\":{\"Timezone\":\"Europe/Guernsey\"},\"GCJ\":{\"Timezone\":\"Africa/Johannesburg\"},\"GCK\":{\"Timezone\":\"America/Chicago\"},\"GCM\":{\"Timezone\":\"America/Cayman\"},\"GCN\":{\"Timezone\":\"America/Phoenix\"},\"GDC\":{\"Timezone\":null},\"GDE\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"GDL\":{\"Timezone\":\"America/Mexico_City\"},\"GDN\":{\"Timezone\":\"Europe/Warsaw\"},\"GDO\":{\"Timezone\":\"America/Caracas\"},\"GDQ\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"GDT\":{\"Timezone\":\"America/Grand_Turk\"},\"GDV\":{\"Timezone\":\"America/Denver\"},\"GDW\":{\"Timezone\":\"America/New_York\"},\"GDX\":{\"Timezone\":\"Asia/Srednekolymsk\"},\"GDZ\":{\"Timezone\":\"Europe/Moscow\"},\"GEA\":{\"Timezone\":\"Pacific/Noumea\"},\"GED\":{\"Timezone\":\"America/New_York\"},\"GEG\":{\"Timezone\":\"America/Los_Angeles\"},\"GEL\":{\"Timezone\":\"America/Sao_Paulo\"},\"GEO\":{\"Timezone\":\"America/Guyana\"},\"GER\":{\"Timezone\":\"America/Havana\"},\"GES\":{\"Timezone\":\"Asia/Manila\"},\"GET\":{\"Timezone\":\"Australia/Perth\"},\"GEV\":{\"Timezone\":\"Europe/Stockholm\"},\"GEX\":{\"Timezone\":\"Australia/Hobart\"},\"GFF\":{\"Timezone\":\"Australia/Sydney\"},\"GFK\":{\"Timezone\":\"America/Chicago\"},\"GFL\":{\"Timezone\":\"America/New_York\"},\"GFN\":{\"Timezone\":\"Australia/Sydney\"},\"GFO\":{\"Timezone\":\"America/Guyana\"},\"GFR\":{\"Timezone\":\"Europe/Paris\"},\"GFY\":{\"Timezone\":\"Africa/Windhoek\"},\"GGE\":{\"Timezone\":\"America/New_York\"},\"GGG\":{\"Timezone\":\"America/Chicago\"},\"GGM\":{\"Timezone\":\"Africa/Nairobi\"},\"GGS\":{\"Timezone\":\"America/Argentina/Rio_Gallegos\"},\"GGT\":{\"Timezone\":\"America/Nassau\"},\"GGW\":{\"Timezone\":\"America/Denver\"},\"GHA\":{\"Timezone\":\"Africa/Algiers\"},\"GHB\":{\"Timezone\":\"America/Nassau\"},\"GHC\":{\"Timezone\":\"America/Nassau\"},\"GHF\":{\"Timezone\":\"Europe/Berlin\"},\"GHT\":{\"Timezone\":\"Africa/Tripoli\"},\"GHU\":{\"Timezone\":\"America/Cordoba\"},\"GIB\":{\"Timezone\":\"Europe/Gibraltar\"},\"GIC\":{\"Timezone\":\"Australia/Brisbane\"},\"GID\":{\"Timezone\":null},\"GIF\":{\"Timezone\":\"America/New_York\"},\"GIG\":{\"Timezone\":\"America/Sao_Paulo\"},\"GII\":{\"Timezone\":null},\"GIL\":{\"Timezone\":\"Asia/Karachi\"},\"GIR\":{\"Timezone\":\"America/Bogota\"},\"GIS\":{\"Timezone\":\"Pacific/Auckland\"},\"GIT\":{\"Timezone\":null},\"GIU\":{\"Timezone\":\"Asia/Colombo\"},\"GIZ\":{\"Timezone\":\"Asia/Riyadh\"},\"GJA\":{\"Timezone\":\"America/Tegucigalpa\"},\"GJL\":{\"Timezone\":\"Africa/Algiers\"},\"GJM\":{\"Timezone\":\"America/Boa_Vista\"},\"GJR\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"GJT\":{\"Timezone\":\"America/Denver\"},\"GKA\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"GKE\":{\"Timezone\":\"Europe/Berlin\"},\"GKK\":{\"Timezone\":\"Indian/Maldives\"},\"GKL\":{\"Timezone\":\"Australia/Brisbane\"},\"GKN\":{\"Timezone\":\"America/Anchorage\"},\"GLA\":{\"Timezone\":\"Europe/London\"},\"GLD\":{\"Timezone\":\"America/Denver\"},\"GLF\":{\"Timezone\":\"America/Costa_Rica\"},\"GLH\":{\"Timezone\":\"America/Chicago\"},\"GLI\":{\"Timezone\":\"Australia/Sydney\"},\"GLK\":{\"Timezone\":\"Africa/Mogadishu\"},\"GLO\":{\"Timezone\":\"Europe/London\"},\"GLR\":{\"Timezone\":null},\"GLS\":{\"Timezone\":\"America/Chicago\"},\"GLT\":{\"Timezone\":\"Australia/Brisbane\"},\"GLU\":{\"Timezone\":null},\"GLV\":{\"Timezone\":\"America/Anchorage\"},\"GLW\":{\"Timezone\":null},\"GLZ\":{\"Timezone\":\"Europe/Amsterdam\"},\"GMA\":{\"Timezone\":\"Africa/Kinshasa\"},\"GMB\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"GMD\":{\"Timezone\":\"Africa/Casablanca\"},\"GME\":{\"Timezone\":\"Europe/Minsk\"},\"GML\":{\"Timezone\":\"Europe/Kiev\"},\"GMO\":{\"Timezone\":null},\"GMP\":{\"Timezone\":\"Asia/Seoul\"},\"GMQ\":{\"Timezone\":null},\"GMR\":{\"Timezone\":\"Pacific/Gambier\"},\"GMU\":{\"Timezone\":null},\"GMV\":{\"Timezone\":\"America/Denver\"},\"GMZ\":{\"Timezone\":\"Atlantic/Canary\"},\"GNA\":{\"Timezone\":\"Europe/Minsk\"},\"GNB\":{\"Timezone\":\"Europe/Paris\"},\"GND\":{\"Timezone\":\"America/Grenada\"},\"GNI\":{\"Timezone\":\"Asia/Taipei\"},\"GNM\":{\"Timezone\":\"America/Fortaleza\"},\"GNR\":{\"Timezone\":\"America/Argentina/Salta\"},\"GNS\":{\"Timezone\":\"Asia/Jakarta\"},\"GNT\":{\"Timezone\":\"America/Denver\"},\"GNV\":{\"Timezone\":\"America/New_York\"},\"GNY\":{\"Timezone\":\"Europe/Istanbul\"},\"GNZ\":{\"Timezone\":\"Africa/Gaborone\"},\"GOA\":{\"Timezone\":\"Europe/Rome\"},\"GOB\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"GOH\":{\"Timezone\":\"America/Godthab\"},\"GOI\":{\"Timezone\":\"Asia/Calcutta\"},\"GOJ\":{\"Timezone\":\"Europe/Moscow\"},\"GOM\":{\"Timezone\":\"Africa/Kigali\"},\"GON\":{\"Timezone\":\"America/New_York\"},\"GOO\":{\"Timezone\":null},\"GOP\":{\"Timezone\":\"Asia/Calcutta\"},\"GOQ\":{\"Timezone\":\"Asia/Shanghai\"},\"GOR\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"GOT\":{\"Timezone\":\"Europe/Stockholm\"},\"GOU\":{\"Timezone\":\"Africa/Douala\"},\"GOV\":{\"Timezone\":\"Australia/Darwin\"},\"GOZ\":{\"Timezone\":\"Europe/Sofia\"},\"GPA\":{\"Timezone\":\"Europe/Athens\"},\"GPB\":{\"Timezone\":\"America/Sao_Paulo\"},\"GPI\":{\"Timezone\":\"America/Bogota\"},\"GPL\":{\"Timezone\":\"America/Costa_Rica\"},\"GPN\":{\"Timezone\":null},\"GPO\":{\"Timezone\":\"America/Argentina/Salta\"},\"GPS\":{\"Timezone\":\"Pacific/Galapagos\"},\"GPT\":{\"Timezone\":\"America/Chicago\"},\"GPZ\":{\"Timezone\":\"America/Chicago\"},\"GQQ\":{\"Timezone\":\"America/New_York\"},\"GRB\":{\"Timezone\":\"America/Chicago\"},\"GRF\":{\"Timezone\":\"America/Los_Angeles\"},\"GRI\":{\"Timezone\":\"America/Chicago\"},\"GRJ\":{\"Timezone\":\"Africa/Johannesburg\"},\"GRK\":{\"Timezone\":\"America/Chicago\"},\"GRM\":{\"Timezone\":\"America/Chicago\"},\"GRO\":{\"Timezone\":\"Europe/Madrid\"},\"GRP\":{\"Timezone\":\"America/Fortaleza\"},\"GRQ\":{\"Timezone\":\"Europe/Amsterdam\"},\"GRR\":{\"Timezone\":\"America/New_York\"},\"GRS\":{\"Timezone\":\"Europe/Rome\"},\"GRU\":{\"Timezone\":\"America/Sao_Paulo\"},\"GRW\":{\"Timezone\":\"Atlantic/Azores\"},\"GRX\":{\"Timezone\":\"Europe/Madrid\"},\"GRY\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"GRZ\":{\"Timezone\":\"Europe/Vienna\"},\"GSB\":{\"Timezone\":\"America/New_York\"},\"GSE\":{\"Timezone\":\"Europe/Stockholm\"},\"GSI\":{\"Timezone\":\"America/Cayenne\"},\"GSJ\":{\"Timezone\":\"America/Guatemala\"},\"GSO\":{\"Timezone\":\"America/New_York\"},\"GSP\":{\"Timezone\":\"America/New_York\"},\"GSQ\":{\"Timezone\":\"Africa/Cairo\"},\"GST\":{\"Timezone\":\"America/Anchorage\"},\"GTE\":{\"Timezone\":\"Australia/Darwin\"},\"GTF\":{\"Timezone\":\"America/Denver\"},\"GTI\":{\"Timezone\":\"Europe/Berlin\"},\"GTN\":{\"Timezone\":\"Pacific/Auckland\"},\"GTO\":{\"Timezone\":\"Asia/Makassar\"},\"GTR\":{\"Timezone\":\"America/Chicago\"},\"GUA\":{\"Timezone\":\"America/Guatemala\"},\"GUB\":{\"Timezone\":\"America/Tijuana\"},\"GUC\":{\"Timezone\":\"America/Denver\"},\"GUF\":{\"Timezone\":\"America/Chicago\"},\"GUH\":{\"Timezone\":null},\"GUI\":{\"Timezone\":\"America/Caracas\"},\"GUJ\":{\"Timezone\":\"America/Sao_Paulo\"},\"GUL\":{\"Timezone\":\"Australia/Sydney\"},\"GUM\":{\"Timezone\":\"Pacific/Guam\"},\"GUP\":{\"Timezone\":\"America/Denver\"},\"GUQ\":{\"Timezone\":\"America/Caracas\"},\"GUR\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"GUS\":{\"Timezone\":\"America/New_York\"},\"GUT\":{\"Timezone\":\"Europe/Berlin\"},\"GUU\":{\"Timezone\":null},\"GUW\":{\"Timezone\":\"Asia/Oral\"},\"GUX\":{\"Timezone\":\"Asia/Calcutta\"},\"GUY\":{\"Timezone\":null},\"GUZ\":{\"Timezone\":null},\"GVA\":{\"Timezone\":\"Europe/Paris\"},\"GVL\":{\"Timezone\":\"America/New_York\"},\"GVN\":{\"Timezone\":null},\"GVR\":{\"Timezone\":\"America/Sao_Paulo\"},\"GVT\":{\"Timezone\":\"America/Chicago\"},\"GVX\":{\"Timezone\":\"Europe/Stockholm\"},\"GWD\":{\"Timezone\":\"Asia/Karachi\"},\"GWE\":{\"Timezone\":\"Africa/Harare\"},\"GWL\":{\"Timezone\":\"Asia/Calcutta\"},\"GWO\":{\"Timezone\":\"America/Chicago\"},\"GWT\":{\"Timezone\":\"Europe/Berlin\"},\"GWY\":{\"Timezone\":\"Europe/Dublin\"},\"GXF\":{\"Timezone\":\"Asia/Aden\"},\"GXG\":{\"Timezone\":\"Africa/Luanda\"},\"GXH\":{\"Timezone\":\"Asia/Shanghai\"},\"GXQ\":{\"Timezone\":\"America/Santiago\"},\"GXY\":{\"Timezone\":null},\"GYA\":{\"Timezone\":\"America/La_Paz\"},\"GYD\":{\"Timezone\":\"Asia/Baku\"},\"GYE\":{\"Timezone\":\"America/Guayaquil\"},\"GYG\":{\"Timezone\":\"Asia/Yakutsk\"},\"GYI\":{\"Timezone\":\"Africa/Kigali\"},\"GYL\":{\"Timezone\":\"Australia/Perth\"},\"GYM\":{\"Timezone\":\"America/Hermosillo\"},\"GYN\":{\"Timezone\":\"America/Sao_Paulo\"},\"GYR\":{\"Timezone\":\"America/Phoenix\"},\"GYS\":{\"Timezone\":\"Asia/Shanghai\"},\"GYU\":{\"Timezone\":\"Asia/Shanghai\"},\"GYY\":{\"Timezone\":\"America/Chicago\"},\"GZA\":{\"Timezone\":\"Asia/Gaza\"},\"GZI\":{\"Timezone\":null},\"GZM\":{\"Timezone\":\"Europe/Malta\"},\"GZO\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"GZP\":{\"Timezone\":\"Europe/Istanbul\"},\"GZT\":{\"Timezone\":\"Europe/Istanbul\"},\"GZW\":{\"Timezone\":\"Asia/Tehran\"},\"HAA\":{\"Timezone\":\"Europe/Oslo\"},\"HAC\":{\"Timezone\":\"Asia/Tokyo\"},\"HAD\":{\"Timezone\":\"Europe/Stockholm\"},\"HAF\":{\"Timezone\":null},\"HAH\":{\"Timezone\":\"Indian/Comoro\"},\"HAJ\":{\"Timezone\":\"Europe/Berlin\"},\"HAK\":{\"Timezone\":\"Asia/Shanghai\"},\"HAM\":{\"Timezone\":\"Europe/Berlin\"},\"HAN\":{\"Timezone\":\"Asia/Saigon\"},\"HAO\":{\"Timezone\":\"America/New_York\"},\"HAQ\":{\"Timezone\":\"Indian/Maldives\"},\"HAR\":{\"Timezone\":\"America/New_York\"},\"HAS\":{\"Timezone\":\"Asia/Riyadh\"},\"HAU\":{\"Timezone\":\"Europe/Oslo\"},\"HAV\":{\"Timezone\":\"America/Havana\"},\"HAW\":{\"Timezone\":\"Europe/London\"},\"HBA\":{\"Timezone\":\"Australia/Melbourne\"},\"HBE\":{\"Timezone\":\"Africa/Cairo\"},\"HBG\":{\"Timezone\":\"America/Chicago\"},\"HBR\":{\"Timezone\":\"America/Chicago\"},\"HBX\":{\"Timezone\":\"Asia/Calcutta\"},\"HCJ\":{\"Timezone\":null},\"HCN\":{\"Timezone\":\"Asia/Taipei\"},\"HCQ\":{\"Timezone\":\"Australia/Perth\"},\"HCR\":{\"Timezone\":\"America/Anchorage\"},\"HCW\":{\"Timezone\":\"America/New_York\"},\"HDD\":{\"Timezone\":\"Asia/Karachi\"},\"HDE\":{\"Timezone\":null},\"HDF\":{\"Timezone\":\"Europe/Berlin\"},\"HDG\":{\"Timezone\":\"Asia/Shanghai\"},\"HDH\":{\"Timezone\":\"Pacific/Honolulu\"},\"HDI\":{\"Timezone\":\"America/New_York\"},\"HDM\":{\"Timezone\":\"Asia/Tehran\"},\"HDN\":{\"Timezone\":\"America/Denver\"},\"HDR\":{\"Timezone\":\"Asia/Tehran\"},\"HDS\":{\"Timezone\":\"Africa/Johannesburg\"},\"HDY\":{\"Timezone\":\"Asia/Bangkok\"},\"HEA\":{\"Timezone\":\"Asia/Kabul\"},\"HEH\":{\"Timezone\":\"Asia/Rangoon\"},\"HEI\":{\"Timezone\":\"Europe/Berlin\"},\"HEK\":{\"Timezone\":\"Asia/Shanghai\"},\"HEL\":{\"Timezone\":\"Europe/Helsinki\"},\"HEM\":{\"Timezone\":\"Europe/Helsinki\"},\"HER\":{\"Timezone\":\"Europe/Athens\"},\"HET\":{\"Timezone\":\"Asia/Shanghai\"},\"HEW\":{\"Timezone\":\"Europe/Athens\"},\"HEX\":{\"Timezone\":\"America/Santo_Domingo\"},\"HFA\":{\"Timezone\":\"Asia/Jerusalem\"},\"HFD\":{\"Timezone\":\"America/New_York\"},\"HFE\":{\"Timezone\":\"Asia/Shanghai\"},\"HFN\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"HFS\":{\"Timezone\":\"Europe/Stockholm\"},\"HFT\":{\"Timezone\":\"Europe/Oslo\"},\"HGA\":{\"Timezone\":\"Africa/Mogadishu\"},\"HGD\":{\"Timezone\":\"Australia/Brisbane\"},\"HGE\":{\"Timezone\":\"America/Caracas\"},\"HGH\":{\"Timezone\":\"Asia/Shanghai\"},\"HGI\":{\"Timezone\":null},\"HGL\":{\"Timezone\":\"Europe/Berlin\"},\"HGN\":{\"Timezone\":\"Asia/Bangkok\"},\"HGO\":{\"Timezone\":\"Africa/Abidjan\"},\"HGR\":{\"Timezone\":\"America/New_York\"},\"HGS\":{\"Timezone\":\"Africa/Freetown\"},\"HGU\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"HHE\":{\"Timezone\":\"Asia/Tokyo\"},\"HHH\":{\"Timezone\":\"America/New_York\"},\"HHI\":{\"Timezone\":\"Pacific/Honolulu\"},\"HHN\":{\"Timezone\":\"Europe/Berlin\"},\"HHP\":{\"Timezone\":\"Asia/Hong_Kong\"},\"HHQ\":{\"Timezone\":\"Asia/Bangkok\"},\"HHR\":{\"Timezone\":\"America/Los_Angeles\"},\"HHZ\":{\"Timezone\":null},\"HIA\":{\"Timezone\":\"Asia/Shanghai\"},\"HIB\":{\"Timezone\":\"America/Chicago\"},\"HID\":{\"Timezone\":\"Australia/Brisbane\"},\"HIF\":{\"Timezone\":\"America/Denver\"},\"HII\":{\"Timezone\":\"America/Phoenix\"},\"HIJ\":{\"Timezone\":\"Asia/Tokyo\"},\"HIM\":{\"Timezone\":null},\"HIN\":{\"Timezone\":\"Asia/Seoul\"},\"HIO\":{\"Timezone\":\"America/Los_Angeles\"},\"HIR\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"HIW\":{\"Timezone\":\"Asia/Tokyo\"},\"HJJ\":{\"Timezone\":\"Asia/Shanghai\"},\"HJR\":{\"Timezone\":\"Asia/Calcutta\"},\"HKD\":{\"Timezone\":\"Asia/Tokyo\"},\"HKG\":{\"Timezone\":\"Asia/Hong_Kong\"},\"HKK\":{\"Timezone\":\"Pacific/Auckland\"},\"HKN\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"HKT\":{\"Timezone\":\"Asia/Bangkok\"},\"HKY\":{\"Timezone\":\"America/New_York\"},\"HLA\":{\"Timezone\":\"Africa/Johannesburg\"},\"HLD\":{\"Timezone\":\"Asia/Shanghai\"},\"HLE\":{\"Timezone\":null},\"HLF\":{\"Timezone\":\"Europe/Stockholm\"},\"HLG\":{\"Timezone\":\"America/New_York\"},\"HLH\":{\"Timezone\":\"Asia/Shanghai\"},\"HLI\":{\"Timezone\":null},\"HLJ\":{\"Timezone\":\"Europe/Vilnius\"},\"HLN\":{\"Timezone\":\"America/Denver\"},\"HLP\":{\"Timezone\":\"Asia/Jakarta\"},\"HLR\":{\"Timezone\":\"America/Chicago\"},\"HLT\":{\"Timezone\":\"Australia/Hobart\"},\"HLZ\":{\"Timezone\":\"Pacific/Auckland\"},\"HMA\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"HMB\":{\"Timezone\":\"Africa/Cairo\"},\"HME\":{\"Timezone\":\"Africa/Algiers\"},\"HMG\":{\"Timezone\":null},\"HMI\":{\"Timezone\":\"Asia/Shanghai\"},\"HMJ\":{\"Timezone\":\"Europe/Kiev\"},\"HMN\":{\"Timezone\":\"America/Denver\"},\"HMO\":{\"Timezone\":\"America/Hermosillo\"},\"HMR\":{\"Timezone\":\"Europe/Oslo\"},\"HMV\":{\"Timezone\":\"Europe/Stockholm\"},\"HMY\":{\"Timezone\":null},\"HNA\":{\"Timezone\":\"Asia/Tokyo\"},\"HND\":{\"Timezone\":\"Asia/Tokyo\"},\"HNH\":{\"Timezone\":\"America/Anchorage\"},\"HNL\":{\"Timezone\":\"Pacific/Honolulu\"},\"HNM\":{\"Timezone\":\"Pacific/Honolulu\"},\"HNS\":{\"Timezone\":\"America/Anchorage\"},\"HNY\":{\"Timezone\":null},\"HOA\":{\"Timezone\":\"Africa/Nairobi\"},\"HOB\":{\"Timezone\":\"America/Denver\"},\"HOD\":{\"Timezone\":\"Asia/Aden\"},\"HOE\":{\"Timezone\":\"Asia/Vientiane\"},\"HOF\":{\"Timezone\":\"Asia/Riyadh\"},\"HOG\":{\"Timezone\":\"America/Havana\"},\"HOH\":{\"Timezone\":\"Europe/Vienna\"},\"HOI\":{\"Timezone\":null},\"HOK\":{\"Timezone\":\"Australia/Darwin\"},\"HOM\":{\"Timezone\":\"America/Anchorage\"},\"HON\":{\"Timezone\":\"America/Chicago\"},\"HOP\":{\"Timezone\":\"America/Chicago\"},\"HOQ\":{\"Timezone\":\"Europe/Berlin\"},\"HOR\":{\"Timezone\":\"Atlantic/Azores\"},\"HOS\":{\"Timezone\":\"America/Argentina/Salta\"},\"HOT\":{\"Timezone\":\"America/Chicago\"},\"HOU\":{\"Timezone\":\"America/Chicago\"},\"HOV\":{\"Timezone\":\"Europe/Oslo\"},\"HOX\":{\"Timezone\":\"Asia/Rangoon\"},\"HPA\":{\"Timezone\":\"Pacific/Tongatapu\"},\"HPB\":{\"Timezone\":\"America/Anchorage\"},\"HPG\":{\"Timezone\":null},\"HPH\":{\"Timezone\":\"Asia/Saigon\"},\"HPN\":{\"Timezone\":\"America/New_York\"},\"HQM\":{\"Timezone\":\"America/Los_Angeles\"},\"HRB\":{\"Timezone\":\"Asia/Shanghai\"},\"HRE\":{\"Timezone\":\"Africa/Harare\"},\"HRG\":{\"Timezone\":\"Africa/Cairo\"},\"HRI\":{\"Timezone\":\"Asia/Colombo\"},\"HRK\":{\"Timezone\":\"Europe/Kiev\"},\"HRL\":{\"Timezone\":\"America/Chicago\"},\"HRM\":{\"Timezone\":\"Africa/Algiers\"},\"HRO\":{\"Timezone\":\"America/Chicago\"},\"HRS\":{\"Timezone\":\"Africa/Johannesburg\"},\"HRT\":{\"Timezone\":\"Europe/London\"},\"HSG\":{\"Timezone\":\"Asia/Tokyo\"},\"HSH\":{\"Timezone\":\"America/Los_Angeles\"},\"HSK\":{\"Timezone\":\"Europe/Madrid\"},\"HSL\":{\"Timezone\":\"America/Anchorage\"},\"HSM\":{\"Timezone\":null},\"HSN\":{\"Timezone\":\"Asia/Shanghai\"},\"HSS\":{\"Timezone\":\"Asia/Calcutta\"},\"HST\":{\"Timezone\":\"America/New_York\"},\"HSV\":{\"Timezone\":\"America/Chicago\"},\"HSZ\":{\"Timezone\":\"Asia/Taipei\"},\"HTA\":{\"Timezone\":\"Asia/Yakutsk\"},\"HTG\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"HTI\":{\"Timezone\":\"Australia/Brisbane\"},\"HTL\":{\"Timezone\":\"America/New_York\"},\"HTN\":{\"Timezone\":\"Asia/Shanghai\"},\"HTR\":{\"Timezone\":null},\"HTS\":{\"Timezone\":\"America/New_York\"},\"HTT\":{\"Timezone\":null},\"HTU\":{\"Timezone\":null},\"HTV\":{\"Timezone\":null},\"HTY\":{\"Timezone\":\"Europe/Istanbul\"},\"HUA\":{\"Timezone\":\"America/Chicago\"},\"HUE\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"HUF\":{\"Timezone\":\"America/New_York\"},\"HUH\":{\"Timezone\":\"Pacific/Tahiti\"},\"HUI\":{\"Timezone\":\"Asia/Saigon\"},\"HUL\":{\"Timezone\":\"America/New_York\"},\"HUN\":{\"Timezone\":\"Asia/Taipei\"},\"HUO\":{\"Timezone\":null},\"HUQ\":{\"Timezone\":\"Africa/Tripoli\"},\"HUS\":{\"Timezone\":\"America/Anchorage\"},\"HUT\":{\"Timezone\":\"America/Chicago\"},\"HUU\":{\"Timezone\":\"America/Lima\"},\"HUV\":{\"Timezone\":\"Europe/Stockholm\"},\"HUW\":{\"Timezone\":\"America/Boa_Vista\"},\"HUX\":{\"Timezone\":\"America/Mexico_City\"},\"HUY\":{\"Timezone\":\"Europe/London\"},\"HUZ\":{\"Timezone\":\"Asia/Shanghai\"},\"HVA\":{\"Timezone\":\"Indian/Antananarivo\"},\"HVB\":{\"Timezone\":\"Australia/Brisbane\"},\"HVD\":{\"Timezone\":\"Asia/Hovd\"},\"HVG\":{\"Timezone\":\"Europe/Oslo\"},\"HVN\":{\"Timezone\":\"America/New_York\"},\"HVR\":{\"Timezone\":\"America/Denver\"},\"HVS\":{\"Timezone\":null},\"HWD\":{\"Timezone\":\"America/Los_Angeles\"},\"HWN\":{\"Timezone\":\"Africa/Harare\"},\"HWO\":{\"Timezone\":\"America/New_York\"},\"HXD\":{\"Timezone\":null},\"HXX\":{\"Timezone\":null},\"HYA\":{\"Timezone\":\"America/New_York\"},\"HYC\":{\"Timezone\":\"Europe/London\"},\"HYD\":{\"Timezone\":null},\"HYG\":{\"Timezone\":\"America/Anchorage\"},\"HYN\":{\"Timezone\":\"Asia/Shanghai\"},\"HYR\":{\"Timezone\":null},\"HYS\":{\"Timezone\":\"America/Chicago\"},\"HYV\":{\"Timezone\":\"Europe/Helsinki\"},\"HZB\":{\"Timezone\":\"Europe/Paris\"},\"HZG\":{\"Timezone\":\"Asia/Shanghai\"},\"HZH\":{\"Timezone\":\"Asia/Shanghai\"},\"HZK\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"HZL\":{\"Timezone\":\"America/New_York\"},\"HZP\":{\"Timezone\":null},\"IAA\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"IAB\":{\"Timezone\":\"America/Chicago\"},\"IAD\":{\"Timezone\":\"America/New_York\"},\"IAG\":{\"Timezone\":\"America/New_York\"},\"IAH\":{\"Timezone\":\"America/Chicago\"},\"IAM\":{\"Timezone\":\"Africa/Algiers\"},\"IAN\":{\"Timezone\":\"America/Anchorage\"},\"IAO\":{\"Timezone\":\"Asia/Manila\"},\"IAR\":{\"Timezone\":\"Europe/Moscow\"},\"IAS\":{\"Timezone\":\"Europe/Bucharest\"},\"IBA\":{\"Timezone\":\"Africa/Lagos\"},\"IBB\":{\"Timezone\":\"Pacific/Galapagos\"},\"IBE\":{\"Timezone\":\"America/Bogota\"},\"IBP\":{\"Timezone\":\"America/Lima\"},\"IBR\":{\"Timezone\":\"Asia/Tokyo\"},\"IBZ\":{\"Timezone\":\"Europe/Madrid\"},\"ICC\":{\"Timezone\":\"America/Caracas\"},\"ICI\":{\"Timezone\":\"Pacific/Fiji\"},\"ICK\":{\"Timezone\":\"America/Paramaribo\"},\"ICN\":{\"Timezone\":\"Asia/Seoul\"},\"ICT\":{\"Timezone\":\"America/Chicago\"},\"IDA\":{\"Timezone\":\"America/Denver\"},\"IDP\":{\"Timezone\":null},\"IDR\":{\"Timezone\":\"Asia/Calcutta\"},\"IDY\":{\"Timezone\":\"Europe/Paris\"},\"IEG\":{\"Timezone\":\"Europe/Warsaw\"},\"IEJ\":{\"Timezone\":null},\"IES\":{\"Timezone\":\"Europe/Berlin\"},\"IEV\":{\"Timezone\":\"Europe/Kiev\"},\"IFH\":{\"Timezone\":\"Asia/Tehran\"},\"IFJ\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"IFL\":{\"Timezone\":\"Australia/Brisbane\"},\"IFN\":{\"Timezone\":\"Asia/Tehran\"},\"IFO\":{\"Timezone\":\"Europe/Kiev\"},\"IFU\":{\"Timezone\":null},\"IGA\":{\"Timezone\":\"America/Nassau\"},\"IGB\":{\"Timezone\":\"America/Argentina/Salta\"},\"IGD\":{\"Timezone\":\"Europe/Istanbul\"},\"IGG\":{\"Timezone\":\"America/Anchorage\"},\"IGL\":{\"Timezone\":\"Europe/Istanbul\"},\"IGR\":{\"Timezone\":\"America/Cordoba\"},\"IGS\":{\"Timezone\":\"Europe/Berlin\"},\"IGT\":{\"Timezone\":\"Europe/Moscow\"},\"IGU\":{\"Timezone\":\"America/Sao_Paulo\"},\"IHC\":{\"Timezone\":\"Africa/Maputo\"},\"IHR\":{\"Timezone\":\"Asia/Tehran\"},\"IIA\":{\"Timezone\":\"Europe/Dublin\"},\"IIL\":{\"Timezone\":\"Asia/Tehran\"},\"IJK\":{\"Timezone\":\"Europe/Samara\"},\"IKA\":{\"Timezone\":\"Asia/Tehran\"},\"IKB\":{\"Timezone\":\"America/New_York\"},\"IKI\":{\"Timezone\":\"Asia/Tokyo\"},\"IKK\":{\"Timezone\":\"America/Chicago\"},\"IKL\":{\"Timezone\":null},\"IKO\":{\"Timezone\":\"America/Anchorage\"},\"IKS\":{\"Timezone\":\"Asia/Yakutsk\"},\"IKT\":{\"Timezone\":\"Asia/Irkutsk\"},\"IKU\":{\"Timezone\":null},\"ILA\":{\"Timezone\":null},\"ILD\":{\"Timezone\":\"Europe/Madrid\"},\"ILF\":{\"Timezone\":\"America/Winnipeg\"},\"ILG\":{\"Timezone\":\"America/New_York\"},\"ILI\":{\"Timezone\":\"America/Anchorage\"},\"ILM\":{\"Timezone\":\"America/New_York\"},\"ILN\":{\"Timezone\":\"America/New_York\"},\"ILO\":{\"Timezone\":\"Asia/Manila\"},\"ILP\":{\"Timezone\":\"Pacific/Noumea\"},\"ILQ\":{\"Timezone\":\"America/Lima\"},\"ILR\":{\"Timezone\":\"Africa/Lagos\"},\"ILU\":{\"Timezone\":\"Africa/Nairobi\"},\"ILY\":{\"Timezone\":\"Europe/London\"},\"ILZ\":{\"Timezone\":\"Europe/Bratislava\"},\"IMB\":{\"Timezone\":\"America/Guyana\"},\"IMF\":{\"Timezone\":\"Asia/Calcutta\"},\"IMK\":{\"Timezone\":\"Asia/Katmandu\"},\"IMM\":{\"Timezone\":\"America/New_York\"},\"IMP\":{\"Timezone\":\"America/Fortaleza\"},\"IMT\":{\"Timezone\":\"America/Chicago\"},\"INA\":{\"Timezone\":null},\"IND\":{\"Timezone\":\"America/New_York\"},\"ING\":{\"Timezone\":\"America/Argentina/Rio_Gallegos\"},\"INH\":{\"Timezone\":\"Africa/Maputo\"},\"INI\":{\"Timezone\":\"Europe/Belgrade\"},\"INK\":{\"Timezone\":\"America/Chicago\"},\"INL\":{\"Timezone\":\"America/Chicago\"},\"INN\":{\"Timezone\":\"Europe/Vienna\"},\"INO\":{\"Timezone\":\"Africa/Kinshasa\"},\"INQ\":{\"Timezone\":\"Europe/Dublin\"},\"INS\":{\"Timezone\":\"America/Los_Angeles\"},\"INT\":{\"Timezone\":\"America/New_York\"},\"INU\":{\"Timezone\":\"Pacific/Nauru\"},\"INV\":{\"Timezone\":\"Europe/London\"},\"INW\":{\"Timezone\":\"America/Phoenix\"},\"INZ\":{\"Timezone\":\"Africa/Algiers\"},\"IOA\":{\"Timezone\":\"Europe/Athens\"},\"IOM\":{\"Timezone\":\"Europe/Isle_of_Man\"},\"ION\":{\"Timezone\":null},\"IOR\":{\"Timezone\":\"Europe/Dublin\"},\"IOS\":{\"Timezone\":\"America/Fortaleza\"},\"IOW\":{\"Timezone\":\"America/Chicago\"},\"IPA\":{\"Timezone\":\"Pacific/Efate\"},\"IPC\":{\"Timezone\":\"Pacific/Easter\"},\"IPH\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"IPI\":{\"Timezone\":\"America/Bogota\"},\"IPL\":{\"Timezone\":\"America/Los_Angeles\"},\"IPN\":{\"Timezone\":\"America/Sao_Paulo\"},\"IPT\":{\"Timezone\":\"America/New_York\"},\"IQA\":{\"Timezone\":\"Asia/Baghdad\"},\"IQM\":{\"Timezone\":\"Asia/Shanghai\"},\"IQN\":{\"Timezone\":\"Asia/Shanghai\"},\"IQQ\":{\"Timezone\":\"America/Santiago\"},\"IQT\":{\"Timezone\":\"America/Lima\"},\"IRA\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"IRB\":{\"Timezone\":\"America/Chicago\"},\"IRC\":{\"Timezone\":\"America/Anchorage\"},\"IRD\":{\"Timezone\":\"Asia/Dhaka\"},\"IRG\":{\"Timezone\":\"Australia/Brisbane\"},\"IRI\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"IRJ\":{\"Timezone\":\"America/Argentina/La_Rioja\"},\"IRK\":{\"Timezone\":\"America/Chicago\"},\"IRP\":{\"Timezone\":\"Africa/Lubumbashi\"},\"IRZ\":{\"Timezone\":\"America/Boa_Vista\"},\"ISA\":{\"Timezone\":\"Australia/Brisbane\"},\"ISB\":{\"Timezone\":null},\"ISC\":{\"Timezone\":\"Europe/London\"},\"ISE\":{\"Timezone\":\"Europe/Istanbul\"},\"ISG\":{\"Timezone\":\"Asia/Tokyo\"},\"ISJ\":{\"Timezone\":\"America/Cancun\"},\"ISK\":{\"Timezone\":\"Asia/Calcutta\"},\"ISL\":{\"Timezone\":\"Europe/Istanbul\"},\"ISM\":{\"Timezone\":\"America/New_York\"},\"ISN\":{\"Timezone\":\"America/Chicago\"},\"ISO\":{\"Timezone\":\"America/New_York\"},\"ISP\":{\"Timezone\":\"America/New_York\"},\"IST\":{\"Timezone\":null},\"ISU\":{\"Timezone\":\"Asia/Baghdad\"},\"ISW\":{\"Timezone\":\"America/Chicago\"},\"ITA\":{\"Timezone\":\"America/Boa_Vista\"},\"ITB\":{\"Timezone\":\"America/Belem\"},\"ITH\":{\"Timezone\":\"America/New_York\"},\"ITM\":{\"Timezone\":\"Asia/Tokyo\"},\"ITO\":{\"Timezone\":\"Pacific/Honolulu\"},\"ITP\":{\"Timezone\":null},\"ITR\":{\"Timezone\":\"America/Sao_Paulo\"},\"IUE\":{\"Timezone\":\"Pacific/Niue\"},\"IVA\":{\"Timezone\":\"Indian/Antananarivo\"},\"IVC\":{\"Timezone\":\"Pacific/Auckland\"},\"IVL\":{\"Timezone\":\"Europe/Helsinki\"},\"IVR\":{\"Timezone\":\"Australia/Sydney\"},\"IWA\":{\"Timezone\":\"Europe/Moscow\"},\"IWJ\":{\"Timezone\":\"Asia/Tokyo\"},\"IWK\":{\"Timezone\":null},\"IWO\":{\"Timezone\":\"Asia/Tokyo\"},\"IWS\":{\"Timezone\":\"America/Chicago\"},\"IXA\":{\"Timezone\":\"Asia/Calcutta\"},\"IXB\":{\"Timezone\":\"Asia/Calcutta\"},\"IXC\":{\"Timezone\":\"Asia/Calcutta\"},\"IXD\":{\"Timezone\":\"Asia/Calcutta\"},\"IXE\":{\"Timezone\":\"Asia/Calcutta\"},\"IXG\":{\"Timezone\":\"Asia/Calcutta\"},\"IXH\":{\"Timezone\":\"Asia/Calcutta\"},\"IXI\":{\"Timezone\":\"Asia/Calcutta\"},\"IXJ\":{\"Timezone\":\"Asia/Calcutta\"},\"IXK\":{\"Timezone\":\"Asia/Calcutta\"},\"IXL\":{\"Timezone\":\"Asia/Calcutta\"},\"IXM\":{\"Timezone\":\"Asia/Calcutta\"},\"IXP\":{\"Timezone\":\"Asia/Calcutta\"},\"IXR\":{\"Timezone\":\"Asia/Calcutta\"},\"IXS\":{\"Timezone\":\"Asia/Calcutta\"},\"IXT\":{\"Timezone\":null},\"IXU\":{\"Timezone\":\"Asia/Calcutta\"},\"IXV\":{\"Timezone\":\"Asia/Calcutta\"},\"IXW\":{\"Timezone\":\"Asia/Calcutta\"},\"IXY\":{\"Timezone\":\"Asia/Calcutta\"},\"IXZ\":{\"Timezone\":\"Asia/Calcutta\"},\"IYK\":{\"Timezone\":\"America/Los_Angeles\"},\"IZA\":{\"Timezone\":\"America/Sao_Paulo\"},\"IZO\":{\"Timezone\":\"Asia/Tokyo\"},\"IZT\":{\"Timezone\":\"America/Mexico_City\"},\"JAA\":{\"Timezone\":\"Asia/Kabul\"},\"JAB\":{\"Timezone\":\"Australia/Darwin\"},\"JAC\":{\"Timezone\":\"America/Denver\"},\"JAD\":{\"Timezone\":\"Australia/Perth\"},\"JAE\":{\"Timezone\":null},\"JAF\":{\"Timezone\":\"Asia/Colombo\"},\"JAG\":{\"Timezone\":\"Asia/Karachi\"},\"JAI\":{\"Timezone\":\"Asia/Calcutta\"},\"JAK\":{\"Timezone\":\"America/Port-au-Prince\"},\"JAL\":{\"Timezone\":\"America/Mexico_City\"},\"JAN\":{\"Timezone\":\"America/Chicago\"},\"JAP\":{\"Timezone\":\"America/Costa_Rica\"},\"JAR\":{\"Timezone\":\"Asia/Tehran\"},\"JAS\":{\"Timezone\":null},\"JAU\":{\"Timezone\":\"America/Lima\"},\"JAV\":{\"Timezone\":\"America/Godthab\"},\"JAX\":{\"Timezone\":\"America/New_York\"},\"JBQ\":{\"Timezone\":\"America/Santo_Domingo\"},\"JBR\":{\"Timezone\":\"America/Chicago\"},\"JCB\":{\"Timezone\":\"America/Sao_Paulo\"},\"JCH\":{\"Timezone\":\"America/Godthab\"},\"JCI\":{\"Timezone\":\"America/Chicago\"},\"JCK\":{\"Timezone\":\"Australia/Brisbane\"},\"JCR\":{\"Timezone\":\"America/Belem\"},\"JCT\":{\"Timezone\":null},\"JDF\":{\"Timezone\":\"America/Sao_Paulo\"},\"JDG\":{\"Timezone\":\"Asia/Seoul\"},\"JDH\":{\"Timezone\":\"Asia/Calcutta\"},\"JDO\":{\"Timezone\":\"America/Fortaleza\"},\"JDZ\":{\"Timezone\":\"Asia/Shanghai\"},\"JED\":{\"Timezone\":\"Asia/Riyadh\"},\"JEE\":{\"Timezone\":\"America/Port-au-Prince\"},\"JEF\":{\"Timezone\":\"America/Chicago\"},\"JEG\":{\"Timezone\":\"America/Godthab\"},\"JER\":{\"Timezone\":\"Europe/Jersey\"},\"JFK\":{\"Timezone\":\"America/New_York\"},\"JFR\":{\"Timezone\":\"America/Godthab\"},\"JGA\":{\"Timezone\":\"Asia/Calcutta\"},\"JGD\":{\"Timezone\":\"Asia/Shanghai\"},\"JGN\":{\"Timezone\":\"Asia/Shanghai\"},\"JGO\":{\"Timezone\":\"America/Godthab\"},\"JGS\":{\"Timezone\":\"Asia/Shanghai\"},\"JHB\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"JHG\":{\"Timezone\":\"Asia/Shanghai\"},\"JHM\":{\"Timezone\":\"Pacific/Honolulu\"},\"JHQ\":{\"Timezone\":\"Australia/Brisbane\"},\"JHS\":{\"Timezone\":\"America/Godthab\"},\"JHW\":{\"Timezone\":\"America/New_York\"},\"JIA\":{\"Timezone\":null},\"JIB\":{\"Timezone\":\"Africa/Djibouti\"},\"JIC\":{\"Timezone\":null},\"JIJ\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"JIK\":{\"Timezone\":\"Europe/Athens\"},\"JIM\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"JIQ\":{\"Timezone\":\"Asia/Shanghai\"},\"JIU\":{\"Timezone\":\"Asia/Shanghai\"},\"JIW\":{\"Timezone\":\"Asia/Karachi\"},\"JJG\":{\"Timezone\":null},\"JJI\":{\"Timezone\":\"America/Lima\"},\"JJM\":{\"Timezone\":\"Africa/Nairobi\"},\"JJN\":{\"Timezone\":\"Asia/Shanghai\"},\"JJU\":{\"Timezone\":\"America/Godthab\"},\"JKG\":{\"Timezone\":\"Europe/Stockholm\"},\"JKH\":{\"Timezone\":\"Europe/Athens\"},\"JKL\":{\"Timezone\":\"Europe/Athens\"},\"JKR\":{\"Timezone\":\"Asia/Katmandu\"},\"JLN\":{\"Timezone\":\"America/Chicago\"},\"JLR\":{\"Timezone\":\"Asia/Calcutta\"},\"JMJ\":{\"Timezone\":null},\"JMK\":{\"Timezone\":\"Europe/Athens\"},\"JMO\":{\"Timezone\":\"Asia/Katmandu\"},\"JMS\":{\"Timezone\":\"America/Chicago\"},\"JMU\":{\"Timezone\":\"Asia/Shanghai\"},\"JNB\":{\"Timezone\":\"Africa/Johannesburg\"},\"JNG\":{\"Timezone\":\"Asia/Shanghai\"},\"JNI\":{\"Timezone\":\"America/Buenos_Aires\"},\"JNN\":{\"Timezone\":\"America/Godthab\"},\"JNS\":{\"Timezone\":\"America/Godthab\"},\"JNU\":{\"Timezone\":\"America/Anchorage\"},\"JNX\":{\"Timezone\":\"Europe/Athens\"},\"JNZ\":{\"Timezone\":\"Asia/Shanghai\"},\"JOE\":{\"Timezone\":\"Europe/Helsinki\"},\"JOG\":{\"Timezone\":\"Asia/Jakarta\"},\"JOH\":{\"Timezone\":\"Africa/Johannesburg\"},\"JOI\":{\"Timezone\":\"America/Sao_Paulo\"},\"JOJ\":{\"Timezone\":null},\"JOK\":{\"Timezone\":\"Europe/Moscow\"},\"JOL\":{\"Timezone\":\"Asia/Manila\"},\"JON\":{\"Timezone\":\"Pacific/Johnston\"},\"JOS\":{\"Timezone\":\"Africa/Lagos\"},\"JOT\":{\"Timezone\":\"America/Chicago\"},\"JPA\":{\"Timezone\":\"America/Fortaleza\"},\"JPR\":{\"Timezone\":\"America/Boa_Vista\"},\"JQA\":{\"Timezone\":\"America/Godthab\"},\"JQE\":{\"Timezone\":\"America/Panama\"},\"JRA\":{\"Timezone\":\"America/New_York\"},\"JRB\":{\"Timezone\":\"America/New_York\"},\"JRF\":{\"Timezone\":\"Pacific/Honolulu\"},\"JRH\":{\"Timezone\":\"Asia/Calcutta\"},\"JRN\":{\"Timezone\":null},\"JRO\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"JSA\":{\"Timezone\":\"Asia/Calcutta\"},\"JSH\":{\"Timezone\":\"Europe/Athens\"},\"JSI\":{\"Timezone\":\"Europe/Athens\"},\"JSJ\":{\"Timezone\":null},\"JSK\":{\"Timezone\":null},\"JSM\":{\"Timezone\":\"America/Catamarca\"},\"JSR\":{\"Timezone\":\"Asia/Dhaka\"},\"JST\":{\"Timezone\":\"America/New_York\"},\"JSU\":{\"Timezone\":\"America/Godthab\"},\"JSY\":{\"Timezone\":\"Europe/Athens\"},\"JTC\":{\"Timezone\":\"America/Sao_Paulo\"},\"JTR\":{\"Timezone\":\"Europe/Athens\"},\"JTY\":{\"Timezone\":\"Europe/Athens\"},\"JUA\":{\"Timezone\":null},\"JUB\":{\"Timezone\":\"Africa/Juba\"},\"JUH\":{\"Timezone\":\"Asia/Shanghai\"},\"JUI\":{\"Timezone\":\"Europe/Berlin\"},\"JUJ\":{\"Timezone\":\"America/Jujuy\"},\"JUL\":{\"Timezone\":\"America/Lima\"},\"JUM\":{\"Timezone\":\"Asia/Katmandu\"},\"JUV\":{\"Timezone\":\"America/Godthab\"},\"JUZ\":{\"Timezone\":\"Asia/Shanghai\"},\"JVA\":{\"Timezone\":\"Indian/Antananarivo\"},\"JVL\":{\"Timezone\":\"America/Chicago\"},\"JWA\":{\"Timezone\":\"Africa/Gaborone\"},\"JWN\":{\"Timezone\":\"Asia/Tehran\"},\"JXA\":{\"Timezone\":\"Asia/Shanghai\"},\"JXN\":{\"Timezone\":\"America/New_York\"},\"JYR\":{\"Timezone\":\"Asia/Tehran\"},\"JYV\":{\"Timezone\":\"Europe/Helsinki\"},\"JZH\":{\"Timezone\":\"Asia/Shanghai\"},\"KAA\":{\"Timezone\":\"Africa/Lusaka\"},\"KAB\":{\"Timezone\":\"Africa/Harare\"},\"KAC\":{\"Timezone\":\"Asia/Damascus\"},\"KAD\":{\"Timezone\":\"Africa/Lagos\"},\"KAG\":{\"Timezone\":\"Asia/Seoul\"},\"KAI\":{\"Timezone\":\"America/Guyana\"},\"KAJ\":{\"Timezone\":\"Europe/Helsinki\"},\"KAL\":{\"Timezone\":\"America/Anchorage\"},\"KAN\":{\"Timezone\":\"Africa/Lagos\"},\"KAO\":{\"Timezone\":\"Europe/Helsinki\"},\"KAR\":{\"Timezone\":\"America/Guyana\"},\"KAT\":{\"Timezone\":\"Pacific/Auckland\"},\"KAU\":{\"Timezone\":\"Europe/Helsinki\"},\"KAW\":{\"Timezone\":\"Asia/Rangoon\"},\"KAX\":{\"Timezone\":\"Australia/Perth\"},\"KAZ\":{\"Timezone\":null},\"KBL\":{\"Timezone\":\"Asia/Kabul\"},\"KBN\":{\"Timezone\":null},\"KBP\":{\"Timezone\":\"Europe/Kiev\"},\"KBQ\":{\"Timezone\":\"Africa/Blantyre\"},\"KBR\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"KBS\":{\"Timezone\":\"Africa/Freetown\"},\"KBV\":{\"Timezone\":\"Asia/Bangkok\"},\"KBZ\":{\"Timezone\":\"Pacific/Auckland\"},\"KCA\":{\"Timezone\":\"Asia/Shanghai\"},\"KCF\":{\"Timezone\":null},\"KCH\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"KCK\":{\"Timezone\":\"Asia/Irkutsk\"},\"KCM\":{\"Timezone\":\"Europe/Istanbul\"},\"KCO\":{\"Timezone\":\"Europe/Istanbul\"},\"KCS\":{\"Timezone\":null},\"KCT\":{\"Timezone\":\"Asia/Colombo\"},\"KCZ\":{\"Timezone\":\"Asia/Tokyo\"},\"KDA\":{\"Timezone\":null},\"KDC\":{\"Timezone\":null},\"KDD\":{\"Timezone\":\"Asia/Karachi\"},\"KDH\":{\"Timezone\":\"Asia/Kabul\"},\"KDI\":{\"Timezone\":\"Asia/Makassar\"},\"KDL\":{\"Timezone\":\"Europe/Tallinn\"},\"KDM\":{\"Timezone\":\"Indian/Maldives\"},\"KDO\":{\"Timezone\":\"Indian/Maldives\"},\"KDT\":{\"Timezone\":\"Asia/Bangkok\"},\"KDU\":{\"Timezone\":\"Asia/Karachi\"},\"KDV\":{\"Timezone\":\"Pacific/Fiji\"},\"KDX\":{\"Timezone\":\"Africa/Khartoum\"},\"KDY\":{\"Timezone\":\"Asia/Yakutsk\"},\"KED\":{\"Timezone\":\"Africa/Nouakchott\"},\"KEF\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"KEJ\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"KEL\":{\"Timezone\":\"Europe/Berlin\"},\"KEM\":{\"Timezone\":\"Europe/Helsinki\"},\"KEN\":{\"Timezone\":\"Africa/Freetown\"},\"KEO\":{\"Timezone\":null},\"KEP\":{\"Timezone\":\"Asia/Katmandu\"},\"KER\":{\"Timezone\":\"Asia/Tehran\"},\"KES\":{\"Timezone\":null},\"KET\":{\"Timezone\":\"Asia/Rangoon\"},\"KEV\":{\"Timezone\":\"Europe/Helsinki\"},\"KEW\":{\"Timezone\":\"America/Winnipeg\"},\"KEY\":{\"Timezone\":\"Africa/Nairobi\"},\"KFA\":{\"Timezone\":\"Africa/Nouakchott\"},\"KFE\":{\"Timezone\":\"Australia/Perth\"},\"KFG\":{\"Timezone\":\"Australia/Darwin\"},\"KFP\":{\"Timezone\":\"America/Anchorage\"},\"KFS\":{\"Timezone\":\"Europe/Istanbul\"},\"KGA\":{\"Timezone\":\"Africa/Lubumbashi\"},\"KGC\":{\"Timezone\":\"Australia/Adelaide\"},\"KGD\":{\"Timezone\":\"Europe/Kaliningrad\"},\"KGE\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"KGF\":{\"Timezone\":\"Asia/Qyzylorda\"},\"KGG\":{\"Timezone\":\"Africa/Dakar\"},\"KGI\":{\"Timezone\":\"Australia/Perth\"},\"KGJ\":{\"Timezone\":\"Africa/Blantyre\"},\"KGK\":{\"Timezone\":\"America/Anchorage\"},\"KGL\":{\"Timezone\":\"Africa/Kigali\"},\"KGO\":{\"Timezone\":\"Europe/Kiev\"},\"KGP\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"KGS\":{\"Timezone\":\"Europe/Athens\"},\"KGT\":{\"Timezone\":\"Asia/Shanghai\"},\"KGW\":{\"Timezone\":null},\"KGY\":{\"Timezone\":null},\"KHC\":{\"Timezone\":\"Europe/Simferopol\"},\"KHD\":{\"Timezone\":\"Asia/Tehran\"},\"KHE\":{\"Timezone\":\"Europe/Kiev\"},\"KHG\":{\"Timezone\":\"Asia/Shanghai\"},\"KHH\":{\"Timezone\":\"Asia/Taipei\"},\"KHI\":{\"Timezone\":\"Asia/Karachi\"},\"KHJ\":{\"Timezone\":\"Europe/Helsinki\"},\"KHK\":{\"Timezone\":\"Asia/Tehran\"},\"KHM\":{\"Timezone\":\"Asia/Rangoon\"},\"KHN\":{\"Timezone\":\"Asia/Shanghai\"},\"KHS\":{\"Timezone\":\"Asia/Muscat\"},\"KHT\":{\"Timezone\":\"Asia/Kabul\"},\"KHV\":{\"Timezone\":\"Asia/Vladivostok\"},\"KHW\":{\"Timezone\":\"Africa/Gaborone\"},\"KHY\":{\"Timezone\":\"Asia/Tehran\"},\"KHZ\":{\"Timezone\":null},\"KID\":{\"Timezone\":\"Europe/Stockholm\"},\"KIF\":{\"Timezone\":\"America/Toronto\"},\"KIH\":{\"Timezone\":\"Asia/Tehran\"},\"KIJ\":{\"Timezone\":\"Asia/Tokyo\"},\"KIK\":{\"Timezone\":\"Asia/Baghdad\"},\"KIM\":{\"Timezone\":\"Africa/Johannesburg\"},\"KIN\":{\"Timezone\":\"America/Jamaica\"},\"KIO\":{\"Timezone\":\"Pacific/Majuro\"},\"KIR\":{\"Timezone\":\"Europe/Dublin\"},\"KIS\":{\"Timezone\":\"Africa/Nairobi\"},\"KIT\":{\"Timezone\":\"Europe/Athens\"},\"KIV\":{\"Timezone\":\"Europe/Chisinau\"},\"KIW\":{\"Timezone\":\"Africa/Lusaka\"},\"KIX\":{\"Timezone\":\"Asia/Tokyo\"},\"KIY\":{\"Timezone\":null},\"KJA\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"KJH\":{\"Timezone\":null},\"KJI\":{\"Timezone\":\"Asia/Shanghai\"},\"KJK\":{\"Timezone\":\"Europe/Brussels\"},\"KJP\":{\"Timezone\":\"Asia/Tokyo\"},\"KKA\":{\"Timezone\":\"America/Anchorage\"},\"KKC\":{\"Timezone\":\"Asia/Bangkok\"},\"KKE\":{\"Timezone\":\"Pacific/Auckland\"},\"KKH\":{\"Timezone\":\"America/Anchorage\"},\"KKJ\":{\"Timezone\":\"Asia/Tokyo\"},\"KKN\":{\"Timezone\":\"Europe/Oslo\"},\"KKR\":{\"Timezone\":\"Pacific/Tahiti\"},\"KKS\":{\"Timezone\":\"Asia/Tehran\"},\"KKW\":{\"Timezone\":\"Africa/Kinshasa\"},\"KKX\":{\"Timezone\":\"Asia/Tokyo\"},\"KLC\":{\"Timezone\":\"Africa/Dakar\"},\"KLD\":{\"Timezone\":\"Europe/Moscow\"},\"KLF\":{\"Timezone\":\"Europe/Moscow\"},\"KLG\":{\"Timezone\":\"America/Anchorage\"},\"KLH\":{\"Timezone\":\"Asia/Calcutta\"},\"KLI\":{\"Timezone\":\"Africa/Kinshasa\"},\"KLJ\":{\"Timezone\":null},\"KLM\":{\"Timezone\":\"Asia/Tehran\"},\"KLN\":{\"Timezone\":\"America/Anchorage\"},\"KLO\":{\"Timezone\":\"Asia/Manila\"},\"KLR\":{\"Timezone\":\"Europe/Stockholm\"},\"KLS\":{\"Timezone\":\"America/Los_Angeles\"},\"KLU\":{\"Timezone\":\"Europe/Vienna\"},\"KLV\":{\"Timezone\":\"Europe/Prague\"},\"KLW\":{\"Timezone\":\"America/Anchorage\"},\"KLX\":{\"Timezone\":\"Europe/Athens\"},\"KLZ\":{\"Timezone\":\"Africa/Johannesburg\"},\"KMA\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"KMC\":{\"Timezone\":\"Asia/Riyadh\"},\"KME\":{\"Timezone\":\"Africa/Kigali\"},\"KMG\":{\"Timezone\":\"Asia/Shanghai\"},\"KMH\":{\"Timezone\":\"Africa/Johannesburg\"},\"KMI\":{\"Timezone\":\"Asia/Tokyo\"},\"KMJ\":{\"Timezone\":\"Asia/Tokyo\"},\"KMN\":{\"Timezone\":\"Africa/Lubumbashi\"},\"KMO\":{\"Timezone\":\"America/Anchorage\"},\"KMP\":{\"Timezone\":\"Africa/Windhoek\"},\"KMQ\":{\"Timezone\":\"Asia/Tokyo\"},\"KMS\":{\"Timezone\":\"Africa/Accra\"},\"KMU\":{\"Timezone\":\"Africa/Mogadishu\"},\"KMV\":{\"Timezone\":\"Asia/Rangoon\"},\"KMW\":{\"Timezone\":\"Europe/Moscow\"},\"KMX\":{\"Timezone\":null},\"KNA\":{\"Timezone\":\"America/Santiago\"},\"KND\":{\"Timezone\":\"Africa/Lubumbashi\"},\"KNF\":{\"Timezone\":\"Europe/London\"},\"KNG\":{\"Timezone\":\"Asia/Jayapura\"},\"KNH\":{\"Timezone\":\"Asia/Taipei\"},\"KNO\":{\"Timezone\":\"Asia/Jakarta\"},\"KNP\":{\"Timezone\":\"Africa/Luanda\"},\"KNQ\":{\"Timezone\":\"Pacific/Noumea\"},\"KNR\":{\"Timezone\":null},\"KNS\":{\"Timezone\":\"Australia/Melbourne\"},\"KNU\":{\"Timezone\":\"Asia/Calcutta\"},\"KNW\":{\"Timezone\":\"America/Anchorage\"},\"KNX\":{\"Timezone\":\"Australia/Perth\"},\"KOA\":{\"Timezone\":\"Pacific/Honolulu\"},\"KOC\":{\"Timezone\":\"Pacific/Noumea\"},\"KOE\":{\"Timezone\":\"Asia/Makassar\"},\"KOI\":{\"Timezone\":\"Europe/London\"},\"KOJ\":{\"Timezone\":\"Asia/Tokyo\"},\"KOK\":{\"Timezone\":\"Europe/Helsinki\"},\"KOO\":{\"Timezone\":null},\"KOP\":{\"Timezone\":\"Asia/Bangkok\"},\"KOQ\":{\"Timezone\":\"Europe/Berlin\"},\"KOS\":{\"Timezone\":\"Asia/Phnom_Penh\"},\"KOT\":{\"Timezone\":\"America/Anchorage\"},\"KOU\":{\"Timezone\":\"Africa/Libreville\"},\"KOV\":{\"Timezone\":\"Asia/Qyzylorda\"},\"KOW\":{\"Timezone\":\"Asia/Shanghai\"},\"KOX\":{\"Timezone\":null},\"KPC\":{\"Timezone\":\"America/Anchorage\"},\"KPN\":{\"Timezone\":\"America/Anchorage\"},\"KPO\":{\"Timezone\":\"Asia/Seoul\"},\"KPS\":{\"Timezone\":null},\"KPV\":{\"Timezone\":\"America/Anchorage\"},\"KQA\":{\"Timezone\":\"America/Anchorage\"},\"KQH\":{\"Timezone\":null},\"KQT\":{\"Timezone\":\"Asia/Dushanbe\"},\"KRA\":{\"Timezone\":null},\"KRB\":{\"Timezone\":\"Australia/Brisbane\"},\"KRC\":{\"Timezone\":null},\"KRF\":{\"Timezone\":\"Europe/Stockholm\"},\"KRH\":{\"Timezone\":\"Europe/London\"},\"KRI\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"KRK\":{\"Timezone\":\"Europe/Warsaw\"},\"KRL\":{\"Timezone\":\"Asia/Shanghai\"},\"KRN\":{\"Timezone\":\"Europe/Stockholm\"},\"KRO\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"KRP\":{\"Timezone\":\"Europe/Copenhagen\"},\"KRQ\":{\"Timezone\":null},\"KRR\":{\"Timezone\":\"Europe/Moscow\"},\"KRS\":{\"Timezone\":\"Europe/Oslo\"},\"KRT\":{\"Timezone\":\"Africa/Khartoum\"},\"KRW\":{\"Timezone\":\"Asia/Ashgabat\"},\"KRY\":{\"Timezone\":\"Asia/Shanghai\"},\"KRZ\":{\"Timezone\":\"Africa/Kinshasa\"},\"KSA\":{\"Timezone\":\"Pacific/Kosrae\"},\"KSC\":{\"Timezone\":\"Europe/Bratislava\"},\"KSD\":{\"Timezone\":\"Europe/Stockholm\"},\"KSE\":{\"Timezone\":null},\"KSF\":{\"Timezone\":\"Europe/Berlin\"},\"KSH\":{\"Timezone\":\"Asia/Tehran\"},\"KSI\":{\"Timezone\":\"Africa/Conakry\"},\"KSJ\":{\"Timezone\":\"Europe/Athens\"},\"KSK\":{\"Timezone\":\"Europe/Stockholm\"},\"KSL\":{\"Timezone\":\"Africa/Khartoum\"},\"KSM\":{\"Timezone\":\"America/Anchorage\"},\"KSN\":{\"Timezone\":\"Asia/Qyzylorda\"},\"KSO\":{\"Timezone\":\"Europe/Athens\"},\"KSQ\":{\"Timezone\":\"Asia/Samarkand\"},\"KSS\":{\"Timezone\":\"Africa/Bamako\"},\"KSU\":{\"Timezone\":\"Europe/Oslo\"},\"KSY\":{\"Timezone\":\"Europe/Istanbul\"},\"KSZ\":{\"Timezone\":\"Europe/Moscow\"},\"KTA\":{\"Timezone\":\"Australia/Perth\"},\"KTD\":{\"Timezone\":\"Asia/Tokyo\"},\"KTE\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"KTF\":{\"Timezone\":\"Pacific/Auckland\"},\"KTG\":{\"Timezone\":\"Asia/Jakarta\"},\"KTI\":{\"Timezone\":\"Asia/Phnom_Penh\"},\"KTL\":{\"Timezone\":\"Africa/Nairobi\"},\"KTM\":{\"Timezone\":\"Asia/Katmandu\"},\"KTN\":{\"Timezone\":\"America/Anchorage\"},\"KTP\":{\"Timezone\":\"America/Jamaica\"},\"KTQ\":{\"Timezone\":\"Europe/Helsinki\"},\"KTR\":{\"Timezone\":\"Australia/Darwin\"},\"KTS\":{\"Timezone\":\"America/Anchorage\"},\"KTT\":{\"Timezone\":\"Europe/Helsinki\"},\"KTU\":{\"Timezone\":\"Asia/Calcutta\"},\"KTW\":{\"Timezone\":\"Europe/Warsaw\"},\"KUA\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"KUC\":{\"Timezone\":\"Pacific/Tarawa\"},\"KUD\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"KUF\":{\"Timezone\":\"Europe/Samara\"},\"KUG\":{\"Timezone\":\"Australia/Brisbane\"},\"KUH\":{\"Timezone\":\"Asia/Tokyo\"},\"KUK\":{\"Timezone\":\"America/Anchorage\"},\"KUL\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"KUM\":{\"Timezone\":\"Asia/Tokyo\"},\"KUN\":{\"Timezone\":\"Europe/Vilnius\"},\"KUO\":{\"Timezone\":\"Europe/Helsinki\"},\"KUT\":{\"Timezone\":\"Asia/Tbilisi\"},\"KUU\":{\"Timezone\":\"Asia/Calcutta\"},\"KUV\":{\"Timezone\":\"Asia/Seoul\"},\"KVA\":{\"Timezone\":\"Europe/Athens\"},\"KVB\":{\"Timezone\":\"Europe/Stockholm\"},\"KVC\":{\"Timezone\":\"America/Anchorage\"},\"KVD\":{\"Timezone\":\"Asia/Baku\"},\"KVG\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"KVK\":{\"Timezone\":\"Europe/Moscow\"},\"KVL\":{\"Timezone\":\"America/Anchorage\"},\"KVM\":{\"Timezone\":\"Asia/Anadyr\"},\"KVR\":{\"Timezone\":\"Asia/Vladivostok\"},\"KVX\":{\"Timezone\":\"Europe/Moscow\"},\"KWA\":{\"Timezone\":\"Pacific/Majuro\"},\"KWB\":{\"Timezone\":null},\"KWE\":{\"Timezone\":\"Asia/Shanghai\"},\"KWG\":{\"Timezone\":\"Europe/Kiev\"},\"KWI\":{\"Timezone\":\"Asia/Kuwait\"},\"KWJ\":{\"Timezone\":\"Asia/Seoul\"},\"KWK\":{\"Timezone\":\"America/Anchorage\"},\"KWL\":{\"Timezone\":\"Asia/Shanghai\"},\"KWM\":{\"Timezone\":\"Australia/Brisbane\"},\"KWN\":{\"Timezone\":\"America/Anchorage\"},\"KWT\":{\"Timezone\":\"America/Anchorage\"},\"KWZ\":{\"Timezone\":\"Africa/Lubumbashi\"},\"KXE\":{\"Timezone\":\"Africa/Johannesburg\"},\"KXF\":{\"Timezone\":\"Pacific/Fiji\"},\"KXK\":{\"Timezone\":\"Asia/Vladivostok\"},\"KYA\":{\"Timezone\":\"Europe/Istanbul\"},\"KYD\":{\"Timezone\":\"Asia/Taipei\"},\"KYE\":{\"Timezone\":\"Asia/Beirut\"},\"KYI\":{\"Timezone\":\"Australia/Adelaide\"},\"KYK\":{\"Timezone\":\"America/Anchorage\"},\"KYP\":{\"Timezone\":\"Asia/Rangoon\"},\"KYS\":{\"Timezone\":\"Africa/Bamako\"},\"KYU\":{\"Timezone\":\"America/Anchorage\"},\"KYZ\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"KZC\":{\"Timezone\":\"Asia/Phnom_Penh\"},\"KZF\":{\"Timezone\":null},\"KZG\":{\"Timezone\":\"Europe/Berlin\"},\"KZI\":{\"Timezone\":\"Europe/Athens\"},\"KZN\":{\"Timezone\":\"Europe/Moscow\"},\"KZO\":{\"Timezone\":\"Asia/Qyzylorda\"},\"KZR\":{\"Timezone\":\"Europe/Istanbul\"},\"KZS\":{\"Timezone\":\"Europe/Athens\"},\"LAA\":{\"Timezone\":\"America/Denver\"},\"LAD\":{\"Timezone\":\"Africa/Luanda\"},\"LAE\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"LAF\":{\"Timezone\":\"America/New_York\"},\"LAI\":{\"Timezone\":\"Europe/Paris\"},\"LAJ\":{\"Timezone\":\"America/Sao_Paulo\"},\"LAK\":{\"Timezone\":\"America/Edmonton\"},\"LAL\":{\"Timezone\":\"America/New_York\"},\"LAM\":{\"Timezone\":\"America/Denver\"},\"LAN\":{\"Timezone\":\"America/New_York\"},\"LAO\":{\"Timezone\":\"Asia/Manila\"},\"LAP\":{\"Timezone\":\"America/Mazatlan\"},\"LAQ\":{\"Timezone\":\"Africa/Tripoli\"},\"LAR\":{\"Timezone\":\"America/Denver\"},\"LAS\":{\"Timezone\":\"America/Los_Angeles\"},\"LAU\":{\"Timezone\":\"Africa/Nairobi\"},\"LAW\":{\"Timezone\":\"America/Chicago\"},\"LAX\":{\"Timezone\":\"America/Los_Angeles\"},\"LAY\":{\"Timezone\":\"Africa/Johannesburg\"},\"LAZ\":{\"Timezone\":\"America/Fortaleza\"},\"LBA\":{\"Timezone\":\"Europe/London\"},\"LBB\":{\"Timezone\":\"America/Chicago\"},\"LBC\":{\"Timezone\":\"Europe/Berlin\"},\"LBD\":{\"Timezone\":\"Asia/Dushanbe\"},\"LBE\":{\"Timezone\":\"America/New_York\"},\"LBF\":{\"Timezone\":\"America/Chicago\"},\"LBG\":{\"Timezone\":\"Europe/Paris\"},\"LBI\":{\"Timezone\":\"Europe/Paris\"},\"LBJ\":{\"Timezone\":\"Asia/Makassar\"},\"LBL\":{\"Timezone\":\"America/Chicago\"},\"LBQ\":{\"Timezone\":\"Africa/Libreville\"},\"LBR\":{\"Timezone\":\"America/Boa_Vista\"},\"LBS\":{\"Timezone\":\"Pacific/Fiji\"},\"LBT\":{\"Timezone\":\"America/New_York\"},\"LBU\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"LBV\":{\"Timezone\":\"Africa/Libreville\"},\"LBW\":{\"Timezone\":\"Asia/Makassar\"},\"LBX\":{\"Timezone\":\"Asia/Manila\"},\"LBY\":{\"Timezone\":\"Europe/Paris\"},\"LBZ\":{\"Timezone\":\"Africa/Luanda\"},\"LCA\":{\"Timezone\":\"Asia/Nicosia\"},\"LCC\":{\"Timezone\":\"Europe/Rome\"},\"LCE\":{\"Timezone\":\"America/Tegucigalpa\"},\"LCG\":{\"Timezone\":\"Europe/Madrid\"},\"LCH\":{\"Timezone\":\"America/Chicago\"},\"LCJ\":{\"Timezone\":\"Europe/Warsaw\"},\"LCK\":{\"Timezone\":\"America/New_York\"},\"LCL\":{\"Timezone\":\"America/Havana\"},\"LCQ\":{\"Timezone\":\"America/New_York\"},\"LCX\":{\"Timezone\":\"Asia/Shanghai\"},\"LCY\":{\"Timezone\":\"Europe/London\"},\"LDB\":{\"Timezone\":\"America/Sao_Paulo\"},\"LDE\":{\"Timezone\":\"Europe/Paris\"},\"LDG\":{\"Timezone\":\"Europe/Moscow\"},\"LDH\":{\"Timezone\":\"Australia/Lord_Howe\"},\"LDI\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"LDJ\":{\"Timezone\":\"America/New_York\"},\"LDK\":{\"Timezone\":\"Europe/Stockholm\"},\"LDM\":{\"Timezone\":null},\"LDN\":{\"Timezone\":\"Asia/Katmandu\"},\"LDS\":{\"Timezone\":\"Asia/Shanghai\"},\"LDU\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"LDV\":{\"Timezone\":\"Europe/Paris\"},\"LDX\":{\"Timezone\":\"America/Cayenne\"},\"LDY\":{\"Timezone\":\"Europe/London\"},\"LEA\":{\"Timezone\":\"Australia/Perth\"},\"LEB\":{\"Timezone\":\"America/New_York\"},\"LEC\":{\"Timezone\":\"America/Fortaleza\"},\"LED\":{\"Timezone\":\"Europe/Moscow\"},\"LEE\":{\"Timezone\":null},\"LEH\":{\"Timezone\":\"Europe/Paris\"},\"LEI\":{\"Timezone\":\"Europe/Madrid\"},\"LEJ\":{\"Timezone\":\"Europe/Berlin\"},\"LEK\":{\"Timezone\":\"Africa/Conakry\"},\"LEL\":{\"Timezone\":\"Australia/Darwin\"},\"LEN\":{\"Timezone\":\"Europe/Madrid\"},\"LEQ\":{\"Timezone\":\"Europe/London\"},\"LER\":{\"Timezone\":\"Australia/Perth\"},\"LET\":{\"Timezone\":\"America/Bogota\"},\"LEU\":{\"Timezone\":\"Europe/Madrid\"},\"LEV\":{\"Timezone\":\"Pacific/Fiji\"},\"LEW\":{\"Timezone\":\"America/New_York\"},\"LEX\":{\"Timezone\":\"America/New_York\"},\"LEY\":{\"Timezone\":\"Europe/Amsterdam\"},\"LFB\":{\"Timezone\":\"Africa/Maputo\"},\"LFI\":{\"Timezone\":\"America/New_York\"},\"LFK\":{\"Timezone\":\"America/Chicago\"},\"LFM\":{\"Timezone\":\"Asia/Tehran\"},\"LFQ\":{\"Timezone\":null},\"LFR\":{\"Timezone\":\"America/Caracas\"},\"LFT\":{\"Timezone\":\"America/Chicago\"},\"LFW\":{\"Timezone\":\"Africa/Lome\"},\"LGA\":{\"Timezone\":\"America/New_York\"},\"LGB\":{\"Timezone\":\"America/Los_Angeles\"},\"LGC\":{\"Timezone\":\"America/New_York\"},\"LGD\":{\"Timezone\":null},\"LGG\":{\"Timezone\":\"Europe/Brussels\"},\"LGH\":{\"Timezone\":\"Australia/Adelaide\"},\"LGI\":{\"Timezone\":\"America/Nassau\"},\"LGK\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"LGL\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"LGO\":{\"Timezone\":\"Europe/Berlin\"},\"LGP\":{\"Timezone\":\"Asia/Manila\"},\"LGS\":{\"Timezone\":\"America/Mendoza\"},\"LGU\":{\"Timezone\":\"America/Denver\"},\"LGW\":{\"Timezone\":\"Europe/London\"},\"LHA\":{\"Timezone\":\"Europe/Berlin\"},\"LHE\":{\"Timezone\":\"Asia/Karachi\"},\"LHG\":{\"Timezone\":\"Australia/Sydney\"},\"LHK\":{\"Timezone\":null},\"LHR\":{\"Timezone\":\"Europe/London\"},\"LHS\":{\"Timezone\":\"America/Argentina/Rio_Gallegos\"},\"LHV\":{\"Timezone\":\"America/New_York\"},\"LHW\":{\"Timezone\":\"Asia/Shanghai\"},\"LID\":{\"Timezone\":\"Europe/Amsterdam\"},\"LIF\":{\"Timezone\":\"Pacific/Noumea\"},\"LIG\":{\"Timezone\":\"Europe/Paris\"},\"LIH\":{\"Timezone\":\"Pacific/Honolulu\"},\"LII\":{\"Timezone\":\"Asia/Jayapura\"},\"LIL\":{\"Timezone\":\"Europe/Paris\"},\"LIM\":{\"Timezone\":\"America/Lima\"},\"LIN\":{\"Timezone\":\"Europe/Rome\"},\"LIO\":{\"Timezone\":\"America/Costa_Rica\"},\"LIP\":{\"Timezone\":\"America/Sao_Paulo\"},\"LIQ\":{\"Timezone\":\"Africa/Kinshasa\"},\"LIR\":{\"Timezone\":\"America/Costa_Rica\"},\"LIS\":{\"Timezone\":\"Europe/Lisbon\"},\"LIT\":{\"Timezone\":\"America/Chicago\"},\"LIW\":{\"Timezone\":\"Asia/Rangoon\"},\"LIX\":{\"Timezone\":\"Africa/Blantyre\"},\"LIY\":{\"Timezone\":\"America/New_York\"},\"LJA\":{\"Timezone\":\"Africa/Lubumbashi\"},\"LJG\":{\"Timezone\":\"Asia/Shanghai\"},\"LJN\":{\"Timezone\":\"America/Chicago\"},\"LJU\":{\"Timezone\":\"Europe/Ljubljana\"},\"LKB\":{\"Timezone\":\"Pacific/Fiji\"},\"LKG\":{\"Timezone\":\"Africa/Nairobi\"},\"LKH\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"LKL\":{\"Timezone\":\"Europe/Oslo\"},\"LKN\":{\"Timezone\":\"Europe/Oslo\"},\"LKO\":{\"Timezone\":\"Asia/Calcutta\"},\"LKP\":{\"Timezone\":\"America/New_York\"},\"LKV\":{\"Timezone\":\"America/Los_Angeles\"},\"LKY\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"LKZ\":{\"Timezone\":\"Europe/London\"},\"LLA\":{\"Timezone\":\"Europe/Stockholm\"},\"LLB\":{\"Timezone\":null},\"LLE\":{\"Timezone\":\"Africa/Johannesburg\"},\"LLF\":{\"Timezone\":\"Asia/Shanghai\"},\"LLI\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"LLK\":{\"Timezone\":\"Asia/Baku\"},\"LLU\":{\"Timezone\":\"America/Godthab\"},\"LLV\":{\"Timezone\":\"Asia/Shanghai\"},\"LLW\":{\"Timezone\":\"Africa/Blantyre\"},\"LLY\":{\"Timezone\":\"America/New_York\"},\"LMA\":{\"Timezone\":\"America/Anchorage\"},\"LME\":{\"Timezone\":\"Europe/Paris\"},\"LMM\":{\"Timezone\":\"America/Mazatlan\"},\"LMN\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"LMO\":{\"Timezone\":\"Europe/London\"},\"LMP\":{\"Timezone\":\"Europe/Rome\"},\"LMQ\":{\"Timezone\":\"Africa/Tripoli\"},\"LMR\":{\"Timezone\":null},\"LMT\":{\"Timezone\":\"America/Los_Angeles\"},\"LNA\":{\"Timezone\":\"America/New_York\"},\"LNB\":{\"Timezone\":\"Pacific/Efate\"},\"LND\":{\"Timezone\":\"America/Denver\"},\"LNE\":{\"Timezone\":\"Pacific/Efate\"},\"LNJ\":{\"Timezone\":\"Asia/Shanghai\"},\"LNK\":{\"Timezone\":\"America/Chicago\"},\"LNL\":{\"Timezone\":null},\"LNN\":{\"Timezone\":\"America/New_York\"},\"LNO\":{\"Timezone\":\"Australia/Perth\"},\"LNR\":{\"Timezone\":\"America/Chicago\"},\"LNS\":{\"Timezone\":\"America/New_York\"},\"LNX\":{\"Timezone\":null},\"LNY\":{\"Timezone\":\"Pacific/Honolulu\"},\"LNZ\":{\"Timezone\":\"Europe/Vienna\"},\"LOD\":{\"Timezone\":\"Pacific/Efate\"},\"LOE\":{\"Timezone\":\"Asia/Bangkok\"},\"LOH\":{\"Timezone\":\"America/Guayaquil\"},\"LOK\":{\"Timezone\":\"Africa/Nairobi\"},\"LOL\":{\"Timezone\":null},\"LOO\":{\"Timezone\":\"Africa/Algiers\"},\"LOP\":{\"Timezone\":\"Asia/Makassar\"},\"LOS\":{\"Timezone\":\"Africa/Lagos\"},\"LOT\":{\"Timezone\":\"America/Chicago\"},\"LOU\":{\"Timezone\":\"America/New_York\"},\"LOV\":{\"Timezone\":\"America/Mexico_City\"},\"LOZ\":{\"Timezone\":\"America/New_York\"},\"LPA\":{\"Timezone\":\"Atlantic/Canary\"},\"LPB\":{\"Timezone\":\"America/La_Paz\"},\"LPC\":{\"Timezone\":\"America/Los_Angeles\"},\"LPD\":{\"Timezone\":\"America/Bogota\"},\"LPF\":{\"Timezone\":null},\"LPG\":{\"Timezone\":\"America/Buenos_Aires\"},\"LPI\":{\"Timezone\":\"Europe/Stockholm\"},\"LPK\":{\"Timezone\":\"Europe/Moscow\"},\"LPL\":{\"Timezone\":\"Europe/London\"},\"LPM\":{\"Timezone\":\"Pacific/Efate\"},\"LPP\":{\"Timezone\":\"Europe/Helsinki\"},\"LPQ\":{\"Timezone\":\"Asia/Vientiane\"},\"LPS\":{\"Timezone\":\"America/Los_Angeles\"},\"LPT\":{\"Timezone\":\"Asia/Bangkok\"},\"LPU\":{\"Timezone\":\"Asia/Makassar\"},\"LPX\":{\"Timezone\":\"Europe/Riga\"},\"LPY\":{\"Timezone\":\"Europe/Paris\"},\"LQM\":{\"Timezone\":\"America/Bogota\"},\"LRA\":{\"Timezone\":\"Europe/Athens\"},\"LRD\":{\"Timezone\":\"America/Chicago\"},\"LRE\":{\"Timezone\":\"Australia/Brisbane\"},\"LRF\":{\"Timezone\":\"America/Chicago\"},\"LRH\":{\"Timezone\":\"Europe/Paris\"},\"LRL\":{\"Timezone\":\"Africa/Lome\"},\"LRM\":{\"Timezone\":\"America/Santo_Domingo\"},\"LRR\":{\"Timezone\":\"Asia/Tehran\"},\"LRS\":{\"Timezone\":\"Europe/Athens\"},\"LRT\":{\"Timezone\":\"Europe/Paris\"},\"LRU\":{\"Timezone\":\"America/Denver\"},\"LRV\":{\"Timezone\":\"America/Caracas\"},\"LSC\":{\"Timezone\":\"America/Santiago\"},\"LSE\":{\"Timezone\":\"America/Chicago\"},\"LSF\":{\"Timezone\":\"America/New_York\"},\"LSH\":{\"Timezone\":\"Asia/Rangoon\"},\"LSI\":{\"Timezone\":\"Europe/London\"},\"LSL\":{\"Timezone\":\"America/Costa_Rica\"},\"LSP\":{\"Timezone\":\"America/Caracas\"},\"LSQ\":{\"Timezone\":\"America/Santiago\"},\"LSS\":{\"Timezone\":\"America/Guadeloupe\"},\"LST\":{\"Timezone\":\"Australia/Melbourne\"},\"LSV\":{\"Timezone\":\"America/Los_Angeles\"},\"LSW\":{\"Timezone\":\"Asia/Jakarta\"},\"LSX\":{\"Timezone\":\"Asia/Jakarta\"},\"LSY\":{\"Timezone\":\"Australia/Sydney\"},\"LSZ\":{\"Timezone\":\"Europe/Zagreb\"},\"LTA\":{\"Timezone\":\"Africa/Johannesburg\"},\"LTD\":{\"Timezone\":\"Africa/Tripoli\"},\"LTI\":{\"Timezone\":\"Asia/Ulaanbaatar\"},\"LTK\":{\"Timezone\":\"Asia/Damascus\"},\"LTM\":{\"Timezone\":\"America/Guyana\"},\"LTN\":{\"Timezone\":\"Europe/London\"},\"LTO\":{\"Timezone\":\"America/Mazatlan\"},\"LTQ\":{\"Timezone\":\"Europe/Paris\"},\"LTS\":{\"Timezone\":\"America/Chicago\"},\"LTT\":{\"Timezone\":\"Europe/Paris\"},\"LTX\":{\"Timezone\":\"America/Guayaquil\"},\"LUA\":{\"Timezone\":\"Asia/Katmandu\"},\"LUC\":{\"Timezone\":null},\"LUD\":{\"Timezone\":\"Africa/Windhoek\"},\"LUF\":{\"Timezone\":\"America/Phoenix\"},\"LUG\":{\"Timezone\":\"Europe/Zurich\"},\"LUH\":{\"Timezone\":\"Asia/Calcutta\"},\"LUK\":{\"Timezone\":\"America/New_York\"},\"LUM\":{\"Timezone\":\"Asia/Shanghai\"},\"LUN\":{\"Timezone\":\"Africa/Lusaka\"},\"LUO\":{\"Timezone\":\"Africa/Luanda\"},\"LUP\":{\"Timezone\":\"Pacific/Honolulu\"},\"LUQ\":{\"Timezone\":\"America/Argentina/San_Luis\"},\"LUR\":{\"Timezone\":\"America/Anchorage\"},\"LUV\":{\"Timezone\":\"Asia/Jayapura\"},\"LUW\":{\"Timezone\":\"Asia/Makassar\"},\"LUX\":{\"Timezone\":\"Europe/Luxembourg\"},\"LUZ\":{\"Timezone\":\"Europe/Warsaw\"},\"LVA\":{\"Timezone\":\"Europe/Paris\"},\"LVI\":{\"Timezone\":\"Africa/Lusaka\"},\"LVK\":{\"Timezone\":\"America/Los_Angeles\"},\"LVM\":{\"Timezone\":\"America/Denver\"},\"LVO\":{\"Timezone\":\"Australia/Perth\"},\"LVP\":{\"Timezone\":\"Asia/Tehran\"},\"LVS\":{\"Timezone\":\"America/Denver\"},\"LWB\":{\"Timezone\":\"America/New_York\"},\"LWC\":{\"Timezone\":\"America/Chicago\"},\"LWK\":{\"Timezone\":\"Europe/London\"},\"LWM\":{\"Timezone\":\"America/New_York\"},\"LWN\":{\"Timezone\":\"Asia/Yerevan\"},\"LWO\":{\"Timezone\":\"Europe/Kiev\"},\"LWR\":{\"Timezone\":\"Europe/Amsterdam\"},\"LWS\":{\"Timezone\":\"America/Los_Angeles\"},\"LWT\":{\"Timezone\":\"America/Denver\"},\"LWY\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"LXA\":{\"Timezone\":\"Asia/Shanghai\"},\"LXG\":{\"Timezone\":\"Asia/Vientiane\"},\"LXN\":{\"Timezone\":null},\"LXR\":{\"Timezone\":\"Africa/Cairo\"},\"LXS\":{\"Timezone\":\"Europe/Athens\"},\"LYA\":{\"Timezone\":\"Asia/Shanghai\"},\"LYB\":{\"Timezone\":\"America/Cayman\"},\"LYC\":{\"Timezone\":\"Europe/Stockholm\"},\"LYE\":{\"Timezone\":\"Europe/London\"},\"LYG\":{\"Timezone\":\"Asia/Shanghai\"},\"LYH\":{\"Timezone\":\"America/New_York\"},\"LYI\":{\"Timezone\":\"Asia/Shanghai\"},\"LYM\":{\"Timezone\":\"Europe/London\"},\"LYN\":{\"Timezone\":\"Europe/Paris\"},\"LYP\":{\"Timezone\":\"Asia/Karachi\"},\"LYR\":{\"Timezone\":\"Arctic/Longyearbyen\"},\"LYS\":{\"Timezone\":\"Europe/Paris\"},\"LYU\":{\"Timezone\":\"America/Chicago\"},\"LYX\":{\"Timezone\":\"Europe/London\"},\"LZC\":{\"Timezone\":\"America/Mexico_City\"},\"LZH\":{\"Timezone\":\"Asia/Shanghai\"},\"LZN\":{\"Timezone\":\"Asia/Taipei\"},\"LZO\":{\"Timezone\":\"Asia/Shanghai\"},\"LZR\":{\"Timezone\":\"Australia/Brisbane\"},\"LZU\":{\"Timezone\":\"America/New_York\"},\"LZY\":{\"Timezone\":\"Asia/Shanghai\"},\"MAA\":{\"Timezone\":\"Asia/Calcutta\"},\"MAB\":{\"Timezone\":\"America/Belem\"},\"MAD\":{\"Timezone\":\"Europe/Madrid\"},\"MAE\":{\"Timezone\":\"America/Los_Angeles\"},\"MAF\":{\"Timezone\":\"America/Chicago\"},\"MAG\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"MAH\":{\"Timezone\":\"Europe/Madrid\"},\"MAI\":{\"Timezone\":null},\"MAJ\":{\"Timezone\":\"Pacific/Majuro\"},\"MAK\":{\"Timezone\":\"Africa/Juba\"},\"MAM\":{\"Timezone\":\"America/Mexico_City\"},\"MAN\":{\"Timezone\":\"Europe/London\"},\"MAO\":{\"Timezone\":\"America/Boa_Vista\"},\"MAQ\":{\"Timezone\":\"Asia/Bangkok\"},\"MAR\":{\"Timezone\":\"America/Caracas\"},\"MAS\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"MAT\":{\"Timezone\":\"Africa/Kinshasa\"},\"MAU\":{\"Timezone\":\"Pacific/Tahiti\"},\"MAX\":{\"Timezone\":\"Africa/Dakar\"},\"MAY\":{\"Timezone\":\"America/Nassau\"},\"MAZ\":{\"Timezone\":\"America/Puerto_Rico\"},\"MBA\":{\"Timezone\":\"Africa/Nairobi\"},\"MBD\":{\"Timezone\":\"Africa/Johannesburg\"},\"MBE\":{\"Timezone\":\"Asia/Tokyo\"},\"MBG\":{\"Timezone\":null},\"MBH\":{\"Timezone\":\"Australia/Brisbane\"},\"MBJ\":{\"Timezone\":\"America/Jamaica\"},\"MBL\":{\"Timezone\":\"America/New_York\"},\"MBO\":{\"Timezone\":\"Asia/Manila\"},\"MBS\":{\"Timezone\":\"America/New_York\"},\"MBT\":{\"Timezone\":\"Asia/Manila\"},\"MBU\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"MBW\":{\"Timezone\":\"Australia/Hobart\"},\"MBX\":{\"Timezone\":\"Europe/Ljubljana\"},\"MBZ\":{\"Timezone\":\"America/Boa_Vista\"},\"MCB\":{\"Timezone\":null},\"MCC\":{\"Timezone\":\"America/Los_Angeles\"},\"MCE\":{\"Timezone\":\"America/Los_Angeles\"},\"MCF\":{\"Timezone\":\"America/New_York\"},\"MCG\":{\"Timezone\":\"America/Anchorage\"},\"MCH\":{\"Timezone\":\"America/Guayaquil\"},\"MCI\":{\"Timezone\":\"America/Chicago\"},\"MCJ\":{\"Timezone\":\"America/Bogota\"},\"MCK\":{\"Timezone\":\"America/Chicago\"},\"MCL\":{\"Timezone\":\"America/Anchorage\"},\"MCN\":{\"Timezone\":\"America/New_York\"},\"MCO\":{\"Timezone\":\"America/New_York\"},\"MCP\":{\"Timezone\":\"America/Fortaleza\"},\"MCS\":{\"Timezone\":\"America/Cordoba\"},\"MCT\":{\"Timezone\":\"Asia/Muscat\"},\"MCU\":{\"Timezone\":\"Europe/Paris\"},\"MCV\":{\"Timezone\":\"Australia/Darwin\"},\"MCW\":{\"Timezone\":\"America/Chicago\"},\"MCX\":{\"Timezone\":\"Europe/Moscow\"},\"MCY\":{\"Timezone\":\"Australia/Brisbane\"},\"MCZ\":{\"Timezone\":\"America/Fortaleza\"},\"MDC\":{\"Timezone\":\"Asia/Makassar\"},\"MDE\":{\"Timezone\":\"America/Bogota\"},\"MDG\":{\"Timezone\":\"Asia/Shanghai\"},\"MDH\":{\"Timezone\":null},\"MDI\":{\"Timezone\":\"Africa/Lagos\"},\"MDK\":{\"Timezone\":\"Africa/Kinshasa\"},\"MDL\":{\"Timezone\":\"Asia/Rangoon\"},\"MDQ\":{\"Timezone\":\"America/Buenos_Aires\"},\"MDS\":{\"Timezone\":\"America/Grand_Turk\"},\"MDT\":{\"Timezone\":\"America/New_York\"},\"MDU\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"MDW\":{\"Timezone\":\"America/Chicago\"},\"MDY\":{\"Timezone\":\"Pacific/Midway\"},\"MDZ\":{\"Timezone\":\"America/Mendoza\"},\"MEA\":{\"Timezone\":\"America/Sao_Paulo\"},\"MEB\":{\"Timezone\":\"Australia/Hobart\"},\"MEC\":{\"Timezone\":\"America/Guayaquil\"},\"MED\":{\"Timezone\":\"Asia/Riyadh\"},\"MEE\":{\"Timezone\":\"Pacific/Noumea\"},\"MEG\":{\"Timezone\":\"Africa/Luanda\"},\"MEH\":{\"Timezone\":\"Europe/Oslo\"},\"MEI\":{\"Timezone\":\"America/Chicago\"},\"MEK\":{\"Timezone\":\"Africa/Casablanca\"},\"MEL\":{\"Timezone\":\"Australia/Hobart\"},\"MEM\":{\"Timezone\":\"America/Chicago\"},\"MEN\":{\"Timezone\":\"Europe/Paris\"},\"MEO\":{\"Timezone\":\"America/New_York\"},\"MEQ\":{\"Timezone\":null},\"MER\":{\"Timezone\":\"America/Los_Angeles\"},\"MES\":{\"Timezone\":\"Asia/Jakarta\"},\"MEU\":{\"Timezone\":\"America/Belem\"},\"MEX\":{\"Timezone\":\"America/Mexico_City\"},\"MEY\":{\"Timezone\":\"Asia/Katmandu\"},\"MFA\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"MFD\":{\"Timezone\":\"America/New_York\"},\"MFE\":{\"Timezone\":\"America/Chicago\"},\"MFG\":{\"Timezone\":\"Asia/Karachi\"},\"MFI\":{\"Timezone\":\"America/Chicago\"},\"MFJ\":{\"Timezone\":\"Pacific/Fiji\"},\"MFK\":{\"Timezone\":\"Asia/Taipei\"},\"MFM\":{\"Timezone\":\"Asia/Macau\"},\"MFN\":{\"Timezone\":\"Pacific/Auckland\"},\"MFQ\":{\"Timezone\":\"Africa/Niamey\"},\"MFR\":{\"Timezone\":\"America/Los_Angeles\"},\"MFU\":{\"Timezone\":\"Africa/Lusaka\"},\"MFX\":{\"Timezone\":\"Europe/Paris\"},\"MGA\":{\"Timezone\":\"America/Managua\"},\"MGB\":{\"Timezone\":\"Australia/Adelaide\"},\"MGC\":{\"Timezone\":\"America/Chicago\"},\"MGE\":{\"Timezone\":\"America/New_York\"},\"MGF\":{\"Timezone\":\"America/Sao_Paulo\"},\"MGH\":{\"Timezone\":\"Africa/Johannesburg\"},\"MGJ\":{\"Timezone\":\"America/New_York\"},\"MGL\":{\"Timezone\":\"Europe/Berlin\"},\"MGM\":{\"Timezone\":\"America/Chicago\"},\"MGN\":{\"Timezone\":\"America/Bogota\"},\"MGQ\":{\"Timezone\":\"Africa/Mogadishu\"},\"MGS\":{\"Timezone\":\"Pacific/Rarotonga\"},\"MGT\":{\"Timezone\":\"Australia/Darwin\"},\"MGW\":{\"Timezone\":\"America/New_York\"},\"MGY\":{\"Timezone\":\"America/New_York\"},\"MGZ\":{\"Timezone\":\"Asia/Rangoon\"},\"MHA\":{\"Timezone\":\"America/Guyana\"},\"MHC\":{\"Timezone\":\"America/Santiago\"},\"MHD\":{\"Timezone\":\"Asia/Tehran\"},\"MHE\":{\"Timezone\":null},\"MHG\":{\"Timezone\":\"Europe/Berlin\"},\"MHH\":{\"Timezone\":\"America/Nassau\"},\"MHK\":{\"Timezone\":\"America/Chicago\"},\"MHP\":{\"Timezone\":\"Europe/Minsk\"},\"MHQ\":{\"Timezone\":\"Europe/Mariehamn\"},\"MHR\":{\"Timezone\":\"America/Los_Angeles\"},\"MHT\":{\"Timezone\":\"America/New_York\"},\"MHU\":{\"Timezone\":\"Australia/Hobart\"},\"MHV\":{\"Timezone\":\"America/Los_Angeles\"},\"MHX\":{\"Timezone\":\"Pacific/Rarotonga\"},\"MHZ\":{\"Timezone\":\"Europe/London\"},\"MIA\":{\"Timezone\":\"America/New_York\"},\"MIB\":{\"Timezone\":\"America/Chicago\"},\"MID\":{\"Timezone\":\"America/Mexico_City\"},\"MIE\":{\"Timezone\":\"America/New_York\"},\"MIG\":{\"Timezone\":\"Asia/Shanghai\"},\"MII\":{\"Timezone\":\"America/Sao_Paulo\"},\"MIJ\":{\"Timezone\":\"Pacific/Majuro\"},\"MIK\":{\"Timezone\":\"Europe/Helsinki\"},\"MIM\":{\"Timezone\":\"Australia/Sydney\"},\"MIP\":{\"Timezone\":\"Asia/Jerusalem\"},\"MIR\":{\"Timezone\":\"Africa/Tunis\"},\"MIS\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"MIU\":{\"Timezone\":\"Africa/Lagos\"},\"MIV\":{\"Timezone\":\"America/New_York\"},\"MJA\":{\"Timezone\":\"Indian/Antananarivo\"},\"MJC\":{\"Timezone\":\"Africa/Abidjan\"},\"MJD\":{\"Timezone\":\"Asia/Karachi\"},\"MJF\":{\"Timezone\":\"Europe/Oslo\"},\"MJI\":{\"Timezone\":\"Africa/Tripoli\"},\"MJK\":{\"Timezone\":\"Australia/Perth\"},\"MJL\":{\"Timezone\":\"Africa/Libreville\"},\"MJM\":{\"Timezone\":\"Africa/Lubumbashi\"},\"MJN\":{\"Timezone\":\"Indian/Antananarivo\"},\"MJT\":{\"Timezone\":\"Europe/Athens\"},\"MJV\":{\"Timezone\":\"Europe/Madrid\"},\"MJZ\":{\"Timezone\":\"Asia/Yakutsk\"},\"MKC\":{\"Timezone\":\"America/Chicago\"},\"MKE\":{\"Timezone\":\"America/Chicago\"},\"MKG\":{\"Timezone\":\"America/New_York\"},\"MKK\":{\"Timezone\":\"Pacific/Honolulu\"},\"MKL\":{\"Timezone\":\"America/Chicago\"},\"MKM\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"MKP\":{\"Timezone\":\"Pacific/Tahiti\"},\"MKQ\":{\"Timezone\":\"Asia/Jayapura\"},\"MKR\":{\"Timezone\":\"Australia/Perth\"},\"MKS\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"MKU\":{\"Timezone\":\"Africa/Libreville\"},\"MKW\":{\"Timezone\":\"Asia/Jayapura\"},\"MKY\":{\"Timezone\":\"Australia/Brisbane\"},\"MKZ\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"MLA\":{\"Timezone\":\"Europe/Malta\"},\"MLB\":{\"Timezone\":\"America/New_York\"},\"MLC\":{\"Timezone\":\"America/Chicago\"},\"MLE\":{\"Timezone\":\"Indian/Maldives\"},\"MLG\":{\"Timezone\":\"Asia/Jakarta\"},\"MLI\":{\"Timezone\":\"America/Chicago\"},\"MLL\":{\"Timezone\":\"America/Anchorage\"},\"MLM\":{\"Timezone\":\"America/Mexico_City\"},\"MLN\":{\"Timezone\":\"Europe/Madrid\"},\"MLO\":{\"Timezone\":\"Europe/Athens\"},\"MLS\":{\"Timezone\":\"America/Denver\"},\"MLU\":{\"Timezone\":\"America/Chicago\"},\"MLW\":{\"Timezone\":\"Africa/Monrovia\"},\"MLX\":{\"Timezone\":\"Europe/Istanbul\"},\"MLY\":{\"Timezone\":\"America/Anchorage\"},\"MLZ\":{\"Timezone\":null},\"MMB\":{\"Timezone\":\"Asia/Tokyo\"},\"MMD\":{\"Timezone\":\"Asia/Tokyo\"},\"MME\":{\"Timezone\":\"Europe/London\"},\"MMG\":{\"Timezone\":\"Australia/Perth\"},\"MMH\":{\"Timezone\":\"America/Los_Angeles\"},\"MMI\":{\"Timezone\":\"America/New_York\"},\"MMJ\":{\"Timezone\":\"Asia/Tokyo\"},\"MMK\":{\"Timezone\":\"Europe/Moscow\"},\"MMO\":{\"Timezone\":\"Atlantic/Cape_Verde\"},\"MMT\":{\"Timezone\":null},\"MMU\":{\"Timezone\":\"America/New_York\"},\"MMX\":{\"Timezone\":\"Europe/Stockholm\"},\"MMY\":{\"Timezone\":\"Asia/Tokyo\"},\"MMZ\":{\"Timezone\":\"Asia/Kabul\"},\"MNA\":{\"Timezone\":null},\"MNB\":{\"Timezone\":\"Africa/Kinshasa\"},\"MNC\":{\"Timezone\":\"Africa/Maputo\"},\"MNF\":{\"Timezone\":\"Pacific/Fiji\"},\"MNG\":{\"Timezone\":\"Australia/Darwin\"},\"MNI\":{\"Timezone\":\"America/Montserrat\"},\"MNJ\":{\"Timezone\":\"Indian/Antananarivo\"},\"MNK\":{\"Timezone\":\"Pacific/Tarawa\"},\"MNL\":{\"Timezone\":\"Asia/Manila\"},\"MNM\":{\"Timezone\":\"America/Chicago\"},\"MNR\":{\"Timezone\":\"Africa/Lusaka\"},\"MNS\":{\"Timezone\":null},\"MNU\":{\"Timezone\":\"Asia/Rangoon\"},\"MNX\":{\"Timezone\":\"America/Boa_Vista\"},\"MNY\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"MNZ\":{\"Timezone\":\"America/New_York\"},\"MOA\":{\"Timezone\":\"America/Havana\"},\"MOB\":{\"Timezone\":\"America/Chicago\"},\"MOC\":{\"Timezone\":\"America/Sao_Paulo\"},\"MOD\":{\"Timezone\":\"America/Los_Angeles\"},\"MOE\":{\"Timezone\":\"Asia/Rangoon\"},\"MOF\":{\"Timezone\":\"Asia/Makassar\"},\"MOG\":{\"Timezone\":\"Asia/Rangoon\"},\"MOI\":{\"Timezone\":\"Pacific/Rarotonga\"},\"MOJ\":{\"Timezone\":\"America/Paramaribo\"},\"MOL\":{\"Timezone\":\"Europe/Oslo\"},\"MON\":{\"Timezone\":\"Pacific/Auckland\"},\"MOO\":{\"Timezone\":\"Australia/Adelaide\"},\"MOQ\":{\"Timezone\":\"Indian/Antananarivo\"},\"MOT\":{\"Timezone\":\"America/Chicago\"},\"MOU\":{\"Timezone\":\"America/Anchorage\"},\"MOV\":{\"Timezone\":\"Australia/Brisbane\"},\"MOZ\":{\"Timezone\":\"Pacific/Tahiti\"},\"MPA\":{\"Timezone\":\"Africa/Windhoek\"},\"MPH\":{\"Timezone\":\"Asia/Manila\"},\"MPK\":{\"Timezone\":\"Asia/Seoul\"},\"MPL\":{\"Timezone\":\"Europe/Paris\"},\"MPM\":{\"Timezone\":\"Africa/Maputo\"},\"MPN\":{\"Timezone\":\"Atlantic/Stanley\"},\"MPO\":{\"Timezone\":null},\"MPV\":{\"Timezone\":\"America/New_York\"},\"MPW\":{\"Timezone\":\"Europe/Kiev\"},\"MPY\":{\"Timezone\":\"America/Cayenne\"},\"MQC\":{\"Timezone\":\"America/Miquelon\"},\"MQF\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"MQH\":{\"Timezone\":\"America/Sao_Paulo\"},\"MQJ\":{\"Timezone\":\"Asia/Srednekolymsk\"},\"MQL\":{\"Timezone\":\"Australia/Hobart\"},\"MQM\":{\"Timezone\":\"Europe/Istanbul\"},\"MQN\":{\"Timezone\":\"Europe/Oslo\"},\"MQP\":{\"Timezone\":\"Africa/Johannesburg\"},\"MQQ\":{\"Timezone\":\"Africa/Ndjamena\"},\"MQS\":{\"Timezone\":\"America/St_Vincent\"},\"MQT\":{\"Timezone\":\"America/New_York\"},\"MQU\":{\"Timezone\":\"America/Bogota\"},\"MQX\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"MQY\":{\"Timezone\":\"America/Chicago\"},\"MRB\":{\"Timezone\":\"America/New_York\"},\"MRD\":{\"Timezone\":\"America/Caracas\"},\"MRE\":{\"Timezone\":\"Africa/Nairobi\"},\"MRF\":{\"Timezone\":null},\"MRG\":{\"Timezone\":null},\"MRI\":{\"Timezone\":\"America/Anchorage\"},\"MRK\":{\"Timezone\":\"America/New_York\"},\"MRN\":{\"Timezone\":\"America/New_York\"},\"MRO\":{\"Timezone\":\"Pacific/Auckland\"},\"MRQ\":{\"Timezone\":\"Asia/Manila\"},\"MRR\":{\"Timezone\":\"America/Guayaquil\"},\"MRS\":{\"Timezone\":\"Europe/Paris\"},\"MRU\":{\"Timezone\":\"Indian/Mauritius\"},\"MRV\":{\"Timezone\":\"Europe/Moscow\"},\"MRW\":{\"Timezone\":\"Europe/Copenhagen\"},\"MRX\":{\"Timezone\":\"Asia/Tehran\"},\"MRY\":{\"Timezone\":\"America/Los_Angeles\"},\"MRZ\":{\"Timezone\":\"Australia/Sydney\"},\"MSA\":{\"Timezone\":\"America/Winnipeg\"},\"MSC\":{\"Timezone\":\"America/Phoenix\"},\"MSE\":{\"Timezone\":\"Europe/London\"},\"MSH\":{\"Timezone\":\"Asia/Muscat\"},\"MSJ\":{\"Timezone\":\"Asia/Tokyo\"},\"MSL\":{\"Timezone\":\"America/Chicago\"},\"MSN\":{\"Timezone\":\"America/Chicago\"},\"MSO\":{\"Timezone\":\"America/Denver\"},\"MSP\":{\"Timezone\":\"America/Chicago\"},\"MSQ\":{\"Timezone\":\"Europe/Minsk\"},\"MSR\":{\"Timezone\":\"Europe/Istanbul\"},\"MSS\":{\"Timezone\":\"America/New_York\"},\"MST\":{\"Timezone\":\"Europe/Amsterdam\"},\"MSU\":{\"Timezone\":\"Africa/Maseru\"},\"MSW\":{\"Timezone\":\"Africa/Asmera\"},\"MSY\":{\"Timezone\":\"America/Chicago\"},\"MSZ\":{\"Timezone\":\"Africa/Luanda\"},\"MTC\":{\"Timezone\":\"America/New_York\"},\"MTF\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"MTG\":{\"Timezone\":null},\"MTH\":{\"Timezone\":\"America/New_York\"},\"MTJ\":{\"Timezone\":\"America/Denver\"},\"MTK\":{\"Timezone\":\"Pacific/Tarawa\"},\"MTL\":{\"Timezone\":\"Australia/Sydney\"},\"MTM\":{\"Timezone\":\"America/Anchorage\"},\"MTN\":{\"Timezone\":\"America/New_York\"},\"MTP\":{\"Timezone\":null},\"MTR\":{\"Timezone\":\"America/Bogota\"},\"MTS\":{\"Timezone\":\"Africa/Mbabane\"},\"MTT\":{\"Timezone\":\"America/Mexico_City\"},\"MTV\":{\"Timezone\":\"Pacific/Efate\"},\"MTY\":{\"Timezone\":\"America/Mexico_City\"},\"MTZ\":{\"Timezone\":\"Asia/Jerusalem\"},\"MUA\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"MUB\":{\"Timezone\":\"Africa/Gaborone\"},\"MUC\":{\"Timezone\":\"Europe/Berlin\"},\"MUD\":{\"Timezone\":\"Africa/Maputo\"},\"MUE\":{\"Timezone\":\"Pacific/Honolulu\"},\"MUH\":{\"Timezone\":\"Africa/Cairo\"},\"MUI\":{\"Timezone\":\"America/New_York\"},\"MUK\":{\"Timezone\":\"Pacific/Rarotonga\"},\"MUN\":{\"Timezone\":\"America/Caracas\"},\"MUO\":{\"Timezone\":\"America/Denver\"},\"MUR\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"MUS\":{\"Timezone\":\"Asia/Tokyo\"},\"MUW\":{\"Timezone\":\"Africa/Algiers\"},\"MUX\":{\"Timezone\":\"Asia/Karachi\"},\"MUZ\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"MVA\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"MVB\":{\"Timezone\":\"Africa/Libreville\"},\"MVD\":{\"Timezone\":\"America/Montevideo\"},\"MVF\":{\"Timezone\":\"America/Fortaleza\"},\"MVL\":{\"Timezone\":\"America/New_York\"},\"MVP\":{\"Timezone\":\"America/Bogota\"},\"MVQ\":{\"Timezone\":\"Europe/Minsk\"},\"MVR\":{\"Timezone\":\"Africa/Douala\"},\"MVS\":{\"Timezone\":\"America/Fortaleza\"},\"MVT\":{\"Timezone\":\"Pacific/Tahiti\"},\"MVV\":{\"Timezone\":\"Europe/Paris\"},\"MVW\":{\"Timezone\":null},\"MVY\":{\"Timezone\":\"America/New_York\"},\"MVZ\":{\"Timezone\":\"Africa/Harare\"},\"MWA\":{\"Timezone\":\"America/Chicago\"},\"MWC\":{\"Timezone\":\"America/Chicago\"},\"MWD\":{\"Timezone\":\"Asia/Karachi\"},\"MWE\":{\"Timezone\":null},\"MWF\":{\"Timezone\":\"Pacific/Efate\"},\"MWH\":{\"Timezone\":\"America/Los_Angeles\"},\"MWK\":{\"Timezone\":\"Asia/Jakarta\"},\"MWL\":{\"Timezone\":\"America/Chicago\"},\"MWQ\":{\"Timezone\":\"Asia/Rangoon\"},\"MWX\":{\"Timezone\":\"Asia/Seoul\"},\"MWZ\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"MXB\":{\"Timezone\":\"Asia/Makassar\"},\"MXF\":{\"Timezone\":\"America/Chicago\"},\"MXH\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"MXI\":{\"Timezone\":null},\"MXJ\":{\"Timezone\":\"Africa/Lagos\"},\"MXL\":{\"Timezone\":\"America/Tijuana\"},\"MXM\":{\"Timezone\":\"Indian/Antananarivo\"},\"MXN\":{\"Timezone\":\"Europe/Paris\"},\"MXP\":{\"Timezone\":\"Europe/Rome\"},\"MXS\":{\"Timezone\":\"Pacific/Apia\"},\"MXT\":{\"Timezone\":\"Indian/Antananarivo\"},\"MXV\":{\"Timezone\":\"Asia/Ulaanbaatar\"},\"MXX\":{\"Timezone\":\"Europe/Stockholm\"},\"MXZ\":{\"Timezone\":\"Asia/Shanghai\"},\"MYA\":{\"Timezone\":\"Australia/Sydney\"},\"MYB\":{\"Timezone\":\"Africa/Libreville\"},\"MYC\":{\"Timezone\":\"America/Caracas\"},\"MYD\":{\"Timezone\":\"Africa/Nairobi\"},\"MYE\":{\"Timezone\":\"Asia/Tokyo\"},\"MYG\":{\"Timezone\":\"America/Nassau\"},\"MYI\":{\"Timezone\":\"Australia/Brisbane\"},\"MYJ\":{\"Timezone\":\"Asia/Tokyo\"},\"MYL\":{\"Timezone\":\"America/Denver\"},\"MYP\":{\"Timezone\":\"Asia/Ashgabat\"},\"MYQ\":{\"Timezone\":\"Asia/Calcutta\"},\"MYR\":{\"Timezone\":\"America/New_York\"},\"MYT\":{\"Timezone\":\"Asia/Rangoon\"},\"MYU\":{\"Timezone\":\"America/Anchorage\"},\"MYV\":{\"Timezone\":\"America/Los_Angeles\"},\"MYW\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"MYY\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"MYZ\":{\"Timezone\":null},\"MZB\":{\"Timezone\":\"Africa/Maputo\"},\"MZG\":{\"Timezone\":\"Asia/Taipei\"},\"MZH\":{\"Timezone\":\"Europe/Istanbul\"},\"MZI\":{\"Timezone\":\"Africa/Bamako\"},\"MZJ\":{\"Timezone\":\"America/Phoenix\"},\"MZK\":{\"Timezone\":\"Pacific/Tarawa\"},\"MZL\":{\"Timezone\":\"America/Bogota\"},\"MZM\":{\"Timezone\":\"Europe/Paris\"},\"MZO\":{\"Timezone\":\"America/Havana\"},\"MZP\":{\"Timezone\":\"Pacific/Auckland\"},\"MZQ\":{\"Timezone\":\"Africa/Johannesburg\"},\"MZR\":{\"Timezone\":\"Asia/Kabul\"},\"MZT\":{\"Timezone\":\"America/Mazatlan\"},\"MZU\":{\"Timezone\":\"Asia/Calcutta\"},\"MZV\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"MZW\":{\"Timezone\":\"Africa/Algiers\"},\"NAA\":{\"Timezone\":\"Australia/Sydney\"},\"NAC\":{\"Timezone\":null},\"NAG\":{\"Timezone\":\"Asia/Calcutta\"},\"NAH\":{\"Timezone\":\"Asia/Makassar\"},\"NAI\":{\"Timezone\":\"America/Guyana\"},\"NAJ\":{\"Timezone\":\"Asia/Baku\"},\"NAK\":{\"Timezone\":\"Asia/Bangkok\"},\"NAL\":{\"Timezone\":\"Europe/Moscow\"},\"NAM\":{\"Timezone\":null},\"NAN\":{\"Timezone\":\"Pacific/Fiji\"},\"NAO\":{\"Timezone\":\"Asia/Shanghai\"},\"NAP\":{\"Timezone\":\"Europe/Rome\"},\"NAQ\":{\"Timezone\":\"America/Thule\"},\"NAS\":{\"Timezone\":\"America/Nassau\"},\"NAT\":{\"Timezone\":\"America/Fortaleza\"},\"NAU\":{\"Timezone\":null},\"NAV\":{\"Timezone\":\"Europe/Istanbul\"},\"NAW\":{\"Timezone\":\"Asia/Bangkok\"},\"NAY\":{\"Timezone\":\"Asia/Shanghai\"},\"NBC\":{\"Timezone\":\"Europe/Moscow\"},\"NBE\":{\"Timezone\":\"Africa/Tunis\"},\"NBG\":{\"Timezone\":\"America/Chicago\"},\"NBN\":{\"Timezone\":null},\"NBO\":{\"Timezone\":\"Africa/Nairobi\"},\"NBS\":{\"Timezone\":\"Asia/Shanghai\"},\"NBW\":{\"Timezone\":null},\"NBX\":{\"Timezone\":\"Asia/Jayapura\"},\"NCA\":{\"Timezone\":\"America/Grand_Turk\"},\"NCE\":{\"Timezone\":\"Europe/Paris\"},\"NCG\":{\"Timezone\":\"America/Mazatlan\"},\"NCJ\":{\"Timezone\":null},\"NCL\":{\"Timezone\":\"Europe/London\"},\"NCN\":{\"Timezone\":\"America/Anchorage\"},\"NCO\":{\"Timezone\":\"America/New_York\"},\"NCR\":{\"Timezone\":\"America/Managua\"},\"NCS\":{\"Timezone\":\"Africa/Johannesburg\"},\"NCU\":{\"Timezone\":\"Asia/Samarkand\"},\"NCY\":{\"Timezone\":\"Europe/Paris\"},\"NDB\":{\"Timezone\":\"Africa/Nouakchott\"},\"NDC\":{\"Timezone\":\"Asia/Calcutta\"},\"NDD\":{\"Timezone\":null},\"NDG\":{\"Timezone\":\"Asia/Shanghai\"},\"NDJ\":{\"Timezone\":\"Africa/Ndjamena\"},\"NDN\":{\"Timezone\":null},\"NDR\":{\"Timezone\":\"Africa/Casablanca\"},\"NDU\":{\"Timezone\":\"Africa/Windhoek\"},\"NDY\":{\"Timezone\":\"Europe/London\"},\"NEC\":{\"Timezone\":\"America/Buenos_Aires\"},\"NEG\":{\"Timezone\":\"America/Jamaica\"},\"NEL\":{\"Timezone\":\"America/New_York\"},\"NER\":{\"Timezone\":\"Asia/Yakutsk\"},\"NEU\":{\"Timezone\":\"Asia/Vientiane\"},\"NEV\":{\"Timezone\":\"America/St_Kitts\"},\"NEW\":{\"Timezone\":\"America/Chicago\"},\"NFG\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"NFL\":{\"Timezone\":\"America/Los_Angeles\"},\"NFO\":{\"Timezone\":\"Pacific/Tongatapu\"},\"NGA\":{\"Timezone\":null},\"NGB\":{\"Timezone\":\"Asia/Shanghai\"},\"NGD\":{\"Timezone\":null},\"NGE\":{\"Timezone\":\"Africa/Douala\"},\"NGF\":{\"Timezone\":\"Pacific/Honolulu\"},\"NGI\":{\"Timezone\":\"Pacific/Fiji\"},\"NGK\":{\"Timezone\":null},\"NGO\":{\"Timezone\":\"Asia/Tokyo\"},\"NGQ\":{\"Timezone\":\"Asia/Shanghai\"},\"NGS\":{\"Timezone\":\"Asia/Tokyo\"},\"NGU\":{\"Timezone\":\"America/New_York\"},\"NGX\":{\"Timezone\":\"Asia/Katmandu\"},\"NGZ\":{\"Timezone\":\"America/Los_Angeles\"},\"NHA\":{\"Timezone\":\"Asia/Saigon\"},\"NHD\":{\"Timezone\":\"Asia/Dubai\"},\"NHK\":{\"Timezone\":\"America/New_York\"},\"NHT\":{\"Timezone\":\"Europe/London\"},\"NHV\":{\"Timezone\":\"Pacific/Marquesas\"},\"NHZ\":{\"Timezone\":null},\"NIB\":{\"Timezone\":\"America/Anchorage\"},\"NIG\":{\"Timezone\":\"Pacific/Tarawa\"},\"NIM\":{\"Timezone\":\"Africa/Niamey\"},\"NIO\":{\"Timezone\":\"Africa/Kinshasa\"},\"NIP\":{\"Timezone\":\"America/New_York\"},\"NIS\":{\"Timezone\":null},\"NIT\":{\"Timezone\":\"Europe/Paris\"},\"NIU\":{\"Timezone\":\"Pacific/Tahiti\"},\"NJA\":{\"Timezone\":\"Asia/Tokyo\"},\"NJC\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"NJF\":{\"Timezone\":\"Asia/Baghdad\"},\"NJK\":{\"Timezone\":\"America/Los_Angeles\"},\"NKB\":{\"Timezone\":null},\"NKC\":{\"Timezone\":\"Africa/Nouakchott\"},\"NKG\":{\"Timezone\":\"Asia/Shanghai\"},\"NKM\":{\"Timezone\":\"Asia/Tokyo\"},\"NKT\":{\"Timezone\":\"Europe/Istanbul\"},\"NKW\":{\"Timezone\":\"Indian/Chagos\"},\"NKX\":{\"Timezone\":\"America/Los_Angeles\"},\"NLA\":{\"Timezone\":\"Africa/Lusaka\"},\"NLC\":{\"Timezone\":\"America/Los_Angeles\"},\"NLD\":{\"Timezone\":\"America/Mexico_City\"},\"NLF\":{\"Timezone\":\"Australia/Brisbane\"},\"NLG\":{\"Timezone\":\"America/Anchorage\"},\"NLH\":{\"Timezone\":null},\"NLI\":{\"Timezone\":null},\"NLK\":{\"Timezone\":\"Pacific/Norfolk\"},\"NLO\":{\"Timezone\":\"Africa/Kinshasa\"},\"NLP\":{\"Timezone\":\"Africa/Johannesburg\"},\"NLT\":{\"Timezone\":\"Asia/Shanghai\"},\"NLV\":{\"Timezone\":\"Europe/Kiev\"},\"NMA\":{\"Timezone\":\"Asia/Samarkand\"},\"NMB\":{\"Timezone\":\"Asia/Calcutta\"},\"NMC\":{\"Timezone\":\"America/Nassau\"},\"NME\":{\"Timezone\":\"America/Anchorage\"},\"NMS\":{\"Timezone\":\"Asia/Rangoon\"},\"NMT\":{\"Timezone\":\"Asia/Rangoon\"},\"NNA\":{\"Timezone\":\"Africa/Casablanca\"},\"NNB\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"NNG\":{\"Timezone\":\"Asia/Shanghai\"},\"NNL\":{\"Timezone\":\"America/Anchorage\"},\"NNM\":{\"Timezone\":\"Europe/Moscow\"},\"NNR\":{\"Timezone\":\"Europe/Dublin\"},\"NNT\":{\"Timezone\":\"Asia/Bangkok\"},\"NNX\":{\"Timezone\":\"Asia/Makassar\"},\"NNY\":{\"Timezone\":\"Asia/Shanghai\"},\"NOA\":{\"Timezone\":\"Australia/Sydney\"},\"NOB\":{\"Timezone\":\"America/Costa_Rica\"},\"NOC\":{\"Timezone\":\"Europe/Dublin\"},\"NOD\":{\"Timezone\":\"Europe/Berlin\"},\"NOG\":{\"Timezone\":\"America/Hermosillo\"},\"NOJ\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"NON\":{\"Timezone\":\"Pacific/Tarawa\"},\"NOP\":{\"Timezone\":\"Europe/Istanbul\"},\"NOR\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"NOS\":{\"Timezone\":\"Indian/Antananarivo\"},\"NOT\":{\"Timezone\":\"America/Los_Angeles\"},\"NOU\":{\"Timezone\":\"Pacific/Noumea\"},\"NOV\":{\"Timezone\":\"Africa/Luanda\"},\"NOZ\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"NPA\":{\"Timezone\":\"America/Chicago\"},\"NPE\":{\"Timezone\":\"Pacific/Auckland\"},\"NPL\":{\"Timezone\":\"Pacific/Auckland\"},\"NPO\":{\"Timezone\":\"Asia/Jakarta\"},\"NPR\":{\"Timezone\":null},\"NQA\":{\"Timezone\":\"America/Chicago\"},\"NQI\":{\"Timezone\":\"America/Chicago\"},\"NQN\":{\"Timezone\":\"America/Argentina/Salta\"},\"NQT\":{\"Timezone\":\"Europe/London\"},\"NQU\":{\"Timezone\":\"America/Bogota\"},\"NQX\":{\"Timezone\":\"America/New_York\"},\"NQY\":{\"Timezone\":\"Europe/London\"},\"NRA\":{\"Timezone\":\"Australia/Sydney\"},\"NRB\":{\"Timezone\":null},\"NRD\":{\"Timezone\":\"Europe/Berlin\"},\"NRE\":{\"Timezone\":null},\"NRK\":{\"Timezone\":\"Europe/Stockholm\"},\"NRL\":{\"Timezone\":\"Europe/London\"},\"NRN\":{\"Timezone\":\"Europe/Berlin\"},\"NRR\":{\"Timezone\":\"America/Puerto_Rico\"},\"NRT\":{\"Timezone\":\"Asia/Tokyo\"},\"NSE\":{\"Timezone\":\"America/Chicago\"},\"NSH\":{\"Timezone\":\"Asia/Tehran\"},\"NSI\":{\"Timezone\":\"Africa/Douala\"},\"NSK\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"NSN\":{\"Timezone\":\"Pacific/Auckland\"},\"NSO\":{\"Timezone\":\"Australia/Sydney\"},\"NST\":{\"Timezone\":\"Asia/Bangkok\"},\"NSY\":{\"Timezone\":\"Europe/Rome\"},\"NTB\":{\"Timezone\":\"Europe/Oslo\"},\"NTD\":{\"Timezone\":\"America/Los_Angeles\"},\"NTE\":{\"Timezone\":\"Europe/Paris\"},\"NTI\":{\"Timezone\":\"Asia/Jayapura\"},\"NTL\":{\"Timezone\":\"Australia/Sydney\"},\"NTN\":{\"Timezone\":\"Australia/Brisbane\"},\"NTQ\":{\"Timezone\":\"Asia/Tokyo\"},\"NTR\":{\"Timezone\":\"America/Mexico_City\"},\"NTT\":{\"Timezone\":\"Pacific/Tongatapu\"},\"NTU\":{\"Timezone\":\"America/New_York\"},\"NTX\":{\"Timezone\":\"Asia/Jakarta\"},\"NTY\":{\"Timezone\":\"Africa/Johannesburg\"},\"NUE\":{\"Timezone\":\"Europe/Berlin\"},\"NUI\":{\"Timezone\":\"America/Anchorage\"},\"NUK\":{\"Timezone\":null},\"NUL\":{\"Timezone\":\"America/Anchorage\"},\"NUQ\":{\"Timezone\":\"America/Los_Angeles\"},\"NUS\":{\"Timezone\":\"Pacific/Efate\"},\"NUW\":{\"Timezone\":\"America/Los_Angeles\"},\"NUX\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"NVA\":{\"Timezone\":\"America/Bogota\"},\"NVI\":{\"Timezone\":\"Asia/Samarkand\"},\"NVK\":{\"Timezone\":\"Europe/Oslo\"},\"NVP\":{\"Timezone\":\"America/Boa_Vista\"},\"NVS\":{\"Timezone\":\"Europe/Paris\"},\"NVT\":{\"Timezone\":\"America/Sao_Paulo\"},\"NWA\":{\"Timezone\":\"Indian/Comoro\"},\"NWI\":{\"Timezone\":\"Europe/London\"},\"NXX\":{\"Timezone\":\"America/New_York\"},\"NYA\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"NYE\":{\"Timezone\":\"Africa/Nairobi\"},\"NYI\":{\"Timezone\":\"Africa/Accra\"},\"NYK\":{\"Timezone\":\"Africa/Nairobi\"},\"NYM\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"NYO\":{\"Timezone\":\"Europe/Stockholm\"},\"NYR\":{\"Timezone\":null},\"NYT\":{\"Timezone\":\"Asia/Rangoon\"},\"NYU\":{\"Timezone\":\"Asia/Rangoon\"},\"NYW\":{\"Timezone\":\"Asia/Rangoon\"},\"NZA\":{\"Timezone\":\"Africa/Luanda\"},\"NZC\":{\"Timezone\":\"America/Lima\"},\"NZE\":{\"Timezone\":null},\"NZH\":{\"Timezone\":\"Asia/Shanghai\"},\"NZJ\":{\"Timezone\":\"America/Los_Angeles\"},\"NZL\":{\"Timezone\":null},\"NZY\":{\"Timezone\":\"America/Los_Angeles\"},\"OAA\":{\"Timezone\":\"Asia/Kabul\"},\"OAG\":{\"Timezone\":\"Australia/Sydney\"},\"OAH\":{\"Timezone\":\"Asia/Kabul\"},\"OAI\":{\"Timezone\":\"Asia/Kabul\"},\"OAJ\":{\"Timezone\":\"America/New_York\"},\"OAK\":{\"Timezone\":\"America/Los_Angeles\"},\"OAL\":{\"Timezone\":\"America/Boa_Vista\"},\"OAM\":{\"Timezone\":\"Pacific/Auckland\"},\"OAR\":{\"Timezone\":\"America/Los_Angeles\"},\"OAS\":{\"Timezone\":\"Asia/Kabul\"},\"OAX\":{\"Timezone\":\"America/Mexico_City\"},\"OAZ\":{\"Timezone\":\"Asia/Kabul\"},\"OBC\":{\"Timezone\":\"Africa/Djibouti\"},\"OBE\":{\"Timezone\":\"America/New_York\"},\"OBF\":{\"Timezone\":\"Europe/Berlin\"},\"OBL\":{\"Timezone\":\"Europe/Brussels\"},\"OBN\":{\"Timezone\":\"Europe/London\"},\"OBO\":{\"Timezone\":\"Asia/Tokyo\"},\"OBS\":{\"Timezone\":\"Europe/Paris\"},\"OBU\":{\"Timezone\":\"America/Anchorage\"},\"OBY\":{\"Timezone\":\"America/Scoresbysund\"},\"OCA\":{\"Timezone\":\"America/New_York\"},\"OCC\":{\"Timezone\":\"America/Guayaquil\"},\"OCF\":{\"Timezone\":\"America/New_York\"},\"OCJ\":{\"Timezone\":\"America/Jamaica\"},\"OCM\":{\"Timezone\":null},\"OCN\":{\"Timezone\":\"America/Los_Angeles\"},\"OCV\":{\"Timezone\":\"America/Bogota\"},\"OCW\":{\"Timezone\":\"America/New_York\"},\"ODB\":{\"Timezone\":\"Europe/Madrid\"},\"ODE\":{\"Timezone\":\"Europe/Copenhagen\"},\"ODH\":{\"Timezone\":\"Europe/London\"},\"ODN\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"ODO\":{\"Timezone\":\"Asia/Irkutsk\"},\"ODS\":{\"Timezone\":\"Europe/Kiev\"},\"ODY\":{\"Timezone\":\"Asia/Vientiane\"},\"OEL\":{\"Timezone\":null},\"OEM\":{\"Timezone\":\"America/Paramaribo\"},\"OER\":{\"Timezone\":\"Europe/Stockholm\"},\"OES\":{\"Timezone\":\"America/Argentina/Salta\"},\"OFF\":{\"Timezone\":\"America/Chicago\"},\"OFK\":{\"Timezone\":null},\"OGB\":{\"Timezone\":null},\"OGD\":{\"Timezone\":\"America/Denver\"},\"OGG\":{\"Timezone\":\"Pacific/Honolulu\"},\"OGL\":{\"Timezone\":\"America/Guyana\"},\"OGN\":{\"Timezone\":\"Asia/Tokyo\"},\"OGS\":{\"Timezone\":\"America/New_York\"},\"OGU\":{\"Timezone\":null},\"OGX\":{\"Timezone\":\"Africa/Algiers\"},\"OGZ\":{\"Timezone\":\"Europe/Moscow\"},\"OHA\":{\"Timezone\":\"Pacific/Auckland\"},\"OHD\":{\"Timezone\":\"Europe/Skopje\"},\"OHE\":{\"Timezone\":\"Asia/Shanghai\"},\"OHO\":{\"Timezone\":\"Asia/Vladivostok\"},\"OHS\":{\"Timezone\":null},\"OIA\":{\"Timezone\":\"America/Belem\"},\"OIM\":{\"Timezone\":\"Asia/Tokyo\"},\"OIR\":{\"Timezone\":\"Asia/Tokyo\"},\"OIT\":{\"Timezone\":\"Asia/Tokyo\"},\"OJC\":{\"Timezone\":\"America/Chicago\"},\"OKA\":{\"Timezone\":\"Asia/Tokyo\"},\"OKC\":{\"Timezone\":\"America/Chicago\"},\"OKD\":{\"Timezone\":\"Asia/Tokyo\"},\"OKE\":{\"Timezone\":\"Asia/Tokyo\"},\"OKF\":{\"Timezone\":\"Africa/Windhoek\"},\"OKI\":{\"Timezone\":\"Asia/Tokyo\"},\"OKJ\":{\"Timezone\":\"Asia/Tokyo\"},\"OKK\":{\"Timezone\":null},\"OKL\":{\"Timezone\":null},\"OKM\":{\"Timezone\":\"America/Chicago\"},\"OKN\":{\"Timezone\":\"Africa/Libreville\"},\"OKO\":{\"Timezone\":\"Asia/Tokyo\"},\"OKR\":{\"Timezone\":\"Australia/Brisbane\"},\"OKU\":{\"Timezone\":\"Africa/Windhoek\"},\"OKY\":{\"Timezone\":\"Australia/Brisbane\"},\"OLA\":{\"Timezone\":\"Europe/Oslo\"},\"OLB\":{\"Timezone\":\"Europe/Rome\"},\"OLC\":{\"Timezone\":\"America/Boa_Vista\"},\"OLF\":{\"Timezone\":\"America/Denver\"},\"OLJ\":{\"Timezone\":\"Pacific/Efate\"},\"OLL\":{\"Timezone\":null},\"OLM\":{\"Timezone\":\"America/Los_Angeles\"},\"OLP\":{\"Timezone\":\"Australia/Adelaide\"},\"OLS\":{\"Timezone\":\"America/Phoenix\"},\"OLV\":{\"Timezone\":\"America/Chicago\"},\"OLZ\":{\"Timezone\":\"Asia/Yakutsk\"},\"OMA\":{\"Timezone\":\"America/Chicago\"},\"OMB\":{\"Timezone\":\"Africa/Libreville\"},\"OMC\":{\"Timezone\":\"Asia/Manila\"},\"OMD\":{\"Timezone\":\"Africa/Windhoek\"},\"OME\":{\"Timezone\":\"America/Anchorage\"},\"OMF\":{\"Timezone\":\"Asia/Amman\"},\"OMH\":{\"Timezone\":\"Asia/Tehran\"},\"OMI\":{\"Timezone\":\"Asia/Tehran\"},\"OMO\":{\"Timezone\":\"Europe/Sarajevo\"},\"OMR\":{\"Timezone\":\"Europe/Bucharest\"},\"OMS\":{\"Timezone\":\"Asia/Omsk\"},\"OND\":{\"Timezone\":\"Africa/Windhoek\"},\"ONG\":{\"Timezone\":\"Australia/Brisbane\"},\"ONJ\":{\"Timezone\":\"Asia/Tokyo\"},\"ONK\":{\"Timezone\":\"Asia/Yakutsk\"},\"ONO\":{\"Timezone\":\"America/Denver\"},\"ONP\":{\"Timezone\":\"America/Los_Angeles\"},\"ONQ\":{\"Timezone\":\"Europe/Istanbul\"},\"ONS\":{\"Timezone\":\"Australia/Perth\"},\"ONT\":{\"Timezone\":\"America/Los_Angeles\"},\"ONX\":{\"Timezone\":\"America/Panama\"},\"OOK\":{\"Timezone\":\"America/Anchorage\"},\"OOL\":{\"Timezone\":\"Australia/Brisbane\"},\"OOM\":{\"Timezone\":\"Australia/Sydney\"},\"OPF\":{\"Timezone\":\"America/New_York\"},\"OPO\":{\"Timezone\":\"Europe/Lisbon\"},\"OPS\":{\"Timezone\":\"America/Campo_Grande\"},\"OPU\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"ORA\":{\"Timezone\":\"America/Argentina/Salta\"},\"ORB\":{\"Timezone\":\"Europe/Stockholm\"},\"ORD\":{\"Timezone\":\"America/Chicago\"},\"ORE\":{\"Timezone\":\"Europe/Paris\"},\"ORF\":{\"Timezone\":\"America/New_York\"},\"ORG\":{\"Timezone\":\"America/Paramaribo\"},\"ORH\":{\"Timezone\":\"America/New_York\"},\"ORJ\":{\"Timezone\":\"America/Guyana\"},\"ORK\":{\"Timezone\":\"Europe/Dublin\"},\"ORL\":{\"Timezone\":\"America/New_York\"},\"ORN\":{\"Timezone\":\"Africa/Algiers\"},\"ORP\":{\"Timezone\":\"Africa/Gaborone\"},\"ORT\":{\"Timezone\":\"America/Anchorage\"},\"ORU\":{\"Timezone\":\"America/La_Paz\"},\"ORV\":{\"Timezone\":\"America/Anchorage\"},\"ORW\":{\"Timezone\":\"Asia/Karachi\"},\"ORX\":{\"Timezone\":\"America/Belem\"},\"ORY\":{\"Timezone\":\"Europe/Paris\"},\"OSC\":{\"Timezone\":\"America/New_York\"},\"OSD\":{\"Timezone\":\"Europe/Stockholm\"},\"OSF\":{\"Timezone\":\"Europe/Moscow\"},\"OSH\":{\"Timezone\":\"America/Chicago\"},\"OSI\":{\"Timezone\":\"Europe/Zagreb\"},\"OSK\":{\"Timezone\":\"Europe/Stockholm\"},\"OSL\":{\"Timezone\":\"Europe/Oslo\"},\"OSM\":{\"Timezone\":\"Asia/Baghdad\"},\"OSN\":{\"Timezone\":\"Asia/Seoul\"},\"OSP\":{\"Timezone\":\"Europe/Warsaw\"},\"OSR\":{\"Timezone\":\"Europe/Prague\"},\"OSS\":{\"Timezone\":\"Asia/Bishkek\"},\"OST\":{\"Timezone\":\"Europe/Brussels\"},\"OSU\":{\"Timezone\":\"America/New_York\"},\"OSW\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"OSY\":{\"Timezone\":\"Europe/Oslo\"},\"OTH\":{\"Timezone\":\"America/Los_Angeles\"},\"OTI\":{\"Timezone\":\"Asia/Jayapura\"},\"OTJ\":{\"Timezone\":null},\"OTK\":{\"Timezone\":\"America/Los_Angeles\"},\"OTM\":{\"Timezone\":null},\"OTP\":{\"Timezone\":\"Europe/Bucharest\"},\"OTR\":{\"Timezone\":\"America/Costa_Rica\"},\"OTU\":{\"Timezone\":\"America/Bogota\"},\"OTZ\":{\"Timezone\":\"America/Anchorage\"},\"OUA\":{\"Timezone\":\"Africa/Ouagadougou\"},\"OUD\":{\"Timezone\":\"Africa/Casablanca\"},\"OUE\":{\"Timezone\":\"Africa/Brazzaville\"},\"OUH\":{\"Timezone\":\"Africa/Johannesburg\"},\"OUK\":{\"Timezone\":\"Europe/London\"},\"OUL\":{\"Timezone\":\"Europe/Helsinki\"},\"OUZ\":{\"Timezone\":\"Africa/Nouakchott\"},\"OVA\":{\"Timezone\":\"Indian/Antananarivo\"},\"OVB\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"OVD\":{\"Timezone\":\"Europe/Madrid\"},\"OVG\":{\"Timezone\":\"Africa/Johannesburg\"},\"OVR\":{\"Timezone\":\"America/Buenos_Aires\"},\"OVS\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"OWB\":{\"Timezone\":\"America/Chicago\"},\"OWD\":{\"Timezone\":\"America/New_York\"},\"OXB\":{\"Timezone\":\"Africa/Bissau\"},\"OXC\":{\"Timezone\":\"America/New_York\"},\"OXF\":{\"Timezone\":\"Europe/London\"},\"OXR\":{\"Timezone\":\"America/Los_Angeles\"},\"OYA\":{\"Timezone\":\"America/Cordoba\"},\"OYE\":{\"Timezone\":\"Africa/Libreville\"},\"OYK\":{\"Timezone\":\"America/Fortaleza\"},\"OYL\":{\"Timezone\":\"Africa/Nairobi\"},\"OYO\":{\"Timezone\":\"America/Buenos_Aires\"},\"OYP\":{\"Timezone\":\"America/Cayenne\"},\"OZA\":{\"Timezone\":\"America/Chicago\"},\"OZC\":{\"Timezone\":\"Asia/Manila\"},\"OZG\":{\"Timezone\":\"Africa/Casablanca\"},\"OZH\":{\"Timezone\":\"Europe/Kiev\"},\"OZP\":{\"Timezone\":\"Europe/Madrid\"},\"OZR\":{\"Timezone\":null},\"OZZ\":{\"Timezone\":\"Africa/Casablanca\"},\"PAA\":{\"Timezone\":\"Asia/Rangoon\"},\"PAB\":{\"Timezone\":\"Asia/Calcutta\"},\"PAC\":{\"Timezone\":\"America/Panama\"},\"PAD\":{\"Timezone\":\"Europe/Berlin\"},\"PAE\":{\"Timezone\":\"America/Los_Angeles\"},\"PAG\":{\"Timezone\":\"Asia/Manila\"},\"PAH\":{\"Timezone\":\"America/Chicago\"},\"PAJ\":{\"Timezone\":\"Asia/Karachi\"},\"PAL\":{\"Timezone\":null},\"PAM\":{\"Timezone\":\"America/Chicago\"},\"PAN\":{\"Timezone\":\"Asia/Bangkok\"},\"PAO\":{\"Timezone\":\"America/Los_Angeles\"},\"PAP\":{\"Timezone\":\"America/Port-au-Prince\"},\"PAQ\":{\"Timezone\":\"America/Anchorage\"},\"PAS\":{\"Timezone\":\"Europe/Athens\"},\"PAT\":{\"Timezone\":\"Asia/Calcutta\"},\"PAV\":{\"Timezone\":\"America/Fortaleza\"},\"PAX\":{\"Timezone\":\"America/Port-au-Prince\"},\"PAZ\":{\"Timezone\":\"America/Mexico_City\"},\"PBC\":{\"Timezone\":\"America/Mexico_City\"},\"PBD\":{\"Timezone\":\"Asia/Calcutta\"},\"PBF\":{\"Timezone\":\"America/Chicago\"},\"PBG\":{\"Timezone\":\"America/New_York\"},\"PBH\":{\"Timezone\":\"Asia/Thimphu\"},\"PBI\":{\"Timezone\":\"America/New_York\"},\"PBJ\":{\"Timezone\":\"Pacific/Efate\"},\"PBL\":{\"Timezone\":\"America/Caracas\"},\"PBM\":{\"Timezone\":\"America/Paramaribo\"},\"PBN\":{\"Timezone\":\"Africa/Luanda\"},\"PBO\":{\"Timezone\":\"Australia/Perth\"},\"PBP\":{\"Timezone\":\"America/Costa_Rica\"},\"PBQ\":{\"Timezone\":null},\"PBR\":{\"Timezone\":\"America/Guatemala\"},\"PBU\":{\"Timezone\":\"Asia/Rangoon\"},\"PBZ\":{\"Timezone\":\"Africa/Johannesburg\"},\"PCB\":{\"Timezone\":\"Asia/Jakarta\"},\"PCD\":{\"Timezone\":null},\"PCF\":{\"Timezone\":\"Africa/Johannesburg\"},\"PCL\":{\"Timezone\":\"America/Lima\"},\"PCN\":{\"Timezone\":\"Pacific/Auckland\"},\"PCP\":{\"Timezone\":\"Africa/Sao_Tome\"},\"PCQ\":{\"Timezone\":null},\"PCR\":{\"Timezone\":\"America/Bogota\"},\"PCS\":{\"Timezone\":null},\"PDA\":{\"Timezone\":\"America/Bogota\"},\"PDG\":{\"Timezone\":\"Asia/Jakarta\"},\"PDK\":{\"Timezone\":\"America/New_York\"},\"PDL\":{\"Timezone\":\"Atlantic/Azores\"},\"PDO\":{\"Timezone\":\"Asia/Jakarta\"},\"PDP\":{\"Timezone\":\"America/Montevideo\"},\"PDS\":{\"Timezone\":\"America/Mexico_City\"},\"PDT\":{\"Timezone\":\"America/Los_Angeles\"},\"PDU\":{\"Timezone\":null},\"PDV\":{\"Timezone\":\"Europe/Sofia\"},\"PDX\":{\"Timezone\":\"America/Los_Angeles\"},\"PEA\":{\"Timezone\":\"Australia/Adelaide\"},\"PED\":{\"Timezone\":\"Europe/Prague\"},\"PEE\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"PEF\":{\"Timezone\":\"Europe/Berlin\"},\"PEG\":{\"Timezone\":\"Europe/Rome\"},\"PEH\":{\"Timezone\":\"America/Buenos_Aires\"},\"PEI\":{\"Timezone\":\"America/Bogota\"},\"PEK\":{\"Timezone\":\"Asia/Shanghai\"},\"PEM\":{\"Timezone\":\"America/Lima\"},\"PEN\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"PEQ\":{\"Timezone\":\"America/Chicago\"},\"PER\":{\"Timezone\":\"Australia/Perth\"},\"PES\":{\"Timezone\":\"Europe/Moscow\"},\"PET\":{\"Timezone\":\"America/Sao_Paulo\"},\"PEU\":{\"Timezone\":\"America/Tegucigalpa\"},\"PEV\":{\"Timezone\":\"Europe/Budapest\"},\"PEW\":{\"Timezone\":\"Asia/Karachi\"},\"PEX\":{\"Timezone\":\"Europe/Moscow\"},\"PEZ\":{\"Timezone\":\"Europe/Moscow\"},\"PFB\":{\"Timezone\":\"America/Sao_Paulo\"},\"PFJ\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"PFN\":{\"Timezone\":\"America/Chicago\"},\"PFO\":{\"Timezone\":\"Asia/Nicosia\"},\"PFQ\":{\"Timezone\":\"Asia/Tehran\"},\"PFR\":{\"Timezone\":\"Africa/Lubumbashi\"},\"PGA\":{\"Timezone\":\"America/Phoenix\"},\"PGD\":{\"Timezone\":\"America/New_York\"},\"PGF\":{\"Timezone\":\"Europe/Paris\"},\"PGH\":{\"Timezone\":\"Asia/Calcutta\"},\"PGK\":{\"Timezone\":\"Asia/Jakarta\"},\"PGU\":{\"Timezone\":\"Asia/Tehran\"},\"PGV\":{\"Timezone\":\"America/New_York\"},\"PGX\":{\"Timezone\":\"Europe/Paris\"},\"PGZ\":{\"Timezone\":null},\"PHA\":{\"Timezone\":\"Asia/Saigon\"},\"PHB\":{\"Timezone\":\"America/Fortaleza\"},\"PHC\":{\"Timezone\":\"Africa/Lagos\"},\"PHD\":{\"Timezone\":\"America/New_York\"},\"PHE\":{\"Timezone\":\"Australia/Perth\"},\"PHF\":{\"Timezone\":\"America/New_York\"},\"PHK\":{\"Timezone\":\"America/New_York\"},\"PHL\":{\"Timezone\":\"America/New_York\"},\"PHN\":{\"Timezone\":\"America/New_York\"},\"PHS\":{\"Timezone\":\"Asia/Bangkok\"},\"PHW\":{\"Timezone\":\"Africa/Johannesburg\"},\"PHX\":{\"Timezone\":\"America/Phoenix\"},\"PHY\":{\"Timezone\":\"Asia/Bangkok\"},\"PIA\":{\"Timezone\":\"America/Chicago\"},\"PIB\":{\"Timezone\":\"America/Chicago\"},\"PID\":{\"Timezone\":\"America/Nassau\"},\"PIE\":{\"Timezone\":\"America/New_York\"},\"PIF\":{\"Timezone\":\"Asia/Taipei\"},\"PIH\":{\"Timezone\":\"America/Denver\"},\"PIK\":{\"Timezone\":\"Europe/London\"},\"PIL\":{\"Timezone\":\"America/Asuncion\"},\"PIM\":{\"Timezone\":\"America/New_York\"},\"PIN\":{\"Timezone\":\"America/Boa_Vista\"},\"PIO\":{\"Timezone\":\"America/Lima\"},\"PIP\":{\"Timezone\":\"America/Anchorage\"},\"PIR\":{\"Timezone\":\"America/Chicago\"},\"PIS\":{\"Timezone\":\"Europe/Paris\"},\"PIT\":{\"Timezone\":\"America/New_York\"},\"PIU\":{\"Timezone\":\"America/Lima\"},\"PIW\":{\"Timezone\":null},\"PIX\":{\"Timezone\":\"Atlantic/Azores\"},\"PIZ\":{\"Timezone\":\"America/Anchorage\"},\"PJA\":{\"Timezone\":\"Europe/Stockholm\"},\"PJC\":{\"Timezone\":\"America/Asuncion\"},\"PJG\":{\"Timezone\":\"Asia/Karachi\"},\"PJM\":{\"Timezone\":\"America/Costa_Rica\"},\"PKA\":{\"Timezone\":\"America/Anchorage\"},\"PKB\":{\"Timezone\":\"America/New_York\"},\"PKC\":{\"Timezone\":\"Asia/Anadyr\"},\"PKE\":{\"Timezone\":\"Australia/Sydney\"},\"PKG\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"PKH\":{\"Timezone\":\"Europe/Athens\"},\"PKK\":{\"Timezone\":\"Asia/Rangoon\"},\"PKN\":{\"Timezone\":\"Asia/Jakarta\"},\"PKO\":{\"Timezone\":null},\"PKP\":{\"Timezone\":\"Pacific/Tahiti\"},\"PKR\":{\"Timezone\":\"Asia/Katmandu\"},\"PKT\":{\"Timezone\":null},\"PKU\":{\"Timezone\":\"Asia/Jakarta\"},\"PKV\":{\"Timezone\":\"Europe/Moscow\"},\"PKW\":{\"Timezone\":\"Africa/Gaborone\"},\"PKX\":{\"Timezone\":null},\"PKY\":{\"Timezone\":\"Asia/Jakarta\"},\"PKZ\":{\"Timezone\":\"Asia/Vientiane\"},\"PLD\":{\"Timezone\":\"America/Costa_Rica\"},\"PLH\":{\"Timezone\":\"Europe/London\"},\"PLL\":{\"Timezone\":\"America/Boa_Vista\"},\"PLM\":{\"Timezone\":\"Asia/Jakarta\"},\"PLN\":{\"Timezone\":\"America/New_York\"},\"PLO\":{\"Timezone\":\"Australia/Adelaide\"},\"PLP\":{\"Timezone\":\"America/Panama\"},\"PLQ\":{\"Timezone\":\"Europe/Vilnius\"},\"PLS\":{\"Timezone\":\"America/Grand_Turk\"},\"PLU\":{\"Timezone\":\"America/Sao_Paulo\"},\"PLV\":{\"Timezone\":\"Europe/Kiev\"},\"PLW\":{\"Timezone\":\"Asia/Makassar\"},\"PLX\":{\"Timezone\":\"Asia/Qyzylorda\"},\"PLZ\":{\"Timezone\":\"Africa/Johannesburg\"},\"PMA\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"PMB\":{\"Timezone\":\"America/Chicago\"},\"PMC\":{\"Timezone\":\"America/Santiago\"},\"PMD\":{\"Timezone\":\"America/Los_Angeles\"},\"PMF\":{\"Timezone\":\"Europe/Rome\"},\"PMG\":{\"Timezone\":\"America/Campo_Grande\"},\"PMH\":{\"Timezone\":null},\"PMI\":{\"Timezone\":\"Europe/Madrid\"},\"PMK\":{\"Timezone\":\"Australia/Brisbane\"},\"PML\":{\"Timezone\":\"America/Anchorage\"},\"PMO\":{\"Timezone\":\"Europe/Rome\"},\"PMQ\":{\"Timezone\":\"America/Argentina/Rio_Gallegos\"},\"PMR\":{\"Timezone\":\"Pacific/Auckland\"},\"PMS\":{\"Timezone\":\"Asia/Damascus\"},\"PMV\":{\"Timezone\":\"America/Caracas\"},\"PMW\":{\"Timezone\":\"America/Fortaleza\"},\"PMY\":{\"Timezone\":\"America/Catamarca\"},\"PMZ\":{\"Timezone\":\"America/Costa_Rica\"},\"PNA\":{\"Timezone\":\"Europe/Madrid\"},\"PNB\":{\"Timezone\":\"America/Fortaleza\"},\"PNC\":{\"Timezone\":\"America/Chicago\"},\"PNE\":{\"Timezone\":\"America/New_York\"},\"PNH\":{\"Timezone\":\"Asia/Phnom_Penh\"},\"PNI\":{\"Timezone\":\"Pacific/Ponape\"},\"PNK\":{\"Timezone\":\"Asia/Jakarta\"},\"PNL\":{\"Timezone\":\"Europe/Rome\"},\"PNP\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"PNQ\":{\"Timezone\":\"Asia/Calcutta\"},\"PNR\":{\"Timezone\":\"Africa/Brazzaville\"},\"PNS\":{\"Timezone\":\"America/Chicago\"},\"PNT\":{\"Timezone\":\"America/Santiago\"},\"PNV\":{\"Timezone\":\"Europe/Vilnius\"},\"PNY\":{\"Timezone\":\"Asia/Calcutta\"},\"PNZ\":{\"Timezone\":\"America/Fortaleza\"},\"POA\":{\"Timezone\":\"America/Sao_Paulo\"},\"POB\":{\"Timezone\":\"America/New_York\"},\"POC\":{\"Timezone\":\"America/Los_Angeles\"},\"POE\":{\"Timezone\":\"America/Chicago\"},\"POF\":{\"Timezone\":\"America/Chicago\"},\"POG\":{\"Timezone\":\"Africa/Libreville\"},\"POI\":{\"Timezone\":\"America/La_Paz\"},\"POJ\":{\"Timezone\":\"America/Sao_Paulo\"},\"POL\":{\"Timezone\":\"Africa/Maputo\"},\"POM\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"POO\":{\"Timezone\":\"America/Sao_Paulo\"},\"POP\":{\"Timezone\":\"America/Santo_Domingo\"},\"POR\":{\"Timezone\":\"Europe/Helsinki\"},\"POS\":{\"Timezone\":\"America/Port_of_Spain\"},\"POT\":{\"Timezone\":\"America/Jamaica\"},\"POU\":{\"Timezone\":null},\"POW\":{\"Timezone\":\"Europe/Ljubljana\"},\"POX\":{\"Timezone\":\"Europe/Paris\"},\"POZ\":{\"Timezone\":\"Europe/Warsaw\"},\"PPA\":{\"Timezone\":null},\"PPB\":{\"Timezone\":\"America/Sao_Paulo\"},\"PPC\":{\"Timezone\":\"America/Anchorage\"},\"PPE\":{\"Timezone\":\"America/Hermosillo\"},\"PPF\":{\"Timezone\":null},\"PPG\":{\"Timezone\":\"Pacific/Pago_Pago\"},\"PPI\":{\"Timezone\":null},\"PPK\":{\"Timezone\":\"Asia/Qyzylorda\"},\"PPL\":{\"Timezone\":\"Asia/Katmandu\"},\"PPM\":{\"Timezone\":\"America/New_York\"},\"PPN\":{\"Timezone\":\"America/Bogota\"},\"PPP\":{\"Timezone\":\"Australia/Brisbane\"},\"PPQ\":{\"Timezone\":\"Pacific/Auckland\"},\"PPR\":{\"Timezone\":null},\"PPS\":{\"Timezone\":\"Asia/Manila\"},\"PPT\":{\"Timezone\":\"Pacific/Tahiti\"},\"PPW\":{\"Timezone\":\"Europe/London\"},\"PPY\":{\"Timezone\":null},\"PQC\":{\"Timezone\":\"Asia/Saigon\"},\"PQI\":{\"Timezone\":\"America/New_York\"},\"PQM\":{\"Timezone\":null},\"PQQ\":{\"Timezone\":\"Australia/Sydney\"},\"PRA\":{\"Timezone\":\"America/Cordoba\"},\"PRB\":{\"Timezone\":null},\"PRC\":{\"Timezone\":\"America/Phoenix\"},\"PRG\":{\"Timezone\":\"Europe/Prague\"},\"PRH\":{\"Timezone\":\"Asia/Bangkok\"},\"PRI\":{\"Timezone\":\"Indian/Mahe\"},\"PRM\":{\"Timezone\":\"Europe/Lisbon\"},\"PRN\":{\"Timezone\":\"Europe/Belgrade\"},\"PRP\":{\"Timezone\":\"Europe/Paris\"},\"PRQ\":{\"Timezone\":\"America/Cordoba\"},\"PRU\":{\"Timezone\":\"Asia/Rangoon\"},\"PRV\":{\"Timezone\":\"Europe/Prague\"},\"PRX\":{\"Timezone\":null},\"PRY\":{\"Timezone\":\"Africa/Johannesburg\"},\"PRZ\":{\"Timezone\":\"America/Los_Angeles\"},\"PSA\":{\"Timezone\":\"Europe/Rome\"},\"PSC\":{\"Timezone\":\"America/Los_Angeles\"},\"PSD\":{\"Timezone\":\"Africa/Cairo\"},\"PSE\":{\"Timezone\":\"America/Puerto_Rico\"},\"PSG\":{\"Timezone\":\"America/Anchorage\"},\"PSH\":{\"Timezone\":\"Europe/Berlin\"},\"PSI\":{\"Timezone\":\"Asia/Karachi\"},\"PSJ\":{\"Timezone\":\"Asia/Makassar\"},\"PSL\":{\"Timezone\":\"Europe/London\"},\"PSM\":{\"Timezone\":\"America/New_York\"},\"PSO\":{\"Timezone\":\"America/Bogota\"},\"PSP\":{\"Timezone\":\"America/Los_Angeles\"},\"PSR\":{\"Timezone\":\"Europe/Rome\"},\"PSS\":{\"Timezone\":\"America/Cordoba\"},\"PSU\":{\"Timezone\":\"Asia/Jakarta\"},\"PSX\":{\"Timezone\":\"America/Chicago\"},\"PSY\":{\"Timezone\":\"Atlantic/Stanley\"},\"PSZ\":{\"Timezone\":\"America/La_Paz\"},\"PTA\":{\"Timezone\":\"America/Anchorage\"},\"PTB\":{\"Timezone\":\"America/New_York\"},\"PTF\":{\"Timezone\":\"Pacific/Fiji\"},\"PTG\":{\"Timezone\":\"Africa/Johannesburg\"},\"PTH\":{\"Timezone\":\"America/Anchorage\"},\"PTJ\":{\"Timezone\":\"Australia/Hobart\"},\"PTK\":{\"Timezone\":\"America/New_York\"},\"PTM\":{\"Timezone\":\"America/Caracas\"},\"PTP\":{\"Timezone\":\"America/Guadeloupe\"},\"PTT\":{\"Timezone\":null},\"PTU\":{\"Timezone\":\"America/Anchorage\"},\"PTX\":{\"Timezone\":\"America/Bogota\"},\"PTY\":{\"Timezone\":\"America/Panama\"},\"PTZ\":{\"Timezone\":\"America/Guayaquil\"},\"PUB\":{\"Timezone\":\"America/Denver\"},\"PUC\":{\"Timezone\":\"America/Denver\"},\"PUD\":{\"Timezone\":\"America/Argentina/Rio_Gallegos\"},\"PUE\":{\"Timezone\":\"America/Panama\"},\"PUF\":{\"Timezone\":\"Europe/Paris\"},\"PUG\":{\"Timezone\":\"Australia/Adelaide\"},\"PUJ\":{\"Timezone\":\"America/Santo_Domingo\"},\"PUK\":{\"Timezone\":null},\"PUQ\":{\"Timezone\":\"America/Santiago\"},\"PUR\":{\"Timezone\":\"America/La_Paz\"},\"PUS\":{\"Timezone\":\"Asia/Seoul\"},\"PUT\":{\"Timezone\":null},\"PUU\":{\"Timezone\":\"America/Bogota\"},\"PUW\":{\"Timezone\":\"America/Los_Angeles\"},\"PUY\":{\"Timezone\":\"Europe/Zagreb\"},\"PUZ\":{\"Timezone\":\"America/Managua\"},\"PVA\":{\"Timezone\":\"America/Bogota\"},\"PVC\":{\"Timezone\":\"America/New_York\"},\"PVD\":{\"Timezone\":\"America/New_York\"},\"PVG\":{\"Timezone\":\"Asia/Shanghai\"},\"PVH\":{\"Timezone\":\"America/Boa_Vista\"},\"PVK\":{\"Timezone\":\"Europe/Athens\"},\"PVL\":{\"Timezone\":\"America/New_York\"},\"PVO\":{\"Timezone\":\"America/Guayaquil\"},\"PVR\":{\"Timezone\":\"America/Mexico_City\"},\"PVS\":{\"Timezone\":\"Asia/Anadyr\"},\"PVU\":{\"Timezone\":\"America/Denver\"},\"PWA\":{\"Timezone\":\"America/Chicago\"},\"PWE\":{\"Timezone\":null},\"PWK\":{\"Timezone\":\"America/Chicago\"},\"PWM\":{\"Timezone\":\"America/New_York\"},\"PWQ\":{\"Timezone\":\"Asia/Qyzylorda\"},\"PWT\":{\"Timezone\":\"America/Los_Angeles\"},\"PWY\":{\"Timezone\":null},\"PXH\":{\"Timezone\":\"Australia/Adelaide\"},\"PXM\":{\"Timezone\":\"America/Mexico_City\"},\"PXO\":{\"Timezone\":\"Europe/Lisbon\"},\"PXR\":{\"Timezone\":\"Asia/Bangkok\"},\"PXU\":{\"Timezone\":\"Asia/Saigon\"},\"PYB\":{\"Timezone\":null},\"PYE\":{\"Timezone\":\"Pacific/Rarotonga\"},\"PYH\":{\"Timezone\":\"America/Caracas\"},\"PYJ\":{\"Timezone\":\"Asia/Yakutsk\"},\"PYK\":{\"Timezone\":null},\"PYM\":{\"Timezone\":\"America/New_York\"},\"PYR\":{\"Timezone\":\"Europe/Athens\"},\"PYY\":{\"Timezone\":\"Asia/Bangkok\"},\"PZA\":{\"Timezone\":null},\"PZB\":{\"Timezone\":\"Africa/Johannesburg\"},\"PZE\":{\"Timezone\":\"Europe/London\"},\"PZH\":{\"Timezone\":\"Asia/Karachi\"},\"PZI\":{\"Timezone\":\"Asia/Shanghai\"},\"PZL\":{\"Timezone\":null},\"PZO\":{\"Timezone\":\"America/Caracas\"},\"PZS\":{\"Timezone\":\"America/Santiago\"},\"PZU\":{\"Timezone\":\"Africa/Khartoum\"},\"PZY\":{\"Timezone\":\"Europe/Bratislava\"},\"QBC\":{\"Timezone\":\"America/Vancouver\"},\"QCJ\":{\"Timezone\":\"America/Sao_Paulo\"},\"QCY\":{\"Timezone\":\"Europe/London\"},\"QDJ\":{\"Timezone\":\"Africa/Algiers\"},\"QEF\":{\"Timezone\":\"Europe/Berlin\"},\"QFG\":{\"Timezone\":null},\"QFO\":{\"Timezone\":\"Europe/London\"},\"QGQ\":{\"Timezone\":null},\"QGU\":{\"Timezone\":\"Asia/Tokyo\"},\"QHP\":{\"Timezone\":null},\"QHR\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"QIG\":{\"Timezone\":\"America/Fortaleza\"},\"QJB\":{\"Timezone\":\"Asia/Riyadh\"},\"QJE\":{\"Timezone\":null},\"QJI\":{\"Timezone\":null},\"QKX\":{\"Timezone\":null},\"QLA\":{\"Timezone\":\"Europe/London\"},\"QLD\":{\"Timezone\":\"Africa/Algiers\"},\"QLF\":{\"Timezone\":\"Europe/Helsinki\"},\"QLP\":{\"Timezone\":null},\"QLR\":{\"Timezone\":\"Europe/Lisbon\"},\"QLS\":{\"Timezone\":\"Europe/Zurich\"},\"QLT\":{\"Timezone\":\"Europe/Rome\"},\"QNC\":{\"Timezone\":\"Europe/Zurich\"},\"QND\":{\"Timezone\":null},\"QNJ\":{\"Timezone\":\"Europe/Paris\"},\"QNV\":{\"Timezone\":\"America/Sao_Paulo\"},\"QOW\":{\"Timezone\":\"Africa/Lagos\"},\"QPA\":{\"Timezone\":\"Europe/Rome\"},\"QPD\":{\"Timezone\":\"America/Havana\"},\"QPG\":{\"Timezone\":\"Asia/Singapore\"},\"QPS\":{\"Timezone\":\"America/Sao_Paulo\"},\"QPW\":{\"Timezone\":null},\"QQT\":{\"Timezone\":null},\"QRA\":{\"Timezone\":\"Africa/Johannesburg\"},\"QRC\":{\"Timezone\":\"America/Santiago\"},\"QRM\":{\"Timezone\":null},\"QRO\":{\"Timezone\":\"America/Mexico_City\"},\"QRR\":{\"Timezone\":null},\"QRW\":{\"Timezone\":\"Africa/Lagos\"},\"QRY\":{\"Timezone\":null},\"QSA\":{\"Timezone\":\"Europe/Madrid\"},\"QSC\":{\"Timezone\":\"America/Sao_Paulo\"},\"QSF\":{\"Timezone\":\"Africa/Algiers\"},\"QSI\":{\"Timezone\":null},\"QSN\":{\"Timezone\":null},\"QSR\":{\"Timezone\":\"Europe/Rome\"},\"QSZ\":{\"Timezone\":null},\"QUG\":{\"Timezone\":null},\"QUO\":{\"Timezone\":\"Africa/Lagos\"},\"QUY\":{\"Timezone\":\"Europe/London\"},\"QXH\":{\"Timezone\":\"Europe/Berlin\"},\"QYD\":{\"Timezone\":\"Europe/Warsaw\"},\"RAB\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"RAC\":{\"Timezone\":\"America/Chicago\"},\"RAE\":{\"Timezone\":\"Asia/Riyadh\"},\"RAH\":{\"Timezone\":\"Asia/Riyadh\"},\"RAI\":{\"Timezone\":\"Atlantic/Cape_Verde\"},\"RAJ\":{\"Timezone\":\"Asia/Calcutta\"},\"RAK\":{\"Timezone\":\"Africa/Casablanca\"},\"RAL\":{\"Timezone\":\"America/Los_Angeles\"},\"RAM\":{\"Timezone\":\"Australia/Darwin\"},\"RAO\":{\"Timezone\":\"America/Sao_Paulo\"},\"RAP\":{\"Timezone\":\"America/Denver\"},\"RAQ\":{\"Timezone\":null},\"RAR\":{\"Timezone\":\"Pacific/Rarotonga\"},\"RAS\":{\"Timezone\":\"Asia/Tehran\"},\"RAT\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"RAZ\":{\"Timezone\":\"Asia/Karachi\"},\"RBA\":{\"Timezone\":\"Africa/Casablanca\"},\"RBB\":{\"Timezone\":\"America/Boa_Vista\"},\"RBD\":{\"Timezone\":\"America/Chicago\"},\"RBE\":{\"Timezone\":\"Asia/Phnom_Penh\"},\"RBK\":{\"Timezone\":\"America/Los_Angeles\"},\"RBL\":{\"Timezone\":\"America/Los_Angeles\"},\"RBM\":{\"Timezone\":\"Europe/Berlin\"},\"RBQ\":{\"Timezone\":\"America/La_Paz\"},\"RBR\":{\"Timezone\":\"America/Rio_Branco\"},\"RBV\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"RBX\":{\"Timezone\":\"Africa/Juba\"},\"RBY\":{\"Timezone\":\"America/Anchorage\"},\"RCA\":{\"Timezone\":\"America/Denver\"},\"RCB\":{\"Timezone\":\"Africa/Johannesburg\"},\"RCH\":{\"Timezone\":\"America/Bogota\"},\"RCL\":{\"Timezone\":\"Pacific/Efate\"},\"RCM\":{\"Timezone\":null},\"RCO\":{\"Timezone\":\"Europe/Paris\"},\"RCQ\":{\"Timezone\":\"America/Cordoba\"},\"RCS\":{\"Timezone\":\"Europe/London\"},\"RCU\":{\"Timezone\":\"America/Cordoba\"},\"RCY\":{\"Timezone\":\"America/Nassau\"},\"RDB\":{\"Timezone\":null},\"RDC\":{\"Timezone\":\"America/Belem\"},\"RDD\":{\"Timezone\":\"America/Los_Angeles\"},\"RDG\":{\"Timezone\":\"America/New_York\"},\"RDM\":{\"Timezone\":\"America/Los_Angeles\"},\"RDN\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"RDO\":{\"Timezone\":\"Europe/Warsaw\"},\"RDP\":{\"Timezone\":null},\"RDR\":{\"Timezone\":\"America/Chicago\"},\"RDS\":{\"Timezone\":\"America/Argentina/Salta\"},\"RDU\":{\"Timezone\":\"America/New_York\"},\"RDZ\":{\"Timezone\":\"Europe/Paris\"},\"REA\":{\"Timezone\":null},\"REB\":{\"Timezone\":\"Europe/Berlin\"},\"REC\":{\"Timezone\":\"America/Fortaleza\"},\"REG\":{\"Timezone\":\"Europe/Rome\"},\"REL\":{\"Timezone\":\"America/Catamarca\"},\"REN\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"REP\":{\"Timezone\":\"Asia/Phnom_Penh\"},\"RER\":{\"Timezone\":\"America/Guatemala\"},\"RES\":{\"Timezone\":\"America/Cordoba\"},\"RET\":{\"Timezone\":\"Europe/Oslo\"},\"REU\":{\"Timezone\":\"Europe/Madrid\"},\"REX\":{\"Timezone\":\"America/Mexico_City\"},\"REY\":{\"Timezone\":\"America/La_Paz\"},\"REZ\":{\"Timezone\":null},\"RFD\":{\"Timezone\":\"America/Chicago\"},\"RFP\":{\"Timezone\":\"Pacific/Tahiti\"},\"RFS\":{\"Timezone\":\"America/Managua\"},\"RGA\":{\"Timezone\":\"America/Argentina/Ushuaia\"},\"RGI\":{\"Timezone\":\"Pacific/Tahiti\"},\"RGK\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"RGL\":{\"Timezone\":\"America/Argentina/Rio_Gallegos\"},\"RGN\":{\"Timezone\":\"Asia/Rangoon\"},\"RGO\":{\"Timezone\":\"Asia/Pyongyang\"},\"RGS\":{\"Timezone\":\"Europe/Madrid\"},\"RGT\":{\"Timezone\":\"Asia/Jakarta\"},\"RHD\":{\"Timezone\":\"America/Cordoba\"},\"RHE\":{\"Timezone\":\"Europe/Paris\"},\"RHI\":{\"Timezone\":\"America/Chicago\"},\"RHO\":{\"Timezone\":\"Europe/Athens\"},\"RHP\":{\"Timezone\":\"Asia/Katmandu\"},\"RHT\":{\"Timezone\":null},\"RHV\":{\"Timezone\":null},\"RIA\":{\"Timezone\":\"America/Sao_Paulo\"},\"RIB\":{\"Timezone\":\"America/La_Paz\"},\"RIC\":{\"Timezone\":\"America/New_York\"},\"RIH\":{\"Timezone\":null},\"RIJ\":{\"Timezone\":null},\"RIL\":{\"Timezone\":\"America/Denver\"},\"RIN\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"RIS\":{\"Timezone\":\"Asia/Tokyo\"},\"RIV\":{\"Timezone\":\"America/Los_Angeles\"},\"RIW\":{\"Timezone\":\"America/Denver\"},\"RIX\":{\"Timezone\":\"Europe/Riga\"},\"RIY\":{\"Timezone\":\"Asia/Aden\"},\"RIZ\":{\"Timezone\":null},\"RJA\":{\"Timezone\":\"Asia/Calcutta\"},\"RJB\":{\"Timezone\":null},\"RJH\":{\"Timezone\":\"Asia/Dhaka\"},\"RJK\":{\"Timezone\":\"Europe/Zagreb\"},\"RJL\":{\"Timezone\":\"Europe/Madrid\"},\"RJN\":{\"Timezone\":\"Asia/Tehran\"},\"RKD\":{\"Timezone\":\"America/New_York\"},\"RKE\":{\"Timezone\":\"Europe/Copenhagen\"},\"RKH\":{\"Timezone\":\"America/New_York\"},\"RKO\":{\"Timezone\":null},\"RKP\":{\"Timezone\":\"America/Chicago\"},\"RKS\":{\"Timezone\":\"America/Denver\"},\"RKT\":{\"Timezone\":\"Asia/Dubai\"},\"RKV\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"RKZ\":{\"Timezone\":\"Asia/Shanghai\"},\"RLG\":{\"Timezone\":\"Europe/Berlin\"},\"RLK\":{\"Timezone\":\"Asia/Shanghai\"},\"RMA\":{\"Timezone\":\"Australia/Brisbane\"},\"RME\":{\"Timezone\":\"America/New_York\"},\"RMF\":{\"Timezone\":\"Africa/Cairo\"},\"RMG\":{\"Timezone\":\"America/New_York\"},\"RMI\":{\"Timezone\":\"Europe/Rome\"},\"RMK\":{\"Timezone\":\"Australia/Adelaide\"},\"RML\":{\"Timezone\":\"Asia/Colombo\"},\"RMQ\":{\"Timezone\":\"Asia/Taipei\"},\"RMS\":{\"Timezone\":\"Europe/Berlin\"},\"RMT\":{\"Timezone\":null},\"RMU\":{\"Timezone\":null},\"RMY\":{\"Timezone\":\"America/Los_Angeles\"},\"RNA\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"RNB\":{\"Timezone\":\"Europe/Stockholm\"},\"RND\":{\"Timezone\":\"America/Chicago\"},\"RNE\":{\"Timezone\":\"Europe/Paris\"},\"RNI\":{\"Timezone\":\"America/Managua\"},\"RNJ\":{\"Timezone\":\"Asia/Tokyo\"},\"RNL\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"RNN\":{\"Timezone\":\"Europe/Copenhagen\"},\"RNO\":{\"Timezone\":\"America/Los_Angeles\"},\"RNS\":{\"Timezone\":\"Europe/Paris\"},\"RNT\":{\"Timezone\":\"America/Los_Angeles\"},\"RNZ\":{\"Timezone\":null},\"ROA\":{\"Timezone\":\"America/New_York\"},\"ROB\":{\"Timezone\":\"Africa/Monrovia\"},\"ROC\":{\"Timezone\":\"America/New_York\"},\"ROD\":{\"Timezone\":\"Africa/Johannesburg\"},\"ROI\":{\"Timezone\":\"Asia/Bangkok\"},\"ROK\":{\"Timezone\":\"Australia/Brisbane\"},\"ROO\":{\"Timezone\":\"America/Campo_Grande\"},\"ROP\":{\"Timezone\":\"Pacific/Saipan\"},\"ROR\":{\"Timezone\":\"Pacific/Palau\"},\"ROS\":{\"Timezone\":\"America/Cordoba\"},\"ROT\":{\"Timezone\":\"Pacific/Auckland\"},\"ROV\":{\"Timezone\":\"Europe/Moscow\"},\"ROW\":{\"Timezone\":\"America/Denver\"},\"ROZ\":{\"Timezone\":\"Europe/Madrid\"},\"RPB\":{\"Timezone\":\"Australia/Darwin\"},\"RPM\":{\"Timezone\":null},\"RPN\":{\"Timezone\":\"Asia/Jerusalem\"},\"RPR\":{\"Timezone\":\"Asia/Calcutta\"},\"RQW\":{\"Timezone\":null},\"RRG\":{\"Timezone\":\"Indian/Mauritius\"},\"RRK\":{\"Timezone\":\"Asia/Calcutta\"},\"RRR\":{\"Timezone\":null},\"RRS\":{\"Timezone\":\"Europe/Oslo\"},\"RSA\":{\"Timezone\":\"America/Argentina/Salta\"},\"RSD\":{\"Timezone\":\"America/Nassau\"},\"RSH\":{\"Timezone\":\"America/Anchorage\"},\"RSL\":{\"Timezone\":null},\"RSS\":{\"Timezone\":\"Africa/Khartoum\"},\"RST\":{\"Timezone\":\"America/Chicago\"},\"RSU\":{\"Timezone\":\"Asia/Seoul\"},\"RSW\":{\"Timezone\":\"America/New_York\"},\"RTA\":{\"Timezone\":\"Pacific/Fiji\"},\"RTB\":{\"Timezone\":\"America/Tegucigalpa\"},\"RTC\":{\"Timezone\":null},\"RTG\":{\"Timezone\":\"Asia/Makassar\"},\"RTM\":{\"Timezone\":\"Europe/Amsterdam\"},\"RTN\":{\"Timezone\":null},\"RTS\":{\"Timezone\":\"Australia/Perth\"},\"RTW\":{\"Timezone\":\"Europe/Moscow\"},\"RUA\":{\"Timezone\":\"Africa/Kampala\"},\"RUD\":{\"Timezone\":\"Asia/Tehran\"},\"RUG\":{\"Timezone\":null},\"RUH\":{\"Timezone\":\"Asia/Riyadh\"},\"RUI\":{\"Timezone\":\"America/Denver\"},\"RUK\":{\"Timezone\":\"Asia/Katmandu\"},\"RUM\":{\"Timezone\":\"Asia/Katmandu\"},\"RUN\":{\"Timezone\":\"Indian/Reunion\"},\"RUR\":{\"Timezone\":null},\"RUS\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"RUT\":{\"Timezone\":\"America/New_York\"},\"RUV\":{\"Timezone\":null},\"RVA\":{\"Timezone\":\"Indian/Antananarivo\"},\"RVD\":{\"Timezone\":\"America/Sao_Paulo\"},\"RVE\":{\"Timezone\":\"America/Bogota\"},\"RVK\":{\"Timezone\":\"Europe/Oslo\"},\"RVN\":{\"Timezone\":\"Europe/Helsinki\"},\"RVS\":{\"Timezone\":\"America/Chicago\"},\"RVT\":{\"Timezone\":\"Australia/Perth\"},\"RVV\":{\"Timezone\":\"Pacific/Tahiti\"},\"RVY\":{\"Timezone\":\"America/Montevideo\"},\"RWF\":{\"Timezone\":null},\"RWI\":{\"Timezone\":\"America/New_York\"},\"RWL\":{\"Timezone\":\"America/Denver\"},\"RWN\":{\"Timezone\":\"Europe/Kiev\"},\"RXS\":{\"Timezone\":\"Asia/Manila\"},\"RYB\":{\"Timezone\":\"Europe/Moscow\"},\"RYG\":{\"Timezone\":\"Europe/Oslo\"},\"RYK\":{\"Timezone\":\"Asia/Karachi\"},\"RYN\":{\"Timezone\":\"Europe/Paris\"},\"RZA\":{\"Timezone\":\"America/Argentina/Rio_Gallegos\"},\"RZE\":{\"Timezone\":\"Europe/Warsaw\"},\"RZP\":{\"Timezone\":\"Asia/Manila\"},\"RZR\":{\"Timezone\":\"Asia/Tehran\"},\"RZS\":{\"Timezone\":null},\"SAA\":{\"Timezone\":\"America/Denver\"},\"SAB\":{\"Timezone\":\"America/Curacao\"},\"SAC\":{\"Timezone\":\"America/Los_Angeles\"},\"SAD\":{\"Timezone\":\"America/Phoenix\"},\"SAF\":{\"Timezone\":\"America/Denver\"},\"SAG\":{\"Timezone\":null},\"SAH\":{\"Timezone\":\"Asia/Aden\"},\"SAK\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"SAL\":{\"Timezone\":\"America/El_Salvador\"},\"SAN\":{\"Timezone\":\"America/Los_Angeles\"},\"SAP\":{\"Timezone\":\"America/Tegucigalpa\"},\"SAQ\":{\"Timezone\":\"America/Nassau\"},\"SAT\":{\"Timezone\":\"America/Chicago\"},\"SAV\":{\"Timezone\":\"America/New_York\"},\"SAW\":{\"Timezone\":\"Europe/Istanbul\"},\"SAY\":{\"Timezone\":\"Europe/Rome\"},\"SBA\":{\"Timezone\":\"America/Los_Angeles\"},\"SBB\":{\"Timezone\":\"America/Caracas\"},\"SBD\":{\"Timezone\":\"America/Los_Angeles\"},\"SBG\":{\"Timezone\":\"Asia/Jakarta\"},\"SBH\":{\"Timezone\":null},\"SBK\":{\"Timezone\":\"Europe/Paris\"},\"SBL\":{\"Timezone\":\"America/La_Paz\"},\"SBM\":{\"Timezone\":\"America/Chicago\"},\"SBN\":{\"Timezone\":\"America/New_York\"},\"SBP\":{\"Timezone\":\"America/Los_Angeles\"},\"SBR\":{\"Timezone\":\"Australia/Brisbane\"},\"SBS\":{\"Timezone\":\"America/Denver\"},\"SBT\":{\"Timezone\":null},\"SBU\":{\"Timezone\":\"Africa/Johannesburg\"},\"SBW\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"SBY\":{\"Timezone\":\"America/New_York\"},\"SBZ\":{\"Timezone\":\"Europe/Bucharest\"},\"SCC\":{\"Timezone\":\"America/Anchorage\"},\"SCE\":{\"Timezone\":\"America/New_York\"},\"SCF\":{\"Timezone\":\"America/Phoenix\"},\"SCH\":{\"Timezone\":\"America/New_York\"},\"SCI\":{\"Timezone\":\"America/Caracas\"},\"SCK\":{\"Timezone\":\"America/Los_Angeles\"},\"SCL\":{\"Timezone\":\"America/Santiago\"},\"SCM\":{\"Timezone\":\"America/Anchorage\"},\"SCN\":{\"Timezone\":\"Europe/Berlin\"},\"SCO\":{\"Timezone\":\"Asia/Oral\"},\"SCQ\":{\"Timezone\":\"Europe/Madrid\"},\"SCS\":{\"Timezone\":\"Europe/London\"},\"SCT\":{\"Timezone\":\"Asia/Aden\"},\"SCU\":{\"Timezone\":\"America/Havana\"},\"SCV\":{\"Timezone\":\"Europe/Bucharest\"},\"SCW\":{\"Timezone\":\"Europe/Moscow\"},\"SCY\":{\"Timezone\":\"Pacific/Galapagos\"},\"SCZ\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"SDB\":{\"Timezone\":\"Africa/Johannesburg\"},\"SDD\":{\"Timezone\":\"Africa/Luanda\"},\"SDE\":{\"Timezone\":\"America/Cordoba\"},\"SDF\":{\"Timezone\":\"America/New_York\"},\"SDG\":{\"Timezone\":\"Asia/Tehran\"},\"SDJ\":{\"Timezone\":\"Asia/Tokyo\"},\"SDK\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"SDL\":{\"Timezone\":\"Europe/Stockholm\"},\"SDM\":{\"Timezone\":\"America/Los_Angeles\"},\"SDN\":{\"Timezone\":\"Europe/Oslo\"},\"SDP\":{\"Timezone\":\"America/Anchorage\"},\"SDQ\":{\"Timezone\":\"America/Santo_Domingo\"},\"SDR\":{\"Timezone\":\"Europe/Madrid\"},\"SDS\":{\"Timezone\":\"Asia/Tokyo\"},\"SDT\":{\"Timezone\":\"Asia/Karachi\"},\"SDU\":{\"Timezone\":\"America/Sao_Paulo\"},\"SDV\":{\"Timezone\":\"Asia/Jerusalem\"},\"SDX\":{\"Timezone\":\"America/Phoenix\"},\"SDY\":{\"Timezone\":\"America/Denver\"},\"SEA\":{\"Timezone\":\"America/Los_Angeles\"},\"SEB\":{\"Timezone\":\"Africa/Tripoli\"},\"SEE\":{\"Timezone\":\"America/Los_Angeles\"},\"SEF\":{\"Timezone\":\"America/New_York\"},\"SEH\":{\"Timezone\":\"Asia/Jayapura\"},\"SEK\":{\"Timezone\":\"Asia/Srednekolymsk\"},\"SEM\":{\"Timezone\":\"America/Chicago\"},\"SEN\":{\"Timezone\":\"Europe/London\"},\"SEP\":{\"Timezone\":\"America/Chicago\"},\"SEU\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"SEY\":{\"Timezone\":\"Africa/Nouakchott\"},\"SEZ\":{\"Timezone\":\"Indian/Mahe\"},\"SFA\":{\"Timezone\":\"Africa/Tunis\"},\"SFB\":{\"Timezone\":\"America/New_York\"},\"SFC\":{\"Timezone\":\"America/Guadeloupe\"},\"SFD\":{\"Timezone\":\"America/Caracas\"},\"SFE\":{\"Timezone\":\"Asia/Manila\"},\"SFF\":{\"Timezone\":\"America/Los_Angeles\"},\"SFG\":{\"Timezone\":null},\"SFH\":{\"Timezone\":\"America/Tijuana\"},\"SFJ\":{\"Timezone\":\"America/Godthab\"},\"SFK\":{\"Timezone\":\"America/Belem\"},\"SFL\":{\"Timezone\":\"Atlantic/Cape_Verde\"},\"SFN\":{\"Timezone\":\"America/Cordoba\"},\"SFO\":{\"Timezone\":\"America/Los_Angeles\"},\"SFQ\":{\"Timezone\":\"Europe/Istanbul\"},\"SFS\":{\"Timezone\":\"Asia/Manila\"},\"SFT\":{\"Timezone\":\"Europe/Stockholm\"},\"SFZ\":{\"Timezone\":\"America/New_York\"},\"SGC\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"SGD\":{\"Timezone\":\"Europe/Copenhagen\"},\"SGE\":{\"Timezone\":\"Europe/Berlin\"},\"SGF\":{\"Timezone\":\"America/Chicago\"},\"SGH\":{\"Timezone\":\"America/New_York\"},\"SGI\":{\"Timezone\":null},\"SGN\":{\"Timezone\":\"Asia/Saigon\"},\"SGO\":{\"Timezone\":\"Australia/Brisbane\"},\"SGQ\":{\"Timezone\":null},\"SGR\":{\"Timezone\":\"America/Chicago\"},\"SGU\":{\"Timezone\":\"America/Denver\"},\"SGV\":{\"Timezone\":\"America/Argentina/Salta\"},\"SGX\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"SGY\":{\"Timezone\":\"America/Anchorage\"},\"SGZ\":{\"Timezone\":\"Asia/Bangkok\"},\"SHA\":{\"Timezone\":\"Asia/Shanghai\"},\"SHB\":{\"Timezone\":\"Asia/Tokyo\"},\"SHD\":{\"Timezone\":\"America/New_York\"},\"SHE\":{\"Timezone\":\"Asia/Shanghai\"},\"SHG\":{\"Timezone\":\"America/Anchorage\"},\"SHH\":{\"Timezone\":\"America/Anchorage\"},\"SHI\":{\"Timezone\":\"Asia/Tokyo\"},\"SHJ\":{\"Timezone\":\"Asia/Dubai\"},\"SHL\":{\"Timezone\":\"Asia/Calcutta\"},\"SHM\":{\"Timezone\":\"Asia/Tokyo\"},\"SHN\":{\"Timezone\":\"America/Los_Angeles\"},\"SHO\":{\"Timezone\":null},\"SHP\":{\"Timezone\":\"Asia/Shanghai\"},\"SHR\":{\"Timezone\":\"America/Denver\"},\"SHT\":{\"Timezone\":\"Australia/Hobart\"},\"SHV\":{\"Timezone\":\"America/Chicago\"},\"SHW\":{\"Timezone\":\"Asia/Riyadh\"},\"SHX\":{\"Timezone\":\"America/Anchorage\"},\"SHY\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"SIA\":{\"Timezone\":\"Asia/Shanghai\"},\"SID\":{\"Timezone\":\"Atlantic/Cape_Verde\"},\"SIF\":{\"Timezone\":\"Asia/Katmandu\"},\"SIG\":{\"Timezone\":\"America/Puerto_Rico\"},\"SIJ\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"SIK\":{\"Timezone\":\"America/Chicago\"},\"SIN\":{\"Timezone\":\"Asia/Singapore\"},\"SIO\":{\"Timezone\":null},\"SIP\":{\"Timezone\":\"Europe/Simferopol\"},\"SIQ\":{\"Timezone\":\"Asia/Jakarta\"},\"SIR\":{\"Timezone\":\"Europe/Zurich\"},\"SIS\":{\"Timezone\":\"Africa/Johannesburg\"},\"SIT\":{\"Timezone\":\"America/Anchorage\"},\"SIU\":{\"Timezone\":\"America/Managua\"},\"SJC\":{\"Timezone\":\"America/Los_Angeles\"},\"SJD\":{\"Timezone\":\"America/Mazatlan\"},\"SJE\":{\"Timezone\":\"America/Bogota\"},\"SJI\":{\"Timezone\":\"Asia/Manila\"},\"SJJ\":{\"Timezone\":\"Europe/Sarajevo\"},\"SJK\":{\"Timezone\":\"America/Sao_Paulo\"},\"SJL\":{\"Timezone\":\"America/Boa_Vista\"},\"SJO\":{\"Timezone\":\"America/Costa_Rica\"},\"SJP\":{\"Timezone\":\"America/Sao_Paulo\"},\"SJT\":{\"Timezone\":\"America/Chicago\"},\"SJU\":{\"Timezone\":\"America/Puerto_Rico\"},\"SJW\":{\"Timezone\":\"Asia/Shanghai\"},\"SJY\":{\"Timezone\":\"Europe/Helsinki\"},\"SJZ\":{\"Timezone\":\"Atlantic/Azores\"},\"SKA\":{\"Timezone\":\"America/Los_Angeles\"},\"SKB\":{\"Timezone\":\"America/St_Kitts\"},\"SKD\":{\"Timezone\":\"Asia/Samarkand\"},\"SKE\":{\"Timezone\":\"Europe/Oslo\"},\"SKF\":{\"Timezone\":\"America/Chicago\"},\"SKG\":{\"Timezone\":\"Europe/Athens\"},\"SKH\":{\"Timezone\":\"Asia/Katmandu\"},\"SKK\":{\"Timezone\":\"America/Anchorage\"},\"SKN\":{\"Timezone\":\"Europe/Oslo\"},\"SKO\":{\"Timezone\":\"Africa/Lagos\"},\"SKP\":{\"Timezone\":\"Europe/Skopje\"},\"SKS\":{\"Timezone\":\"Europe/Copenhagen\"},\"SKT\":{\"Timezone\":\"Asia/Karachi\"},\"SKU\":{\"Timezone\":\"Europe/Athens\"},\"SKV\":{\"Timezone\":\"Africa/Cairo\"},\"SKX\":{\"Timezone\":\"Europe/Moscow\"},\"SKY\":{\"Timezone\":\"America/New_York\"},\"SKZ\":{\"Timezone\":\"Asia/Karachi\"},\"SLA\":{\"Timezone\":\"America/Argentina/Salta\"},\"SLC\":{\"Timezone\":\"America/Denver\"},\"SLD\":{\"Timezone\":\"Europe/Bratislava\"},\"SLE\":{\"Timezone\":\"America/Los_Angeles\"},\"SLF\":{\"Timezone\":\"Asia/Riyadh\"},\"SLH\":{\"Timezone\":\"Pacific/Efate\"},\"SLJ\":{\"Timezone\":\"Australia/Perth\"},\"SLK\":{\"Timezone\":\"America/New_York\"},\"SLL\":{\"Timezone\":\"Asia/Muscat\"},\"SLM\":{\"Timezone\":\"Europe/Madrid\"},\"SLN\":{\"Timezone\":\"America/Chicago\"},\"SLP\":{\"Timezone\":\"America/Mexico_City\"},\"SLQ\":{\"Timezone\":\"America/Anchorage\"},\"SLU\":{\"Timezone\":\"America/St_Lucia\"},\"SLV\":{\"Timezone\":\"Asia/Calcutta\"},\"SLW\":{\"Timezone\":\"America/Mexico_City\"},\"SLX\":{\"Timezone\":\"America/Grand_Turk\"},\"SLY\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"SLZ\":{\"Timezone\":\"America/Fortaleza\"},\"SMA\":{\"Timezone\":\"Atlantic/Azores\"},\"SMD\":{\"Timezone\":\"America/New_York\"},\"SME\":{\"Timezone\":\"America/New_York\"},\"SMF\":{\"Timezone\":\"America/Los_Angeles\"},\"SMI\":{\"Timezone\":\"Europe/Athens\"},\"SMK\":{\"Timezone\":\"America/Anchorage\"},\"SML\":{\"Timezone\":\"America/Nassau\"},\"SMN\":{\"Timezone\":\"America/Denver\"},\"SMO\":{\"Timezone\":\"America/Los_Angeles\"},\"SMQ\":{\"Timezone\":\"Asia/Jakarta\"},\"SMR\":{\"Timezone\":\"America/Bogota\"},\"SMS\":{\"Timezone\":\"Indian/Antananarivo\"},\"SMT\":{\"Timezone\":null},\"SMV\":{\"Timezone\":\"Europe/Zurich\"},\"SMW\":{\"Timezone\":\"Africa/El_Aaiun\"},\"SMX\":{\"Timezone\":\"America/Los_Angeles\"},\"SMZ\":{\"Timezone\":\"America/Paramaribo\"},\"SNA\":{\"Timezone\":\"America/Los_Angeles\"},\"SNB\":{\"Timezone\":null},\"SNC\":{\"Timezone\":\"America/Guayaquil\"},\"SNE\":{\"Timezone\":\"Atlantic/Cape_Verde\"},\"SNF\":{\"Timezone\":\"America/Caracas\"},\"SNJ\":{\"Timezone\":null},\"SNN\":{\"Timezone\":\"Europe/Dublin\"},\"SNO\":{\"Timezone\":\"Asia/Bangkok\"},\"SNP\":{\"Timezone\":\"America/Anchorage\"},\"SNR\":{\"Timezone\":\"Europe/Paris\"},\"SNS\":{\"Timezone\":null},\"SNU\":{\"Timezone\":\"America/Havana\"},\"SNV\":{\"Timezone\":\"America/Caracas\"},\"SNW\":{\"Timezone\":\"Asia/Rangoon\"},\"SNY\":{\"Timezone\":\"America/Denver\"},\"SNZ\":{\"Timezone\":\"America/Sao_Paulo\"},\"SOB\":{\"Timezone\":\"Europe/Budapest\"},\"SOC\":{\"Timezone\":\"Asia/Jakarta\"},\"SOD\":{\"Timezone\":\"America/Sao_Paulo\"},\"SOF\":{\"Timezone\":\"Europe/Sofia\"},\"SOG\":{\"Timezone\":\"Europe/Oslo\"},\"SOJ\":{\"Timezone\":\"Europe/Oslo\"},\"SOM\":{\"Timezone\":\"America/Caracas\"},\"SON\":{\"Timezone\":\"Pacific/Efate\"},\"SOO\":{\"Timezone\":\"Europe/Stockholm\"},\"SOP\":{\"Timezone\":\"America/New_York\"},\"SOQ\":{\"Timezone\":\"Asia/Jayapura\"},\"SOT\":{\"Timezone\":\"Europe/Helsinki\"},\"SOU\":{\"Timezone\":\"Europe/London\"},\"SOV\":{\"Timezone\":null},\"SOW\":{\"Timezone\":\"America/Phoenix\"},\"SOY\":{\"Timezone\":\"Europe/London\"},\"SOZ\":{\"Timezone\":\"Europe/Paris\"},\"SPA\":{\"Timezone\":null},\"SPB\":{\"Timezone\":\"America/St_Thomas\"},\"SPC\":{\"Timezone\":\"Atlantic/Canary\"},\"SPD\":{\"Timezone\":\"Asia/Dhaka\"},\"SPF\":{\"Timezone\":\"America/Denver\"},\"SPG\":{\"Timezone\":\"America/New_York\"},\"SPI\":{\"Timezone\":\"America/Chicago\"},\"SPJ\":{\"Timezone\":\"Europe/Athens\"},\"SPM\":{\"Timezone\":\"Europe/Berlin\"},\"SPN\":{\"Timezone\":\"Pacific/Saipan\"},\"SPP\":{\"Timezone\":\"Africa/Luanda\"},\"SPR\":{\"Timezone\":\"America/Belize\"},\"SPS\":{\"Timezone\":\"America/Chicago\"},\"SPU\":{\"Timezone\":\"Europe/Zagreb\"},\"SPW\":{\"Timezone\":\"America/Chicago\"},\"SPY\":{\"Timezone\":\"Africa/Abidjan\"},\"SQA\":{\"Timezone\":null},\"SQD\":{\"Timezone\":null},\"SQG\":{\"Timezone\":\"Asia/Jakarta\"},\"SQH\":{\"Timezone\":\"Asia/Saigon\"},\"SQJ\":{\"Timezone\":null},\"SQL\":{\"Timezone\":\"America/Los_Angeles\"},\"SQN\":{\"Timezone\":null},\"SQO\":{\"Timezone\":\"Europe/Stockholm\"},\"SQQ\":{\"Timezone\":\"Europe/Vilnius\"},\"SQR\":{\"Timezone\":\"Asia/Makassar\"},\"SQW\":{\"Timezone\":\"Europe/Copenhagen\"},\"SQX\":{\"Timezone\":null},\"SQZ\":{\"Timezone\":\"Europe/London\"},\"SRA\":{\"Timezone\":\"America/Sao_Paulo\"},\"SRE\":{\"Timezone\":\"America/La_Paz\"},\"SRG\":{\"Timezone\":\"Asia/Jakarta\"},\"SRH\":{\"Timezone\":\"Africa/Ndjamena\"},\"SRI\":{\"Timezone\":\"Asia/Makassar\"},\"SRJ\":{\"Timezone\":\"America/La_Paz\"},\"SRN\":{\"Timezone\":\"Australia/Melbourne\"},\"SRP\":{\"Timezone\":\"Europe/Oslo\"},\"SRQ\":{\"Timezone\":\"America/New_York\"},\"SRT\":{\"Timezone\":\"Africa/Kampala\"},\"SRX\":{\"Timezone\":\"Africa/Tripoli\"},\"SRY\":{\"Timezone\":\"Asia/Tehran\"},\"SRZ\":{\"Timezone\":\"America/La_Paz\"},\"SSA\":{\"Timezone\":\"America/Fortaleza\"},\"SSC\":{\"Timezone\":\"America/New_York\"},\"SSE\":{\"Timezone\":\"Asia/Calcutta\"},\"SSF\":{\"Timezone\":null},\"SSG\":{\"Timezone\":\"Africa/Malabo\"},\"SSH\":{\"Timezone\":\"Africa/Cairo\"},\"SSI\":{\"Timezone\":\"America/New_York\"},\"SSJ\":{\"Timezone\":\"Europe/Oslo\"},\"SSN\":{\"Timezone\":\"Asia/Seoul\"},\"SSR\":{\"Timezone\":\"Pacific/Efate\"},\"SST\":{\"Timezone\":\"America/Buenos_Aires\"},\"SSY\":{\"Timezone\":\"Africa/Luanda\"},\"SSZ\":{\"Timezone\":\"America/Sao_Paulo\"},\"STA\":{\"Timezone\":\"Europe/Copenhagen\"},\"STB\":{\"Timezone\":\"America/Caracas\"},\"STC\":{\"Timezone\":\"America/Chicago\"},\"STD\":{\"Timezone\":\"America/Caracas\"},\"STE\":{\"Timezone\":\"America/Chicago\"},\"STG\":{\"Timezone\":\"America/Anchorage\"},\"STI\":{\"Timezone\":\"America/Santo_Domingo\"},\"STJ\":{\"Timezone\":\"America/Chicago\"},\"STK\":{\"Timezone\":\"America/Denver\"},\"STL\":{\"Timezone\":\"America/Chicago\"},\"STM\":{\"Timezone\":\"America/Belem\"},\"STN\":{\"Timezone\":\"Europe/London\"},\"STP\":{\"Timezone\":\"America/Chicago\"},\"STR\":{\"Timezone\":\"Europe/Berlin\"},\"STS\":{\"Timezone\":\"America/Los_Angeles\"},\"STT\":{\"Timezone\":\"America/St_Thomas\"},\"STV\":{\"Timezone\":\"Asia/Calcutta\"},\"STW\":{\"Timezone\":\"Europe/Moscow\"},\"STX\":{\"Timezone\":\"America/St_Thomas\"},\"STY\":{\"Timezone\":\"America/Montevideo\"},\"STZ\":{\"Timezone\":\"America/Campo_Grande\"},\"SUA\":{\"Timezone\":\"America/New_York\"},\"SUB\":{\"Timezone\":\"Asia/Jakarta\"},\"SUF\":{\"Timezone\":\"Europe/Rome\"},\"SUG\":{\"Timezone\":\"Asia/Manila\"},\"SUI\":{\"Timezone\":\"Asia/Tbilisi\"},\"SUJ\":{\"Timezone\":\"Europe/Bucharest\"},\"SUK\":{\"Timezone\":null},\"SUL\":{\"Timezone\":\"Asia/Karachi\"},\"SUN\":{\"Timezone\":\"America/Denver\"},\"SUP\":{\"Timezone\":null},\"SUR\":{\"Timezone\":\"America/Toronto\"},\"SUS\":{\"Timezone\":\"America/Chicago\"},\"SUU\":{\"Timezone\":\"America/Los_Angeles\"},\"SUV\":{\"Timezone\":\"Pacific/Fiji\"},\"SUX\":{\"Timezone\":\"America/Chicago\"},\"SUY\":{\"Timezone\":\"Asia/Yakutsk\"},\"SVA\":{\"Timezone\":\"America/Anchorage\"},\"SVB\":{\"Timezone\":\"Indian/Antananarivo\"},\"SVD\":{\"Timezone\":\"America/St_Vincent\"},\"SVG\":{\"Timezone\":\"Europe/Oslo\"},\"SVH\":{\"Timezone\":\"America/New_York\"},\"SVI\":{\"Timezone\":\"America/Bogota\"},\"SVJ\":{\"Timezone\":\"Europe/Oslo\"},\"SVL\":{\"Timezone\":\"Europe/Helsinki\"},\"SVN\":{\"Timezone\":\"America/New_York\"},\"SVO\":{\"Timezone\":\"Europe/Moscow\"},\"SVP\":{\"Timezone\":\"Africa/Luanda\"},\"SVQ\":{\"Timezone\":\"Europe/Madrid\"},\"SVU\":{\"Timezone\":\"Pacific/Fiji\"},\"SVW\":{\"Timezone\":\"America/Anchorage\"},\"SVX\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"SVZ\":{\"Timezone\":\"America/Caracas\"},\"SWA\":{\"Timezone\":\"Asia/Shanghai\"},\"SWC\":{\"Timezone\":null},\"SWD\":{\"Timezone\":\"America/Anchorage\"},\"SWF\":{\"Timezone\":\"America/New_York\"},\"SWH\":{\"Timezone\":null},\"SWJ\":{\"Timezone\":\"Pacific/Efate\"},\"SWO\":{\"Timezone\":\"America/Chicago\"},\"SWP\":{\"Timezone\":\"Africa/Windhoek\"},\"SWQ\":{\"Timezone\":\"Asia/Makassar\"},\"SWS\":{\"Timezone\":\"Europe/London\"},\"SWT\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"SWU\":{\"Timezone\":\"Asia/Seoul\"},\"SWX\":{\"Timezone\":\"Africa/Gaborone\"},\"SXB\":{\"Timezone\":\"Europe/Paris\"},\"SXE\":{\"Timezone\":null},\"SXF\":{\"Timezone\":\"Europe/Berlin\"},\"SXI\":{\"Timezone\":\"Asia/Tehran\"},\"SXJ\":{\"Timezone\":null},\"SXK\":{\"Timezone\":null},\"SXL\":{\"Timezone\":\"Europe/Dublin\"},\"SXM\":{\"Timezone\":\"America/Curacao\"},\"SXN\":{\"Timezone\":null},\"SXO\":{\"Timezone\":\"America/Campo_Grande\"},\"SXQ\":{\"Timezone\":\"America/Anchorage\"},\"SXR\":{\"Timezone\":\"Asia/Calcutta\"},\"SXV\":{\"Timezone\":\"Asia/Calcutta\"},\"SXX\":{\"Timezone\":\"America/Belem\"},\"SXZ\":{\"Timezone\":\"Europe/Istanbul\"},\"SYA\":{\"Timezone\":\"America/Adak\"},\"SYD\":{\"Timezone\":\"Australia/Sydney\"},\"SYH\":{\"Timezone\":\"Asia/Katmandu\"},\"SYJ\":{\"Timezone\":\"Asia/Tehran\"},\"SYM\":{\"Timezone\":\"Asia/Shanghai\"},\"SYO\":{\"Timezone\":\"Asia/Tokyo\"},\"SYP\":{\"Timezone\":\"America/Panama\"},\"SYQ\":{\"Timezone\":\"America/Costa_Rica\"},\"SYR\":{\"Timezone\":\"America/New_York\"},\"SYS\":{\"Timezone\":\"Asia/Yakutsk\"},\"SYT\":{\"Timezone\":\"Europe/Paris\"},\"SYU\":{\"Timezone\":\"Australia/Brisbane\"},\"SYW\":{\"Timezone\":\"Asia/Karachi\"},\"SYX\":{\"Timezone\":\"Asia/Shanghai\"},\"SYY\":{\"Timezone\":\"Europe/London\"},\"SYZ\":{\"Timezone\":\"Asia/Tehran\"},\"SZA\":{\"Timezone\":\"Africa/Luanda\"},\"SZB\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"SZF\":{\"Timezone\":\"Europe/Istanbul\"},\"SZG\":{\"Timezone\":\"Europe/Vienna\"},\"SZJ\":{\"Timezone\":\"America/Havana\"},\"SZK\":{\"Timezone\":\"Africa/Johannesburg\"},\"SZL\":{\"Timezone\":\"America/Chicago\"},\"SZR\":{\"Timezone\":\"Europe/Sofia\"},\"SZS\":{\"Timezone\":\"Pacific/Auckland\"},\"SZT\":{\"Timezone\":\"America/Mexico_City\"},\"SZV\":{\"Timezone\":\"Asia/Shanghai\"},\"SZW\":{\"Timezone\":\"Europe/Berlin\"},\"SZX\":{\"Timezone\":\"Asia/Shanghai\"},\"SZY\":{\"Timezone\":null},\"SZZ\":{\"Timezone\":\"Europe/Warsaw\"},\"TAB\":{\"Timezone\":\"America/Port_of_Spain\"},\"TAC\":{\"Timezone\":\"Asia/Manila\"},\"TAE\":{\"Timezone\":\"Asia/Seoul\"},\"TAF\":{\"Timezone\":\"Africa/Algiers\"},\"TAG\":{\"Timezone\":\"Asia/Manila\"},\"TAH\":{\"Timezone\":\"Pacific/Efate\"},\"TAI\":{\"Timezone\":\"Asia/Aden\"},\"TAK\":{\"Timezone\":\"Asia/Tokyo\"},\"TAM\":{\"Timezone\":\"America/Mexico_City\"},\"TAO\":{\"Timezone\":\"Asia/Shanghai\"},\"TAP\":{\"Timezone\":\"America/Mexico_City\"},\"TAR\":{\"Timezone\":\"Europe/Rome\"},\"TAS\":{\"Timezone\":\"Asia/Samarkand\"},\"TAT\":{\"Timezone\":\"Europe/Bratislava\"},\"TAY\":{\"Timezone\":\"Europe/Tallinn\"},\"TAZ\":{\"Timezone\":\"Asia/Ashgabat\"},\"TBB\":{\"Timezone\":\"Asia/Saigon\"},\"TBF\":{\"Timezone\":null},\"TBG\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"TBH\":{\"Timezone\":\"Asia/Manila\"},\"TBI\":{\"Timezone\":\"America/Nassau\"},\"TBJ\":{\"Timezone\":\"Africa/Tunis\"},\"TBN\":{\"Timezone\":\"America/Chicago\"},\"TBO\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"TBP\":{\"Timezone\":\"America/Lima\"},\"TBR\":{\"Timezone\":null},\"TBS\":{\"Timezone\":\"Asia/Tbilisi\"},\"TBT\":{\"Timezone\":\"America/Boa_Vista\"},\"TBU\":{\"Timezone\":\"Pacific/Tongatapu\"},\"TBW\":{\"Timezone\":\"Europe/Moscow\"},\"TBZ\":{\"Timezone\":\"Asia/Tehran\"},\"TCA\":{\"Timezone\":\"Australia/Darwin\"},\"TCB\":{\"Timezone\":\"America/Nassau\"},\"TCC\":{\"Timezone\":\"America/Denver\"},\"TCE\":{\"Timezone\":\"Europe/Bucharest\"},\"TCG\":{\"Timezone\":\"Asia/Shanghai\"},\"TCH\":{\"Timezone\":\"Africa/Libreville\"},\"TCL\":{\"Timezone\":\"America/Chicago\"},\"TCM\":{\"Timezone\":\"America/Los_Angeles\"},\"TCN\":{\"Timezone\":\"America/Mexico_City\"},\"TCO\":{\"Timezone\":\"America/Bogota\"},\"TCP\":{\"Timezone\":\"Africa/Cairo\"},\"TCQ\":{\"Timezone\":\"America/Lima\"},\"TCS\":{\"Timezone\":\"America/Denver\"},\"TCX\":{\"Timezone\":\"Asia/Tehran\"},\"TCZ\":{\"Timezone\":\"Asia/Shanghai\"},\"TDD\":{\"Timezone\":\"America/La_Paz\"},\"TDG\":{\"Timezone\":\"Asia/Manila\"},\"TDJ\":{\"Timezone\":\"Africa/Djibouti\"},\"TDL\":{\"Timezone\":\"America/Buenos_Aires\"},\"TDR\":{\"Timezone\":\"Australia/Brisbane\"},\"TDS\":{\"Timezone\":null},\"TDX\":{\"Timezone\":\"Asia/Bangkok\"},\"TEA\":{\"Timezone\":\"America/Tegucigalpa\"},\"TEB\":{\"Timezone\":\"America/New_York\"},\"TEC\":{\"Timezone\":\"America/Sao_Paulo\"},\"TED\":{\"Timezone\":\"Europe/Copenhagen\"},\"TEE\":{\"Timezone\":\"Africa/Algiers\"},\"TEF\":{\"Timezone\":\"Australia/Perth\"},\"TEI\":{\"Timezone\":null},\"TEM\":{\"Timezone\":\"Australia/Sydney\"},\"TEN\":{\"Timezone\":\"Asia/Shanghai\"},\"TEQ\":{\"Timezone\":\"Europe/Istanbul\"},\"TER\":{\"Timezone\":\"Atlantic/Azores\"},\"TET\":{\"Timezone\":\"Africa/Maputo\"},\"TEU\":{\"Timezone\":\"Pacific/Auckland\"},\"TEV\":{\"Timezone\":null},\"TEX\":{\"Timezone\":\"America/Denver\"},\"TEZ\":{\"Timezone\":\"Asia/Calcutta\"},\"TFF\":{\"Timezone\":\"America/Boa_Vista\"},\"TFL\":{\"Timezone\":null},\"TFN\":{\"Timezone\":\"Atlantic/Canary\"},\"TFS\":{\"Timezone\":\"Atlantic/Canary\"},\"TGA\":{\"Timezone\":\"Asia/Singapore\"},\"TGD\":{\"Timezone\":\"Europe/Podgorica\"},\"TGG\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"TGH\":{\"Timezone\":\"Pacific/Efate\"},\"TGI\":{\"Timezone\":\"America/Lima\"},\"TGJ\":{\"Timezone\":\"Pacific/Noumea\"},\"TGK\":{\"Timezone\":\"Europe/Moscow\"},\"TGM\":{\"Timezone\":\"Europe/Bucharest\"},\"TGN\":{\"Timezone\":null},\"TGO\":{\"Timezone\":\"Asia/Shanghai\"},\"TGP\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"TGQ\":{\"Timezone\":null},\"TGR\":{\"Timezone\":\"Africa/Algiers\"},\"TGT\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"TGU\":{\"Timezone\":\"America/Tegucigalpa\"},\"TGZ\":{\"Timezone\":\"America/Mexico_City\"},\"THE\":{\"Timezone\":\"America/Fortaleza\"},\"THF\":{\"Timezone\":\"Europe/Berlin\"},\"THG\":{\"Timezone\":\"Australia/Brisbane\"},\"THL\":{\"Timezone\":\"Asia/Rangoon\"},\"THN\":{\"Timezone\":\"Europe/Stockholm\"},\"THO\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"THQ\":{\"Timezone\":\"Asia/Shanghai\"},\"THR\":{\"Timezone\":\"Asia/Tehran\"},\"THS\":{\"Timezone\":\"Asia/Bangkok\"},\"THU\":{\"Timezone\":\"America/Thule\"},\"THX\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"THZ\":{\"Timezone\":\"Africa/Niamey\"},\"TIA\":{\"Timezone\":\"Europe/Tirane\"},\"TID\":{\"Timezone\":\"Africa/Algiers\"},\"TIE\":{\"Timezone\":\"Africa/Addis_Ababa\"},\"TIF\":{\"Timezone\":\"Asia/Riyadh\"},\"TIH\":{\"Timezone\":\"Pacific/Tahiti\"},\"TII\":{\"Timezone\":\"Asia/Kabul\"},\"TIJ\":{\"Timezone\":\"America/Tijuana\"},\"TIK\":{\"Timezone\":\"America/Chicago\"},\"TIM\":{\"Timezone\":\"Asia/Jayapura\"},\"TIN\":{\"Timezone\":\"Africa/Algiers\"},\"TIP\":{\"Timezone\":\"Africa/Tripoli\"},\"TIQ\":{\"Timezone\":\"Pacific/Saipan\"},\"TIR\":{\"Timezone\":\"Asia/Calcutta\"},\"TIU\":{\"Timezone\":\"Pacific/Auckland\"},\"TIV\":{\"Timezone\":\"Europe/Podgorica\"},\"TIW\":{\"Timezone\":\"America/Los_Angeles\"},\"TIX\":{\"Timezone\":\"America/New_York\"},\"TIY\":{\"Timezone\":\"Africa/Nouakchott\"},\"TIZ\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"TJA\":{\"Timezone\":\"America/La_Paz\"},\"TJB\":{\"Timezone\":null},\"TJG\":{\"Timezone\":\"Asia/Makassar\"},\"TJH\":{\"Timezone\":\"Asia/Tokyo\"},\"TJI\":{\"Timezone\":\"America/Tegucigalpa\"},\"TJK\":{\"Timezone\":\"Europe/Istanbul\"},\"TJL\":{\"Timezone\":\"America/Campo_Grande\"},\"TJM\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"TJQ\":{\"Timezone\":\"Asia/Jakarta\"},\"TJS\":{\"Timezone\":\"Asia/Makassar\"},\"TJU\":{\"Timezone\":\"Asia/Dushanbe\"},\"TJV\":{\"Timezone\":\"Asia/Calcutta\"},\"TKA\":{\"Timezone\":\"America/Anchorage\"},\"TKC\":{\"Timezone\":\"Africa/Douala\"},\"TKD\":{\"Timezone\":\"Africa/Accra\"},\"TKF\":{\"Timezone\":\"America/Los_Angeles\"},\"TKG\":{\"Timezone\":\"Asia/Jakarta\"},\"TKH\":{\"Timezone\":\"Asia/Bangkok\"},\"TKJ\":{\"Timezone\":\"America/Anchorage\"},\"TKK\":{\"Timezone\":\"Pacific/Truk\"},\"TKN\":{\"Timezone\":\"Asia/Tokyo\"},\"TKP\":{\"Timezone\":\"Pacific/Tahiti\"},\"TKQ\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"TKS\":{\"Timezone\":\"Asia/Tokyo\"},\"TKT\":{\"Timezone\":\"Asia/Bangkok\"},\"TKU\":{\"Timezone\":\"Europe/Helsinki\"},\"TKV\":{\"Timezone\":null},\"TKX\":{\"Timezone\":\"Pacific/Tahiti\"},\"TLA\":{\"Timezone\":\"America/Anchorage\"},\"TLC\":{\"Timezone\":\"America/Mexico_City\"},\"TLD\":{\"Timezone\":\"Africa/Gaborone\"},\"TLE\":{\"Timezone\":\"Indian/Antananarivo\"},\"TLH\":{\"Timezone\":\"America/New_York\"},\"TLI\":{\"Timezone\":null},\"TLJ\":{\"Timezone\":\"America/Anchorage\"},\"TLK\":{\"Timezone\":null},\"TLL\":{\"Timezone\":\"Europe/Tallinn\"},\"TLM\":{\"Timezone\":\"Africa/Algiers\"},\"TLN\":{\"Timezone\":\"Europe/Paris\"},\"TLQ\":{\"Timezone\":\"Asia/Shanghai\"},\"TLS\":{\"Timezone\":\"Europe/Paris\"},\"TLU\":{\"Timezone\":\"America/Bogota\"},\"TLV\":{\"Timezone\":\"Asia/Jerusalem\"},\"TLX\":{\"Timezone\":null},\"TMA\":{\"Timezone\":\"America/New_York\"},\"TMB\":{\"Timezone\":\"America/New_York\"},\"TMC\":{\"Timezone\":\"Asia/Makassar\"},\"TME\":{\"Timezone\":\"America/Bogota\"},\"TMF\":{\"Timezone\":null},\"TMG\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"TMH\":{\"Timezone\":null},\"TMI\":{\"Timezone\":\"Asia/Katmandu\"},\"TMJ\":{\"Timezone\":\"Asia/Samarkand\"},\"TML\":{\"Timezone\":\"Africa/Accra\"},\"TMM\":{\"Timezone\":\"Indian/Antananarivo\"},\"TMN\":{\"Timezone\":\"Pacific/Tarawa\"},\"TMO\":{\"Timezone\":\"America/Caracas\"},\"TMP\":{\"Timezone\":\"Europe/Helsinki\"},\"TMR\":{\"Timezone\":\"Africa/Algiers\"},\"TMS\":{\"Timezone\":\"Africa/Sao_Tome\"},\"TMT\":{\"Timezone\":\"America/Belem\"},\"TMU\":{\"Timezone\":\"America/Costa_Rica\"},\"TMW\":{\"Timezone\":\"Australia/Sydney\"},\"TMX\":{\"Timezone\":\"Africa/Algiers\"},\"TNA\":{\"Timezone\":\"Asia/Shanghai\"},\"TNC\":{\"Timezone\":\"America/Anchorage\"},\"TND\":{\"Timezone\":\"America/Havana\"},\"TNE\":{\"Timezone\":\"Asia/Tokyo\"},\"TNF\":{\"Timezone\":\"Europe/Paris\"},\"TNG\":{\"Timezone\":\"Africa/Casablanca\"},\"TNH\":{\"Timezone\":\"Asia/Shanghai\"},\"TNI\":{\"Timezone\":\"Asia/Calcutta\"},\"TNJ\":{\"Timezone\":\"Asia/Jakarta\"},\"TNM\":{\"Timezone\":\"Antarctica/South_Pole\"},\"TNN\":{\"Timezone\":\"Asia/Taipei\"},\"TNR\":{\"Timezone\":\"Indian/Antananarivo\"},\"TNT\":{\"Timezone\":\"America/New_York\"},\"TNW\":{\"Timezone\":null},\"TNX\":{\"Timezone\":\"Asia/Phnom_Penh\"},\"TOA\":{\"Timezone\":\"America/Los_Angeles\"},\"TOB\":{\"Timezone\":\"Africa/Tripoli\"},\"TOC\":{\"Timezone\":\"America/New_York\"},\"TOD\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"TOE\":{\"Timezone\":\"Africa/Tunis\"},\"TOF\":{\"Timezone\":\"Asia/Krasnoyarsk\"},\"TOG\":{\"Timezone\":\"America/Anchorage\"},\"TOH\":{\"Timezone\":\"Pacific/Efate\"},\"TOI\":{\"Timezone\":null},\"TOJ\":{\"Timezone\":\"Europe/Madrid\"},\"TOL\":{\"Timezone\":\"America/New_York\"},\"TOM\":{\"Timezone\":\"Africa/Bamako\"},\"TOO\":{\"Timezone\":\"America/Costa_Rica\"},\"TOP\":{\"Timezone\":\"America/Chicago\"},\"TOQ\":{\"Timezone\":null},\"TOS\":{\"Timezone\":\"Europe/Oslo\"},\"TOT\":{\"Timezone\":\"America/Paramaribo\"},\"TOU\":{\"Timezone\":\"Pacific/Noumea\"},\"TOW\":{\"Timezone\":\"America/Sao_Paulo\"},\"TOY\":{\"Timezone\":\"Asia/Tokyo\"},\"TPA\":{\"Timezone\":\"America/New_York\"},\"TPC\":{\"Timezone\":\"America/Guayaquil\"},\"TPE\":{\"Timezone\":\"Asia/Taipei\"},\"TPF\":{\"Timezone\":null},\"TPH\":{\"Timezone\":null},\"TPJ\":{\"Timezone\":\"Asia/Katmandu\"},\"TPL\":{\"Timezone\":\"America/Chicago\"},\"TPN\":{\"Timezone\":\"America/Guayaquil\"},\"TPP\":{\"Timezone\":\"America/Lima\"},\"TPQ\":{\"Timezone\":\"America/Mazatlan\"},\"TPS\":{\"Timezone\":\"Europe/Rome\"},\"TQD\":{\"Timezone\":\"Asia/Baghdad\"},\"TQL\":{\"Timezone\":null},\"TQQ\":{\"Timezone\":\"Asia/Makassar\"},\"TQS\":{\"Timezone\":null},\"TRA\":{\"Timezone\":\"Asia/Tokyo\"},\"TRC\":{\"Timezone\":\"America/Mexico_City\"},\"TRD\":{\"Timezone\":\"Europe/Oslo\"},\"TRE\":{\"Timezone\":\"Europe/London\"},\"TRF\":{\"Timezone\":\"Europe/Oslo\"},\"TRG\":{\"Timezone\":\"Pacific/Auckland\"},\"TRI\":{\"Timezone\":\"America/New_York\"},\"TRK\":{\"Timezone\":\"Asia/Makassar\"},\"TRM\":{\"Timezone\":\"America/Los_Angeles\"},\"TRN\":{\"Timezone\":\"Europe/Rome\"},\"TRO\":{\"Timezone\":\"Australia/Sydney\"},\"TRQ\":{\"Timezone\":\"America/Rio_Branco\"},\"TRR\":{\"Timezone\":\"Asia/Colombo\"},\"TRS\":{\"Timezone\":\"Europe/Rome\"},\"TRU\":{\"Timezone\":\"America/Lima\"},\"TRV\":{\"Timezone\":\"Asia/Calcutta\"},\"TRW\":{\"Timezone\":\"Pacific/Tarawa\"},\"TRZ\":{\"Timezone\":\"Asia/Calcutta\"},\"TSA\":{\"Timezone\":\"Asia/Taipei\"},\"TSB\":{\"Timezone\":\"Africa/Windhoek\"},\"TSE\":{\"Timezone\":\"Asia/Qyzylorda\"},\"TSF\":{\"Timezone\":\"Europe/Rome\"},\"TSH\":{\"Timezone\":\"Africa/Lubumbashi\"},\"TSJ\":{\"Timezone\":\"Asia/Tokyo\"},\"TSL\":{\"Timezone\":\"America/Mexico_City\"},\"TSM\":{\"Timezone\":null},\"TSN\":{\"Timezone\":\"Asia/Shanghai\"},\"TSR\":{\"Timezone\":\"Europe/Bucharest\"},\"TST\":{\"Timezone\":\"Asia/Bangkok\"},\"TSU\":{\"Timezone\":\"Pacific/Tarawa\"},\"TSV\":{\"Timezone\":\"Australia/Brisbane\"},\"TSX\":{\"Timezone\":\"Asia/Makassar\"},\"TSY\":{\"Timezone\":\"Asia/Jakarta\"},\"TTA\":{\"Timezone\":\"Africa/Casablanca\"},\"TTB\":{\"Timezone\":\"Europe/Rome\"},\"TTC\":{\"Timezone\":null},\"TTD\":{\"Timezone\":\"America/Los_Angeles\"},\"TTE\":{\"Timezone\":\"Asia/Jayapura\"},\"TTG\":{\"Timezone\":\"America/Argentina/Salta\"},\"TTH\":{\"Timezone\":\"Asia/Muscat\"},\"TTI\":{\"Timezone\":\"Pacific/Tahiti\"},\"TTJ\":{\"Timezone\":\"Asia/Tokyo\"},\"TTL\":{\"Timezone\":null},\"TTN\":{\"Timezone\":\"America/New_York\"},\"TTQ\":{\"Timezone\":\"America/Costa_Rica\"},\"TTR\":{\"Timezone\":\"Asia/Makassar\"},\"TTT\":{\"Timezone\":\"Asia/Taipei\"},\"TTU\":{\"Timezone\":\"Africa/Casablanca\"},\"TUA\":{\"Timezone\":\"America/Guayaquil\"},\"TUB\":{\"Timezone\":\"Pacific/Tahiti\"},\"TUC\":{\"Timezone\":\"America/Argentina/Tucuman\"},\"TUD\":{\"Timezone\":\"Africa/Dakar\"},\"TUF\":{\"Timezone\":\"Europe/Paris\"},\"TUG\":{\"Timezone\":\"Asia/Manila\"},\"TUI\":{\"Timezone\":\"Asia/Riyadh\"},\"TUK\":{\"Timezone\":\"Asia/Karachi\"},\"TUL\":{\"Timezone\":\"America/Chicago\"},\"TUM\":{\"Timezone\":null},\"TUN\":{\"Timezone\":\"Africa/Tunis\"},\"TUO\":{\"Timezone\":\"Pacific/Auckland\"},\"TUP\":{\"Timezone\":\"America/Chicago\"},\"TUR\":{\"Timezone\":\"America/Belem\"},\"TUS\":{\"Timezone\":\"America/Phoenix\"},\"TUU\":{\"Timezone\":\"Asia/Riyadh\"},\"TUV\":{\"Timezone\":\"America/Caracas\"},\"TVA\":{\"Timezone\":\"Indian/Antananarivo\"},\"TVC\":{\"Timezone\":\"America/New_York\"},\"TVF\":{\"Timezone\":\"America/Chicago\"},\"TVI\":{\"Timezone\":\"America/New_York\"},\"TVL\":{\"Timezone\":\"America/Los_Angeles\"},\"TVU\":{\"Timezone\":\"Pacific/Fiji\"},\"TVY\":{\"Timezone\":\"Asia/Rangoon\"},\"TWB\":{\"Timezone\":\"Australia/Brisbane\"},\"TWF\":{\"Timezone\":\"America/Denver\"},\"TWT\":{\"Timezone\":\"Asia/Manila\"},\"TWU\":{\"Timezone\":\"Asia/Kuala_Lumpur\"},\"TWZ\":{\"Timezone\":\"Pacific/Auckland\"},\"TXF\":{\"Timezone\":null},\"TXG\":{\"Timezone\":\"Asia/Taipei\"},\"TXK\":{\"Timezone\":\"America/Chicago\"},\"TXL\":{\"Timezone\":\"Europe/Berlin\"},\"TXN\":{\"Timezone\":\"Asia/Shanghai\"},\"TYB\":{\"Timezone\":null},\"TYF\":{\"Timezone\":\"Europe/Stockholm\"},\"TYL\":{\"Timezone\":\"America/Lima\"},\"TYM\":{\"Timezone\":\"America/Nassau\"},\"TYN\":{\"Timezone\":\"Asia/Shanghai\"},\"TYR\":{\"Timezone\":\"America/Chicago\"},\"TYS\":{\"Timezone\":\"America/New_York\"},\"TZL\":{\"Timezone\":\"Europe/Sarajevo\"},\"TZR\":{\"Timezone\":\"Europe/Budapest\"},\"TZX\":{\"Timezone\":\"Europe/Istanbul\"},\"UAB\":{\"Timezone\":\"Europe/Istanbul\"},\"UAH\":{\"Timezone\":\"Pacific/Marquesas\"},\"UAI\":{\"Timezone\":\"Asia/Dili\"},\"UAK\":{\"Timezone\":\"America/Godthab\"},\"UAM\":{\"Timezone\":\"Pacific/Guam\"},\"UAP\":{\"Timezone\":\"Pacific/Marquesas\"},\"UAQ\":{\"Timezone\":\"America/Argentina/San_Juan\"},\"UAR\":{\"Timezone\":\"Africa/Casablanca\"},\"UAS\":{\"Timezone\":\"Africa/Nairobi\"},\"UBA\":{\"Timezone\":\"America/Sao_Paulo\"},\"UBB\":{\"Timezone\":\"Australia/Brisbane\"},\"UBJ\":{\"Timezone\":\"Asia/Tokyo\"},\"UBP\":{\"Timezone\":\"Asia/Bangkok\"},\"UBT\":{\"Timezone\":null},\"UCB\":{\"Timezone\":null},\"UCK\":{\"Timezone\":\"Europe/Kiev\"},\"UCT\":{\"Timezone\":\"Europe/Moscow\"},\"UDD\":{\"Timezone\":\"America/Los_Angeles\"},\"UDI\":{\"Timezone\":\"America/Sao_Paulo\"},\"UDJ\":{\"Timezone\":\"Europe/Kiev\"},\"UDR\":{\"Timezone\":\"Asia/Calcutta\"},\"UEL\":{\"Timezone\":\"Africa/Maputo\"},\"UEO\":{\"Timezone\":\"Asia/Tokyo\"},\"UET\":{\"Timezone\":\"Asia/Karachi\"},\"UFA\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"UGA\":{\"Timezone\":\"Asia/Ulaanbaatar\"},\"UGC\":{\"Timezone\":\"Asia/Samarkand\"},\"UGN\":{\"Timezone\":\"America/Chicago\"},\"UGO\":{\"Timezone\":\"Africa/Luanda\"},\"UHE\":{\"Timezone\":\"Europe/Prague\"},\"UIB\":{\"Timezone\":\"America/Bogota\"},\"UIH\":{\"Timezone\":\"Asia/Saigon\"},\"UII\":{\"Timezone\":\"America/Tegucigalpa\"},\"UIK\":{\"Timezone\":\"Asia/Irkutsk\"},\"UIN\":{\"Timezone\":\"America/Chicago\"},\"UIO\":{\"Timezone\":\"America/Guayaquil\"},\"UIP\":{\"Timezone\":\"Europe/Paris\"},\"UJE\":{\"Timezone\":\"Pacific/Majuro\"},\"UKA\":{\"Timezone\":\"Africa/Nairobi\"},\"UKB\":{\"Timezone\":\"Asia/Tokyo\"},\"UKG\":{\"Timezone\":null},\"UKI\":{\"Timezone\":null},\"UKK\":{\"Timezone\":\"Asia/Qyzylorda\"},\"UKS\":{\"Timezone\":\"Europe/Simferopol\"},\"UKT\":{\"Timezone\":null},\"UKX\":{\"Timezone\":\"Asia/Irkutsk\"},\"ULA\":{\"Timezone\":\"America/Argentina/Rio_Gallegos\"},\"ULB\":{\"Timezone\":\"Pacific/Efate\"},\"ULD\":{\"Timezone\":\"Africa/Johannesburg\"},\"ULG\":{\"Timezone\":\"Asia/Hovd\"},\"ULH\":{\"Timezone\":\"Asia/Riyadh\"},\"ULK\":{\"Timezone\":\"Asia/Yakutsk\"},\"ULN\":{\"Timezone\":\"Asia/Ulaanbaatar\"},\"ULO\":{\"Timezone\":\"Asia/Hovd\"},\"ULP\":{\"Timezone\":\"Australia/Brisbane\"},\"ULQ\":{\"Timezone\":\"America/Bogota\"},\"ULU\":{\"Timezone\":\"Africa/Kampala\"},\"ULV\":{\"Timezone\":\"Europe/Samara\"},\"ULY\":{\"Timezone\":\"Europe/Samara\"},\"ULZ\":{\"Timezone\":\"Asia/Ulaanbaatar\"},\"UMD\":{\"Timezone\":\"America/Godthab\"},\"UME\":{\"Timezone\":\"Europe/Stockholm\"},\"UMR\":{\"Timezone\":\"Australia/Adelaide\"},\"UMS\":{\"Timezone\":\"Asia/Yakutsk\"},\"UMU\":{\"Timezone\":\"America/Sao_Paulo\"},\"UNA\":{\"Timezone\":\"America/Fortaleza\"},\"UND\":{\"Timezone\":\"Asia/Kabul\"},\"UNG\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"UNI\":{\"Timezone\":\"America/St_Vincent\"},\"UNK\":{\"Timezone\":\"America/Anchorage\"},\"UNN\":{\"Timezone\":\"Asia/Bangkok\"},\"UNT\":{\"Timezone\":\"Europe/London\"},\"UOL\":{\"Timezone\":null},\"UOS\":{\"Timezone\":\"America/Chicago\"},\"UOX\":{\"Timezone\":null},\"UPB\":{\"Timezone\":\"America/Havana\"},\"UPG\":{\"Timezone\":\"Asia/Makassar\"},\"UPL\":{\"Timezone\":null},\"UPN\":{\"Timezone\":\"America/Mexico_City\"},\"UPP\":{\"Timezone\":\"Pacific/Honolulu\"},\"URA\":{\"Timezone\":\"Asia/Oral\"},\"URC\":{\"Timezone\":\"Asia/Shanghai\"},\"URD\":{\"Timezone\":\"Europe/Berlin\"},\"URE\":{\"Timezone\":\"Europe/Tallinn\"},\"URG\":{\"Timezone\":\"America/Sao_Paulo\"},\"URJ\":{\"Timezone\":\"Asia/Yekaterinburg\"},\"URO\":{\"Timezone\":\"Europe/Paris\"},\"URS\":{\"Timezone\":\"Europe/Moscow\"},\"URT\":{\"Timezone\":\"Asia/Bangkok\"},\"URY\":{\"Timezone\":\"Asia/Riyadh\"},\"USA\":{\"Timezone\":\"America/New_York\"},\"USH\":{\"Timezone\":\"America/Argentina/Ushuaia\"},\"USI\":{\"Timezone\":\"America/Guyana\"},\"USK\":{\"Timezone\":\"Europe/Moscow\"},\"USM\":{\"Timezone\":\"Asia/Bangkok\"},\"USN\":{\"Timezone\":\"Asia/Seoul\"},\"USQ\":{\"Timezone\":\"Europe/Istanbul\"},\"USR\":{\"Timezone\":\"Asia/Vladivostok\"},\"USS\":{\"Timezone\":\"America/Havana\"},\"UST\":{\"Timezone\":\"America/New_York\"},\"USU\":{\"Timezone\":\"Asia/Manila\"},\"UTA\":{\"Timezone\":\"Africa/Harare\"},\"UTC\":{\"Timezone\":\"Europe/Amsterdam\"},\"UTH\":{\"Timezone\":\"Asia/Bangkok\"},\"UTI\":{\"Timezone\":\"Europe/Helsinki\"},\"UTK\":{\"Timezone\":\"Pacific/Majuro\"},\"UTM\":{\"Timezone\":\"America/Chicago\"},\"UTN\":{\"Timezone\":\"Africa/Johannesburg\"},\"UTO\":{\"Timezone\":\"America/Anchorage\"},\"UTP\":{\"Timezone\":\"Asia/Bangkok\"},\"UTS\":{\"Timezone\":\"Europe/Moscow\"},\"UTT\":{\"Timezone\":\"Africa/Johannesburg\"},\"UTW\":{\"Timezone\":\"Africa/Johannesburg\"},\"UUA\":{\"Timezone\":\"Europe/Moscow\"},\"UUD\":{\"Timezone\":\"Asia/Irkutsk\"},\"UUK\":{\"Timezone\":\"America/Anchorage\"},\"UUN\":{\"Timezone\":null},\"UUS\":{\"Timezone\":\"Asia/Srednekolymsk\"},\"UVA\":{\"Timezone\":\"America/Chicago\"},\"UVE\":{\"Timezone\":\"Pacific/Noumea\"},\"UVF\":{\"Timezone\":\"America/St_Lucia\"},\"UYL\":{\"Timezone\":\"Africa/Khartoum\"},\"UYN\":{\"Timezone\":\"Asia/Shanghai\"},\"UYU\":{\"Timezone\":\"America/La_Paz\"},\"UZR\":{\"Timezone\":null},\"UZU\":{\"Timezone\":\"America/Cordoba\"},\"VAA\":{\"Timezone\":\"Europe/Helsinki\"},\"VAD\":{\"Timezone\":\"America/New_York\"},\"VAF\":{\"Timezone\":\"Europe/Paris\"},\"VAG\":{\"Timezone\":\"America/Sao_Paulo\"},\"VAI\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"VAK\":{\"Timezone\":\"America/Anchorage\"},\"VAL\":{\"Timezone\":\"America/Fortaleza\"},\"VAM\":{\"Timezone\":\"Indian/Maldives\"},\"VAN\":{\"Timezone\":\"Europe/Istanbul\"},\"VAO\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"VAR\":{\"Timezone\":\"Europe/Sofia\"},\"VAS\":{\"Timezone\":\"Europe/Istanbul\"},\"VAV\":{\"Timezone\":\"Pacific/Tongatapu\"},\"VAW\":{\"Timezone\":\"Europe/Oslo\"},\"VBA\":{\"Timezone\":\"Asia/Rangoon\"},\"VBG\":{\"Timezone\":\"America/Los_Angeles\"},\"VBP\":{\"Timezone\":\"Asia/Rangoon\"},\"VBS\":{\"Timezone\":\"Europe/Rome\"},\"VBV\":{\"Timezone\":\"Pacific/Fiji\"},\"VBY\":{\"Timezone\":\"Europe/Stockholm\"},\"VCA\":{\"Timezone\":\"Asia/Saigon\"},\"VCD\":{\"Timezone\":\"Australia/Darwin\"},\"VCE\":{\"Timezone\":\"Europe/Rome\"},\"VCL\":{\"Timezone\":\"Asia/Saigon\"},\"VCP\":{\"Timezone\":\"America/Sao_Paulo\"},\"VCR\":{\"Timezone\":\"America/Caracas\"},\"VCS\":{\"Timezone\":\"Asia/Saigon\"},\"VCT\":{\"Timezone\":\"America/Chicago\"},\"VCV\":{\"Timezone\":\"America/Los_Angeles\"},\"VDA\":{\"Timezone\":\"Asia/Jerusalem\"},\"VDB\":{\"Timezone\":\"Europe/Oslo\"},\"VDC\":{\"Timezone\":\"America/Fortaleza\"},\"VDE\":{\"Timezone\":\"Atlantic/Canary\"},\"VDH\":{\"Timezone\":\"Asia/Saigon\"},\"VDI\":{\"Timezone\":null},\"VDM\":{\"Timezone\":\"America/Argentina/Salta\"},\"VDP\":{\"Timezone\":\"America/Caracas\"},\"VDR\":{\"Timezone\":\"America/Cordoba\"},\"VDS\":{\"Timezone\":\"Europe/Oslo\"},\"VDY\":{\"Timezone\":null},\"VDZ\":{\"Timezone\":\"America/Anchorage\"},\"VEE\":{\"Timezone\":\"America/Anchorage\"},\"VEL\":{\"Timezone\":\"America/Denver\"},\"VER\":{\"Timezone\":\"America/Mexico_City\"},\"VEY\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"VFA\":{\"Timezone\":\"Africa/Harare\"},\"VGA\":{\"Timezone\":\"Asia/Calcutta\"},\"VGD\":{\"Timezone\":\"Europe/Moscow\"},\"VGO\":{\"Timezone\":\"Europe/Madrid\"},\"VGT\":{\"Timezone\":\"America/Los_Angeles\"},\"VGZ\":{\"Timezone\":\"America/Bogota\"},\"VHC\":{\"Timezone\":\"Africa/Luanda\"},\"VHM\":{\"Timezone\":\"Europe/Stockholm\"},\"VHV\":{\"Timezone\":null},\"VHY\":{\"Timezone\":\"Europe/Paris\"},\"VHZ\":{\"Timezone\":null},\"VIC\":{\"Timezone\":\"Europe/Rome\"},\"VIE\":{\"Timezone\":\"Europe/Vienna\"},\"VIG\":{\"Timezone\":\"America/Caracas\"},\"VII\":{\"Timezone\":\"Asia/Saigon\"},\"VIJ\":{\"Timezone\":\"America/Tortola\"},\"VIL\":{\"Timezone\":\"Africa/El_Aaiun\"},\"VIN\":{\"Timezone\":\"Europe/Kiev\"},\"VIR\":{\"Timezone\":\"Africa/Johannesburg\"},\"VIS\":{\"Timezone\":\"America/Los_Angeles\"},\"VIT\":{\"Timezone\":\"Europe/Madrid\"},\"VIX\":{\"Timezone\":\"America/Sao_Paulo\"},\"VIY\":{\"Timezone\":\"Europe/Paris\"},\"VKG\":{\"Timezone\":\"Asia/Saigon\"},\"VKO\":{\"Timezone\":\"Europe/Moscow\"},\"VKT\":{\"Timezone\":\"Europe/Moscow\"},\"VLC\":{\"Timezone\":\"Europe/Madrid\"},\"VLD\":{\"Timezone\":\"America/New_York\"},\"VLG\":{\"Timezone\":\"America/Buenos_Aires\"},\"VLI\":{\"Timezone\":\"Pacific/Efate\"},\"VLK\":{\"Timezone\":null},\"VLL\":{\"Timezone\":\"Europe/Madrid\"},\"VLM\":{\"Timezone\":\"America/La_Paz\"},\"VLN\":{\"Timezone\":\"America/Caracas\"},\"VLP\":{\"Timezone\":null},\"VLR\":{\"Timezone\":\"America/Santiago\"},\"VLS\":{\"Timezone\":\"Pacific/Efate\"},\"VLU\":{\"Timezone\":\"Europe/Moscow\"},\"VLV\":{\"Timezone\":\"America/Caracas\"},\"VLY\":{\"Timezone\":\"Europe/London\"},\"VME\":{\"Timezone\":\"America/Argentina/San_Luis\"},\"VMU\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"VNA\":{\"Timezone\":\"Asia/Vientiane\"},\"VNC\":{\"Timezone\":\"America/New_York\"},\"VNE\":{\"Timezone\":\"Europe/Paris\"},\"VNO\":{\"Timezone\":\"Europe/Vilnius\"},\"VNS\":{\"Timezone\":\"Asia/Calcutta\"},\"VNT\":{\"Timezone\":\"Europe/Riga\"},\"VNX\":{\"Timezone\":\"Africa/Maputo\"},\"VNY\":{\"Timezone\":\"America/Los_Angeles\"},\"VOD\":{\"Timezone\":\"Europe/Prague\"},\"VOG\":{\"Timezone\":\"Europe/Moscow\"},\"VOH\":{\"Timezone\":\"Indian/Antananarivo\"},\"VOK\":{\"Timezone\":\"America/Chicago\"},\"VOL\":{\"Timezone\":\"Europe/Athens\"},\"VOZ\":{\"Timezone\":\"Europe/Moscow\"},\"VPE\":{\"Timezone\":\"Africa/Luanda\"},\"VPN\":{\"Timezone\":\"Atlantic/Reykjavik\"},\"VPS\":{\"Timezone\":\"America/Chicago\"},\"VPY\":{\"Timezone\":\"Africa/Maputo\"},\"VPZ\":{\"Timezone\":null},\"VQQ\":{\"Timezone\":\"America/New_York\"},\"VQS\":{\"Timezone\":\"America/Puerto_Rico\"},\"VRA\":{\"Timezone\":\"America/Havana\"},\"VRB\":{\"Timezone\":\"America/New_York\"},\"VRC\":{\"Timezone\":\"Asia/Manila\"},\"VRE\":{\"Timezone\":\"Africa/Johannesburg\"},\"VRK\":{\"Timezone\":\"Europe/Helsinki\"},\"VRL\":{\"Timezone\":\"Europe/Lisbon\"},\"VRN\":{\"Timezone\":\"Europe/Rome\"},\"VRO\":{\"Timezone\":\"America/Havana\"},\"VRU\":{\"Timezone\":\"Africa/Johannesburg\"},\"VRY\":{\"Timezone\":\"Europe/Oslo\"},\"VSA\":{\"Timezone\":\"America/Mexico_City\"},\"VSE\":{\"Timezone\":\"Europe/Lisbon\"},\"VSG\":{\"Timezone\":\"Europe/Kiev\"},\"VST\":{\"Timezone\":\"Europe/Stockholm\"},\"VTB\":{\"Timezone\":\"Europe/Minsk\"},\"VTE\":{\"Timezone\":\"Asia/Vientiane\"},\"VTM\":{\"Timezone\":\"Asia/Jerusalem\"},\"VTN\":{\"Timezone\":null},\"VTU\":{\"Timezone\":\"America/Havana\"},\"VTZ\":{\"Timezone\":\"Asia/Calcutta\"},\"VUP\":{\"Timezone\":\"America/Bogota\"},\"VUS\":{\"Timezone\":\"Europe/Moscow\"},\"VVC\":{\"Timezone\":\"America/Bogota\"},\"VVI\":{\"Timezone\":\"America/La_Paz\"},\"VVO\":{\"Timezone\":\"Asia/Vladivostok\"},\"VVZ\":{\"Timezone\":\"Africa/Algiers\"},\"VXC\":{\"Timezone\":\"Africa/Maputo\"},\"VXE\":{\"Timezone\":\"Atlantic/Cape_Verde\"},\"VXO\":{\"Timezone\":\"Europe/Stockholm\"},\"VYI\":{\"Timezone\":null},\"VYS\":{\"Timezone\":\"America/Chicago\"},\"WAA\":{\"Timezone\":\"America/Anchorage\"},\"WAE\":{\"Timezone\":\"Asia/Riyadh\"},\"WAF\":{\"Timezone\":\"Asia/Karachi\"},\"WAG\":{\"Timezone\":\"Pacific/Auckland\"},\"WAI\":{\"Timezone\":\"Indian/Antananarivo\"},\"WAL\":{\"Timezone\":\"America/New_York\"},\"WAM\":{\"Timezone\":\"Indian/Antananarivo\"},\"WAQ\":{\"Timezone\":\"Indian/Antananarivo\"},\"WAR\":{\"Timezone\":\"Asia/Jayapura\"},\"WAT\":{\"Timezone\":\"Europe/Dublin\"},\"WAW\":{\"Timezone\":\"Europe/Warsaw\"},\"WBG\":{\"Timezone\":\"Europe/Berlin\"},\"WBM\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"WBQ\":{\"Timezone\":\"America/Anchorage\"},\"WBU\":{\"Timezone\":\"America/Denver\"},\"WBW\":{\"Timezone\":\"America/New_York\"},\"WCH\":{\"Timezone\":\"America/Santiago\"},\"WDH\":{\"Timezone\":\"Africa/Windhoek\"},\"WDR\":{\"Timezone\":\"America/New_York\"},\"WDS\":{\"Timezone\":null},\"WEF\":{\"Timezone\":\"Asia/Shanghai\"},\"WEH\":{\"Timezone\":\"Asia/Shanghai\"},\"WEI\":{\"Timezone\":\"Australia/Brisbane\"},\"WFI\":{\"Timezone\":\"Indian/Antananarivo\"},\"WFK\":{\"Timezone\":\"America/New_York\"},\"WGA\":{\"Timezone\":\"Australia/Sydney\"},\"WGE\":{\"Timezone\":\"Australia/Sydney\"},\"WGN\":{\"Timezone\":null},\"WGP\":{\"Timezone\":\"Asia/Makassar\"},\"WGT\":{\"Timezone\":null},\"WHF\":{\"Timezone\":\"Africa/Khartoum\"},\"WHK\":{\"Timezone\":\"Pacific/Auckland\"},\"WHP\":{\"Timezone\":\"America/Los_Angeles\"},\"WHU\":{\"Timezone\":null},\"WIC\":{\"Timezone\":\"Europe/London\"},\"WIE\":{\"Timezone\":\"Europe/Berlin\"},\"WIK\":{\"Timezone\":null},\"WIL\":{\"Timezone\":\"Africa/Nairobi\"},\"WIN\":{\"Timezone\":\"Australia/Brisbane\"},\"WIO\":{\"Timezone\":\"Australia/Sydney\"},\"WIR\":{\"Timezone\":\"Pacific/Auckland\"},\"WJF\":{\"Timezone\":null},\"WJR\":{\"Timezone\":\"Africa/Nairobi\"},\"WJU\":{\"Timezone\":\"Asia/Seoul\"},\"WKA\":{\"Timezone\":\"Pacific/Auckland\"},\"WKB\":{\"Timezone\":null},\"WKF\":{\"Timezone\":\"Africa/Johannesburg\"},\"WKI\":{\"Timezone\":null},\"WKJ\":{\"Timezone\":\"Asia/Tokyo\"},\"WKK\":{\"Timezone\":\"America/Anchorage\"},\"WKL\":{\"Timezone\":\"Pacific/Honolulu\"},\"WKR\":{\"Timezone\":null},\"WLD\":{\"Timezone\":\"America/Chicago\"},\"WLG\":{\"Timezone\":\"Pacific/Auckland\"},\"WLH\":{\"Timezone\":\"Pacific/Efate\"},\"WLK\":{\"Timezone\":\"America/Anchorage\"},\"WLS\":{\"Timezone\":\"Pacific/Wallis\"},\"WMA\":{\"Timezone\":\"Indian/Antananarivo\"},\"WMB\":{\"Timezone\":null},\"WMC\":{\"Timezone\":null},\"WME\":{\"Timezone\":\"Australia/Perth\"},\"WMH\":{\"Timezone\":null},\"WMI\":{\"Timezone\":\"Europe/Warsaw\"},\"WMN\":{\"Timezone\":\"Indian/Antananarivo\"},\"WMO\":{\"Timezone\":\"America/Anchorage\"},\"WMP\":{\"Timezone\":\"Indian/Antananarivo\"},\"WMR\":{\"Timezone\":\"Indian/Antananarivo\"},\"WMT\":{\"Timezone\":null},\"WMX\":{\"Timezone\":\"Asia/Jayapura\"},\"WNA\":{\"Timezone\":\"America/Anchorage\"},\"WNN\":{\"Timezone\":\"America/Toronto\"},\"WNP\":{\"Timezone\":\"Asia/Manila\"},\"WNR\":{\"Timezone\":\"Australia/Brisbane\"},\"WNS\":{\"Timezone\":\"Asia/Karachi\"},\"WNZ\":{\"Timezone\":\"Asia/Shanghai\"},\"WOE\":{\"Timezone\":\"Europe/Amsterdam\"},\"WOL\":{\"Timezone\":\"Australia/Sydney\"},\"WOS\":{\"Timezone\":null},\"WOT\":{\"Timezone\":\"Asia/Taipei\"},\"WPB\":{\"Timezone\":\"Indian/Antananarivo\"},\"WPC\":{\"Timezone\":null},\"WPR\":{\"Timezone\":\"America/Santiago\"},\"WPU\":{\"Timezone\":\"America/Santiago\"},\"WRB\":{\"Timezone\":\"America/New_York\"},\"WRE\":{\"Timezone\":\"Pacific/Auckland\"},\"WRG\":{\"Timezone\":\"America/Anchorage\"},\"WRI\":{\"Timezone\":\"America/New_York\"},\"WRL\":{\"Timezone\":\"America/Denver\"},\"WRO\":{\"Timezone\":\"Europe/Warsaw\"},\"WRT\":{\"Timezone\":\"Europe/London\"},\"WRY\":{\"Timezone\":\"Europe/London\"},\"WRZ\":{\"Timezone\":\"Asia/Colombo\"},\"WSD\":{\"Timezone\":\"America/Denver\"},\"WSN\":{\"Timezone\":\"America/Anchorage\"},\"WSO\":{\"Timezone\":\"America/Paramaribo\"},\"WSP\":{\"Timezone\":\"America/Managua\"},\"WSR\":{\"Timezone\":\"Asia/Jayapura\"},\"WST\":{\"Timezone\":\"America/New_York\"},\"WSY\":{\"Timezone\":\"Australia/Brisbane\"},\"WSZ\":{\"Timezone\":\"Pacific/Auckland\"},\"WTA\":{\"Timezone\":\"Indian/Antananarivo\"},\"WTB\":{\"Timezone\":\"Australia/Brisbane\"},\"WTK\":{\"Timezone\":\"America/Anchorage\"},\"WTN\":{\"Timezone\":\"Europe/London\"},\"WTS\":{\"Timezone\":\"Indian/Antananarivo\"},\"WTZ\":{\"Timezone\":\"Pacific/Auckland\"},\"WUA\":{\"Timezone\":\"Asia/Shanghai\"},\"WUH\":{\"Timezone\":\"Asia/Shanghai\"},\"WUN\":{\"Timezone\":\"Australia/Perth\"},\"WUS\":{\"Timezone\":\"Asia/Shanghai\"},\"WUT\":{\"Timezone\":null},\"WUU\":{\"Timezone\":\"Africa/Juba\"},\"WUX\":{\"Timezone\":\"Asia/Shanghai\"},\"WUZ\":{\"Timezone\":\"Asia/Shanghai\"},\"WVB\":{\"Timezone\":\"Africa/Windhoek\"},\"WVI\":{\"Timezone\":null},\"WVK\":{\"Timezone\":\"Indian/Antananarivo\"},\"WVN\":{\"Timezone\":\"Europe/Berlin\"},\"WWA\":{\"Timezone\":null},\"WWD\":{\"Timezone\":\"America/New_York\"},\"WWK\":{\"Timezone\":\"Pacific/Port_Moresby\"},\"WWR\":{\"Timezone\":null},\"WWY\":{\"Timezone\":null},\"WXN\":{\"Timezone\":\"Asia/Shanghai\"},\"WYA\":{\"Timezone\":\"Australia/Adelaide\"},\"WYE\":{\"Timezone\":\"Africa/Freetown\"},\"WYN\":{\"Timezone\":\"Australia/Perth\"},\"WYS\":{\"Timezone\":\"America/Denver\"},\"XAB\":{\"Timezone\":\"Europe/Paris\"},\"XAP\":{\"Timezone\":\"America/Sao_Paulo\"},\"XAU\":{\"Timezone\":\"America/Cayenne\"},\"XBE\":{\"Timezone\":\"America/Winnipeg\"},\"XBJ\":{\"Timezone\":\"Asia/Tehran\"},\"XCH\":{\"Timezone\":\"Indian/Christmas\"},\"XCR\":{\"Timezone\":\"Europe/Paris\"},\"XCZ\":{\"Timezone\":\"Europe/Paris\"},\"XFN\":{\"Timezone\":\"Asia/Shanghai\"},\"XFW\":{\"Timezone\":\"Europe/Berlin\"},\"XGN\":{\"Timezone\":\"Africa/Luanda\"},\"XGR\":{\"Timezone\":\"America/Toronto\"},\"XIC\":{\"Timezone\":\"Asia/Shanghai\"},\"XIJ\":{\"Timezone\":null},\"XIL\":{\"Timezone\":\"Asia/Shanghai\"},\"XIQ\":{\"Timezone\":null},\"XIY\":{\"Timezone\":\"Asia/Shanghai\"},\"XJD\":{\"Timezone\":\"Asia/Qatar\"},\"XJM\":{\"Timezone\":\"Asia/Karachi\"},\"XKH\":{\"Timezone\":\"Asia/Vientiane\"},\"XKS\":{\"Timezone\":\"America/Toronto\"},\"XLB\":{\"Timezone\":\"America/Winnipeg\"},\"XLS\":{\"Timezone\":\"Africa/Dakar\"},\"XMC\":{\"Timezone\":\"Australia/Hobart\"},\"XME\":{\"Timezone\":\"Europe/Paris\"},\"XMH\":{\"Timezone\":\"Pacific/Tahiti\"},\"XMN\":{\"Timezone\":\"Asia/Shanghai\"},\"XMS\":{\"Timezone\":\"America/Guayaquil\"},\"XMW\":{\"Timezone\":\"Europe/Paris\"},\"XMY\":{\"Timezone\":\"Australia/Brisbane\"},\"XNA\":{\"Timezone\":\"America/Chicago\"},\"XNN\":{\"Timezone\":\"Asia/Shanghai\"},\"XOG\":{\"Timezone\":\"Europe/Paris\"},\"XPK\":{\"Timezone\":null},\"XPL\":{\"Timezone\":null},\"XPP\":{\"Timezone\":null},\"XQC\":{\"Timezone\":\"Asia/Baghdad\"},\"XQP\":{\"Timezone\":\"America/Costa_Rica\"},\"XRH\":{\"Timezone\":\"Australia/Sydney\"},\"XRR\":{\"Timezone\":null},\"XRY\":{\"Timezone\":\"Europe/Madrid\"},\"XSB\":{\"Timezone\":\"Asia/Dubai\"},\"XSC\":{\"Timezone\":\"America/Grand_Turk\"},\"XSD\":{\"Timezone\":\"America/Los_Angeles\"},\"XSI\":{\"Timezone\":\"America/Winnipeg\"},\"XSP\":{\"Timezone\":\"Asia/Singapore\"},\"XTG\":{\"Timezone\":\"Australia/Brisbane\"},\"XTL\":{\"Timezone\":\"America/Winnipeg\"},\"XTO\":{\"Timezone\":null},\"XUZ\":{\"Timezone\":\"Asia/Shanghai\"},\"XVS\":{\"Timezone\":\"Europe/Paris\"},\"XXN\":{\"Timezone\":null},\"XYA\":{\"Timezone\":\"Pacific/Guadalcanal\"},\"XYE\":{\"Timezone\":\"Asia/Rangoon\"},\"YAA\":{\"Timezone\":\"America/Vancouver\"},\"YAB\":{\"Timezone\":\"America/Winnipeg\"},\"YAC\":{\"Timezone\":\"America/Winnipeg\"},\"YAG\":{\"Timezone\":\"America/Winnipeg\"},\"YAH\":{\"Timezone\":null},\"YAI\":{\"Timezone\":\"America/Santiago\"},\"YAK\":{\"Timezone\":\"America/Anchorage\"},\"YAL\":{\"Timezone\":null},\"YAM\":{\"Timezone\":\"America/Toronto\"},\"YAO\":{\"Timezone\":\"Africa/Douala\"},\"YAP\":{\"Timezone\":\"Pacific/Truk\"},\"YAS\":{\"Timezone\":null},\"YAT\":{\"Timezone\":\"America/Toronto\"},\"YAX\":{\"Timezone\":\"America/Winnipeg\"},\"YAY\":{\"Timezone\":\"America/St_Johns\"},\"YAZ\":{\"Timezone\":\"America/Vancouver\"},\"YBA\":{\"Timezone\":null},\"YBB\":{\"Timezone\":\"America/Edmonton\"},\"YBC\":{\"Timezone\":\"America/Toronto\"},\"YBE\":{\"Timezone\":\"America/Regina\"},\"YBG\":{\"Timezone\":\"America/Toronto\"},\"YBI\":{\"Timezone\":\"America/Halifax\"},\"YBK\":{\"Timezone\":\"America/Winnipeg\"},\"YBL\":{\"Timezone\":\"America/Vancouver\"},\"YBO\":{\"Timezone\":\"America/Vancouver\"},\"YBP\":{\"Timezone\":\"Asia/Shanghai\"},\"YBR\":{\"Timezone\":\"America/Winnipeg\"},\"YBS\":{\"Timezone\":null},\"YBT\":{\"Timezone\":\"America/Winnipeg\"},\"YBV\":{\"Timezone\":\"America/Winnipeg\"},\"YBW\":{\"Timezone\":\"America/Vancouver\"},\"YBX\":{\"Timezone\":\"America/Blanc-Sablon\"},\"YBY\":{\"Timezone\":\"America/Edmonton\"},\"YCB\":{\"Timezone\":\"America/Edmonton\"},\"YCC\":{\"Timezone\":\"America/Toronto\"},\"YCD\":{\"Timezone\":\"America/Vancouver\"},\"YCE\":{\"Timezone\":null},\"YCG\":{\"Timezone\":\"America/Vancouver\"},\"YCH\":{\"Timezone\":\"America/Halifax\"},\"YCK\":{\"Timezone\":\"America/Edmonton\"},\"YCL\":{\"Timezone\":\"America/Halifax\"},\"YCM\":{\"Timezone\":\"America/Toronto\"},\"YCN\":{\"Timezone\":\"America/Toronto\"},\"YCO\":{\"Timezone\":\"America/Edmonton\"},\"YCQ\":{\"Timezone\":null},\"YCR\":{\"Timezone\":\"America/Winnipeg\"},\"YCS\":{\"Timezone\":\"America/Winnipeg\"},\"YCT\":{\"Timezone\":\"America/Edmonton\"},\"YCU\":{\"Timezone\":\"Asia/Shanghai\"},\"YCW\":{\"Timezone\":\"America/Vancouver\"},\"YCY\":{\"Timezone\":\"America/Toronto\"},\"YDA\":{\"Timezone\":\"America/Vancouver\"},\"YDB\":{\"Timezone\":\"America/Vancouver\"},\"YDF\":{\"Timezone\":\"America/St_Johns\"},\"YDG\":{\"Timezone\":null},\"YDL\":{\"Timezone\":\"America/Vancouver\"},\"YDN\":{\"Timezone\":\"America/Winnipeg\"},\"YDO\":{\"Timezone\":null},\"YDP\":{\"Timezone\":\"America/Halifax\"},\"YDQ\":{\"Timezone\":\"America/Dawson_Creek\"},\"YDT\":{\"Timezone\":\"America/Vancouver\"},\"YEC\":{\"Timezone\":\"Asia/Seoul\"},\"YEG\":{\"Timezone\":\"America/Edmonton\"},\"YEI\":{\"Timezone\":\"Europe/Istanbul\"},\"YEK\":{\"Timezone\":\"America/Winnipeg\"},\"YEL\":{\"Timezone\":\"America/Toronto\"},\"YEM\":{\"Timezone\":\"America/Toronto\"},\"YEN\":{\"Timezone\":\"America/Regina\"},\"YEO\":{\"Timezone\":\"Europe/London\"},\"YER\":{\"Timezone\":\"America/Toronto\"},\"YES\":{\"Timezone\":\"Asia/Tehran\"},\"YET\":{\"Timezone\":\"America/Edmonton\"},\"YEU\":{\"Timezone\":\"America/Winnipeg\"},\"YEV\":{\"Timezone\":\"America/Edmonton\"},\"YEY\":{\"Timezone\":null},\"YFA\":{\"Timezone\":\"America/Toronto\"},\"YFB\":{\"Timezone\":\"America/Toronto\"},\"YFC\":{\"Timezone\":\"America/Halifax\"},\"YFE\":{\"Timezone\":\"America/Toronto\"},\"YFH\":{\"Timezone\":\"America/Toronto\"},\"YFJ\":{\"Timezone\":\"America/Edmonton\"},\"YFO\":{\"Timezone\":\"America/Winnipeg\"},\"YFR\":{\"Timezone\":\"America/Edmonton\"},\"YFS\":{\"Timezone\":\"America/Edmonton\"},\"YFX\":{\"Timezone\":\"America/St_Johns\"},\"YGB\":{\"Timezone\":\"America/Vancouver\"},\"YGG\":{\"Timezone\":\"America/Vancouver\"},\"YGH\":{\"Timezone\":\"America/Edmonton\"},\"YGJ\":{\"Timezone\":\"Asia/Tokyo\"},\"YGK\":{\"Timezone\":\"America/Toronto\"},\"YGL\":{\"Timezone\":\"America/Toronto\"},\"YGM\":{\"Timezone\":\"America/Winnipeg\"},\"YGO\":{\"Timezone\":\"America/Winnipeg\"},\"YGP\":{\"Timezone\":\"America/Toronto\"},\"YGQ\":{\"Timezone\":\"America/Toronto\"},\"YGR\":{\"Timezone\":\"America/Toronto\"},\"YGT\":{\"Timezone\":\"America/Toronto\"},\"YGV\":{\"Timezone\":\"America/Toronto\"},\"YGW\":{\"Timezone\":\"America/Toronto\"},\"YGX\":{\"Timezone\":\"America/Winnipeg\"},\"YGZ\":{\"Timezone\":\"America/Toronto\"},\"YHA\":{\"Timezone\":\"America/St_Johns\"},\"YHB\":{\"Timezone\":\"America/Regina\"},\"YHD\":{\"Timezone\":\"America/Winnipeg\"},\"YHE\":{\"Timezone\":null},\"YHF\":{\"Timezone\":\"America/Toronto\"},\"YHI\":{\"Timezone\":\"America/Edmonton\"},\"YHK\":{\"Timezone\":\"America/Edmonton\"},\"YHM\":{\"Timezone\":\"America/Toronto\"},\"YHN\":{\"Timezone\":\"America/Toronto\"},\"YHO\":{\"Timezone\":\"America/Halifax\"},\"YHP\":{\"Timezone\":\"America/Winnipeg\"},\"YHR\":{\"Timezone\":\"America/Blanc-Sablon\"},\"YHT\":{\"Timezone\":null},\"YHU\":{\"Timezone\":\"America/Toronto\"},\"YHY\":{\"Timezone\":\"America/Edmonton\"},\"YHZ\":{\"Timezone\":\"America/Halifax\"},\"YIB\":{\"Timezone\":\"America/Coral_Harbour\"},\"YIC\":{\"Timezone\":\"Asia/Shanghai\"},\"YIE\":{\"Timezone\":null},\"YIF\":{\"Timezone\":\"America/Blanc-Sablon\"},\"YIH\":{\"Timezone\":\"Asia/Shanghai\"},\"YIK\":{\"Timezone\":\"America/Toronto\"},\"YIN\":{\"Timezone\":\"Asia/Shanghai\"},\"YIO\":{\"Timezone\":\"America/Toronto\"},\"YIP\":{\"Timezone\":\"America/New_York\"},\"YIV\":{\"Timezone\":\"America/Winnipeg\"},\"YIW\":{\"Timezone\":\"Asia/Shanghai\"},\"YJF\":{\"Timezone\":null},\"YJN\":{\"Timezone\":\"America/Toronto\"},\"YJP\":{\"Timezone\":null},\"YJT\":{\"Timezone\":\"America/St_Johns\"},\"YKA\":{\"Timezone\":\"America/Vancouver\"},\"YKF\":{\"Timezone\":\"America/Toronto\"},\"YKG\":{\"Timezone\":\"America/Toronto\"},\"YKH\":{\"Timezone\":null},\"YKJ\":{\"Timezone\":null},\"YKL\":{\"Timezone\":\"America/Toronto\"},\"YKM\":{\"Timezone\":\"America/Los_Angeles\"},\"YKN\":{\"Timezone\":\"America/Chicago\"},\"YKO\":{\"Timezone\":null},\"YKQ\":{\"Timezone\":\"America/Toronto\"},\"YKS\":{\"Timezone\":\"Asia/Yakutsk\"},\"YKU\":{\"Timezone\":\"America/Toronto\"},\"YKX\":{\"Timezone\":\"America/Toronto\"},\"YKY\":{\"Timezone\":\"America/Regina\"},\"YKZ\":{\"Timezone\":\"America/Toronto\"},\"YLC\":{\"Timezone\":\"America/Toronto\"},\"YLD\":{\"Timezone\":\"America/Toronto\"},\"YLE\":{\"Timezone\":\"America/Edmonton\"},\"YLH\":{\"Timezone\":\"America/Toronto\"},\"YLI\":{\"Timezone\":\"Europe/Helsinki\"},\"YLJ\":{\"Timezone\":\"America/Regina\"},\"YLK\":{\"Timezone\":\"America/Toronto\"},\"YLL\":{\"Timezone\":\"America/Edmonton\"},\"YLR\":{\"Timezone\":null},\"YLT\":{\"Timezone\":\"America/Toronto\"},\"YLW\":{\"Timezone\":\"America/Vancouver\"},\"YLY\":{\"Timezone\":\"America/Vancouver\"},\"YMA\":{\"Timezone\":\"America/Vancouver\"},\"YME\":{\"Timezone\":null},\"YMG\":{\"Timezone\":\"America/Toronto\"},\"YMH\":{\"Timezone\":\"America/St_Johns\"},\"YMJ\":{\"Timezone\":\"America/Regina\"},\"YML\":{\"Timezone\":null},\"YMM\":{\"Timezone\":\"America/Edmonton\"},\"YMN\":{\"Timezone\":\"America/Halifax\"},\"YMO\":{\"Timezone\":\"America/Toronto\"},\"YMS\":{\"Timezone\":\"America/Lima\"},\"YMT\":{\"Timezone\":\"America/Toronto\"},\"YMW\":{\"Timezone\":\"America/Toronto\"},\"YMX\":{\"Timezone\":\"America/Toronto\"},\"YNA\":{\"Timezone\":\"America/Toronto\"},\"YNB\":{\"Timezone\":\"Asia/Riyadh\"},\"YNC\":{\"Timezone\":\"America/Toronto\"},\"YND\":{\"Timezone\":\"America/Toronto\"},\"YNE\":{\"Timezone\":\"America/Winnipeg\"},\"YNG\":{\"Timezone\":\"America/New_York\"},\"YNJ\":{\"Timezone\":\"Asia/Shanghai\"},\"YNL\":{\"Timezone\":\"America/Regina\"},\"YNM\":{\"Timezone\":\"America/Toronto\"},\"YNO\":{\"Timezone\":\"America/Winnipeg\"},\"YNP\":{\"Timezone\":\"America/Halifax\"},\"YNS\":{\"Timezone\":\"America/Toronto\"},\"YNT\":{\"Timezone\":\"Asia/Shanghai\"},\"YNY\":{\"Timezone\":\"Asia/Seoul\"},\"YNZ\":{\"Timezone\":\"Asia/Shanghai\"},\"YOA\":{\"Timezone\":\"America/Edmonton\"},\"YOC\":{\"Timezone\":\"America/Vancouver\"},\"YOD\":{\"Timezone\":\"America/Edmonton\"},\"YOG\":{\"Timezone\":\"America/Toronto\"},\"YOH\":{\"Timezone\":\"America/Winnipeg\"},\"YOJ\":{\"Timezone\":\"America/Edmonton\"},\"YOL\":{\"Timezone\":\"Africa/Lagos\"},\"YOO\":{\"Timezone\":\"America/Toronto\"},\"YOP\":{\"Timezone\":\"America/Edmonton\"},\"YOS\":{\"Timezone\":null},\"YOW\":{\"Timezone\":\"America/Toronto\"},\"YPA\":{\"Timezone\":\"America/Regina\"},\"YPC\":{\"Timezone\":\"America/Edmonton\"},\"YPD\":{\"Timezone\":\"America/Toronto\"},\"YPE\":{\"Timezone\":\"America/Edmonton\"},\"YPG\":{\"Timezone\":\"America/Winnipeg\"},\"YPH\":{\"Timezone\":\"America/Toronto\"},\"YPJ\":{\"Timezone\":\"America/Toronto\"},\"YPL\":{\"Timezone\":\"America/Coral_Harbour\"},\"YPM\":{\"Timezone\":\"America/Winnipeg\"},\"YPN\":{\"Timezone\":\"America/Toronto\"},\"YPO\":{\"Timezone\":\"America/Toronto\"},\"YPQ\":{\"Timezone\":\"America/Toronto\"},\"YPR\":{\"Timezone\":\"America/Vancouver\"},\"YPS\":{\"Timezone\":null},\"YPW\":{\"Timezone\":\"America/Vancouver\"},\"YPX\":{\"Timezone\":\"America/Toronto\"},\"YPY\":{\"Timezone\":\"America/Edmonton\"},\"YQA\":{\"Timezone\":\"America/Toronto\"},\"YQB\":{\"Timezone\":\"America/Toronto\"},\"YQC\":{\"Timezone\":\"America/Toronto\"},\"YQD\":{\"Timezone\":\"America/Winnipeg\"},\"YQF\":{\"Timezone\":\"America/Edmonton\"},\"YQG\":{\"Timezone\":\"America/Toronto\"},\"YQH\":{\"Timezone\":\"America/Vancouver\"},\"YQI\":{\"Timezone\":\"America/Halifax\"},\"YQK\":{\"Timezone\":\"America/Winnipeg\"},\"YQL\":{\"Timezone\":\"America/Edmonton\"},\"YQM\":{\"Timezone\":\"America/Halifax\"},\"YQN\":{\"Timezone\":\"America/Toronto\"},\"YQQ\":{\"Timezone\":\"America/Vancouver\"},\"YQR\":{\"Timezone\":\"America/Regina\"},\"YQS\":{\"Timezone\":null},\"YQT\":{\"Timezone\":\"America/Toronto\"},\"YQU\":{\"Timezone\":\"America/Edmonton\"},\"YQV\":{\"Timezone\":\"America/Regina\"},\"YQW\":{\"Timezone\":\"America/Regina\"},\"YQX\":{\"Timezone\":\"America/St_Johns\"},\"YQY\":{\"Timezone\":\"America/Halifax\"},\"YQZ\":{\"Timezone\":\"America/Vancouver\"},\"YRA\":{\"Timezone\":\"America/Edmonton\"},\"YRB\":{\"Timezone\":\"America/Winnipeg\"},\"YRF\":{\"Timezone\":\"America/Halifax\"},\"YRG\":{\"Timezone\":\"America/Halifax\"},\"YRI\":{\"Timezone\":\"America/Toronto\"},\"YRJ\":{\"Timezone\":\"America/Toronto\"},\"YRL\":{\"Timezone\":\"America/Winnipeg\"},\"YRM\":{\"Timezone\":\"America/Edmonton\"},\"YRO\":{\"Timezone\":null},\"YRQ\":{\"Timezone\":\"America/Toronto\"},\"YRS\":{\"Timezone\":\"America/Winnipeg\"},\"YRT\":{\"Timezone\":\"America/Winnipeg\"},\"YRV\":{\"Timezone\":\"America/Vancouver\"},\"YSB\":{\"Timezone\":\"America/Toronto\"},\"YSC\":{\"Timezone\":\"America/Toronto\"},\"YSD\":{\"Timezone\":\"America/Edmonton\"},\"YSE\":{\"Timezone\":null},\"YSF\":{\"Timezone\":\"America/Regina\"},\"YSG\":{\"Timezone\":null},\"YSH\":{\"Timezone\":null},\"YSJ\":{\"Timezone\":\"America/Halifax\"},\"YSK\":{\"Timezone\":null},\"YSL\":{\"Timezone\":null},\"YSM\":{\"Timezone\":\"America/Edmonton\"},\"YSN\":{\"Timezone\":null},\"YSO\":{\"Timezone\":\"America/Halifax\"},\"YSP\":{\"Timezone\":\"America/Toronto\"},\"YSQ\":{\"Timezone\":null},\"YSR\":{\"Timezone\":\"America/Toronto\"},\"YST\":{\"Timezone\":\"America/Winnipeg\"},\"YSU\":{\"Timezone\":\"America/Halifax\"},\"YSY\":{\"Timezone\":\"America/Edmonton\"},\"YTA\":{\"Timezone\":\"America/Toronto\"},\"YTD\":{\"Timezone\":null},\"YTE\":{\"Timezone\":\"America/Toronto\"},\"YTF\":{\"Timezone\":\"America/Toronto\"},\"YTH\":{\"Timezone\":\"America/Winnipeg\"},\"YTL\":{\"Timezone\":\"America/Winnipeg\"},\"YTM\":{\"Timezone\":\"America/Toronto\"},\"YTQ\":{\"Timezone\":\"America/Toronto\"},\"YTR\":{\"Timezone\":\"America/Toronto\"},\"YTS\":{\"Timezone\":\"America/Toronto\"},\"YTY\":{\"Timezone\":\"Asia/Shanghai\"},\"YTZ\":{\"Timezone\":\"America/Toronto\"},\"YUB\":{\"Timezone\":\"America/Edmonton\"},\"YUD\":{\"Timezone\":\"America/Toronto\"},\"YUE\":{\"Timezone\":\"Australia/Darwin\"},\"YUL\":{\"Timezone\":\"America/Toronto\"},\"YUM\":{\"Timezone\":\"America/Phoenix\"},\"YUS\":{\"Timezone\":\"Asia/Shanghai\"},\"YUT\":{\"Timezone\":\"America/Winnipeg\"},\"YUX\":{\"Timezone\":\"America/Toronto\"},\"YUY\":{\"Timezone\":\"America/Toronto\"},\"YVA\":{\"Timezone\":\"Indian/Comoro\"},\"YVB\":{\"Timezone\":\"America/Toronto\"},\"YVC\":{\"Timezone\":\"America/Regina\"},\"YVE\":{\"Timezone\":null},\"YVG\":{\"Timezone\":\"America/Edmonton\"},\"YVM\":{\"Timezone\":\"America/Toronto\"},\"YVO\":{\"Timezone\":\"America/Toronto\"},\"YVP\":{\"Timezone\":\"America/Toronto\"},\"YVQ\":{\"Timezone\":\"America/Edmonton\"},\"YVR\":{\"Timezone\":\"America/Vancouver\"},\"YVT\":{\"Timezone\":\"America/Regina\"},\"YVV\":{\"Timezone\":\"America/Toronto\"},\"YVZ\":{\"Timezone\":\"America/Winnipeg\"},\"YWA\":{\"Timezone\":\"America/Toronto\"},\"YWB\":{\"Timezone\":\"America/Toronto\"},\"YWG\":{\"Timezone\":\"America/Winnipeg\"},\"YWH\":{\"Timezone\":\"America/Vancouver\"},\"YWJ\":{\"Timezone\":\"America/Edmonton\"},\"YWK\":{\"Timezone\":\"America/Halifax\"},\"YWL\":{\"Timezone\":\"America/Vancouver\"},\"YWM\":{\"Timezone\":\"America/St_Johns\"},\"YWP\":{\"Timezone\":\"America/Toronto\"},\"YWS\":{\"Timezone\":\"America/Vancouver\"},\"YWY\":{\"Timezone\":\"America/Edmonton\"},\"YXC\":{\"Timezone\":\"America/Edmonton\"},\"YXD\":{\"Timezone\":\"America/Edmonton\"},\"YXE\":{\"Timezone\":\"America/Regina\"},\"YXH\":{\"Timezone\":\"America/Edmonton\"},\"YXJ\":{\"Timezone\":\"America/Dawson_Creek\"},\"YXK\":{\"Timezone\":\"America/Toronto\"},\"YXL\":{\"Timezone\":\"America/Winnipeg\"},\"YXN\":{\"Timezone\":\"America/Winnipeg\"},\"YXP\":{\"Timezone\":\"America/Toronto\"},\"YXQ\":{\"Timezone\":null},\"YXR\":{\"Timezone\":\"America/Toronto\"},\"YXS\":{\"Timezone\":\"America/Vancouver\"},\"YXT\":{\"Timezone\":\"America/Vancouver\"},\"YXU\":{\"Timezone\":\"America/Toronto\"},\"YXX\":{\"Timezone\":\"America/Vancouver\"},\"YXY\":{\"Timezone\":\"America/Vancouver\"},\"YXZ\":{\"Timezone\":\"America/Toronto\"},\"YYB\":{\"Timezone\":\"America/Toronto\"},\"YYC\":{\"Timezone\":\"America/Edmonton\"},\"YYD\":{\"Timezone\":\"America/Vancouver\"},\"YYE\":{\"Timezone\":\"America/Vancouver\"},\"YYF\":{\"Timezone\":\"America/Vancouver\"},\"YYG\":{\"Timezone\":\"America/Halifax\"},\"YYH\":{\"Timezone\":\"America/Edmonton\"},\"YYJ\":{\"Timezone\":\"America/Vancouver\"},\"YYL\":{\"Timezone\":\"America/Winnipeg\"},\"YYN\":{\"Timezone\":\"America/Regina\"},\"YYQ\":{\"Timezone\":\"America/Winnipeg\"},\"YYR\":{\"Timezone\":\"America/Halifax\"},\"YYT\":{\"Timezone\":\"America/St_Johns\"},\"YYU\":{\"Timezone\":\"America/Toronto\"},\"YYW\":{\"Timezone\":\"America/Toronto\"},\"YYY\":{\"Timezone\":\"America/Toronto\"},\"YYZ\":{\"Timezone\":\"America/Toronto\"},\"YZD\":{\"Timezone\":\"America/Toronto\"},\"YZE\":{\"Timezone\":\"America/Toronto\"},\"YZF\":{\"Timezone\":\"America/Edmonton\"},\"YZG\":{\"Timezone\":\"America/Toronto\"},\"YZH\":{\"Timezone\":\"America/Edmonton\"},\"YZP\":{\"Timezone\":\"America/Vancouver\"},\"YZR\":{\"Timezone\":\"America/Toronto\"},\"YZS\":{\"Timezone\":\"America/Coral_Harbour\"},\"YZT\":{\"Timezone\":\"America/Vancouver\"},\"YZU\":{\"Timezone\":\"America/Edmonton\"},\"YZV\":{\"Timezone\":\"America/Toronto\"},\"YZW\":{\"Timezone\":\"America/Vancouver\"},\"YZX\":{\"Timezone\":\"America/Halifax\"},\"YZY\":{\"Timezone\":\"Asia/Shanghai\"},\"YZZ\":{\"Timezone\":\"America/Vancouver\"},\"ZAC\":{\"Timezone\":\"America/Winnipeg\"},\"ZAD\":{\"Timezone\":\"Europe/Zagreb\"},\"ZAG\":{\"Timezone\":\"Europe/Zagreb\"},\"ZAH\":{\"Timezone\":\"Asia/Tehran\"},\"ZAJ\":{\"Timezone\":\"Asia/Kabul\"},\"ZAL\":{\"Timezone\":\"America/Santiago\"},\"ZAM\":{\"Timezone\":\"Asia/Manila\"},\"ZAO\":{\"Timezone\":\"Europe/Paris\"},\"ZAR\":{\"Timezone\":\"Africa/Lagos\"},\"ZAT\":{\"Timezone\":\"Asia/Shanghai\"},\"ZAZ\":{\"Timezone\":\"Europe/Madrid\"},\"ZBF\":{\"Timezone\":\"America/Halifax\"},\"ZBM\":{\"Timezone\":\"America/Toronto\"},\"ZBO\":{\"Timezone\":null},\"ZBR\":{\"Timezone\":\"Asia/Tehran\"},\"ZBY\":{\"Timezone\":null},\"ZCL\":{\"Timezone\":\"America/Mexico_City\"},\"ZCN\":{\"Timezone\":\"Europe/Berlin\"},\"ZCO\":{\"Timezone\":null},\"ZEC\":{\"Timezone\":\"Africa/Johannesburg\"},\"ZEM\":{\"Timezone\":\"America/Toronto\"},\"ZER\":{\"Timezone\":\"Asia/Calcutta\"},\"ZFA\":{\"Timezone\":\"America/Vancouver\"},\"ZFD\":{\"Timezone\":\"America/Regina\"},\"ZFM\":{\"Timezone\":\"America/Edmonton\"},\"ZFN\":{\"Timezone\":\"America/Edmonton\"},\"ZGF\":{\"Timezone\":null},\"ZGI\":{\"Timezone\":\"America/Winnipeg\"},\"ZGR\":{\"Timezone\":\"America/Winnipeg\"},\"ZGS\":{\"Timezone\":\"America/Blanc-Sablon\"},\"ZGU\":{\"Timezone\":\"Pacific/Efate\"},\"ZHA\":{\"Timezone\":\"Asia/Shanghai\"},\"ZHI\":{\"Timezone\":\"Europe/Zurich\"},\"ZHY\":{\"Timezone\":\"Asia/Shanghai\"},\"ZIA\":{\"Timezone\":\"Europe/Moscow\"},\"ZIC\":{\"Timezone\":null},\"ZIG\":{\"Timezone\":\"Africa/Dakar\"},\"ZIH\":{\"Timezone\":\"America/Mexico_City\"},\"ZIN\":{\"Timezone\":\"Europe/Zurich\"},\"ZIS\":{\"Timezone\":null},\"ZIX\":{\"Timezone\":null},\"ZJG\":{\"Timezone\":null},\"ZJI\":{\"Timezone\":\"Europe/Zurich\"},\"ZJN\":{\"Timezone\":\"America/Winnipeg\"},\"ZKB\":{\"Timezone\":\"Africa/Lusaka\"},\"ZKE\":{\"Timezone\":\"America/Toronto\"},\"ZKG\":{\"Timezone\":\"America/Blanc-Sablon\"},\"ZKP\":{\"Timezone\":\"Asia/Srednekolymsk\"},\"ZLO\":{\"Timezone\":\"America/Mexico_City\"},\"ZLT\":{\"Timezone\":\"America/Blanc-Sablon\"},\"ZMG\":{\"Timezone\":\"Europe/Berlin\"},\"ZMH\":{\"Timezone\":\"America/Vancouver\"},\"ZMM\":{\"Timezone\":\"America/Mexico_City\"},\"ZMT\":{\"Timezone\":\"America/Vancouver\"},\"ZNA\":{\"Timezone\":\"America/Vancouver\"},\"ZND\":{\"Timezone\":\"Africa/Niamey\"},\"ZNE\":{\"Timezone\":\"Australia/Perth\"},\"ZNF\":{\"Timezone\":\"Europe/Berlin\"},\"ZNZ\":{\"Timezone\":\"Africa/Dar_es_Salaam\"},\"ZOS\":{\"Timezone\":\"America/Santiago\"},\"ZPB\":{\"Timezone\":\"America/Winnipeg\"},\"ZPC\":{\"Timezone\":\"America/Santiago\"},\"ZPH\":{\"Timezone\":\"America/New_York\"},\"ZQL\":{\"Timezone\":\"Europe/Berlin\"},\"ZQN\":{\"Timezone\":\"Pacific/Auckland\"},\"ZQW\":{\"Timezone\":\"Europe/Berlin\"},\"ZQZ\":{\"Timezone\":null},\"ZRH\":{\"Timezone\":\"Europe/Zurich\"},\"ZRJ\":{\"Timezone\":\"America/Winnipeg\"},\"ZSA\":{\"Timezone\":\"America/Nassau\"},\"ZSE\":{\"Timezone\":\"Indian/Reunion\"},\"ZSJ\":{\"Timezone\":\"America/Winnipeg\"},\"ZST\":{\"Timezone\":null},\"ZSW\":{\"Timezone\":\"America/Vancouver\"},\"ZTA\":{\"Timezone\":null},\"ZTB\":{\"Timezone\":\"America/Blanc-Sablon\"},\"ZTH\":{\"Timezone\":\"Europe/Athens\"},\"ZTM\":{\"Timezone\":\"America/Winnipeg\"},\"ZTR\":{\"Timezone\":\"Europe/Kiev\"},\"ZTU\":{\"Timezone\":\"Asia/Baku\"},\"ZUC\":{\"Timezone\":null},\"ZUH\":{\"Timezone\":\"Asia/Shanghai\"},\"ZUM\":{\"Timezone\":\"America/Halifax\"},\"ZVA\":{\"Timezone\":\"Indian/Antananarivo\"},\"ZVK\":{\"Timezone\":\"Asia/Vientiane\"},\"ZWA\":{\"Timezone\":\"Indian/Antananarivo\"},\"ZWL\":{\"Timezone\":\"America/Regina\"},\"ZYI\":{\"Timezone\":\"Asia/Shanghai\"},\"ZYL\":{\"Timezone\":\"Asia/Dhaka\"},\"ZZU\":{\"Timezone\":\"Africa/Blantyre\"},\"ZZV\":{\"Timezone\":null}}");
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./airlines/aa.js": 11,
-	"./airlines/aaC1.js": 12,
-	"./airlines/ac.js": 13,
-	"./airlines/af.js": 14,
-	"./airlines/as.js": 15,
-	"./airlines/az.js": 16,
-	"./airlines/ba.js": 17,
-	"./airlines/cz.js": 18,
-	"./airlines/dl.js": 19,
-	"./airlines/ib.js": 20,
-	"./airlines/kl.js": 21,
-	"./airlines/la.js": 22,
-	"./airlines/lh.js": 23,
-	"./airlines/lx.js": 24,
-	"./airlines/oa.js": 25,
-	"./airlines/ps.js": 26,
-	"./airlines/qf.js": 27,
-	"./airlines/tk.js": 28,
-	"./index.js": 9,
-	"./meta/kayak.js": 29,
-	"./meta/momondo.js": 30,
-	"./meta/skyscanner.js": 31,
-	"./otas/cheapoair.js": 32,
-	"./otas/edreams.js": 33,
-	"./otas/etraveli.js": 34,
-	"./otas/expedia.js": 35,
-	"./otas/priceline.js": 36
+	"./airlines/aa.js": 14,
+	"./airlines/aaSabre.js": 15,
+	"./airlines/ac.js": 21,
+	"./airlines/af.js": 22,
+	"./airlines/as.js": 23,
+	"./airlines/az.js": 24,
+	"./airlines/ba.js": 25,
+	"./airlines/cz.js": 26,
+	"./airlines/dl.js": 27,
+	"./airlines/ib.js": 28,
+	"./airlines/kl.js": 29,
+	"./airlines/la.js": 30,
+	"./airlines/lh.js": 31,
+	"./airlines/lx.js": 32,
+	"./airlines/oa.js": 33,
+	"./airlines/ps.js": 34,
+	"./airlines/qf.js": 35,
+	"./airlines/tk.js": 36,
+	"./index.js": 10,
+	"./meta/kayak.js": 37,
+	"./meta/momondo.js": 38,
+	"./meta/skyscanner.js": 39,
+	"./otas/cheapoair.js": 40,
+	"./otas/edreams.js": 41,
+	"./otas/etraveli.js": 42,
+	"./otas/expedia.js": 43,
+	"./otas/priceline.js": 44
 };
 
 
@@ -1641,10 +6334,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 10;
+webpackContext.id = 13;
 
 /***/ }),
-/* 11 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1830,7 +6523,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 
 
 /***/ }),
-/* 12 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1839,27 +6532,65 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
+/* harmony import */ var _json_timezones_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(12);
+var _json_timezones_json__WEBPACK_IMPORTED_MODULE_4___namespace = /*#__PURE__*/__webpack_require__.t(12, 1);
 
 
 
 
 
-const aac1Editions = [
-  { value: "CA", name: "Canada" },
-  { value: "US", name: "United States" },
-  { value: "GB", name: "United Kingdom" }
+
+const aaSabreEditions = [
+  { value: "BS", name: "Bahamas (USD)" },
+  { value: "VG", name: "British Virgin Islands (USD)" },
+  { value: "CA", name: "Canada (CAD)" },
+  { value: "PR", name: "Puerto Rico (USD)" },
+  { value: "GB", name: "United Kingdom (GBP)" },
+  { value: "US", name: "United States (USD)" }
 ];
 
-function printAAc1() {
-  var dateToEpoch = function(y, m, d) {
-    var dateStr =
+function printAaSabre() {
+  let datetimeToEpoch = function(y, m, d, t, ap) {
+    /**
+     * This function converts a datetime from the local timezone of the
+     * departing airport to its epoch value, while accounting for
+     * daylight savings time (DST) differences in future months.
+     *
+     * This function accepts the IATA code for a given airport and
+     * retrieves the timezone from a static array of known airport data
+     * (sourced from https://openflights.org/data.html, reduced to
+     * airports with IATA code, and converted to keyed json format).
+     * We use that timezone and Moment Timezone to account for DST if
+     * the future date and timezone fall in a known DST locale.
+     *
+     * Future TODO: The static airport data adds bloat and must be
+     * manually updated. Moment Timezone also adds bloat. Consider
+     * alternative implementations?
+     *
+     * @param y 4-digit year
+     * @param m 2-digit month
+     * @param d 2-digit day
+     * @param t 24-hour formatted time (HH:MM)
+     * @param y 4-digit year
+     * @param ap IATA airport code
+     * @returns Adjusted datetime string with offset in format YYYY-MM-DDTHH:MM:00+XX:00
+     */
+
+    let datetimeStr =
       y +
       "-" +
       ("0" + m).slice(-2) +
       "-" +
       ("0" + d).slice(-2) +
-      "T00:00:00-06:00";
-    return Date.parse(dateStr);
+      "T" +
+      t +
+      ":00";
+
+    // use Moment Timezone to adjust for (if needed) DST of airport:
+    // (data is filtered to only +2 years to reduce file size)
+    let moment = __webpack_require__(16);
+    let adjustedStr = moment.tz(datetimeStr, _json_timezones_json__WEBPACK_IMPORTED_MODULE_4__[ap].Timezone).format();
+    return Date.parse(adjustedStr);
   };
 
   // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
@@ -1872,10 +6603,10 @@ function printAAc1() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printAAc1");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printAaSabre");
       return false;
     }
-    var url = "https://www.aa.com/goto/metasearch?ITEN=GOOGLE,,";
+    var url = "https://www.aa.com/goto/metasearch?ITEN=GOOGLE,0,";
     url += (edition || "US") + ",";
     if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === 1) {
       url += "oneWay";
@@ -1893,21 +6624,32 @@ function printAAc1() {
     url += _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].orig + ",0," + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].dest;
     url += ",0";
 
-    for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length; i++) {
-      url +=
-        ",false," +
-        dateToEpoch(
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[0].dep.year,
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[0].dep.month,
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[0].dep.day
-        );
+    if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length > 1) {
+      for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length; i++) {
+        url += ",0,0";
+      }
+    } else {
+      url += ",0"; // for oneWay only
     }
 
-    if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length > 1) {
+    if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length == 2) {
+      // insert additional parameter zeros for roundtrips or 2-leg multi-city:
       url += ",0,0";
+    } else if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length == 1) {
+      // insert the departure time before the price for oneWay only:
+      url +=
+        "," +
+        datetimeToEpoch(
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].dep.year,
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].dep.month,
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].dep.day,
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].dep.time24,
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[0].orig
+        );
     }
     url += "," + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].price + ",1,";
 
+    // this part for RT and multi-city only:
     if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length > 1) {
       var addon = "";
       for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length; i++) {
@@ -1917,10 +6659,12 @@ function printAAc1() {
           "|" +
           _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].dest +
           "|0|0|";
-        addon += dateToEpoch(
+        addon += datetimeToEpoch(
           _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[0].dep.year,
           _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[0].dep.month,
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[0].dep.day
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[0].dep.day,
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[0].dep.time24,
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[0].orig
         );
       }
       url += encodeURIComponent(addon) + ",";
@@ -1928,13 +6672,14 @@ function printAAc1() {
 
     var itinsegs = new Array();
 
-    //Build multi-city search based on legs
+    // Build multi-city search based on legs:
     for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length; i++) {
-      // walks each leg
+      // outer loop traverses each leg
       for (var j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg.length; j++) {
-        //walks each segment of leg
+        // inner loop traverses each segment of the leg
         var k = 0;
-        // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
+        // skip this segment ONLY IF the flight number is the
+        // same as the next segment and it is only a layover
         while (j + k < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg.length - 1) {
           if (
             _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].fnr !==
@@ -1944,29 +6689,24 @@ function printAAc1() {
             break;
           k++;
         }
-        var itinseg =
+        let itinseg =
           "#" +
           _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].carrier +
           "|" +
           _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].fnr +
           "|" +
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].bookingclass;
-        itinseg += "|" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].orig;
-        itinseg += "|" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].dest;
-        itinseg +=
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].bookingclass +
           "|" +
-          Date.parse(
-            _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.year +
-              "-" +
-              ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.month).slice(-2) +
-              "-" +
-              ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.day).slice(-2) +
-              "T" +
-              ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.time).slice(-5) +
-              ":00" +
-              (typeof _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.offset === "undefined"
-                ? "+00:00"
-                : _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.offset)
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].orig +
+          "|" +
+          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].dest +
+          "|" +
+          datetimeToEpoch(
+            _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.year,
+            _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.month,
+            _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.day,
+            _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.time24,
+            _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].orig
           );
         itinseg += "|" + i;
         itinsegs.push(itinseg);
@@ -1976,13 +6716,13 @@ function printAAc1() {
     url += encodeURIComponent(itinsegs.join(""));
     return url;
   };
-  var url = createUrl(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].aac1Edition.toUpperCase());
+  var url = createUrl(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].aaSabreEdition.toUpperCase());
   if (!url) {
     return;
   }
   var extra =
     ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
-  extra += aac1Editions
+  extra += aaSabreEditions
     .map(function(edition, i) {
       return (
         '<a href="' +
@@ -2003,12 +6743,722 @@ function printAAc1() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printAAc1);
-Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("American (America & UK)", "aac1Edition", aac1Editions, "US");
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printAaSabre);
+Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])(
+  "American (America & UK)",
+  "aaSabreEdition",
+  aaSabreEditions,
+  "US"
+);
 
 
 /***/ }),
-/* 13 */
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var moment = module.exports = __webpack_require__(17);
+moment.tz.load(__webpack_require__(20));
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//! moment-timezone.js
+//! version : 0.5.27
+//! Copyright (c) JS Foundation and other contributors
+//! license : MIT
+//! github.com/moment/moment-timezone
+
+(function (root, factory) {
+	"use strict";
+
+	/*global define*/
+	if ( true && module.exports) {
+		module.exports = factory(__webpack_require__(9)); // Node
+	} else if (true) {
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));                 // AMD
+	} else {}
+}(this, function (moment) {
+	"use strict";
+
+	// Do not load moment-timezone a second time.
+	// if (moment.tz !== undefined) {
+	// 	logError('Moment Timezone ' + moment.tz.version + ' was already loaded ' + (moment.tz.dataVersion ? 'with data from ' : 'without any data') + moment.tz.dataVersion);
+	// 	return moment;
+	// }
+
+	var VERSION = "0.5.27",
+		zones = {},
+		links = {},
+		names = {},
+		guesses = {},
+		cachedGuess;
+
+	if (!moment || typeof moment.version !== 'string') {
+		logError('Moment Timezone requires Moment.js. See https://momentjs.com/timezone/docs/#/use-it/browser/');
+	}
+
+	var momentVersion = moment.version.split('.'),
+		major = +momentVersion[0],
+		minor = +momentVersion[1];
+
+	// Moment.js version check
+	if (major < 2 || (major === 2 && minor < 6)) {
+		logError('Moment Timezone requires Moment.js >= 2.6.0. You are using Moment.js ' + moment.version + '. See momentjs.com');
+	}
+
+	/************************************
+		Unpacking
+	************************************/
+
+	function charCodeToInt(charCode) {
+		if (charCode > 96) {
+			return charCode - 87;
+		} else if (charCode > 64) {
+			return charCode - 29;
+		}
+		return charCode - 48;
+	}
+
+	function unpackBase60(string) {
+		var i = 0,
+			parts = string.split('.'),
+			whole = parts[0],
+			fractional = parts[1] || '',
+			multiplier = 1,
+			num,
+			out = 0,
+			sign = 1;
+
+		// handle negative numbers
+		if (string.charCodeAt(0) === 45) {
+			i = 1;
+			sign = -1;
+		}
+
+		// handle digits before the decimal
+		for (i; i < whole.length; i++) {
+			num = charCodeToInt(whole.charCodeAt(i));
+			out = 60 * out + num;
+		}
+
+		// handle digits after the decimal
+		for (i = 0; i < fractional.length; i++) {
+			multiplier = multiplier / 60;
+			num = charCodeToInt(fractional.charCodeAt(i));
+			out += num * multiplier;
+		}
+
+		return out * sign;
+	}
+
+	function arrayToInt (array) {
+		for (var i = 0; i < array.length; i++) {
+			array[i] = unpackBase60(array[i]);
+		}
+	}
+
+	function intToUntil (array, length) {
+		for (var i = 0; i < length; i++) {
+			array[i] = Math.round((array[i - 1] || 0) + (array[i] * 60000)); // minutes to milliseconds
+		}
+
+		array[length - 1] = Infinity;
+	}
+
+	function mapIndices (source, indices) {
+		var out = [], i;
+
+		for (i = 0; i < indices.length; i++) {
+			out[i] = source[indices[i]];
+		}
+
+		return out;
+	}
+
+	function unpack (string) {
+		var data = string.split('|'),
+			offsets = data[2].split(' '),
+			indices = data[3].split(''),
+			untils  = data[4].split(' ');
+
+		arrayToInt(offsets);
+		arrayToInt(indices);
+		arrayToInt(untils);
+
+		intToUntil(untils, indices.length);
+
+		return {
+			name       : data[0],
+			abbrs      : mapIndices(data[1].split(' '), indices),
+			offsets    : mapIndices(offsets, indices),
+			untils     : untils,
+			population : data[5] | 0
+		};
+	}
+
+	/************************************
+		Zone object
+	************************************/
+
+	function Zone (packedString) {
+		if (packedString) {
+			this._set(unpack(packedString));
+		}
+	}
+
+	Zone.prototype = {
+		_set : function (unpacked) {
+			this.name       = unpacked.name;
+			this.abbrs      = unpacked.abbrs;
+			this.untils     = unpacked.untils;
+			this.offsets    = unpacked.offsets;
+			this.population = unpacked.population;
+		},
+
+		_index : function (timestamp) {
+			var target = +timestamp,
+				untils = this.untils,
+				i;
+
+			for (i = 0; i < untils.length; i++) {
+				if (target < untils[i]) {
+					return i;
+				}
+			}
+		},
+
+		parse : function (timestamp) {
+			var target  = +timestamp,
+				offsets = this.offsets,
+				untils  = this.untils,
+				max     = untils.length - 1,
+				offset, offsetNext, offsetPrev, i;
+
+			for (i = 0; i < max; i++) {
+				offset     = offsets[i];
+				offsetNext = offsets[i + 1];
+				offsetPrev = offsets[i ? i - 1 : i];
+
+				if (offset < offsetNext && tz.moveAmbiguousForward) {
+					offset = offsetNext;
+				} else if (offset > offsetPrev && tz.moveInvalidForward) {
+					offset = offsetPrev;
+				}
+
+				if (target < untils[i] - (offset * 60000)) {
+					return offsets[i];
+				}
+			}
+
+			return offsets[max];
+		},
+
+		abbr : function (mom) {
+			return this.abbrs[this._index(mom)];
+		},
+
+		offset : function (mom) {
+			logError("zone.offset has been deprecated in favor of zone.utcOffset");
+			return this.offsets[this._index(mom)];
+		},
+
+		utcOffset : function (mom) {
+			return this.offsets[this._index(mom)];
+		}
+	};
+
+	/************************************
+		Current Timezone
+	************************************/
+
+	function OffsetAt(at) {
+		var timeString = at.toTimeString();
+		var abbr = timeString.match(/\([a-z ]+\)/i);
+		if (abbr && abbr[0]) {
+			// 17:56:31 GMT-0600 (CST)
+			// 17:56:31 GMT-0600 (Central Standard Time)
+			abbr = abbr[0].match(/[A-Z]/g);
+			abbr = abbr ? abbr.join('') : undefined;
+		} else {
+			// 17:56:31 CST
+			// 17:56:31 GMT+0800 (台北標準時間)
+			abbr = timeString.match(/[A-Z]{3,5}/g);
+			abbr = abbr ? abbr[0] : undefined;
+		}
+
+		if (abbr === 'GMT') {
+			abbr = undefined;
+		}
+
+		this.at = +at;
+		this.abbr = abbr;
+		this.offset = at.getTimezoneOffset();
+	}
+
+	function ZoneScore(zone) {
+		this.zone = zone;
+		this.offsetScore = 0;
+		this.abbrScore = 0;
+	}
+
+	ZoneScore.prototype.scoreOffsetAt = function (offsetAt) {
+		this.offsetScore += Math.abs(this.zone.utcOffset(offsetAt.at) - offsetAt.offset);
+		if (this.zone.abbr(offsetAt.at).replace(/[^A-Z]/g, '') !== offsetAt.abbr) {
+			this.abbrScore++;
+		}
+	};
+
+	function findChange(low, high) {
+		var mid, diff;
+
+		while ((diff = ((high.at - low.at) / 12e4 | 0) * 6e4)) {
+			mid = new OffsetAt(new Date(low.at + diff));
+			if (mid.offset === low.offset) {
+				low = mid;
+			} else {
+				high = mid;
+			}
+		}
+
+		return low;
+	}
+
+	function userOffsets() {
+		var startYear = new Date().getFullYear() - 2,
+			last = new OffsetAt(new Date(startYear, 0, 1)),
+			offsets = [last],
+			change, next, i;
+
+		for (i = 1; i < 48; i++) {
+			next = new OffsetAt(new Date(startYear, i, 1));
+			if (next.offset !== last.offset) {
+				change = findChange(last, next);
+				offsets.push(change);
+				offsets.push(new OffsetAt(new Date(change.at + 6e4)));
+			}
+			last = next;
+		}
+
+		for (i = 0; i < 4; i++) {
+			offsets.push(new OffsetAt(new Date(startYear + i, 0, 1)));
+			offsets.push(new OffsetAt(new Date(startYear + i, 6, 1)));
+		}
+
+		return offsets;
+	}
+
+	function sortZoneScores (a, b) {
+		if (a.offsetScore !== b.offsetScore) {
+			return a.offsetScore - b.offsetScore;
+		}
+		if (a.abbrScore !== b.abbrScore) {
+			return a.abbrScore - b.abbrScore;
+		}
+		if (a.zone.population !== b.zone.population) {
+			return b.zone.population - a.zone.population;
+		}
+		return b.zone.name.localeCompare(a.zone.name);
+	}
+
+	function addToGuesses (name, offsets) {
+		var i, offset;
+		arrayToInt(offsets);
+		for (i = 0; i < offsets.length; i++) {
+			offset = offsets[i];
+			guesses[offset] = guesses[offset] || {};
+			guesses[offset][name] = true;
+		}
+	}
+
+	function guessesForUserOffsets (offsets) {
+		var offsetsLength = offsets.length,
+			filteredGuesses = {},
+			out = [],
+			i, j, guessesOffset;
+
+		for (i = 0; i < offsetsLength; i++) {
+			guessesOffset = guesses[offsets[i].offset] || {};
+			for (j in guessesOffset) {
+				if (guessesOffset.hasOwnProperty(j)) {
+					filteredGuesses[j] = true;
+				}
+			}
+		}
+
+		for (i in filteredGuesses) {
+			if (filteredGuesses.hasOwnProperty(i)) {
+				out.push(names[i]);
+			}
+		}
+
+		return out;
+	}
+
+	function rebuildGuess () {
+
+		// use Intl API when available and returning valid time zone
+		try {
+			var intlName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+			if (intlName && intlName.length > 3) {
+				var name = names[normalizeName(intlName)];
+				if (name) {
+					return name;
+				}
+				logError("Moment Timezone found " + intlName + " from the Intl api, but did not have that data loaded.");
+			}
+		} catch (e) {
+			// Intl unavailable, fall back to manual guessing.
+		}
+
+		var offsets = userOffsets(),
+			offsetsLength = offsets.length,
+			guesses = guessesForUserOffsets(offsets),
+			zoneScores = [],
+			zoneScore, i, j;
+
+		for (i = 0; i < guesses.length; i++) {
+			zoneScore = new ZoneScore(getZone(guesses[i]), offsetsLength);
+			for (j = 0; j < offsetsLength; j++) {
+				zoneScore.scoreOffsetAt(offsets[j]);
+			}
+			zoneScores.push(zoneScore);
+		}
+
+		zoneScores.sort(sortZoneScores);
+
+		return zoneScores.length > 0 ? zoneScores[0].zone.name : undefined;
+	}
+
+	function guess (ignoreCache) {
+		if (!cachedGuess || ignoreCache) {
+			cachedGuess = rebuildGuess();
+		}
+		return cachedGuess;
+	}
+
+	/************************************
+		Global Methods
+	************************************/
+
+	function normalizeName (name) {
+		return (name || '').toLowerCase().replace(/\//g, '_');
+	}
+
+	function addZone (packed) {
+		var i, name, split, normalized;
+
+		if (typeof packed === "string") {
+			packed = [packed];
+		}
+
+		for (i = 0; i < packed.length; i++) {
+			split = packed[i].split('|');
+			name = split[0];
+			normalized = normalizeName(name);
+			zones[normalized] = packed[i];
+			names[normalized] = name;
+			addToGuesses(normalized, split[2].split(' '));
+		}
+	}
+
+	function getZone (name, caller) {
+
+		name = normalizeName(name);
+
+		var zone = zones[name];
+		var link;
+
+		if (zone instanceof Zone) {
+			return zone;
+		}
+
+		if (typeof zone === 'string') {
+			zone = new Zone(zone);
+			zones[name] = zone;
+			return zone;
+		}
+
+		// Pass getZone to prevent recursion more than 1 level deep
+		if (links[name] && caller !== getZone && (link = getZone(links[name], getZone))) {
+			zone = zones[name] = new Zone();
+			zone._set(link);
+			zone.name = names[name];
+			return zone;
+		}
+
+		return null;
+	}
+
+	function getNames () {
+		var i, out = [];
+
+		for (i in names) {
+			if (names.hasOwnProperty(i) && (zones[i] || zones[links[i]]) && names[i]) {
+				out.push(names[i]);
+			}
+		}
+
+		return out.sort();
+	}
+
+	function addLink (aliases) {
+		var i, alias, normal0, normal1;
+
+		if (typeof aliases === "string") {
+			aliases = [aliases];
+		}
+
+		for (i = 0; i < aliases.length; i++) {
+			alias = aliases[i].split('|');
+
+			normal0 = normalizeName(alias[0]);
+			normal1 = normalizeName(alias[1]);
+
+			links[normal0] = normal1;
+			names[normal0] = alias[0];
+
+			links[normal1] = normal0;
+			names[normal1] = alias[1];
+		}
+	}
+
+	function loadData (data) {
+		addZone(data.zones);
+		addLink(data.links);
+		tz.dataVersion = data.version;
+	}
+
+	function zoneExists (name) {
+		if (!zoneExists.didShowError) {
+			zoneExists.didShowError = true;
+				logError("moment.tz.zoneExists('" + name + "') has been deprecated in favor of !moment.tz.zone('" + name + "')");
+		}
+		return !!getZone(name);
+	}
+
+	function needsOffset (m) {
+		var isUnixTimestamp = (m._f === 'X' || m._f === 'x');
+		return !!(m._a && (m._tzm === undefined) && !isUnixTimestamp);
+	}
+
+	function logError (message) {
+		if (typeof console !== 'undefined' && typeof console.error === 'function') {
+			console.error(message);
+		}
+	}
+
+	/************************************
+		moment.tz namespace
+	************************************/
+
+	function tz (input) {
+		var args = Array.prototype.slice.call(arguments, 0, -1),
+			name = arguments[arguments.length - 1],
+			zone = getZone(name),
+			out  = moment.utc.apply(null, args);
+
+		if (zone && !moment.isMoment(input) && needsOffset(out)) {
+			out.add(zone.parse(out), 'minutes');
+		}
+
+		out.tz(name);
+
+		return out;
+	}
+
+	tz.version      = VERSION;
+	tz.dataVersion  = '';
+	tz._zones       = zones;
+	tz._links       = links;
+	tz._names       = names;
+	tz.add          = addZone;
+	tz.link         = addLink;
+	tz.load         = loadData;
+	tz.zone         = getZone;
+	tz.zoneExists   = zoneExists; // deprecated in 0.1.0
+	tz.guess        = guess;
+	tz.names        = getNames;
+	tz.Zone         = Zone;
+	tz.unpack       = unpack;
+	tz.unpackBase60 = unpackBase60;
+	tz.needsOffset  = needsOffset;
+	tz.moveInvalidForward   = true;
+	tz.moveAmbiguousForward = false;
+
+	/************************************
+		Interface with Moment.js
+	************************************/
+
+	var fn = moment.fn;
+
+	moment.tz = tz;
+
+	moment.defaultZone = null;
+
+	moment.updateOffset = function (mom, keepTime) {
+		var zone = moment.defaultZone,
+			offset;
+
+		if (mom._z === undefined) {
+			if (zone && needsOffset(mom) && !mom._isUTC) {
+				mom._d = moment.utc(mom._a)._d;
+				mom.utc().add(zone.parse(mom), 'minutes');
+			}
+			mom._z = zone;
+		}
+		if (mom._z) {
+			offset = mom._z.utcOffset(mom);
+			if (Math.abs(offset) < 16) {
+				offset = offset / 60;
+			}
+			if (mom.utcOffset !== undefined) {
+				var z = mom._z;
+				mom.utcOffset(-offset, keepTime);
+				mom._z = z;
+			} else {
+				mom.zone(offset, keepTime);
+			}
+		}
+	};
+
+	fn.tz = function (name, keepTime) {
+		if (name) {
+			if (typeof name !== 'string') {
+				throw new Error('Time zone name must be a string, got ' + name + ' [' + typeof name + ']');
+			}
+			this._z = getZone(name);
+			if (this._z) {
+				moment.updateOffset(this, keepTime);
+			} else {
+				logError("Moment Timezone has no data for " + name + ". See http://momentjs.com/timezone/docs/#/data-loading/.");
+			}
+			return this;
+		}
+		if (this._z) { return this._z.name; }
+	};
+
+	function abbrWrap (old) {
+		return function () {
+			if (this._z) { return this._z.abbr(this); }
+			return old.call(this);
+		};
+	}
+
+	function resetZoneWrap (old) {
+		return function () {
+			this._z = null;
+			return old.apply(this, arguments);
+		};
+	}
+
+	function resetZoneWrap2 (old) {
+		return function () {
+			if (arguments.length > 0) this._z = null;
+			return old.apply(this, arguments);
+		};
+	}
+
+	fn.zoneName  = abbrWrap(fn.zoneName);
+	fn.zoneAbbr  = abbrWrap(fn.zoneAbbr);
+	fn.utc       = resetZoneWrap(fn.utc);
+	fn.local     = resetZoneWrap(fn.local);
+	fn.utcOffset = resetZoneWrap2(fn.utcOffset);
+
+	moment.tz.setDefault = function(name) {
+		if (major < 2 || (major === 2 && minor < 9)) {
+			logError('Moment Timezone setDefault() requires Moment.js >= 2.9.0. You are using Moment.js ' + moment.version + '.');
+		}
+		moment.defaultZone = name ? getZone(name) : null;
+		return moment;
+	};
+
+	// Cloning a moment should include the _z property.
+	var momentProperties = moment.momentProperties;
+	if (Object.prototype.toString.call(momentProperties) === '[object Array]') {
+		// moment 2.8.1+
+		momentProperties.push('_z');
+		momentProperties.push('_a');
+	} else if (momentProperties) {
+		// moment 2.7.0
+		momentProperties._z = null;
+	}
+
+	// INJECT DATA
+
+	return moment;
+}));
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if (!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if (!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./de": 11,
+	"./de.js": 11
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	if(!__webpack_require__.o(map, req)) {
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return map[req];
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 19;
+
+/***/ }),
+/* 20 */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"version\":\"2019c\",\"zones\":[\"Africa/Abidjan|GMT|0|0||48e5\",\"Africa/Nairobi|EAT|-30|0||47e5\",\"Africa/Algiers|CET|-10|0||26e5\",\"Africa/Lagos|WAT|-10|0||17e6\",\"Africa/Khartoum|CAT|-20|0||51e5\",\"Africa/Cairo|EET|-20|0||15e6\",\"Africa/Casablanca|+01 +00|-10 0|0101010|22sq0 e00 28M0 e00 2600 gM0|32e5\",\"Europe/Paris|CET CEST|-10 -20|0101010|22k10 1o00 11A0 1qM0 WM0 1qM0|11e6\",\"Africa/Johannesburg|SAST|-20|0||84e5\",\"America/Adak|HST HDT|a0 90|0101010|22bM0 1zb0 Rd0 1zb0 Op0 1zb0|326\",\"America/Anchorage|AKST AKDT|90 80|0101010|22bL0 1zb0 Rd0 1zb0 Op0 1zb0|30e4\",\"America/Santo_Domingo|AST|40|0||29e5\",\"America/Sao_Paulo|-03|30|0||20e6\",\"America/Asuncion|-03 -04|30 40|0101010|22hf0 1ip0 19X0 1fB0 19X0 1fB0|28e5\",\"America/Panama|EST|50|0||15e5\",\"America/Mexico_City|CST CDT|60 50|0101010|22mU0 1lb0 14p0 1nX0 11B0 1nX0|20e6\",\"America/Managua|CST|60|0||22e5\",\"America/Caracas|-04|40|0||29e5\",\"America/Lima|-05|50|0||11e6\",\"America/Denver|MST MDT|70 60|0101010|22bJ0 1zb0 Rd0 1zb0 Op0 1zb0|26e5\",\"America/Chicago|CST CDT|60 50|0101010|22bI0 1zb0 Rd0 1zb0 Op0 1zb0|92e5\",\"America/Chihuahua|MST MDT|70 60|0101010|22mV0 1lb0 14p0 1nX0 11B0 1nX0|81e4\",\"America/Phoenix|MST|70|0||42e5\",\"America/Los_Angeles|PST PDT|80 70|0101010|22bK0 1zb0 Rd0 1zb0 Op0 1zb0|15e6\",\"America/New_York|EST EDT|50 40|0101010|22bH0 1zb0 Rd0 1zb0 Op0 1zb0|21e6\",\"America/Halifax|AST ADT|40 30|0101010|22bG0 1zb0 Rd0 1zb0 Op0 1zb0|39e4\",\"America/Godthab|-03 -02|30 20|0101010|22k10 1o00 11A0 1qM0 WM0 1qM0|17e3\",\"America/Havana|CST CDT|50 40|0101010|22bF0 1zc0 Rc0 1zc0 Oo0 1zc0|21e5\",\"America/Miquelon|-03 -02|30 20|0101010|22bF0 1zb0 Rd0 1zb0 Op0 1zb0|61e2\",\"America/Noronha|-02|20|0||30e2\",\"America/Santiago|-03 -04|30 40|0101010|22mP0 11B0 1nX0 11B0 1nX0 11B0|62e5\",\"Atlantic/Azores|-01 +00|10 0|0101010|22k10 1o00 11A0 1qM0 WM0 1qM0|25e4\",\"America/St_Johns|NST NDT|3u 2u|0101010|22bFu 1zb0 Rd0 1zb0 Op0 1zb0|11e4\",\"Asia/Kuala_Lumpur|+08|-80|0||71e5\",\"Asia/Bangkok|+07|-70|0||15e6\",\"Asia/Vladivostok|+10|-a0|0||60e4\",\"Asia/Sakhalin|+11|-b0|0||58e4\",\"Asia/Tashkent|+05|-50|0||23e5\",\"Pacific/Auckland|NZDT NZST|-d0 -c0|0101010|22mC0 1a00 1fA0 1a00 1fA0 1a00|14e5\",\"Europe/Istanbul|+03|-30|0||13e6\",\"Antarctica/Troll|+00 +02|0 -20|0101010|22k10 1o00 11A0 1qM0 WM0 1qM0|40\",\"Asia/Dhaka|+06|-60|0||16e6\",\"Asia/Amman|EET EEST|-20 -30|0101010|22ja0 1qM0 WM0 1qM0 11A0 1o00|25e5\",\"Asia/Kamchatka|+12|-c0|0||18e4\",\"Asia/Dubai|+04|-40|0||39e5\",\"Asia/Beirut|EET EEST|-20 -30|0101010|22jW0 1nX0 11B0 1qL0 WN0 1qL0|22e5\",\"Asia/Kolkata|IST|-5u|0||15e6\",\"Asia/Chita|+09|-90|0||33e4\",\"Asia/Shanghai|CST|-80|0||23e6\",\"Asia/Colombo|+0530|-5u|0||22e5\",\"Asia/Damascus|EET EEST|-20 -30|0101010|22ja0 1qL0 WN0 1qL0 WN0 1qL0|26e5\",\"Europe/Athens|EET EEST|-20 -30|0101010|22k10 1o00 11A0 1qM0 WM0 1qM0|35e5\",\"Asia/Gaza|EET EEST|-20 -30|0101010|22ja0 1rc0 Wo0 1rc0 Wo0 1rc0|18e5\",\"Asia/Hong_Kong|HKT|-80|0||73e5\",\"Asia/Jakarta|WIB|-70|0||31e6\",\"Asia/Jayapura|WIT|-90|0||26e4\",\"Asia/Jerusalem|IST IDT|-20 -30|0101010|22jc0 1oL0 10N0 1rz0 W10 1rz0|81e4\",\"Asia/Kabul|+0430|-4u|0||46e5\",\"Asia/Karachi|PKT|-50|0||24e6\",\"Asia/Kathmandu|+0545|-5J|0||12e5\",\"Asia/Makassar|WITA|-80|0||15e5\",\"Asia/Manila|PST|-80|0||24e6\",\"Asia/Seoul|KST|-90|0||23e6\",\"Asia/Rangoon|+0630|-6u|0||48e5\",\"Asia/Tehran|+0330 +0430|-3u -4u|0101010|22gIu 1dz0 1cN0 1dz0 1cp0 1dz0|14e6\",\"Asia/Tokyo|JST|-90|0||38e6\",\"Europe/Lisbon|WET WEST|0 -10|0101010|22k10 1o00 11A0 1qM0 WM0 1qM0|27e5\",\"Atlantic/Cape_Verde|-01|10|0||50e4\",\"Australia/Sydney|AEDT AEST|-b0 -a0|0101010|22mE0 1cM0 1cM0 1cM0 1cM0 1cM0|40e5\",\"Australia/Adelaide|ACDT ACST|-au -9u|0101010|22mEu 1cM0 1cM0 1cM0 1cM0 1cM0|11e5\",\"Australia/Brisbane|AEST|-a0|0||20e5\",\"Australia/Darwin|ACST|-9u|0||12e4\",\"Australia/Eucla|+0845|-8J|0||368\",\"Australia/Lord_Howe|+11 +1030|-b0 -au|0101010|22mD0 1cMu 1cLu 1cMu 1cLu 1cMu|347\",\"Australia/Perth|AWST|-80|0||18e5\",\"Pacific/Easter|-05 -06|50 60|0101010|22mP0 11B0 1nX0 11B0 1nX0 11B0|30e2\",\"Europe/Dublin|GMT IST|0 -10|0101010|22k10 1o00 11A0 1qM0 WM0 1qM0|12e5\",\"Etc/GMT-1|+01|-10|0|\",\"Pacific/Tongatapu|+13|-d0|0||75e3\",\"Pacific/Kiritimati|+14|-e0|0||51e2\",\"Etc/GMT-2|+02|-20|0|\",\"Pacific/Tahiti|-10|a0|0||18e4\",\"Pacific/Niue|-11|b0|0||12e2\",\"Etc/GMT+12|-12|c0|0|\",\"Pacific/Galapagos|-06|60|0||25e3\",\"Etc/GMT+7|-07|70|0|\",\"Pacific/Pitcairn|-08|80|0||56\",\"Pacific/Gambier|-09|90|0||125\",\"Etc/UTC|UTC|0|0|\",\"Europe/London|GMT BST|0 -10|0101010|22k10 1o00 11A0 1qM0 WM0 1qM0|10e6\",\"Europe/Chisinau|EET EEST|-20 -30|0101010|22k00 1o00 11A0 1qM0 WM0 1qM0|67e4\",\"Europe/Moscow|MSK|-30|0||16e6\",\"Pacific/Honolulu|HST|a0|0||37e4\",\"MET|MET MEST|-10 -20|0101010|22k10 1o00 11A0 1qM0 WM0 1qM0\",\"Pacific/Chatham|+1345 +1245|-dJ -cJ|0101010|22mC0 1a00 1fA0 1a00 1fA0 1a00|600\",\"Pacific/Apia|+14 +13|-e0 -d0|0101010|22mC0 1a00 1fA0 1a00 1fA0 1a00|37e3\",\"Pacific/Fiji|+13 +12|-d0 -c0|0101010|21N20 20o0 s00 20o0 pc0 20o0|88e4\",\"Pacific/Guam|ChST|-a0|0||17e4\",\"Pacific/Marquesas|-0930|9u|0||86e2\",\"Pacific/Pago_Pago|SST|b0|0||37e2\",\"Pacific/Norfolk|+12 +11|-c0 -b0|0101010|22mD0 1cM0 1cM0 1cM0 1cM0 1cM0|25e4\"],\"links\":[\"Africa/Abidjan|Africa/Accra\",\"Africa/Abidjan|Africa/Bamako\",\"Africa/Abidjan|Africa/Banjul\",\"Africa/Abidjan|Africa/Bissau\",\"Africa/Abidjan|Africa/Conakry\",\"Africa/Abidjan|Africa/Dakar\",\"Africa/Abidjan|Africa/Freetown\",\"Africa/Abidjan|Africa/Lome\",\"Africa/Abidjan|Africa/Monrovia\",\"Africa/Abidjan|Africa/Nouakchott\",\"Africa/Abidjan|Africa/Ouagadougou\",\"Africa/Abidjan|Africa/Sao_Tome\",\"Africa/Abidjan|Africa/Timbuktu\",\"Africa/Abidjan|America/Danmarkshavn\",\"Africa/Abidjan|Atlantic/Reykjavik\",\"Africa/Abidjan|Atlantic/St_Helena\",\"Africa/Abidjan|Etc/GMT\",\"Africa/Abidjan|Etc/GMT+0\",\"Africa/Abidjan|Etc/GMT-0\",\"Africa/Abidjan|Etc/GMT0\",\"Africa/Abidjan|Etc/Greenwich\",\"Africa/Abidjan|GMT\",\"Africa/Abidjan|GMT+0\",\"Africa/Abidjan|GMT-0\",\"Africa/Abidjan|GMT0\",\"Africa/Abidjan|Greenwich\",\"Africa/Abidjan|Iceland\",\"Africa/Algiers|Africa/Tunis\",\"Africa/Cairo|Africa/Tripoli\",\"Africa/Cairo|Egypt\",\"Africa/Cairo|Europe/Kaliningrad\",\"Africa/Cairo|Libya\",\"Africa/Casablanca|Africa/El_Aaiun\",\"Africa/Johannesburg|Africa/Maseru\",\"Africa/Johannesburg|Africa/Mbabane\",\"Africa/Khartoum|Africa/Blantyre\",\"Africa/Khartoum|Africa/Bujumbura\",\"Africa/Khartoum|Africa/Gaborone\",\"Africa/Khartoum|Africa/Harare\",\"Africa/Khartoum|Africa/Kigali\",\"Africa/Khartoum|Africa/Lubumbashi\",\"Africa/Khartoum|Africa/Lusaka\",\"Africa/Khartoum|Africa/Maputo\",\"Africa/Khartoum|Africa/Windhoek\",\"Africa/Lagos|Africa/Bangui\",\"Africa/Lagos|Africa/Brazzaville\",\"Africa/Lagos|Africa/Douala\",\"Africa/Lagos|Africa/Kinshasa\",\"Africa/Lagos|Africa/Libreville\",\"Africa/Lagos|Africa/Luanda\",\"Africa/Lagos|Africa/Malabo\",\"Africa/Lagos|Africa/Ndjamena\",\"Africa/Lagos|Africa/Niamey\",\"Africa/Lagos|Africa/Porto-Novo\",\"Africa/Nairobi|Africa/Addis_Ababa\",\"Africa/Nairobi|Africa/Asmara\",\"Africa/Nairobi|Africa/Asmera\",\"Africa/Nairobi|Africa/Dar_es_Salaam\",\"Africa/Nairobi|Africa/Djibouti\",\"Africa/Nairobi|Africa/Juba\",\"Africa/Nairobi|Africa/Kampala\",\"Africa/Nairobi|Africa/Mogadishu\",\"Africa/Nairobi|Indian/Antananarivo\",\"Africa/Nairobi|Indian/Comoro\",\"Africa/Nairobi|Indian/Mayotte\",\"America/Adak|America/Atka\",\"America/Adak|US/Aleutian\",\"America/Anchorage|America/Juneau\",\"America/Anchorage|America/Metlakatla\",\"America/Anchorage|America/Nome\",\"America/Anchorage|America/Sitka\",\"America/Anchorage|America/Yakutat\",\"America/Anchorage|US/Alaska\",\"America/Caracas|America/Boa_Vista\",\"America/Caracas|America/Campo_Grande\",\"America/Caracas|America/Cuiaba\",\"America/Caracas|America/Guyana\",\"America/Caracas|America/La_Paz\",\"America/Caracas|America/Manaus\",\"America/Caracas|America/Porto_Velho\",\"America/Caracas|Brazil/West\",\"America/Caracas|Etc/GMT+4\",\"America/Chicago|America/Indiana/Knox\",\"America/Chicago|America/Indiana/Tell_City\",\"America/Chicago|America/Knox_IN\",\"America/Chicago|America/Matamoros\",\"America/Chicago|America/Menominee\",\"America/Chicago|America/North_Dakota/Beulah\",\"America/Chicago|America/North_Dakota/Center\",\"America/Chicago|America/North_Dakota/New_Salem\",\"America/Chicago|America/Rainy_River\",\"America/Chicago|America/Rankin_Inlet\",\"America/Chicago|America/Resolute\",\"America/Chicago|America/Winnipeg\",\"America/Chicago|CST6CDT\",\"America/Chicago|Canada/Central\",\"America/Chicago|US/Central\",\"America/Chicago|US/Indiana-Starke\",\"America/Chihuahua|America/Mazatlan\",\"America/Chihuahua|Mexico/BajaSur\",\"America/Denver|America/Boise\",\"America/Denver|America/Cambridge_Bay\",\"America/Denver|America/Edmonton\",\"America/Denver|America/Inuvik\",\"America/Denver|America/Ojinaga\",\"America/Denver|America/Shiprock\",\"America/Denver|America/Yellowknife\",\"America/Denver|Canada/Mountain\",\"America/Denver|MST7MDT\",\"America/Denver|Navajo\",\"America/Denver|US/Mountain\",\"America/Halifax|America/Glace_Bay\",\"America/Halifax|America/Goose_Bay\",\"America/Halifax|America/Moncton\",\"America/Halifax|America/Thule\",\"America/Halifax|Atlantic/Bermuda\",\"America/Halifax|Canada/Atlantic\",\"America/Havana|Cuba\",\"America/Lima|America/Bogota\",\"America/Lima|America/Eirunepe\",\"America/Lima|America/Guayaquil\",\"America/Lima|America/Porto_Acre\",\"America/Lima|America/Rio_Branco\",\"America/Lima|Brazil/Acre\",\"America/Lima|Etc/GMT+5\",\"America/Los_Angeles|America/Dawson\",\"America/Los_Angeles|America/Ensenada\",\"America/Los_Angeles|America/Santa_Isabel\",\"America/Los_Angeles|America/Tijuana\",\"America/Los_Angeles|America/Vancouver\",\"America/Los_Angeles|America/Whitehorse\",\"America/Los_Angeles|Canada/Pacific\",\"America/Los_Angeles|Canada/Yukon\",\"America/Los_Angeles|Mexico/BajaNorte\",\"America/Los_Angeles|PST8PDT\",\"America/Los_Angeles|US/Pacific\",\"America/Los_Angeles|US/Pacific-New\",\"America/Managua|America/Belize\",\"America/Managua|America/Costa_Rica\",\"America/Managua|America/El_Salvador\",\"America/Managua|America/Guatemala\",\"America/Managua|America/Regina\",\"America/Managua|America/Swift_Current\",\"America/Managua|America/Tegucigalpa\",\"America/Managua|Canada/Saskatchewan\",\"America/Mexico_City|America/Bahia_Banderas\",\"America/Mexico_City|America/Merida\",\"America/Mexico_City|America/Monterrey\",\"America/Mexico_City|Mexico/General\",\"America/New_York|America/Detroit\",\"America/New_York|America/Fort_Wayne\",\"America/New_York|America/Grand_Turk\",\"America/New_York|America/Indiana/Indianapolis\",\"America/New_York|America/Indiana/Marengo\",\"America/New_York|America/Indiana/Petersburg\",\"America/New_York|America/Indiana/Vevay\",\"America/New_York|America/Indiana/Vincennes\",\"America/New_York|America/Indiana/Winamac\",\"America/New_York|America/Indianapolis\",\"America/New_York|America/Iqaluit\",\"America/New_York|America/Kentucky/Louisville\",\"America/New_York|America/Kentucky/Monticello\",\"America/New_York|America/Louisville\",\"America/New_York|America/Montreal\",\"America/New_York|America/Nassau\",\"America/New_York|America/Nipigon\",\"America/New_York|America/Pangnirtung\",\"America/New_York|America/Port-au-Prince\",\"America/New_York|America/Thunder_Bay\",\"America/New_York|America/Toronto\",\"America/New_York|Canada/Eastern\",\"America/New_York|EST5EDT\",\"America/New_York|US/East-Indiana\",\"America/New_York|US/Eastern\",\"America/New_York|US/Michigan\",\"America/Noronha|Atlantic/South_Georgia\",\"America/Noronha|Brazil/DeNoronha\",\"America/Noronha|Etc/GMT+2\",\"America/Panama|America/Atikokan\",\"America/Panama|America/Cancun\",\"America/Panama|America/Cayman\",\"America/Panama|America/Coral_Harbour\",\"America/Panama|America/Jamaica\",\"America/Panama|EST\",\"America/Panama|Jamaica\",\"America/Phoenix|America/Creston\",\"America/Phoenix|America/Dawson_Creek\",\"America/Phoenix|America/Fort_Nelson\",\"America/Phoenix|America/Hermosillo\",\"America/Phoenix|MST\",\"America/Phoenix|US/Arizona\",\"America/Santiago|Chile/Continental\",\"America/Santo_Domingo|America/Anguilla\",\"America/Santo_Domingo|America/Antigua\",\"America/Santo_Domingo|America/Aruba\",\"America/Santo_Domingo|America/Barbados\",\"America/Santo_Domingo|America/Blanc-Sablon\",\"America/Santo_Domingo|America/Curacao\",\"America/Santo_Domingo|America/Dominica\",\"America/Santo_Domingo|America/Grenada\",\"America/Santo_Domingo|America/Guadeloupe\",\"America/Santo_Domingo|America/Kralendijk\",\"America/Santo_Domingo|America/Lower_Princes\",\"America/Santo_Domingo|America/Marigot\",\"America/Santo_Domingo|America/Martinique\",\"America/Santo_Domingo|America/Montserrat\",\"America/Santo_Domingo|America/Port_of_Spain\",\"America/Santo_Domingo|America/Puerto_Rico\",\"America/Santo_Domingo|America/St_Barthelemy\",\"America/Santo_Domingo|America/St_Kitts\",\"America/Santo_Domingo|America/St_Lucia\",\"America/Santo_Domingo|America/St_Thomas\",\"America/Santo_Domingo|America/St_Vincent\",\"America/Santo_Domingo|America/Tortola\",\"America/Santo_Domingo|America/Virgin\",\"America/Sao_Paulo|America/Araguaina\",\"America/Sao_Paulo|America/Argentina/Buenos_Aires\",\"America/Sao_Paulo|America/Argentina/Catamarca\",\"America/Sao_Paulo|America/Argentina/ComodRivadavia\",\"America/Sao_Paulo|America/Argentina/Cordoba\",\"America/Sao_Paulo|America/Argentina/Jujuy\",\"America/Sao_Paulo|America/Argentina/La_Rioja\",\"America/Sao_Paulo|America/Argentina/Mendoza\",\"America/Sao_Paulo|America/Argentina/Rio_Gallegos\",\"America/Sao_Paulo|America/Argentina/Salta\",\"America/Sao_Paulo|America/Argentina/San_Juan\",\"America/Sao_Paulo|America/Argentina/San_Luis\",\"America/Sao_Paulo|America/Argentina/Tucuman\",\"America/Sao_Paulo|America/Argentina/Ushuaia\",\"America/Sao_Paulo|America/Bahia\",\"America/Sao_Paulo|America/Belem\",\"America/Sao_Paulo|America/Buenos_Aires\",\"America/Sao_Paulo|America/Catamarca\",\"America/Sao_Paulo|America/Cayenne\",\"America/Sao_Paulo|America/Cordoba\",\"America/Sao_Paulo|America/Fortaleza\",\"America/Sao_Paulo|America/Jujuy\",\"America/Sao_Paulo|America/Maceio\",\"America/Sao_Paulo|America/Mendoza\",\"America/Sao_Paulo|America/Montevideo\",\"America/Sao_Paulo|America/Paramaribo\",\"America/Sao_Paulo|America/Punta_Arenas\",\"America/Sao_Paulo|America/Recife\",\"America/Sao_Paulo|America/Rosario\",\"America/Sao_Paulo|America/Santarem\",\"America/Sao_Paulo|Antarctica/Palmer\",\"America/Sao_Paulo|Antarctica/Rothera\",\"America/Sao_Paulo|Atlantic/Stanley\",\"America/Sao_Paulo|Brazil/East\",\"America/Sao_Paulo|Etc/GMT+3\",\"America/St_Johns|Canada/Newfoundland\",\"Asia/Bangkok|Antarctica/Davis\",\"Asia/Bangkok|Asia/Barnaul\",\"Asia/Bangkok|Asia/Ho_Chi_Minh\",\"Asia/Bangkok|Asia/Hovd\",\"Asia/Bangkok|Asia/Krasnoyarsk\",\"Asia/Bangkok|Asia/Novokuznetsk\",\"Asia/Bangkok|Asia/Novosibirsk\",\"Asia/Bangkok|Asia/Phnom_Penh\",\"Asia/Bangkok|Asia/Saigon\",\"Asia/Bangkok|Asia/Tomsk\",\"Asia/Bangkok|Asia/Vientiane\",\"Asia/Bangkok|Etc/GMT-7\",\"Asia/Bangkok|Indian/Christmas\",\"Asia/Chita|Asia/Dili\",\"Asia/Chita|Asia/Khandyga\",\"Asia/Chita|Asia/Yakutsk\",\"Asia/Chita|Etc/GMT-9\",\"Asia/Chita|Pacific/Palau\",\"Asia/Dhaka|Antarctica/Vostok\",\"Asia/Dhaka|Asia/Almaty\",\"Asia/Dhaka|Asia/Bishkek\",\"Asia/Dhaka|Asia/Dacca\",\"Asia/Dhaka|Asia/Kashgar\",\"Asia/Dhaka|Asia/Omsk\",\"Asia/Dhaka|Asia/Qostanay\",\"Asia/Dhaka|Asia/Thimbu\",\"Asia/Dhaka|Asia/Thimphu\",\"Asia/Dhaka|Asia/Urumqi\",\"Asia/Dhaka|Etc/GMT-6\",\"Asia/Dhaka|Indian/Chagos\",\"Asia/Dubai|Asia/Baku\",\"Asia/Dubai|Asia/Muscat\",\"Asia/Dubai|Asia/Tbilisi\",\"Asia/Dubai|Asia/Yerevan\",\"Asia/Dubai|Etc/GMT-4\",\"Asia/Dubai|Europe/Astrakhan\",\"Asia/Dubai|Europe/Samara\",\"Asia/Dubai|Europe/Saratov\",\"Asia/Dubai|Europe/Ulyanovsk\",\"Asia/Dubai|Europe/Volgograd\",\"Asia/Dubai|Indian/Mahe\",\"Asia/Dubai|Indian/Mauritius\",\"Asia/Dubai|Indian/Reunion\",\"Asia/Gaza|Asia/Hebron\",\"Asia/Hong_Kong|Hongkong\",\"Asia/Jakarta|Asia/Pontianak\",\"Asia/Jerusalem|Asia/Tel_Aviv\",\"Asia/Jerusalem|Israel\",\"Asia/Kamchatka|Asia/Anadyr\",\"Asia/Kamchatka|Etc/GMT-12\",\"Asia/Kamchatka|Kwajalein\",\"Asia/Kamchatka|Pacific/Funafuti\",\"Asia/Kamchatka|Pacific/Kwajalein\",\"Asia/Kamchatka|Pacific/Majuro\",\"Asia/Kamchatka|Pacific/Nauru\",\"Asia/Kamchatka|Pacific/Tarawa\",\"Asia/Kamchatka|Pacific/Wake\",\"Asia/Kamchatka|Pacific/Wallis\",\"Asia/Kathmandu|Asia/Katmandu\",\"Asia/Kolkata|Asia/Calcutta\",\"Asia/Kuala_Lumpur|Antarctica/Casey\",\"Asia/Kuala_Lumpur|Asia/Brunei\",\"Asia/Kuala_Lumpur|Asia/Choibalsan\",\"Asia/Kuala_Lumpur|Asia/Irkutsk\",\"Asia/Kuala_Lumpur|Asia/Kuching\",\"Asia/Kuala_Lumpur|Asia/Singapore\",\"Asia/Kuala_Lumpur|Asia/Ulaanbaatar\",\"Asia/Kuala_Lumpur|Asia/Ulan_Bator\",\"Asia/Kuala_Lumpur|Etc/GMT-8\",\"Asia/Kuala_Lumpur|Singapore\",\"Asia/Makassar|Asia/Ujung_Pandang\",\"Asia/Rangoon|Asia/Yangon\",\"Asia/Rangoon|Indian/Cocos\",\"Asia/Sakhalin|Antarctica/Macquarie\",\"Asia/Sakhalin|Asia/Magadan\",\"Asia/Sakhalin|Asia/Srednekolymsk\",\"Asia/Sakhalin|Etc/GMT-11\",\"Asia/Sakhalin|Pacific/Bougainville\",\"Asia/Sakhalin|Pacific/Efate\",\"Asia/Sakhalin|Pacific/Guadalcanal\",\"Asia/Sakhalin|Pacific/Kosrae\",\"Asia/Sakhalin|Pacific/Noumea\",\"Asia/Sakhalin|Pacific/Pohnpei\",\"Asia/Sakhalin|Pacific/Ponape\",\"Asia/Seoul|Asia/Pyongyang\",\"Asia/Seoul|ROK\",\"Asia/Shanghai|Asia/Chongqing\",\"Asia/Shanghai|Asia/Chungking\",\"Asia/Shanghai|Asia/Harbin\",\"Asia/Shanghai|Asia/Macao\",\"Asia/Shanghai|Asia/Macau\",\"Asia/Shanghai|Asia/Taipei\",\"Asia/Shanghai|PRC\",\"Asia/Shanghai|ROC\",\"Asia/Tashkent|Antarctica/Mawson\",\"Asia/Tashkent|Asia/Aqtau\",\"Asia/Tashkent|Asia/Aqtobe\",\"Asia/Tashkent|Asia/Ashgabat\",\"Asia/Tashkent|Asia/Ashkhabad\",\"Asia/Tashkent|Asia/Atyrau\",\"Asia/Tashkent|Asia/Dushanbe\",\"Asia/Tashkent|Asia/Oral\",\"Asia/Tashkent|Asia/Qyzylorda\",\"Asia/Tashkent|Asia/Samarkand\",\"Asia/Tashkent|Asia/Yekaterinburg\",\"Asia/Tashkent|Etc/GMT-5\",\"Asia/Tashkent|Indian/Kerguelen\",\"Asia/Tashkent|Indian/Maldives\",\"Asia/Tehran|Iran\",\"Asia/Tokyo|Japan\",\"Asia/Vladivostok|Antarctica/DumontDUrville\",\"Asia/Vladivostok|Asia/Ust-Nera\",\"Asia/Vladivostok|Etc/GMT-10\",\"Asia/Vladivostok|Pacific/Chuuk\",\"Asia/Vladivostok|Pacific/Port_Moresby\",\"Asia/Vladivostok|Pacific/Truk\",\"Asia/Vladivostok|Pacific/Yap\",\"Atlantic/Azores|America/Scoresbysund\",\"Atlantic/Cape_Verde|Etc/GMT+1\",\"Australia/Adelaide|Australia/Broken_Hill\",\"Australia/Adelaide|Australia/South\",\"Australia/Adelaide|Australia/Yancowinna\",\"Australia/Brisbane|Australia/Lindeman\",\"Australia/Brisbane|Australia/Queensland\",\"Australia/Darwin|Australia/North\",\"Australia/Lord_Howe|Australia/LHI\",\"Australia/Perth|Australia/West\",\"Australia/Sydney|Australia/ACT\",\"Australia/Sydney|Australia/Canberra\",\"Australia/Sydney|Australia/Currie\",\"Australia/Sydney|Australia/Hobart\",\"Australia/Sydney|Australia/Melbourne\",\"Australia/Sydney|Australia/NSW\",\"Australia/Sydney|Australia/Tasmania\",\"Australia/Sydney|Australia/Victoria\",\"Etc/UTC|Etc/UCT\",\"Etc/UTC|Etc/Universal\",\"Etc/UTC|Etc/Zulu\",\"Etc/UTC|UCT\",\"Etc/UTC|UTC\",\"Etc/UTC|Universal\",\"Etc/UTC|Zulu\",\"Europe/Athens|Asia/Famagusta\",\"Europe/Athens|Asia/Nicosia\",\"Europe/Athens|EET\",\"Europe/Athens|Europe/Bucharest\",\"Europe/Athens|Europe/Helsinki\",\"Europe/Athens|Europe/Kiev\",\"Europe/Athens|Europe/Mariehamn\",\"Europe/Athens|Europe/Nicosia\",\"Europe/Athens|Europe/Riga\",\"Europe/Athens|Europe/Sofia\",\"Europe/Athens|Europe/Tallinn\",\"Europe/Athens|Europe/Uzhgorod\",\"Europe/Athens|Europe/Vilnius\",\"Europe/Athens|Europe/Zaporozhye\",\"Europe/Chisinau|Europe/Tiraspol\",\"Europe/Dublin|Eire\",\"Europe/Istanbul|Antarctica/Syowa\",\"Europe/Istanbul|Asia/Aden\",\"Europe/Istanbul|Asia/Baghdad\",\"Europe/Istanbul|Asia/Bahrain\",\"Europe/Istanbul|Asia/Istanbul\",\"Europe/Istanbul|Asia/Kuwait\",\"Europe/Istanbul|Asia/Qatar\",\"Europe/Istanbul|Asia/Riyadh\",\"Europe/Istanbul|Etc/GMT-3\",\"Europe/Istanbul|Europe/Kirov\",\"Europe/Istanbul|Europe/Minsk\",\"Europe/Istanbul|Turkey\",\"Europe/Lisbon|Atlantic/Canary\",\"Europe/Lisbon|Atlantic/Faeroe\",\"Europe/Lisbon|Atlantic/Faroe\",\"Europe/Lisbon|Atlantic/Madeira\",\"Europe/Lisbon|Portugal\",\"Europe/Lisbon|WET\",\"Europe/London|Europe/Belfast\",\"Europe/London|Europe/Guernsey\",\"Europe/London|Europe/Isle_of_Man\",\"Europe/London|Europe/Jersey\",\"Europe/London|GB\",\"Europe/London|GB-Eire\",\"Europe/Moscow|Europe/Simferopol\",\"Europe/Moscow|W-SU\",\"Europe/Paris|Africa/Ceuta\",\"Europe/Paris|Arctic/Longyearbyen\",\"Europe/Paris|Atlantic/Jan_Mayen\",\"Europe/Paris|CET\",\"Europe/Paris|Europe/Amsterdam\",\"Europe/Paris|Europe/Andorra\",\"Europe/Paris|Europe/Belgrade\",\"Europe/Paris|Europe/Berlin\",\"Europe/Paris|Europe/Bratislava\",\"Europe/Paris|Europe/Brussels\",\"Europe/Paris|Europe/Budapest\",\"Europe/Paris|Europe/Busingen\",\"Europe/Paris|Europe/Copenhagen\",\"Europe/Paris|Europe/Gibraltar\",\"Europe/Paris|Europe/Ljubljana\",\"Europe/Paris|Europe/Luxembourg\",\"Europe/Paris|Europe/Madrid\",\"Europe/Paris|Europe/Malta\",\"Europe/Paris|Europe/Monaco\",\"Europe/Paris|Europe/Oslo\",\"Europe/Paris|Europe/Podgorica\",\"Europe/Paris|Europe/Prague\",\"Europe/Paris|Europe/Rome\",\"Europe/Paris|Europe/San_Marino\",\"Europe/Paris|Europe/Sarajevo\",\"Europe/Paris|Europe/Skopje\",\"Europe/Paris|Europe/Stockholm\",\"Europe/Paris|Europe/Tirane\",\"Europe/Paris|Europe/Vaduz\",\"Europe/Paris|Europe/Vatican\",\"Europe/Paris|Europe/Vienna\",\"Europe/Paris|Europe/Warsaw\",\"Europe/Paris|Europe/Zagreb\",\"Europe/Paris|Europe/Zurich\",\"Europe/Paris|Poland\",\"Pacific/Auckland|Antarctica/McMurdo\",\"Pacific/Auckland|Antarctica/South_Pole\",\"Pacific/Auckland|NZ\",\"Pacific/Chatham|NZ-CHAT\",\"Pacific/Easter|Chile/EasterIsland\",\"Pacific/Galapagos|Etc/GMT+6\",\"Pacific/Gambier|Etc/GMT+9\",\"Pacific/Guam|Pacific/Saipan\",\"Pacific/Honolulu|HST\",\"Pacific/Honolulu|Pacific/Johnston\",\"Pacific/Honolulu|US/Hawaii\",\"Pacific/Kiritimati|Etc/GMT-14\",\"Pacific/Niue|Etc/GMT+11\",\"Pacific/Pago_Pago|Pacific/Midway\",\"Pacific/Pago_Pago|Pacific/Samoa\",\"Pacific/Pago_Pago|US/Samoa\",\"Pacific/Pitcairn|Etc/GMT+8\",\"Pacific/Tahiti|Etc/GMT+10\",\"Pacific/Tahiti|Pacific/Rarotonga\",\"Pacific/Tongatapu|Etc/GMT-13\",\"Pacific/Tongatapu|Pacific/Enderbury\",\"Pacific/Tongatapu|Pacific/Fakaofo\"]}");
+
+/***/ }),
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2240,7 +7690,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 
 
 /***/ }),
-/* 14 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2413,7 +7863,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 
 
 /***/ }),
-/* 15 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2445,7 +7895,7 @@ function printAS() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printAAc1");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printAS");
       return;
     }
     var url = "https://www.alaskaair.com/planbook/shoppingstart?";
@@ -2498,7 +7948,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airli
 
 
 /***/ }),
-/* 16 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2652,7 +8102,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 
 
 /***/ }),
-/* 17 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2976,7 +8426,7 @@ function printBA() {
       }
     }
     url +=
-      "&p=EUR6666.66&e=FP&c=" +
+      "&p=EUR6666.66&e=SL&c=" +
       cabins[_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cabin === "Auto" ? mincabin : Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getForcedCabin */ "c"])()] +
       "&source=FareQuoteEmail&isEmailHBOFareQuote=false";
     return url;
@@ -3013,7 +8463,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 
 
 /***/ }),
-/* 18 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3175,7 +8625,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 
 
 /***/ }),
-/* 19 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3322,7 +8772,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 
 
 /***/ }),
-/* 20 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3572,7 +9022,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 
 
 /***/ }),
-/* 21 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3687,7 +9137,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 
 
 /***/ }),
-/* 22 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3852,7 +9302,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 
 
 /***/ }),
-/* 23 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4072,7 +9522,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 
 
 /***/ }),
-/* 24 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4207,7 +9657,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 
 
 /***/ }),
-/* 25 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4277,7 +9727,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airli
 
 
 /***/ }),
-/* 26 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4399,7 +9849,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airli
 
 
 /***/ }),
-/* 27 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4613,7 +10063,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 
 
 /***/ }),
-/* 28 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4682,7 +10132,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airli
 
 
 /***/ }),
-/* 29 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4828,7 +10278,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta"
 
 
 /***/ }),
-/* 30 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4922,7 +10372,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta"
 
 
 /***/ }),
-/* 31 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5019,7 +10469,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("meta"
 
 
 /***/ }),
-/* 32 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5113,7 +10563,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 33 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5267,7 +10717,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 34 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5404,7 +10854,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 35 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5542,7 +10992,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 36 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5637,7 +11087,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 37 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
