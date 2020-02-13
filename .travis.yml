@@ -12,7 +12,13 @@ jobs:
       deploy:
         skip_cleanup: true
         provider: script
-        script: npm run release
+        script: npm run release:chrome
+    - stage: deploy
+      script: npm run package:webext
+      deploy:
+        skip_cleanup: true
+        provider: script
+        script: npm run release:firefox
 stages:
   - build
   - name: deploy
