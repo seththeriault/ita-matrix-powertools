@@ -12,7 +12,7 @@
     "version": "npm run authors && npm run build && git add ita-matrix-powertools.user.js script_minified.js AUTHORS",
     "package:webext": "node scripts/package.webext.js",
     "release": "npm run release:chrome && npm run release:firefox",
-    "release:chrome": "webstore upload --source dist/ita-matrix-powertools.webext.zip",
+    "release:chrome": "webstore upload --source dist/ita-matrix-powertools.webext.zip --auto-publish",
     "release:firefox": "node scripts/deploy.amo.js"
   },
   "dependencies": {
