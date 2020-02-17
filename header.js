@@ -10,6 +10,9 @@
 // @grant GM.setValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
+// @updateURL https://greasyfork.org/scripts/395661-ita-matrix-powertools/code/ITA%20Matrix%20Powertools.meta.js
+// @installURL https://greasyfork.org/scripts/395661-ita-matrix-powertools/code/ITA%20Matrix%20Powertools.user.js
+// @downloadURL https://greasyfork.org/scripts/395661-ita-matrix-powertools/code/ITA%20Matrix%20Powertools.user.js
 // @license GPL-2.0-only
 // ==/UserScript==
 

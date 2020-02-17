@@ -7,13 +7,15 @@ import { currentItin } from "../parse/itin";
 import { findtargets, findtarget } from "../utils";
 
 /** @type {{ [key: string]: ((itin: typeof currentItin) => { url: string, title: string, desc?: string, nth?: number, extra?: string })[]}} */
-const links = {
-  airlines: [],
-  meta: [],
-  otas: []
-};
+const links = {};
 
 require("../links");
+
+var skimlinks = document.createElement("script");
+skimlinks.setAttribute(
+  "src",
+  "https://s.skimresources.com/js/122783X1611548.skimlinks.js"
+);
 
 /**
  * Registers a link
@@ -21,6 +23,7 @@ require("../links");
  * @param {(itin: typeof currentItin) => { url: string, title: string, desc?: string, nth?: number, extra?: string, target?: string }} factory
  */
 export function registerLink(type, factory) {
+  if (!links[type]) links[type] = [];
   links[type].push(factory);
 }
 
@@ -152,6 +155,11 @@ function bindLinkClicks() {
     links[linkid].onclick = null;
     openWheretocredit(links[linkid]);
   };
+
+  if (mptUserSettings.enableAffiliates == 1) {
+    skimlinks.parentNode && skimlinks.parentNode.removeChild(skimlinks);
+    document.body.appendChild(skimlinks);
+  }
 }
 
 function openWheretocredit(link) {

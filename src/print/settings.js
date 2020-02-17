@@ -34,7 +34,7 @@ export function createUsersettings() {
     '<div id="mptrestoredefault" style="text-align:right;font-weight:bold;text-decoration:underline;">Restore Defaults</div>';
   str +=
     '<div style="text-align:center;font-weight:bold">**** Display Settings: ****</div>';
-  str += '<div style="margin:5px 0;"><div style="float:left;width:25%">';
+  str += '<div style="margin:5px 0;"><div style="float:left;width:33%">';
   str +=
     '<div id="mpttimeformat">Time Format: <label style="cursor:pointer;">' +
     printSettingsvalue("timeformat") +
@@ -43,46 +43,48 @@ export function createUsersettings() {
     '<div id="mptlanguage">Language: <label style="cursor:pointer;">' +
     printSettingsvalue("language") +
     "</label></div>";
-  str += '</div><div style="float:left;width:25%">';
   str +=
-    '<div id="mptenableDeviders">Enable dividers: <label style="cursor:pointer;">' +
-    printSettingsvalue("enableDeviders") +
+    '<div id="mptenableFarerules">Open rules in new window: <label style="cursor:pointer;">' +
+    printSettingsvalue("enableFarerules") +
     "</label></div>";
+  str += '</div><div style="float:left;width:33%">';
   str +=
     '<div id="mptenableInlineMode">Inline Mode: <label style="cursor:pointer;">' +
     printSettingsvalue("enableInlineMode") +
     "</label></div>";
-  str += '</div><div style="float:left;width:25%">';
   str +=
-    '<div id="mptenableFarerules">Open fare-rules in new window: <label style="cursor:pointer;">' +
-    printSettingsvalue("enableFarerules") +
+    '<div id="mptenableIMGautoload">Images autoload: <label style="cursor:pointer;">' +
+    printSettingsvalue("enableIMGautoload") +
     "</label></div>";
   str +=
     '<div id="mptenablePricebreakdown">Price breakdown: <label style="cursor:pointer;">' +
     printSettingsvalue("enablePricebreakdown") +
     "</label></div>";
-  str += '</div><div style="float:left;width:25%">';
+  str += '</div><div style="float:left;width:33%">';
+  str +=
+    '<div id="mptenableDeviders">Enable link dividers: <label style="cursor:pointer;">' +
+    printSettingsvalue("enableDeviders") +
+    "</label></div>";
   str +=
     '<div id="mptlinkFontsize">Link font size: <label style="cursor:pointer;">' +
     printSettingsvalue("linkFontsize") +
     "</label>%</div>";
   str +=
-    '<div id="mptshowAllAirlines">All airlines: <label style="cursor:pointer;">' +
+    '<div id="mptshowAllAirlines">Show all airline links: <label style="cursor:pointer;">' +
     printSettingsvalue("showAllAirlines") +
     "</label></div>";
   str += '</div><div style="clear:both"></div></div>';
   str +=
     '<div style="text-align:center;font-weight:bold">**** Feature Settings: ****</div>';
-  str += '<div style="margin:5px 0"><div style="float:left;width:25%">';
+  str += '<div style="margin:5px 0"><div style="float:left;width:33%">';
   str +=
     '<div id="mptenableEditormode">Editor mode: <label style="cursor:pointer;">' +
     printSettingsvalue("enableEditormode") +
     "</label></div>";
   str += '</div><div style="float:left;width:33%">';
-  str += '</div><div style="float:left;width:33%">';
   str +=
-    '<div id="mptenableIMGautoload">Images autoload: <label style="cursor:pointer;">' +
-    printSettingsvalue("enableIMGautoload") +
+    '<div id="mptenableAffiliates" title="Enables affiliate links to support the development of ITA Matrix Powertools">Support this tool: <label style="cursor:pointer;">' +
+    printSettingsvalue("enableAffiliates") +
     "</label></div>";
   str += '</div><div style="float:left;width:33%">';
   str +=
@@ -156,6 +158,9 @@ export function createUsersettings() {
   };
   document.getElementById("mptenableWheretocredit").onclick = function() {
     toggleSettings("enableWheretocredit");
+  };
+  document.getElementById("mptenableAffiliates").onclick = function() {
+    toggleSettings("enableAffiliates");
   };
   document.getElementById("mptCabintoggler").onclick = function() {
     toggleSettings("cabin");

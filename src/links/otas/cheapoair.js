@@ -23,10 +23,12 @@ function printCheapOair() {
     pax.adults +
     "&ch=" +
     pax.children.length +
+    "&sr=0&is=" +
+    pax.infSeat +
     "&il=" +
-    pax.infLap +
-    "&is=" +
-    pax.infSeat;
+    pax.infLap;
+  coaUrl += "&pos=US";
+  coaUrl += "&dispr=" + currentItin.price;
   var seg = 0;
   var slices = {};
   for (var i = 0; i < currentItin.itin.length; i++) {
@@ -42,7 +44,7 @@ function printCheapOair() {
         "=" +
         cabins[
           mptSettings.cabin === "Auto"
-            ? cabins[currentItin.itin[i].seg[j].cabin]
+            ? currentItin.itin[i].seg[j].cabin
             : getForcedCabin()
         ];
       coaUrl += "&carr" + seg + "=" + currentItin.itin[i].seg[j].carrier;

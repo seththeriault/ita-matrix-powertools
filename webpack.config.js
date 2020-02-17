@@ -2,7 +2,7 @@ const webpack = require("webpack");
 const fs = require("fs");
 const path = require("path");
 
-const replaceTokens = require("./scripts/replaceTokens");
+const { replace, tokens } = require("./scripts/replaceTokens");
 
 // Moment Timezone (for AA Sabre):
 const MomentTimezoneDataPlugin = require("moment-timezone-data-webpack-plugin");
@@ -20,14 +20,17 @@ module.exports = {
   },
   plugins: [
     new webpack.BannerPlugin({
-      banner: replaceTokens(
+      banner: replace(
         fs.readFileSync(path.resolve(__dirname, "header.js"), "utf8")
       ),
       raw: true
     }),
-    new webpack.DefinePlugin({
-      __VERSION__: JSON.stringify(process.env.npm_package_version)
-    }),
+    new webpack.DefinePlugin(
+      Object.keys(tokens).reduce((res, token) => {
+        res[token] = JSON.stringify(tokens[token]);
+        return res;
+      }, {})
+    ),
     new MomentTimezoneDataPlugin({
       startYear: currentYear,
       endYear: currentYear + 2

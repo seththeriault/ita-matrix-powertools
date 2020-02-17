@@ -2,7 +2,7 @@ const archiver = require("archiver");
 const fs = require("fs");
 const path = require("path");
 
-const replaceTokens = require("./replaceTokens");
+const { replace } = require("./replaceTokens");
 
 const dist = path.resolve(__dirname, "../dist");
 if (!fs.existsSync(dist)) {
@@ -54,9 +54,7 @@ archive.pipe(output);
 
 // append the web extension manifest
 archive.append(
-  replaceTokens(
-    fs.readFileSync(path.resolve(__dirname, "../manifest.json"), "utf8")
-  ),
+  replace(fs.readFileSync(path.resolve(__dirname, "../manifest.json"), "utf8")),
   { name: "manifest.json" }
 );
 

@@ -15,7 +15,9 @@ const defaultSettings = {
   enablePricebreakdown: 1, // enables price breakdown - valid: 0 / 1
   enablePlanefinder: 1, // enables Planefinder - click on flight numbers to open Planefinder for this flight - valid: 0 / 1
   enableSeatguru: 1, // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
-  enableWheretocredit: 1 // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
+  enableWheretocredit: 1, // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
+
+  enableAffiliates: 1
 };
 
 export const registeredSettings = {};
