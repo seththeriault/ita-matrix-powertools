@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.44.0
+// @version 0.44.1
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -116,7 +116,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 48);
+/******/ 	return __webpack_require__(__webpack_require__.s = 49);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1180,7 +1180,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.44.0",
+  version: "0.44.1",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -6319,17 +6319,18 @@ var map = {
 	"./airlines/qf.js": 35,
 	"./airlines/tk.js": 36,
 	"./index.js": 10,
-	"./meta/kayak.js": 37,
-	"./meta/momondo.js": 38,
-	"./meta/skyscanner.js": 39,
-	"./otas/cheapoair.js": 40,
-	"./otas/edreams.js": 41,
-	"./otas/etraveli.js": 42,
-	"./otas/expedia.js": 43,
-	"./otas/flightnetwork.js": 44,
-	"./otas/lucky2go.js": 45,
-	"./otas/ovago.js": 46,
-	"./otas/priceline.js": 47
+	"./meta/jetcost.js": 37,
+	"./meta/kayak.js": 38,
+	"./meta/momondo.js": 39,
+	"./meta/skyscanner.js": 40,
+	"./otas/cheapoair.js": 41,
+	"./otas/edreams.js": 42,
+	"./otas/etraveli.js": 43,
+	"./otas/expedia.js": 44,
+	"./otas/flightnetwork.js": 45,
+	"./otas/lucky2go.js": 46,
+	"./otas/ovago.js": 47,
+	"./otas/priceline.js": 48
 };
 
 
@@ -10153,6 +10154,146 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airli
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
+/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
+
+
+
+
+
+const editions = [
+  { name: "Argentina", host: "https://ar.jetcost.com/vuelos/busqueda" },
+  { name: "Australia", host: "https://www.jetcost.com.au/flights/search" },
+  { name: "Bolivia", host: "https://www.jetcost.com.bo/vuelos/busqueda" },
+  { name: "Brasil", host: "https://www.jetcost.com.br/voos/pesquisa" },
+  { name: "Canada (en)", host: "https://ca.jetcost.com/en/flights/search" },
+  { name: "Canada (fr)", host: "https://ca.jetcost.com/fr/vols/recherche" },
+  { name: "Chile", host: "https://www.jetcost.cl/vuelos/busqueda" },
+  { name: "Colombia", host: "https://www.jetcost.com.co/vuelos/busqueda" },
+  { name: "Danmark", host: "https://www.jetcost.dk/flyrejser/sogning" },
+  { name: "Deutschland", host: "https://www.jetcost.de/fluge/suche" },
+  { name: "España", host: "https://www.jetcost.es/vuelos/busqueda" },
+  {
+    name: "Estados Unidos (es)",
+    host: "https://us.jetcost.com/es/vuelos/busqueda"
+  },
+  { name: "France", host: "https://www.jetcost.com/vols/recherche" },
+  { name: "Hong Kong", host: "https://www.jetcost.hk/en/flights/search" },
+  { name: "India", host: "https://www.jetcost.co.in/en/flights/search" },
+  { name: "Indonesia", host: "https://www.jetcost.co.id/en/flights/search" },
+  { name: "Ireland", host: "https://www.jetcost.ie/flights/search" },
+  { name: "Italia", host: "https://www.jetcost.it/voli/ricerca" },
+  { name: "Magyarország", host: "https://www.jetcost.hu/jaratok/kereses" },
+  { name: "Malaysia", host: "https://www.jetcost.com.my/en/flights/search" },
+  { name: "México", host: "https://www.jetcost.com.mx/vuelos/busqueda" },
+  { name: "Nederland", host: "https://www.jetcost.nl/vluchten/zoeken" },
+  { name: "New Zealand", host: "https://www.jetcost.co.nz/flights/search" },
+  { name: "Norge", host: "https://www.jetcost.no/flyvninger/sok" },
+  { name: "Österreich", host: "https://www.jetcost.at/fluge/suche" },
+  { name: "Perú", host: "https://www.jetcost.com.pe/vuelos/busqueda" },
+  { name: "Philippines", host: "https://www.jetcost.com.ph/en/flights/search" },
+  { name: "Polska", host: "https://www.jetcost.pl/loty/wyszukiwanie" },
+  { name: "Portugal", host: "https://www.jetcost.pt/voos/pesquisar" },
+  { name: "România", host: "https://www.jetcost.ro/zboruri/cautare" },
+  { name: "Россия", host: "https://www.jetcost.ru/reysy/poisk" },
+  { name: "Singapore", host: "https://www.jetcost.com.sg/en/flights/search" },
+  { name: "South Africa", host: "https://www.jetcost.co.za/en/flights/search" },
+  { name: "Suomi", host: "https://www.jetcost.fi/lennot/hae" },
+  { name: "Sverige", host: "https://www.jetcost.se/flighter/sokning" },
+  { name: "Thailand", host: "https://www.jetcost.co.th/en/flights/search" },
+  { name: "United Kingdom", host: "https://www.jetcost.co.uk/flights/search" },
+  {
+    name: "United States (en)",
+    host: "https://us.jetcost.com/en/flights/search"
+  },
+  { name: "Uruguay", host: "https://www.jetcost.com.uy/vuelos/busqueda" },
+  { name: "Venezuela", host: "https://www.jetcost.co.ve/vuelos/busqueda" },
+  { name: "한국", host: "https://www.jetcost.co.kr/flights/search" }
+];
+
+const cabins = [0, 0, 1, 2];
+
+function print() {
+  if (_parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin.length > 2) return; // no multi segments
+  if (
+    _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin.length == 2 &&
+    !(
+      _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin[0].orig == _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin[1].dest &&
+      _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin[0].dest == _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin[1].orig
+    )
+  )
+    return; // no open jaws
+
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_0__[/* validatePaxcount */ "d"])({
+    maxPaxcount: 9,
+    countInf: false,
+    childAsAdult: 12,
+    sepInfSeat: false,
+    childMinAge: 2
+  });
+  if (!pax) {
+    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printOvago");
+    return;
+  }
+
+  const cabin =
+    cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_3__[/* getCabin */ "b"])(Math.min(...Object(_parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* getCurrentSegs */ "b"])().map(seg => seg.cabin)))];
+
+  var createUrl = function(host) {
+    return `${host}?adults=${pax.adults}&children=${
+      pax.children.length
+    }&infants=${pax.infLap}&cabin_class=${cabin}&${_parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin
+      .map(
+        (seg, i) =>
+          `trips[${i}][date]=${formatDate(seg.dep)}&trips[${i}][from_iata]=${
+            seg.orig
+          }&trips[${i}][to_iata]=${seg.dest}`
+      )
+      .join("&")}`;
+  };
+
+  var url = createUrl("https://us.jetcost.com/en/flights/search");
+  if (!url) {
+    return;
+  }
+
+  var extra =
+    ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  extra += editions
+    .map(function(obj, i) {
+      return (
+        '<a href="' +
+        createUrl(obj.host) +
+        '" target="_blank">' +
+        obj.name +
+        "</a>"
+      );
+    })
+    .join("<br/>");
+  extra += "</span></span>";
+
+  return {
+    url,
+    title: "Jetcost",
+    extra
+  };
+}
+
+function formatDate(date) {
+  return `${date.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(date.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(date.day)}`;
+}
+
+Object(_print_links__WEBPACK_IMPORTED_MODULE_0__[/* registerLink */ "c"])("meta", print);
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
@@ -10294,7 +10435,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta"
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10388,7 +10529,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta"
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10485,7 +10626,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("meta"
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10581,7 +10722,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10735,7 +10876,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10872,7 +11013,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11010,7 +11151,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11114,7 +11255,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11266,7 +11407,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11328,7 +11469,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11423,7 +11564,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
