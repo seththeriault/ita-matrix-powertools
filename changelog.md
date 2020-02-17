@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.44.0] - 2020-02-16
+
+Edited by IAkH
+
+- fixed CheapOAir link
+- added lucky2go, Ovago, and FlightNetwork (thanks @andydd)
+- consolidated update and download URLs to GreasyFork
+- added affiliate link option
+
 ## [0.43.1] - 2020-02-11
 
 Edited by wylek
