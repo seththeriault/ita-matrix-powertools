@@ -26,7 +26,7 @@
   "devDependencies": {
     "@types/greasemonkey": "^4.0.0",
     "@types/webpack-env": "^1.15.0",
-    "@wext/shipit": "adamhwang/wext-shipit",
+    "@wext/shipit": "github:adamhwang/wext-shipit",
     "husky": "^4.2.1",
     "moment-locales-webpack-plugin": "^1.1.2",
     "moment-timezone-data-webpack-plugin": "^1.1.0",
@@ -35,6 +35,7 @@
     "pretty-quick": "^2.0.1",
     "typescript": "^3.7.5",
     "uglify-es": "^3.3.9",
+    "upload-opera-extension": "github:adamhwang/upload-opera-extension",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
   }
