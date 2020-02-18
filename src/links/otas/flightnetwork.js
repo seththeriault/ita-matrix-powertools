@@ -38,7 +38,7 @@ function printFN() {
 
     search += currentItin.itin
       .map((leg, i) => {
-        const key = currentItin.itin.length === 2 && i === i ? "ib" : "ob";
+        const key = currentItin.itin.length === 2 && i === 1 ? "ib" : "ob";
         return leg.seg
           .map(
             (seg, j) =>
