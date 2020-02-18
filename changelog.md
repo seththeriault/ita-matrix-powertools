@@ -4,7 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.44.1] - 2020-02-16
+## [0.44.6] - 2020-02-18
+
+Edited by IAkH
+
+- fixed FlightNetwork links (thanks again @andydd!)
+- consolidated Hop2, Ovago and Wowfares
+
+## [0.44.1] - 2020-02-17
 
 Edited by IAkH
 
