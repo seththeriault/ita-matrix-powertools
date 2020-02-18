@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.44.4
+// @version 0.44.5
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -1180,7 +1180,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.44.4",
+  version: "0.44.5",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -11192,23 +11192,26 @@ function printFN() {
   }
 
   const createUrl = function(edition) {
-    let search = `cref=&tty=1&curr=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].cur ||
+    const tty = _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length === 2 ? 1 : 0;
+    let search = `cref=&tty=${tty}&curr=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].cur ||
       "USD"}&nativecurr=&cls=0&adt=${pax.adults}&chd=${
       pax.children.length
     }&inf=${pax.infLap}&tot=0.00&tax=0.00&`;
 
+    let segCount = 0;
     search += _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin
       .map((leg, i) => {
         const key = _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length === 2 && i === 1 ? "ib" : "ob";
+        const legNum = _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length > 2 ? 0 : i;
         return leg.seg
-          .map(
-            (seg, j) =>
-              `${key}${i + 1}${j ? j : ""}=${seg.carrier}${seg.fnr}${
-                seg.bookingclass
-              }!${formatDate(seg.dep)}!${seg.orig}${seg.dest}!${formatDate(
-                seg.arr
-              )}`
-          )
+          .map((seg, j) => {
+            const segNum = _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length > 2 ? segCount++ : j;
+            return `${key}${legNum + 1}${segNum ? segNum : ""}=${seg.carrier}${
+              seg.fnr
+            }${seg.bookingclass}!${formatDate(seg.dep)}!${seg.orig}${
+              seg.dest
+            }!${formatDate(seg.arr)}`;
+          })
           .join("&");
       })
       .join("&");
