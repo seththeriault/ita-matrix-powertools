@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.44.1
+// @version 0.44.2
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -1180,7 +1180,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.44.1",
+  version: "0.44.2",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -11165,8 +11165,8 @@ __webpack_require__.r(__webpack_exports__);
 
 const editions = [
   { name: "English", url: "" },
-  { name: "Espa�ol", url: "es" },
-  { name: "Portugu�s", url: "pt" },
+  { name: "Español", url: "es" },
+  { name: "Português", url: "pt" },
   { name: "Deutsch", url: "de" },
   { name: "Italiano", url: "it" },
   { name: "Dansk", url: "da" },
@@ -11179,8 +11179,6 @@ const editions = [
 ];
 
 function printFN() {
-  if (_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length > 2) return;
-
   var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "d"])({
     maxPaxcount: 9,
     countInf: false,
@@ -11194,14 +11192,14 @@ function printFN() {
   }
 
   const createUrl = function(edition) {
-    let search = `cref=&tty=0&curr=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].cur ||
+    let search = `cref=&tty=1&curr=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].cur ||
       "USD"}&nativecurr=&cls=0&adt=${pax.adults}&chd=${
       pax.children.length
     }&inf=${pax.infLap}&tot=0.00&tax=0.00&`;
 
     search += _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin
       .map((leg, i) => {
-        const key = i === 0 ? "ob" : "ib";
+        const key = _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length === 2 && i === i ? "ib" : "ob";
         return leg.seg
           .map(
             (seg, j) =>
