@@ -31,23 +31,26 @@ function printFN() {
   }
 
   const createUrl = function(edition) {
-    let search = `cref=&tty=1&curr=${currentItin.cur ||
+    const tty = currentItin.itin.length === 2 ? 1 : 0;
+    let search = `cref=&tty=${tty}&curr=${currentItin.cur ||
       "USD"}&nativecurr=&cls=0&adt=${pax.adults}&chd=${
       pax.children.length
     }&inf=${pax.infLap}&tot=0.00&tax=0.00&`;
 
+    let segCount = 0;
     search += currentItin.itin
       .map((leg, i) => {
         const key = currentItin.itin.length === 2 && i === 1 ? "ib" : "ob";
+        const legNum = currentItin.itin.length > 2 ? 0 : i;
         return leg.seg
-          .map(
-            (seg, j) =>
-              `${key}${i + 1}${j ? j : ""}=${seg.carrier}${seg.fnr}${
-                seg.bookingclass
-              }!${formatDate(seg.dep)}!${seg.orig}${seg.dest}!${formatDate(
-                seg.arr
-              )}`
-          )
+          .map((seg, j) => {
+            const segNum = currentItin.itin.length > 2 ? segCount++ : j;
+            return `${key}${legNum + 1}${segNum ? segNum : ""}=${seg.carrier}${
+              seg.fnr
+            }${seg.bookingclass}!${formatDate(seg.dep)}!${seg.orig}${
+              seg.dest
+            }!${formatDate(seg.arr)}`;
+          })
           .join("&");
       })
       .join("&");
