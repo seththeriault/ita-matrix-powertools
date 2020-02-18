@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - lts/*
 env:
-  - WEXT_SHIPIT_CHROME_EXTENSION_ID=menecfddnlmanmpadcalononkolnplpp WEXT_SHIPIT_OPERA_EXTENSION_ID=245385
+  - WEXT_SHIPIT_CHROME_EXTENSION_ID=menecfddnlmanmpadcalononkolnplpp WEXT_SHIPIT_FIREFOX_EXTENSION_ID={adc96546-ad4d-4b76-9df3-84cdd73af6fa} WEXT_SHIPIT_OPERA_EXTENSION_ID=245385
 jobs:
   include:
     - stage: build

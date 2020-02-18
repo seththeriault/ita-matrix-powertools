@@ -26,7 +26,7 @@
   "devDependencies": {
     "@types/greasemonkey": "^4.0.0",
     "@types/webpack-env": "^1.15.0",
-    "@wext/shipit": "^0.2.1",
+    "@wext/shipit": "adamhwang/wext-shipit",
     "husky": "^4.2.1",
     "moment-locales-webpack-plugin": "^1.1.2",
     "moment-timezone-data-webpack-plugin": "^1.1.0",
