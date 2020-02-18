@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.44.5
+// @version 0.44.6
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -1180,7 +1180,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.44.5",
+  version: "0.44.6",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -6328,8 +6328,8 @@ var map = {
 	"./otas/etraveli.js": 43,
 	"./otas/expedia.js": 44,
 	"./otas/flightnetwork.js": 45,
-	"./otas/lucky2go.js": 46,
-	"./otas/ovago.js": 47,
+	"./otas/hop2.js": 46,
+	"./otas/lucky2go.js": 47,
 	"./otas/priceline.js": 48
 };
 
@@ -11261,6 +11261,92 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
+/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
+
+
+
+
+
+const editions = [
+  { title: "Ovago", host: "ovago.com" },
+  { title: "Wowfare", host: "wowfare.com" }
+];
+
+const cabins = ["Y", "S", "C", "F"];
+
+function print() {
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "d"])({
+    maxPaxcount: 9,
+    countInf: false,
+    childAsAdult: 12,
+    sepInfSeat: false,
+    childMinAge: 2
+  });
+  if (!pax) {
+    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printHop2");
+    return;
+  }
+
+  const cabin =
+    cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_3__[/* getCabin */ "b"])(Math.min(...Object(_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* getCurrentSegs */ "b"])().map(seg => seg.cabin)))];
+
+  const segs = Object(_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* getCurrentSegs */ "b"])();
+  const search = `OSKDCR*${cabin}${pax.adults}${pax.children.length}${
+    pax.infSeat
+  }0/${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin
+    .map(
+      itin =>
+        itin.orig +
+        itin.dest +
+        `${itin.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "i"])(itin.dep.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "i"])(
+          itin.dep.day
+        )}`
+    )
+    .join("/")}*${segs[segs.length - 1].carrier}~#${segs
+    .map(seg => seg.carrier + seg.fnr)
+    .join("#")}`;
+
+  const createUrl = function(host) {
+    return `https://${host}/ms?key=1_${btoa(search)}`;
+  };
+
+  var url = createUrl("hop2.com");
+  if (!url) return;
+
+  let extra =
+    ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  extra += editions
+    .map(function(obj, i) {
+      return (
+        '<a href="' +
+        createUrl(obj.host) +
+        '" target="_blank">' +
+        obj.title +
+        "</a>"
+      );
+    })
+    .join("<br/>");
+  extra += "</span></span>";
+
+  return {
+    url,
+    title: "Hop2",
+    extra
+  };
+}
+
+Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas", print);
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 /* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
@@ -11405,68 +11491,6 @@ function printLucky2go() {
 }
 
 Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("otas", printLucky2go);
-
-
-/***/ }),
-/* 47 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
-/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
-
-
-
-
-
-const cabins = ["Y", "S", "C", "F"];
-
-function printOvago(title, host, cid) {
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "d"])({
-    maxPaxcount: 9,
-    countInf: false,
-    childAsAdult: 12,
-    sepInfSeat: false,
-    childMinAge: 2
-  });
-  if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printOvago");
-    return;
-  }
-
-  const cabin =
-    cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_3__[/* getCabin */ "b"])(Math.min(...Object(_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* getCurrentSegs */ "b"])().map(seg => seg.cabin)))];
-
-  const segs = Object(_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* getCurrentSegs */ "b"])();
-  const search = `${cid}*${cabin}${pax.adults}${pax.children.length}${
-    pax.infSeat
-  }0/${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin
-    .map(
-      itin =>
-        itin.orig +
-        itin.dest +
-        `${itin.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "i"])(itin.dep.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "i"])(
-          itin.dep.day
-        )}`
-    )
-    .join("/")}*${segs[segs.length - 1].carrier}~#${segs
-    .map(seg => seg.carrier + seg.fnr)
-    .join("#")}`;
-
-  let url = `https://${host}/ms?cid=${cid}&key=1_${btoa(search)}`;
-
-  return {
-    url,
-    title
-  };
-}
-
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas", () => printOvago("Ovago", "ovago.com", "OSKDCR"));
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas", () => printOvago("Hop2", "hop2.com", "OSKDCR"));
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas", () => printOvago("Wowfare", "wowfare.com", "OSKDCR"));
 
 
 /***/ }),
