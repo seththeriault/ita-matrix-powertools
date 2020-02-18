@@ -3,9 +3,14 @@ import { validatePaxcount, registerLink } from "../../print/links";
 import { currentItin, getCurrentSegs } from "../../parse/itin";
 import { getCabin } from "../../settings/appSettings";
 
+const editions = [
+  { title: "Ovago", host: "ovago.com" },
+  { title: "Wowfare", host: "wowfare.com" }
+];
+
 const cabins = ["Y", "S", "C", "F"];
 
-function printOvago(title, host, cid) {
+function print() {
   var pax = validatePaxcount({
     maxPaxcount: 9,
     countInf: false,
@@ -14,7 +19,7 @@ function printOvago(title, host, cid) {
     childMinAge: 2
   });
   if (!pax) {
-    printNotification("Error: Failed to validate Passengers in printOvago");
+    printNotification("Error: Failed to validate Passengers in printHop2");
     return;
   }
 
@@ -22,7 +27,7 @@ function printOvago(title, host, cid) {
     cabins[getCabin(Math.min(...getCurrentSegs().map(seg => seg.cabin)))];
 
   const segs = getCurrentSegs();
-  const search = `${cid}*${cabin}${pax.adults}${pax.children.length}${
+  const search = `OSKDCR*${cabin}${pax.adults}${pax.children.length}${
     pax.infSeat
   }0/${currentItin.itin
     .map(
@@ -37,14 +42,33 @@ function printOvago(title, host, cid) {
     .map(seg => seg.carrier + seg.fnr)
     .join("#")}`;
 
-  let url = `https://${host}/ms?cid=${cid}&key=1_${btoa(search)}`;
+  const createUrl = function(host) {
+    return `https://${host}/ms?key=1_${btoa(search)}`;
+  };
+
+  var url = createUrl("hop2.com");
+  if (!url) return;
+
+  let extra =
+    ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  extra += editions
+    .map(function(obj, i) {
+      return (
+        '<a href="' +
+        createUrl(obj.host) +
+        '" target="_blank">' +
+        obj.title +
+        "</a>"
+      );
+    })
+    .join("<br/>");
+  extra += "</span></span>";
 
   return {
     url,
-    title
+    title: "Hop2",
+    extra
   };
 }
 
-registerLink("otas", () => printOvago("Ovago", "ovago.com", "OSKDCR"));
-registerLink("otas", () => printOvago("Hop2", "hop2.com", "OSKDCR"));
-registerLink("otas", () => printOvago("Wowfare", "wowfare.com", "OSKDCR"));
+registerLink("otas", print);
