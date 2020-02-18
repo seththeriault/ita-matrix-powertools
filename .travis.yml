@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - lts/*
 env:
-  - EXTENSION_ID=menecfddnlmanmpadcalononkolnplpp
+  - WEXT_SHIPIT_CHROME_EXTENSION_ID=menecfddnlmanmpadcalononkolnplpp WEXT_SHIPIT_OPERA_EXTENSION_ID=245385
 jobs:
   include:
     - stage: build
@@ -19,6 +19,12 @@ jobs:
         skip_cleanup: true
         provider: script
         script: npm run release:firefox
+    - stage: deploy
+      script: npm run package:webext
+      deploy:
+        skip_cleanup: true
+        provider: script
+        script: npm run release:opera
 stages:
   - build
   - name: deploy

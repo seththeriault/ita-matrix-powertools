@@ -11,25 +11,12 @@
     "minify": "uglifyjs ita-matrix-powertools.user.js -o script_minified.js",
     "version": "npm run authors && npm run build && git add ita-matrix-powertools.user.js script_minified.js AUTHORS",
     "package:webext": "node scripts/package.webext.js",
-    "release": "npm run release:chrome && npm run release:firefox",
-    "release:chrome": "webstore upload --source dist/ita-matrix-powertools.webext.zip --auto-publish",
-    "release:firefox": "node scripts/deploy.amo.js"
+    "release:chrome": "shipit chrome ./webext",
+    "release:firefox": "shipit firefox ./webext",
+    "release:opera": "shipit opera ./webext"
   },
   "dependencies": {
-    "@types/greasemonkey": "^4.0.0",
-    "@types/webpack-env": "^1.15.0",
-    "archiver": "^3.1.1",
-    "chrome-webstore-upload-cli": "^1.2.0",
-    "firefox-extension-deploy": "^1.1.2",
-    "husky": "^4.2.1",
-    "moment-timezone": "^0.5.27",
-    "path": "^0.12.7",
-    "prettier": "^1.19.1",
-    "pretty-quick": "^2.0.1",
-    "typescript": "^3.7.5",
-    "uglify-es": "^3.3.9",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "moment-timezone": "^0.5.27"
   },
   "husky": {
     "hooks": {
@@ -37,7 +24,18 @@
     }
   },
   "devDependencies": {
+    "@types/greasemonkey": "^4.0.0",
+    "@types/webpack-env": "^1.15.0",
+    "@wext/shipit": "^0.2.1",
+    "husky": "^4.2.1",
     "moment-locales-webpack-plugin": "^1.1.2",
-    "moment-timezone-data-webpack-plugin": "^1.1.0"
+    "moment-timezone-data-webpack-plugin": "^1.1.0",
+    "path": "^0.12.7",
+    "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1",
+    "typescript": "^3.7.5",
+    "uglify-es": "^3.3.9",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   }
 }
