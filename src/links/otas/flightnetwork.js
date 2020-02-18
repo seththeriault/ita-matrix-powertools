@@ -4,8 +4,8 @@ import { currentItin } from "../../parse/itin";
 
 const editions = [
   { name: "English", url: "" },
-  { name: "Espa�ol", url: "es" },
-  { name: "Portugu�s", url: "pt" },
+  { name: "Español", url: "es" },
+  { name: "Português", url: "pt" },
   { name: "Deutsch", url: "de" },
   { name: "Italiano", url: "it" },
   { name: "Dansk", url: "da" },
@@ -18,8 +18,6 @@ const editions = [
 ];
 
 function printFN() {
-  if (currentItin.itin.length > 2) return;
-
   var pax = validatePaxcount({
     maxPaxcount: 9,
     countInf: false,
@@ -33,14 +31,14 @@ function printFN() {
   }
 
   const createUrl = function(edition) {
-    let search = `cref=&tty=0&curr=${currentItin.cur ||
+    let search = `cref=&tty=1&curr=${currentItin.cur ||
       "USD"}&nativecurr=&cls=0&adt=${pax.adults}&chd=${
       pax.children.length
     }&inf=${pax.infLap}&tot=0.00&tax=0.00&`;
 
     search += currentItin.itin
       .map((leg, i) => {
-        const key = i === 0 ? "ob" : "ib";
+        const key = currentItin.itin.length === 2 && i === i ? "ib" : "ob";
         return leg.seg
           .map(
             (seg, j) =>
