@@ -427,11 +427,14 @@ function bindTranslations(page, lang, target) {
 }
 
 function printCPM() {
-  printItemInline(
-    (Number(currentItin.price) / Number(currentItin.dist)).toFixed(4) + " cpm",
-    "",
-    1
-  );
+  document
+    .querySelector(".KIR33AB-y-c:nth-of-type(1)")
+    .insertAdjacentHTML(
+      "beforeend",
+      `<li class="powertoolsitem">${(
+        Number(currentItin.price) / Number(currentItin.dist)
+      ).toFixed(4)} cpm</li>`
+    );
 }
 
 function bindSeatguru() {
