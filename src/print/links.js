@@ -223,10 +223,9 @@ function createUrlContainer() {
   var newdiv = document.createElement("div");
   newdiv.setAttribute("id", "powertoolslinkcontainer");
   newdiv.setAttribute("style", "margin:15px 0px 0px 10px");
-  return findtarget(
-    classSettings.resultpage.htbContainer,
-    1
-  ).parentElement.parentElement.parentElement.appendChild(newdiv);
+  return findtarget(classSettings.resultpage.milagecontainer, 1).appendChild(
+    newdiv
+  );
 }
 
 function printSeperator() {

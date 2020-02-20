@@ -118,25 +118,14 @@ function removeEditor() {
 }
 
 function bindPageLayout() {
-  if (mptUserSettings.enableInlineMode == 1) {
-    findtarget(classSettings.resultpage.milagecontainer, 1).setAttribute(
-      "rowspan",
-      "10"
-    );
-  } else if (
-    mptUserSettings.enableInlineMode == 0 &&
-    mptUserSettings.enablePricebreakdown == 1
-  ) {
-    findtarget(classSettings.resultpage.milagecontainer, 1).setAttribute(
-      "rowspan",
-      "3"
-    );
-  } else {
-    findtarget(classSettings.resultpage.milagecontainer, 1).setAttribute(
-      "rowspan",
-      "2"
-    );
-  }
+  findtarget(classSettings.resultpage.milagecontainer, 1).setAttribute(
+    "rowspan",
+    "10"
+  );
+  findtarget(
+    classSettings.resultpage.htbContainer,
+    1
+  ).parentElement.parentElement.setAttribute("valign", "top");
 }
 
 function bind24HourTime() {
