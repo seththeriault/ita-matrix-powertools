@@ -32,10 +32,12 @@ function printFN() {
 
   const createUrl = function(edition) {
     const tty = currentItin.itin.length === 2 ? 1 : 0;
-    let search = `cref=&tty=${tty}&curr=${currentItin.cur ||
-      "USD"}&nativecurr=&cls=0&adt=${pax.adults}&chd=${
-      pax.children.length
-    }&inf=${pax.infLap}&tot=0.00&tax=0.00&`;
+    let search = `cref=fnbwmint&tty=${tty}&curr=${currentItin.cur ||
+      "USD"}&nativecurr=${currentItin.cur || "USD"}&cls=0&adt=${
+      pax.adults
+    }&chd=${pax.children.length}&inf=${
+      pax.infLap
+    }&tot=0.00&tax=0.00&chdtot=0.00&chdtax=0.00&inftot=0.00&inftax=0.00&`;
 
     let segCount = 0;
     search += currentItin.itin
