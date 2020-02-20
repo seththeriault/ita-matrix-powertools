@@ -27,6 +27,8 @@ Script for greasemonkey + ITA Matrix
 
 - Chrome: [Chrome Web Store](https://chrome.google.com/webstore/detail/ita-matrix-powertools/menecfddnlmanmpadcalononkolnplpp)
 - Firefox (and Firefox for Android): [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/ita-matrix-powertools/)
+- Microsoft Edge: [Microsoft Edge Addons](https://microsoftedge.microsoft.com/addons/detail/emlhgimmofcjkaepkcdnmdnhfdgpjpen)
+- Opera: [Opera Addons](https://addons.opera.com/en/extensions/details/ita-matrix-powertools/)
 
 **Method 2: As a UserScript**
 
