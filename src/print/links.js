@@ -3,10 +3,10 @@ import classSettings from "../settings/itaSettings";
 import translations from "../settings/translations";
 import mtpPassengerConfig from "../settings/paxSettings";
 
-import { currentItin, getCurrentSegs } from "../parse/itin";
+import { currentItin } from "../parse/itin";
 import { findtargets, findtarget } from "../utils";
 
-/** @type {{ [key: string]: ((itin: typeof currentItin) => { url: string, title: string, desc?: string, extra?: string, target?: string })[]}} */
+/** @type {{ [key: string]: ((itin: typeof currentItin) => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string })[]}} */
 const links = {};
 
 require("../links");
@@ -19,7 +19,7 @@ skimlinks.setAttribute(
 
 /**
  * Registers a link
- * @param {(itin: typeof currentItin) => { url: string, title: string, desc?: string, extra?: string, target?: string }} factory
+ * @param {(itin: typeof currentItin) => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string }} factory
  */
 export function registerLink(type, factory) {
   if (!links[type]) links[type] = [];
@@ -42,7 +42,8 @@ export function printLinksContainer() {
     elems[i].parentElement.removeChild(elems[i]);
   }
 
-  for (let group in links) {
+  const groups = Object.keys(links);
+  groups.forEach((group, i) => {
     const groupLinks = links[group]
       .map(link => link(currentItin))
       .sort((a, b) => {
@@ -51,7 +52,9 @@ export function printLinksContainer() {
     groupLinks.forEach(link => {
       if (!link) return;
 
-      if (mptUserSettings.enableInlineMode == 1) {
+      if (link.img) {
+        printImage(link);
+      } else if (mptUserSettings.enableInlineMode == 1) {
         printUrlInline(link);
       } else {
         printUrl(link);
@@ -60,58 +63,12 @@ export function printLinksContainer() {
 
     mptUserSettings.enableDeviders == 1 &&
       links[group].length &&
+      i != groups.length - 1 &&
       printSeperator();
-  }
+  });
 
-  printGCM();
-  printWheretocredit();
   /*** attach JS events after building link container  ***/
   bindLinkClicks();
-}
-
-function printGCM() {
-  var url = "";
-  // Build multi-city search based on segments
-  // Keeping continous path as long as possible
-  for (var i = 0; i < currentItin.itin.length; i++) {
-    for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
-      url += currentItin.itin[i].seg[j].orig + "-";
-      if (j + 1 < currentItin.itin[i].seg.length) {
-        if (
-          currentItin.itin[i].seg[j].dest != currentItin.itin[i].seg[j + 1].orig
-        ) {
-          url += currentItin.itin[i].seg[j].dest + ";";
-        }
-      } else {
-        url += currentItin.itin[i].seg[j].dest + ";";
-      }
-    }
-  }
-
-  printImage({
-    img: "http://www.gcmap.com/map?MR=900&MX=182x182&PM=*&P=" + url,
-    url: "http://www.gcmap.com/mapui?P=" + url,
-    title: "GCM"
-  });
-}
-
-function printWheretocredit() {
-  const link = {
-    url:
-      "https://www.wheretocredit.com/calculator#" +
-      getCurrentSegs()
-        .map(seg =>
-          [seg.orig, seg.dest, seg.carrier, seg.bookingclass].join("-")
-        )
-        .join("/"),
-    title: "Where to Credit"
-  };
-
-  if (mptUserSettings.enableInlineMode == 1) {
-    printUrlInline(link);
-  } else {
-    printUrl(link);
-  }
 }
 
 function bindLinkClicks() {
