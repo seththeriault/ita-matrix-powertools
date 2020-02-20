@@ -1,6 +1,6 @@
 {
   "name": "ita-matrix-powertools",
-  "version": "0.44.6",
+  "version": "0.44.7",
   "description": "Adds new features and builds fare purchase links for ITA Matrix",
   "main": "ita-matrix-powertools.user.js",
   "scripts": {

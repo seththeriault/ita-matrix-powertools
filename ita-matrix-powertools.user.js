@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.44.6
+// @version 0.44.7
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -1180,7 +1180,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.44.6",
+  version: "0.44.7",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -11193,10 +11193,12 @@ function printFN() {
 
   const createUrl = function(edition) {
     const tty = _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length === 2 ? 1 : 0;
-    let search = `cref=&tty=${tty}&curr=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].cur ||
-      "USD"}&nativecurr=&cls=0&adt=${pax.adults}&chd=${
-      pax.children.length
-    }&inf=${pax.infLap}&tot=0.00&tax=0.00&`;
+    let search = `cref=fnbwmint&tty=${tty}&curr=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].cur ||
+      "USD"}&nativecurr=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].cur || "USD"}&cls=0&adt=${
+      pax.adults
+    }&chd=${pax.children.length}&inf=${
+      pax.infLap
+    }&tot=0.00&tax=0.00&chdtot=0.00&chdtax=0.00&inftot=0.00&inftax=0.00&`;
 
     let segCount = 0;
     search += _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin
