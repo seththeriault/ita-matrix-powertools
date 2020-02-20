@@ -130,25 +130,9 @@ export function validatePaxcount(config) {
 
 // Inline Stuff
 function printUrlInline(link) {
-  var otext =
-    '<a href="' + link.url + '" target="' + (link.target || "_blank") + '">';
-  otext +=
-    (translations[mptUserSettings.language] &&
-      translations[mptUserSettings.language]["use"]) ||
-    "Use ";
-  otext += " " + link.title + "</a>" + (link.extra || "");
-  printItemInline(otext, link.desc);
-}
-
-export function printItemInline(text, desc) {
-  const div = getSidebarContainer();
-  div.insertAdjacentHTML(
-    "beforeend",
-    '<li class="powertoolsitem">' +
-      text +
-      (desc ? "<br/><small>(" + desc + ")</small>" : "") +
-      "</li>"
-  );
+  var item = `<li class="powertoolsitem">${printLink(link)}</li>`;
+  const container = getSidebarContainer();
+  container.insertAdjacentHTML("beforeend", item);
 }
 
 export function printImage(link) {
@@ -208,33 +192,30 @@ function createUrlContainerInline() {
 
 // Printing Stuff
 function printUrl(link) {
-  var text =
-    '<div style="margin:5px 0px 10px 0px"><label style="font-size:' +
-    Number(mptUserSettings.linkFontsize) +
-    '%;font-weight:600"><a href="' +
-    link.url +
-    '" target=' +
-    (link.target || "_blank") +
-    ">";
-  text +=
-    (translations[mptUserSettings.language] &&
-      translations[mptUserSettings.language]["use"]) ||
-    "Use ";
-  text +=
-    " " +
-    link.title +
-    "</a></label>" +
-    (link.extra || "") +
-    (link.desc
-      ? '<br><label style="font-size:' +
-        (Number(mptUserSettings.linkFontsize) - 15) +
-        '%">(' +
-        link.desc +
-        ")</label>"
-      : "") +
-    "</div>";
+  var item = `<div class="powertoolsitem" style="margin:5px 0px 10px 0px">${printLink(
+    link
+  )}</div>`;
   const container = getSidebarContainer();
-  container.insertAdjacentHTML("beforeend", text);
+  container.insertAdjacentHTML("beforeend", item);
+}
+
+function printLink(link) {
+  let html = `<div><label style="font-size:${Number(
+    mptUserSettings.linkFontsize
+  )}%;font-weight:600">
+    <a href="${link.url}" target=${link.target || "_blank"}>${(translations[
+    mptUserSettings.language
+  ] &&
+    translations[mptUserSettings.language]["use"]) ||
+    "Use "} ${link.title}</a>
+  </label>`;
+  if (link.extra) html += link.extra;
+  if (link.desc)
+    html += `<br/><label style="font-size:${Number(
+      mptUserSettings.linkFontsize
+    ) - 15}%">(${link.desc})</label>`;
+  html += "</div";
+  return html;
 }
 
 function createUrlContainer() {
