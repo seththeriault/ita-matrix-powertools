@@ -178,6 +178,7 @@ export function getSidebarContainer() {
 function createUrlContainerInline() {
   var newdiv = document.createElement("div");
   newdiv.setAttribute("class", classSettings.resultpage.mcDiv);
+  newdiv.style.backgroundColor = "#f2f2f2";
   newdiv.innerHTML =
     '<div class="' +
     classSettings.resultpage.mcHeader +
