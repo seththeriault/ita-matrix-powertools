@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.44.7
+// @version 0.45.0
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -116,7 +116,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 49);
+/******/ 	return __webpack_require__(__webpack_require__.s = 52);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -710,11 +710,10 @@ async function loadUserSettings() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return registerLink; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return printLinksContainer; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return validatePaxcount; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return printItemInline; });
-/* unused harmony export printImageInline */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return registerLink; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return printLinksContainer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return validatePaxcount; });
+/* unused harmony export printImage */
 /* unused harmony export getSidebarContainer */
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
@@ -730,7 +729,7 @@ async function loadUserSettings() {
 
 
 
-/** @type {{ [key: string]: ((itin: typeof currentItin) => { url: string, title: string, desc?: string, nth?: number, extra?: string })[]}} */
+/** @type {{ [key: string]: ((itin: typeof currentItin) => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string })[]}} */
 const links = {};
 
 __webpack_require__(10);
@@ -743,8 +742,7 @@ skimlinks.setAttribute(
 
 /**
  * Registers a link
- * @param {keyof links} type
- * @param {(itin: typeof currentItin) => { url: string, title: string, desc?: string, nth?: number, extra?: string, target?: string }} factory
+ * @param {(itin: typeof currentItin) => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string }} factory
  */
 function registerLink(type, factory) {
   if (!links[type]) links[type] = [];
@@ -758,10 +756,8 @@ function printLinksContainer() {
   }
 
   // empty outputcontainer
-  if (document.getElementById("powertoolslinkcontainer") != undefined) {
-    const div = document.getElementById("powertoolslinkcontainer");
-    div.innerHTML = "";
-  }
+  const div = getSidebarContainer();
+  div.innerHTML = "";
 
   //  S&D powertool items
   const elems = Object(_utils__WEBPACK_IMPORTED_MODULE_5__[/* findtargets */ "d"])("powertoolsitem");
@@ -769,7 +765,8 @@ function printLinksContainer() {
     elems[i].parentElement.removeChild(elems[i]);
   }
 
-  for (let group in links) {
+  const groups = Object.keys(links);
+  groups.forEach((group, i) => {
     const groupLinks = links[group]
       .map(link => link(_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"]))
       .sort((a, b) => {
@@ -778,200 +775,30 @@ function printLinksContainer() {
     groupLinks.forEach(link => {
       if (!link) return;
 
-      if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1) {
-        printUrlInline(
-          link.url,
-          link.title,
-          link.desc,
-          link.nth,
-          link.extra,
-          link.target
-        );
+      if (link.img) {
+        printImage(link);
+      } else if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1) {
+        printUrlInline(link);
       } else {
-        printUrl(link.url, link.title, link.desc, link.extra, link.target);
+        printUrl(link);
       }
     });
 
     _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableDeviders == 1 &&
       links[group].length &&
+      i != groups.length - 1 &&
       printSeperator();
-  }
+  });
 
-  printGCM();
-  printWheretocredit();
   /*** attach JS events after building link container  ***/
   bindLinkClicks();
 }
 
-function printGCM() {
-  var url = "";
-  // Build multi-city search based on segments
-  // Keeping continous path as long as possible
-  for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin.length; i++) {
-    for (var j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg.length; j++) {
-      url += _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].orig + "-";
-      if (j + 1 < _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg.length) {
-        if (
-          _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dest != _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j + 1].orig
-        ) {
-          url += _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dest + ";";
-        }
-      } else {
-        url += _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dest + ";";
-      }
-    }
-  }
-  if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1) {
-    printImageInline(
-      "http://www.gcmap.com/map?MR=900&MX=182x182&PM=*&P=" + url,
-      "http://www.gcmap.com/mapui?P=" + url
-    );
-  } else {
-    printUrl("http://www.gcmap.com/mapui?P=" + url, "GCM", "");
-  }
-}
-
-function printWheretocredit() {
-  var extra =
-    '<span id="wheretocredit-container" style="display: none;">&nbsp;<img src="data:image/gif;base64,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" style="width: 1em; height: 1em;"></span>';
-
-  if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1) {
-    printUrlInline(
-      "javascript: void(0);",
-      "wheretocredit.com to calculate miles",
-      "",
-      1,
-      extra,
-      "_self"
-    );
-  } else {
-    printUrl(
-      "javascript: void(0);",
-      "wheretocredit.com to calculate miles",
-      "",
-      extra,
-      "_self"
-    );
-  }
-}
-
 function bindLinkClicks() {
-  var container;
-  var linkid = 0;
-  if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1) {
-    container = getSidebarContainer(1);
-  } else {
-    container = document.getElementById("powertoolslinkcontainer");
-  }
-  var links = container.getElementsByTagName("a");
-  /*
-  if (typeof(currentItin.itin[0].dep.offset)==="undefined") {
-    links[linkid].onclick=function () {
-      resolveTimezones();
-    };
-    linkid++;
-  }
-  */
-  if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode != 1) {
-    linkid = links.length - 1;
-  }
-  links[linkid].onclick = function() {
-    links[linkid].onclick = null;
-    openWheretocredit(links[linkid]);
-  };
-
   if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableAffiliates == 1) {
     skimlinks.parentNode && skimlinks.parentNode.removeChild(skimlinks);
     document.body.appendChild(skimlinks);
   }
-}
-
-function openWheretocredit(link) {
-  var container = document.getElementById("wheretocredit-container");
-  container.style.display = "inline";
-
-  var itin = {
-    ticketingCarrier:
-      _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].carriers.length == 1 ? _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].carriers[0] : null,
-    baseFareUSD: _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].basefares + _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].surcharges,
-    segments: []
-  };
-  for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin.length; i++) {
-    for (var j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg.length; j++) {
-      itin.segments.push({
-        origin: _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].orig,
-        destination: _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dest,
-        departure: new Date(
-          _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dep.year,
-          _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dep.month,
-          _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dep.day
-        ),
-        carrier: _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].carrier,
-        bookingClass: _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].bookingclass,
-        codeshare: _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].codeshare,
-        flightNumber: _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].fnr
-      });
-    }
-  }
-
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", "https://www.wheretocredit.com/api/beta/calculate");
-  xhr.setRequestHeader("Accept", "application/json;charset=UTF-8");
-  xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4) {
-      link.href = "https://www.wheretocredit.com";
-      link.target = "_blank";
-      link.innerHTML = "Data provided by wheretocredit.com";
-
-      var data, result, temp;
-      try {
-        data = JSON.parse(xhr.responseText);
-      } catch (e) {
-        data = xhr.responseText;
-      }
-
-      if (
-        xhr.status === 200 &&
-        data &&
-        data.success &&
-        data.value &&
-        data.value.length &&
-        data.value[0].success
-      ) {
-        data.value[0].value.totals.sort(function(a, b) {
-          if (a.value === b.value) {
-            return +(a.name > b.name) || +(a.name === b.name) - 1;
-          }
-          return b.value - a.value; // desc
-        });
-
-        result = document.createElement("div");
-        temp = data.value[0].value.totals.map(function(seg, i) {
-          return (
-            parseInt(seg.value)
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
-            " " +
-            seg.name +
-            " miles"
-          );
-        });
-        for (var i = 0; i < temp.length; i++) {
-          result.appendChild(document.createTextNode(temp[i]));
-          result.appendChild(document.createElement("br"));
-        }
-        result.removeChild(result.lastChild);
-      } else {
-        result = data.errorMessage || data || "API quota exceeded :-/";
-        result = document.createTextNode(result);
-      }
-      container.style.display = "block";
-      container.innerHTML = "";
-      container.appendChild(result);
-    }
-  };
-  xhr.send(JSON.stringify([itin]));
 }
 
 function validatePaxcount(config) {
@@ -1003,19 +830,15 @@ function validatePaxcount(config) {
     }
   }
   // check Pax-Count
-  if (config.countInf === true) {
-    if (
-      config.maxPaxcount <
-      ret.adults + ret.infLap + ret.infSeat + ret.children.length
-    ) {
-      console.log("Too many passengers");
-      return;
-    }
-  } else {
-    if (config.maxPaxcount < ret.adults + ret.infSeat + ret.children.length) {
-      console.log("Too many passengers");
-      return;
-    }
+  if (
+    config.maxPaxcount <=
+    ret.adults +
+      (config.countInf && ret.infLap) +
+      ret.infSeat +
+      ret.children.length
+  ) {
+    console.log("Too many passengers");
+    return;
   }
   if (0 === ret.adults + ret.infSeat + ret.children.length) {
     console.log("No passengers");
@@ -1025,76 +848,56 @@ function validatePaxcount(config) {
 }
 
 // Inline Stuff
-function printUrlInline(url, text, desc, nth, extra, target) {
-  var otext = '<a href="' + url + '" target="' + (target || "_blank") + '">';
-  otext +=
-    (_settings_translations__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"][_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language] &&
-      _settings_translations__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"][_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language]["use"]) ||
-    "Use ";
-  otext += " " + text + "</a>" + (extra || "");
-  printItemInline(otext, desc, nth);
+function printUrlInline(link) {
+  var item = `<li class="powertoolsitem">${printLink(link)}</li>`;
+  const container = getSidebarContainer();
+  container.insertAdjacentHTML("beforeend", item);
 }
 
-function printItemInline(text, desc, nth) {
-  const div = getSidebarContainer(nth);
-  div.innerHTML =
-    div.innerHTML +
-    '<li class="powertoolsitem">' +
-    text +
-    (desc ? "<br/><small>(" + desc + ")</small>" : "") +
-    "</li>";
-}
-
-function printImageInline(src, url, nth) {
-  const div = getSidebarContainer(nth).parentElement;
+function printImage(link) {
+  const div = getSidebarContainer();
+  const imgLink =
+    (link.url
+      ? '<a href="' + link.url + '" target="_blank" class="powertoolsitem">'
+      : "") +
+    '<img src="' +
+    link.img +
+    '" style="margin-top:10px;"' +
+    (!link.url ? ' class="powertoolsitem"' : "") +
+    "/>" +
+    (link.url ? "</a>" : "");
   if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableIMGautoload == 1) {
-    div.innerHTML =
-      div.innerHTML +
-      (url
-        ? '<a href="' + url + '" target="_blank" class="powertoolsitem">'
-        : "") +
-      '<img src="' +
-      src +
-      '" style="margin-top:10px;"' +
-      (!url ? ' class="powertoolsitem"' : "") +
-      "/>" +
-      (url ? "</a>" : "");
+    div.insertAdjacentHTML("beforeend", imgLink);
   } else {
     var id = Math.random().toString();
-    div.innerHTML =
-      div.innerHTML +
-      '<div id="' +
-      id +
-      '" class="powertoolsitem" style="width:184px;height:100px;background-color:white;cursor:pointer;text-align:center;margin-top:10px;padding-top:84px;"><span>Click</span></div>';
-    document.getElementById(id).onclick = function() {
-      var newdiv = document.createElement("div");
-      newdiv.setAttribute("class", "powertoolsitem");
-      newdiv.innerHTML =
-        (url ? '<a href="' + url + '" target="_blank">' : "") +
-        '<img src="' +
-        src +
-        '" style="margin-top:10px;"' +
-        (!url ? ' class="powertoolsitem"' : "") +
-        "/>" +
-        (url ? "</a>" : "");
-      document
-        .getElementById(id)
-        .parentElement.replaceChild(newdiv, document.getElementById(id));
-    };
+    div.insertAdjacentHTML(
+      "beforeend",
+      `<div id="${id}" class="powertoolsitem" style="width:184px;height:100px;background-color:white;border:1px solid #808080;cursor:pointer;text-align:center;margin-top:10px;padding-top:84px;"><span>${link.title}</span></div>`
+    );
+
+    document.getElementById(id).addEventListener("click", function() {
+      this.outerHTML = imgLink;
+    });
   }
 }
 
-function getSidebarContainer(nth) {
-  var div =
-    !nth || nth >= 4
-      ? document.getElementById("powertoolslinkinlinecontainer")
-      : Object(_utils__WEBPACK_IMPORTED_MODULE_5__[/* findtarget */ "c"])(_settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcHeader, nth).nextElementSibling;
-  return div || createUrlContainerInline();
+function getSidebarContainer() {
+  if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1) {
+    return (
+      document.getElementById("powertoolslinkinlinecontainer") ||
+      createUrlContainerInline()
+    );
+  } else {
+    return (
+      document.getElementById("powertoolslinkcontainer") || createUrlContainer()
+    );
+  }
 }
 
 function createUrlContainerInline() {
   var newdiv = document.createElement("div");
   newdiv.setAttribute("class", _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcDiv);
+  newdiv.style.backgroundColor = "#f2f2f2";
   newdiv.innerHTML =
     '<div class="' +
     _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcHeader +
@@ -1108,58 +911,51 @@ function createUrlContainerInline() {
 }
 
 // Printing Stuff
-function printUrl(url, name, desc, extra, target) {
-  if (document.getElementById("powertoolslinkcontainer") == undefined) {
-    createUrlContainer();
-  }
-  var text =
-    '<div style="margin:5px 0px 10px 0px"><label style="font-size:' +
-    Number(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].linkFontsize) +
-    '%;font-weight:600"><a href="' +
-    url +
-    '" target=' +
-    (target || "_blank") +
-    ">";
-  text +=
-    (_settings_translations__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"][_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language] &&
-      _settings_translations__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"][_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language]["use"]) ||
-    "Use ";
-  text +=
-    " " +
-    name +
-    "</a></label>" +
-    (extra || "") +
-    (desc
-      ? '<br><label style="font-size:' +
-        (Number(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].linkFontsize) - 15) +
-        '%">(' +
-        desc +
-        ")</label>"
-      : "") +
-    "</div>";
-  var target = document.getElementById("powertoolslinkcontainer");
-  target.innerHTML = target.innerHTML + text;
+function printUrl(link) {
+  var item = `<div class="powertoolsitem" style="margin:5px 0px 10px 0px">${printLink(
+    link
+  )}</div>`;
+  const container = getSidebarContainer();
+  container.insertAdjacentHTML("beforeend", item);
+}
+
+function printLink(link) {
+  let html = `<div><label style="font-size:${Number(
+    _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].linkFontsize
+  )}%;font-weight:600">
+    <a href="${link.url}" target=${link.target || "_blank"}>${(_settings_translations__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"][
+    _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language
+  ] &&
+    _settings_translations__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"][_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language]["use"]) ||
+    "Use "} ${link.title}</a>
+  </label>`;
+  if (link.extra) html += link.extra;
+  if (link.desc)
+    html += `<br/><label style="font-size:${Number(
+      _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].linkFontsize
+    ) - 15}%">${link.desc}</label>`;
+  html += "</div";
+  return html;
 }
 
 function createUrlContainer() {
   var newdiv = document.createElement("div");
   newdiv.setAttribute("id", "powertoolslinkcontainer");
   newdiv.setAttribute("style", "margin:15px 0px 0px 10px");
-  Object(_utils__WEBPACK_IMPORTED_MODULE_5__[/* findtarget */ "c"])(
-    _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.htbContainer,
-    1
-  ).parentElement.parentElement.parentElement.appendChild(newdiv);
+  return Object(_utils__WEBPACK_IMPORTED_MODULE_5__[/* findtarget */ "c"])(_settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.milagecontainer, 1).appendChild(
+    newdiv
+  );
 }
 
 function printSeperator() {
-  var container =
-    document.getElementById("powertoolslinkcontainer") || getSidebarContainer();
+  var container = getSidebarContainer();
   if (container) {
-    container.innerHTML =
-      container.innerHTML +
-      (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode
+    container.insertAdjacentHTML(
+      "beforeend",
+      _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode
         ? '<hr class="powertoolsitem"/>'
-        : "<hr/>");
+        : "<hr/>"
+    );
   }
 }
 
@@ -1180,7 +976,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.44.7",
+  version: "0.45.0",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -6323,14 +6119,17 @@ var map = {
 	"./meta/kayak.js": 38,
 	"./meta/momondo.js": 39,
 	"./meta/skyscanner.js": 40,
-	"./otas/cheapoair.js": 41,
-	"./otas/edreams.js": 42,
-	"./otas/etraveli.js": 43,
-	"./otas/expedia.js": 44,
-	"./otas/flightnetwork.js": 45,
-	"./otas/hop2.js": 46,
-	"./otas/lucky2go.js": 47,
-	"./otas/priceline.js": 48
+	"./meta/tripadvisor.js": 41,
+	"./otas/cheapoair.js": 42,
+	"./otas/edreams.js": 43,
+	"./otas/etraveli.js": 44,
+	"./otas/expedia.js": 45,
+	"./otas/flightnetwork.js": 46,
+	"./otas/hop2.js": 47,
+	"./otas/lucky2go.js": 48,
+	"./otas/priceline.js": 49,
+	"./other/gcm.js": 50,
+	"./other/wheretocredit.js": 51
 };
 
 
@@ -6475,7 +6274,7 @@ function printAA() {
     search += edition[0].toUpperCase() + ","; // Language
     search += "3,";
     // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
       maxPaxcount: 7,
       countInf: false,
       childAsAdult: 12,
@@ -6530,7 +6329,7 @@ function printAA() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printAA);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printAA);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])(
   "American (Europe/Asia/Pacific)",
   "aaEdition",
@@ -6612,7 +6411,7 @@ function printAaSabre() {
 
   // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
   var createUrl = function(edition) {
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
       maxPaxcount: 6,
       countInf: true,
       childAsAdult: 12,
@@ -6760,7 +6559,7 @@ function printAaSabre() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printAaSabre);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printAaSabre);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])(
   "American (America & UK)",
   "aaSabreEdition",
@@ -7582,7 +7381,7 @@ function printAC() {
         ? "&language=de"
         : "&language=en");
     // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_4__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_4__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 16,
@@ -7702,7 +7501,7 @@ function addACPromo() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_4__[/* registerLink */ "c"])("airlines", printAC);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_4__[/* registerLink */ "b"])("airlines", printAC);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Air Canada", "acEdition", acEditions, "us");
 
 
@@ -7804,7 +7603,7 @@ function printAF() {
     afUrl +=
       "&cabin=" +
       cabins[_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cabin === "Auto" ? mincabin : Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getForcedCabin */ "c"])()];
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 18,
@@ -7875,7 +7674,7 @@ function printAF() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "c"])("airlines", printAF);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "b"])("airlines", printAF);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Air France", "afEdition", afEditions, "US/en");
 
 
@@ -7904,7 +7703,7 @@ function printAS() {
 
   // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
   var createUrl = function() {
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
       maxPaxcount: 6,
       countInf: true,
       childAsAdult: 6,
@@ -7961,7 +7760,7 @@ function printAS() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printAS);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printAS);
 
 
 /***/ }),
@@ -8066,7 +7865,7 @@ function printAZ() {
         seg++;
       }
     }
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
       maxPaxcount: 7,
       countInf: false,
       childAsAdult: 12,
@@ -8114,7 +7913,7 @@ function printAZ() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printAZ);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printAZ);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("Alitalia", "azEdition", azEditions, "us_en");
 
 
@@ -8371,7 +8170,7 @@ function printBA() {
   var createUrl = function(edition, language) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["M", "W", "C", "F"];
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 16,
@@ -8475,7 +8274,7 @@ function printBA() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "c"])("airlines", printBA);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "b"])("airlines", printBA);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("British Airways", "baEdition", baEditions, "US");
 
 
@@ -8573,7 +8372,7 @@ function printCZ() {
 
   var createUrl = function(edition) {
     var paxConfig = { allowinf: 1, youthage: 0 };
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -8637,7 +8436,7 @@ function printCZ() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printCZ);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printCZ);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("China Southern", "czEdition", czEditions, "US-GB");
 
 
@@ -8672,7 +8471,7 @@ function printDL() {
     var cabins = ["MAIN", "DPPS", "BU", "FIRST"];
     var mincabin = 3;
     var farebases = new Array();
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 12,
@@ -8784,7 +8583,7 @@ function printDL() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "c"])("airlines", printDL);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "b"])("airlines", printDL);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Delta", "dlEdition", dlEditions, "www_us");
 
 
@@ -8924,7 +8723,7 @@ function printIB() {
   var createUrl = function(edition, currency) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["Economy", "Economy", "Business", "First"];
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9034,7 +8833,7 @@ function printIB() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printIB);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printIB);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("Iberia", "ibEdition", ibEditions, "en-US");
 
 
@@ -9076,7 +8875,7 @@ function printKL() {
   }
 
   var createUrl = function(edition) {
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9149,7 +8948,7 @@ function printKL() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "c"])("airlines", printKL);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "b"])("airlines", printKL);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("KLM", "klEdition", klEditions, "us_en");
 
 
@@ -9201,7 +9000,7 @@ function printLA() {
 
   // NOTE: currency will be determined by the locale; the deeplink does not support manually specifying the currency
   var createUrl = function(edition) {
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9314,7 +9113,7 @@ function printLA() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printLA);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printLA);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("LATAM", "laEdition", laEditions, "en/us");
 
 
@@ -9460,7 +9259,7 @@ function printLH() {
   var createUrl = function(edition) {
     var style = 0; // 0 is direct booking - 1 is pre selected
     var paxConfig = { allowinf: 1, youthage: 0 };
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9534,7 +9333,7 @@ function printLH() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printLH);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printLH);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("Lufthansa", "lhEdition", lhEditions, "US-gb");
 
 
@@ -9578,7 +9377,7 @@ function printLX() {
       "/" +
       edition[1] +
       "/Book/Combined";
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9669,7 +9468,7 @@ function printLX() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "c"])("airlines", printLX);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "b"])("airlines", printLX);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Swiss", "lxEdition", lxEditions, "us_en");
 
 
@@ -9702,7 +9501,7 @@ function printOA() {
 
   var url =
     "https://e-ticket.olympicair.com/A3Responsive/dyn/air/booking/?BOOKING_FLOW=REVENUE&FLEXIBILITY=3&DISPLAY_TYPE=2&FORCE_OVERRIDE=TRUE&PRICING_TYPE=O";
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -9740,7 +9539,7 @@ function printOA() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printOA);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printOA);
 
 
 /***/ }),
@@ -9769,7 +9568,7 @@ function printPS() {
   var createUrl = function(edition, currency) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["Economy", "Economy", "Business", "First"];
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9862,7 +9661,7 @@ function printPS() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printPS);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printPS);
 
 
 /***/ }),
@@ -9913,7 +9712,7 @@ function printQF() {
     // Start the minimum cabin at highest possible (it will drop as we check each leg):
     var mincabin = 3;
     // Validate the passenger totals first:
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 16,
@@ -10074,7 +9873,7 @@ function printQF() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "c"])("airlines", printQF);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "b"])("airlines", printQF);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Qantas", "qfEdition", qfEditions, "EN_US");
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Qantas", "qfCurrency", qfCurrencies, "USD");
 
@@ -10107,7 +9906,7 @@ function printTK() {
   var url =
     "https://book.eu2.amadeus.com/plnext/turkishairlines/Override.action?";
   var paxConfig = { allowinf: 1, youthage: 0 };
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -10145,7 +9944,7 @@ function printTK() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airlines", printTK);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printTK);
 
 
 /***/ }),
@@ -10226,7 +10025,7 @@ function print() {
   )
     return; // no open jaws
 
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_0__[/* validatePaxcount */ "d"])({
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_0__[/* validatePaxcount */ "c"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -10285,7 +10084,7 @@ function formatDate(date) {
   return `${date.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(date.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(date.day)}`;
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_0__[/* registerLink */ "c"])("meta", print);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_0__[/* registerLink */ "b"])("meta", print);
 
 
 /***/ }),
@@ -10298,140 +10097,148 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
 
 
 
 
 
-const KayakEditions = [
-  { name: "Kayak.com", host: "Kayak.com" },
-  { name: "Kayak.de", host: "Kayak.de" },
-  { name: "Kayak.it", host: "Kayak.it" },
-  { name: "Kayak.es", host: "Kayak.es" },
-  { name: "Kayak.co.uk", host: "Kayak.co.uk" },
-  { name: "Kayak.dk", host: "Kayak.dk" },
-  { name: "Kayak.mx", host: "Kayak.mx" },
-  { name: "Kayak.fi", host: "Kayak.fi" },
-  { name: "Kayak.fr", host: "Kayak.fr" },
-  { name: "Kayak.no", host: "Kayak.no" },
-  { name: "Kayak.nl", host: "Kayak.nl" },
-  { name: "Kayak.pt", host: "Kayak.pt" },
-  { name: "Kayak.se", host: "Kayak.se" },
-  { name: "Kayak.ru", host: "Kayak.ru" }
+
+const editions = [
+  { name: "Kayak.ae", host: "www.kayak.ae" },
+  { name: "Kayak.ar", host: "www.kayak.com.ar" },
+  { name: "Kayak.at", host: "www.kayak.cat" },
+  { name: "Kayak.au", host: "www.kayak.com.au" },
+  { name: "Kayak.br", host: "www.kayak.com.br" },
+  { name: "Kayak.ca", host: "www.ca.kayak.com" },
+  { name: "Kayak.ch", host: "www.kayak.ch" },
+  { name: "Kayak.cl", host: "www.kayak.cl" },
+  { name: "Kayak.cn", host: "www.cn.kayak.com" },
+  { name: "Kayak.co", host: "www.kayak.com.co" },
+  { name: "Kayak.com", host: "www.kayak.com" },
+  { name: "Kayak.de", host: "www.kayak.de" },
+  { name: "Kayak.dk", host: "www.kayak.dk" },
+  { name: "Kayak.es", host: "www.es.kayak.com" },
+  { name: "Kayak.es", host: "www.kayak.es" },
+  { name: "Kayak.fi", host: "www.fi.kayak.com" },
+  { name: "Kayak.fr", host: "www.kayak.fr" },
+  { name: "Kayak.gr", host: "www.gr.kayak.com" },
+  { name: "Kayak.hk", host: "www.kayak.com.hk" },
+  { name: "Kayak.id", host: "www.kayak.co.id" },
+  { name: "Kayak.ie", host: "www.kayak.ie" },
+  { name: "Kayak.in", host: "www.kayak.co.in" },
+  { name: "Kayak.it", host: "www.kayak.it" },
+  { name: "Kayak.jp", host: "www.kayak.co.jp" },
+  { name: "Kayak.kr", host: "www.kayak.co.kr" },
+  { name: "Kayak.mx", host: "www.kayak.com.mx" },
+  { name: "Kayak.my", host: "www.kayak.com.my" },
+  { name: "Kayak.nl", host: "www.kayak.nl" },
+  { name: "Kayak.no", host: "www.kayak.no" },
+  { name: "Kayak.nz", host: "www.nz.kayak.com" },
+  { name: "Kayak.pe", host: "www.kayak.com.pe" },
+  { name: "Kayak.pl", host: "www.kayak.pl" },
+  { name: "Kayak.pt", host: "www.kayak.pt" },
+  { name: "Kayak.ru", host: "www.kayak.ru" },
+  { name: "Kayak.se", host: "www.kayak.se" },
+  { name: "Kayak.sg", host: "www.kayak.sg" },
+  { name: "Kayak.th", host: "www.kayak.co.th" },
+  { name: "Kayak.tr", host: "www.kayak.com.tr" },
+  { name: "Kayak.tw", host: "www.tw.kayak.com" },
+  { name: "Kayak.uk", host: "www.kayak.co.uk" },
+  { name: "Kayak.vn", host: "www.vn.kayak.com" },
+  { name: "Kayak.za", host: "www.za.kayak.com" }
 ];
 
-function printKayak(method) {
+const cabins = ["economy", "premium", "business", "first"];
+
+function print(method) {
   //example https://www.Kayak.ru/flights/MOW-CPH...OW/2016-05-20/
-  // pax: #adults
   // method: 0 = based on leg; 1 = based on segment
-  let desc;
-  var KayakCreateUrl = function(host) {
-    var KayakUrl = "https://www." + host + "/flights";
-    var segsize = 0;
-    for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length; i++) {
-      if (method != 1) {
-        KayakUrl += "/" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].orig;
-        KayakUrl += "-" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].dest;
-        KayakUrl +=
-          "/" +
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].dep.year +
-          "-" +
-          ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].dep.month).slice(-2) +
-          "-" +
-          ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].dep.day).slice(-2);
-        segsize++;
-      }
-      for (var j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg.length; j++) {
-        if (method == 1) {
-          var k = 0;
-          // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
-          while (j + k < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg.length - 1) {
-            if (
-              _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].fnr !=
-                _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k + 1].fnr ||
-              _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].layoverduration >= 1440
-            )
-              break;
-            k++;
-          }
-          KayakUrl += "/" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].orig;
-          KayakUrl += "-" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].dest;
-          KayakUrl +=
-            "/" +
-            _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.year +
-            "-" +
-            ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.month).slice(-2) +
-            "-" +
-            ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.day).slice(-2);
-          j += k;
-          segsize++;
-        }
-      }
-    }
-    if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].numPax > 1) {
-      KayakUrl += "/" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].numPax + "adults";
-    }
+  const segs = !method ? _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin : Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])();
+  if (method && _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === segs.length) return;
 
-    KayakUrl += getKayakCabin();
-
-    if (method == 1) {
-      if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].language == "de") {
-        desc = "Benutze " + segsize + " Segment(e)";
-      } else {
-        desc = "Based on " + segsize + " segment(s)";
-      }
-    } else {
-      if (segsize == 1) {
-        return false;
-      }
-      if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].language == "de") {
-        desc = "Benutze " + segsize + " Abschnitt(e)";
-      } else {
-        desc = "Based on " + segsize + " segment(s)";
-      }
-    }
-    return KayakUrl;
-  };
-  var KayakUrl = KayakCreateUrl("Kayak.com");
-  if (!KayakUrl) {
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    maxPaxcount: 9,
+    countInf: false,
+    childAsAdult: 12,
+    sepInfSeat: true,
+    childMinAge: 2
+  });
+  if (!pax) {
+    Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printOvago");
     return;
   }
-  var KayakExtra =
+
+  const cabin =
+    cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getCabin */ "b"])(Math.min(...Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])().map(seg => seg.cabin)))];
+
+  const createUrl = function(host) {
+    let url =
+      `https://${host}/flights/` +
+      segs
+        .map(
+          seg =>
+            `${seg.orig}-${seg.dest}/${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(
+              seg.dep.month
+            )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(seg.dep.day)}`
+        )
+        .join("/");
+
+    if (pax.adults > 1 || pax.children.length || pax.infSeat || pax.infLap) {
+      url += `/${_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].numPax}adults`;
+    }
+
+    if (pax.children.length || pax.infSeat || pax.infLap) {
+      url += "/children";
+      for (let i = 0; i < pax.infSeat; i++) {
+        url += "-1S";
+      }
+      for (let i = 0; i < pax.infLap; i++) {
+        url += "-1L";
+      }
+      for (let i = 0; i < pax.children.length; i++) {
+        url += "-11";
+      }
+    }
+
+    url += "/" + cabin;
+
+    return url;
+  };
+
+  var url = createUrl("kayak.com");
+  if (!url) {
+    return;
+  }
+
+  var extra =
     ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
-  KayakExtra += KayakEditions.map(function(obj, i) {
-    return (
-      '<a href="' +
-      KayakCreateUrl(obj.host) +
-      '" target="_blank">' +
-      obj.name +
-      "</a>"
-    );
-  }).join("<br/>");
-  KayakExtra += "</span></span>";
+  extra += editions
+    .map(function(obj, i) {
+      return (
+        '<a href="' +
+        createUrl(obj.host) +
+        '" target="_blank">' +
+        obj.name +
+        "</a>"
+      );
+    })
+    .join("<br/>");
+  extra += "</span></span>";
 
   return {
-    url: KayakUrl,
+    url,
     title: "Kayak",
-    desc,
-    extra: KayakExtra
+    desc:
+      _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].language == "de"
+        ? `Benutze ${segs.length} Segment(e)`
+        : `Based on ${segs.length} segment(s)`,
+    extra
   };
 }
 
-function getKayakCabin() {
-  switch (_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cabin) {
-    case "Y+":
-      return "/premium";
-    case "C":
-      return "/business";
-    case "F":
-      return "/first";
-    default:
-      return "/economy";
-  }
-}
-
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta", () => printKayak(0));
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta", () => printKayak(1));
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(0));
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(1));
 
 
 /***/ }),
@@ -10441,91 +10248,145 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
 
 
 
 
-const MomondoEditions = [
-  { name: "Momondo.com", host: "Momondo.com" },
-  { name: "Momondo.de", host: "Momondo.de" },
-  { name: "Momondo.it", host: "Momondo.it" },
-  { name: "Momondo.es", host: "Momondo.es" },
-  { name: "Momondo.co.uk", host: "Momondo.co.uk" },
-  { name: "Momondo.dk", host: "Momondo.dk" },
-  { name: "Momondo.mx", host: "Momondo.mx" },
-  { name: "Momondo.fi", host: "Momondo.fi" },
-  { name: "Momondo.fr", host: "Momondo.fr" },
-  { name: "Momondo.no", host: "Momondo.no" },
-  { name: "Momondo.nl", host: "Momondo.nl" },
-  { name: "Momondo.pt", host: "Momondo.pt" },
-  { name: "Momondo.se", host: "Momondo.se" },
-  { name: "Momondo.ru", host: "Momondo.ru" }
+
+
+const editions = [
+  { name: "Momondo.ar", host: "www.momondo.com.ar" },
+  { name: "Momondo.at", host: "www.momondo.at" },
+  { name: "Momondo.au", host: "www.momondo.com.au" },
+  { name: "Momondo.be", host: "www.momondo.be" },
+  { name: "Momondo.br", host: "www.momondo.com.br" },
+  { name: "Momondo.by", host: "www.momondo.by" },
+  { name: "Momondo.ca", host: "www.momondo.ca" },
+  { name: "Momondo.ch", host: "www.momondo.ch" },
+  { name: "Momondo.cl", host: "www.momondo.cl" },
+  { name: "Momondo.cn", host: "www.cn.momondo.com" },
+  { name: "Momondo.co", host: "www.momondo.com.co" },
+  { name: "Momondo.cz", host: "www.momondo.cz" },
+  { name: "Momondo.de", host: "www.momondo.de" },
+  { name: "Momondo.dk", host: "www.momondo.dk" },
+  { name: "Momondo.ee", host: "www.momondo.ee" },
+  { name: "Momondo.es", host: "www.momondo.es" },
+  { name: "Momondo.fi", host: "www.momondo.fi" },
+  { name: "Momondo.fr", host: "www.momondo.fr" },
+  { name: "Momondo.hk", host: "www.momondo.hk" },
+  { name: "Momondo.ie", host: "www.momondo.ie" },
+  { name: "Momondo.in", host: "www.momondo.in" },
+  { name: "Momondo.it", host: "www.momondo.it" },
+  { name: "Momondo.kz", host: "www.momondo.kz" },
+  { name: "Momondo.mx", host: "www.momondo.mx" },
+  { name: "Momondo.nl", host: "www.momondo.nl" },
+  { name: "Momondo.no", host: "www.momondo.no" },
+  { name: "Momondo.nz", host: "www.momondo.co.nz" },
+  { name: "Momondo.om", host: "www.momondo.com" },
+  { name: "Momondo.pe", host: "www.momondo.com.pe" },
+  { name: "Momondo.pl", host: "www.momondo.pl" },
+  { name: "Momondo.pt", host: "www.momondo.pt" },
+  { name: "Momondo.ro", host: "www.momondo.ro" },
+  { name: "Momondo.ru", host: "www.momondo.ru" },
+  { name: "Momondo.se", host: "www.momondo.se" },
+  { name: "Momondo.tr", host: "www.momondo.com.tr" },
+  { name: "Momondo.tw", host: "www.momondo.tw" },
+  { name: "Momondo.ua", host: "www.momondo.ua" },
+  { name: "Momondo.uk", host: "www.momondo.co.uk" },
+  { name: "Momondo.za", host: "www.momondo.co.za" }
 ];
 
-function printMomondo() {
+var cabins = ["economy", "premium", "business", "first"];
+
+function print(method) {
   //example https://www.Momondo.ru/flightsearch/?...false&NA=false
   //pax # &AD=2&CA=0,8 – not working with children (total amount of adults + kids goes to adult)
+  // method: 0 = based on leg; 1 = based on segment
+  const segs = !method ? _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin : Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])();
+  if (method && _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === segs.length) return;
 
-  var momondoTravelClass = ["economy", "premium", "business", "first"];
-  var mincabin = 3;
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    maxPaxcount: 9,
+    countInf: false,
+    childAsAdult: 12,
+    sepInfSeat: true,
+    childMinAge: 2
+  });
+  if (!pax) {
+    Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printOvago");
+    return;
+  }
 
-  var MomondoCreateUrl = function(host) {
-    var MomondoUrl = "https://www." + host + "/flight-search/";
-    for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin.length; i++) {
-      MomondoUrl +=
-        _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin[i].orig +
-        "-" +
-        _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin[i].dest +
-        "/" +
-        _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin[i].dep.year +
-        "-" +
-        ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin[i].dep.month).slice(-2) +
-        "-" +
-        ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin[i].dep.day).slice(-2) +
-        "/";
+  const cabin =
+    cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getCabin */ "b"])(Math.min(...Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])().map(seg => seg.cabin)))];
 
-      for (var j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin[i].seg.length; j++) {
-        // check the min cabin:
-        if (_parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin[i].seg[j].cabin < mincabin) {
-          mincabin = _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin[i].seg[j].cabin;
-        }
+  var createUrl = function(host) {
+    let url =
+      `https://${host}/flight-search/` +
+      segs
+        .map(
+          seg =>
+            `${seg.orig}-${seg.dest}/${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(
+              seg.dep.month
+            )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(seg.dep.day)}`
+        )
+        .join("/");
+
+    if (pax.adults > 1 || pax.children.length || pax.infSeat || pax.infLap) {
+      url += `/${_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].numPax}adults`;
+    }
+
+    if (pax.children.length || pax.infSeat || pax.infLap) {
+      url += "/children";
+      for (let i = 0; i < pax.infSeat; i++) {
+        url += "-1S";
+      }
+      for (let i = 0; i < pax.infLap; i++) {
+        url += "-1L";
+      }
+      for (let i = 0; i < pax.children.length; i++) {
+        url += "-11";
       }
     }
 
-    // Add travel class to URL:
-    MomondoUrl +=
-      momondoTravelClass[
-        _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cabin === "Auto" ? mincabin : Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getForcedCabin */ "c"])()
-      ] + "/";
-    // Add passenger info to URL:
-    MomondoUrl += _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].numPax + "adults";
-    return MomondoUrl;
+    url += "/" + cabin;
+
+    return url;
   };
 
-  var MomondoUrl = MomondoCreateUrl("Momondo.com");
-  var MomondoExtra =
+  var url = createUrl("www.momondo.com");
+  var extra =
     ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
-  MomondoExtra += MomondoEditions.map(function(obj, i) {
-    return (
-      '<a href="' +
-      MomondoCreateUrl(obj.host) +
-      '" target="_blank">' +
-      obj.name +
-      "</a>"
-    );
-  }).join("<br/>");
-  MomondoExtra += "</span></span>";
+  extra += editions
+    .map(function(obj, i) {
+      return (
+        '<a href="' +
+        createUrl(obj.host) +
+        '" target="_blank">' +
+        obj.name +
+        "</a>"
+      );
+    })
+    .join("<br/>");
+  extra += "</span></span>";
 
   return {
-    url: MomondoUrl,
+    url,
     title: "Momondo",
-    extra: MomondoExtra
+    desc:
+      _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].language == "de"
+        ? `Benutze ${segs.length} Segment(e)`
+        : `Based on ${segs.length} segment(s)`,
+    extra
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta", printMomondo);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(0));
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(1));
 
 
 /***/ }),
@@ -10535,13 +10396,17 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
 
 
 
 
-const SkyscannerEditions = [
+
+
+const editions = [
   { name: "Skyscanner.com", market: "US" },
   { name: "Skyscanner.de", market: "DE" },
   { name: "Skyscanner.it", market: "IT" },
@@ -10558,75 +10423,248 @@ const SkyscannerEditions = [
   { name: "Skyscanner.ru", market: "RU" }
 ];
 
-function printSkyscanner() {
+var cabins = ["", "premiumeconomy", "business", "first"];
+
+function print(method) {
   //example https://www.skyscanner.ru/transport/d/stoc/2017-09-02/akl/akl/2017-09-16/stoc/akl/2017-09-29/syd?adults=1&children=0&adultsv2=1&childrenv2=&infants=0&cabinclass=economy&ref=day-view#results
-  var skyscannerTravelClass = ["", "premiumeconomy", "business", "first"];
-  var SkyscannerCreateUrl = function(market) {
-    var skyscannerUrl = "http://www.skyscanner.com/transport/d";
-    var seg = 0;
-    var mincabin = 3;
-    for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length; i++) {
-      skyscannerUrl += "/" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].orig;
-      // Add the segments:
-      skyscannerUrl +=
-        "/" +
-        _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].dep.year +
-        "-" +
-        ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].dep.month).slice(-2) +
-        "-" +
-        ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].dep.day).slice(-2);
-      skyscannerUrl += "/" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].dest;
+  // method: 0 = based on leg; 1 = based on segment
+  const segs = !method ? _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin : Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])();
+  if (method && _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === segs.length) return;
 
-      for (var j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg.length; j++) {
-        // check the min cabin:
-        if (_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].cabin < mincabin) {
-          mincabin = _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].cabin;
-        }
-      }
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    maxPaxcount: 8,
+    countInf: false,
+    childAsAdult: 12,
+    sepInfSeat: false,
+    childMinAge: 2
+  });
+  if (!pax) {
+    Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printOvago");
+    return;
+  }
 
-      seg++;
-    }
+  const cabin =
+    cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getCabin */ "b"])(Math.min(...Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])().map(seg => seg.cabin)))];
+
+  var createUrl = function(market) {
+    var url = "http://www.skyscanner.com/transport/d/";
+
+    // Add the segments:
+    url += segs
+      .map(
+        seg =>
+          `${seg.orig}/${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(seg.dep.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(
+            seg.dep.day
+          )}/${seg.dest}`
+      )
+      .join("/");
 
     // Add passenger info:
-    skyscannerUrl +=
-      "?adults=" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].numPax + "adultsv2=" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].numPax;
+    url += "?adults=" + pax.adults + "adultsv2=" + pax.adults;
+    if (pax.children.length || pax.infLap)
+      url +=
+        "&childrenv2=" +
+        Array.apply(null, { length: pax.infLap })
+          .map(o => 0)
+          .concat(pax.children)
+          .join("|");
+    if (pax.infLap) url += "&infants=" + pax.infLap;
     // Add cabin / class of service:
-    skyscannerUrl +=
-      "&cabinclass=" +
-      skyscannerTravelClass[
-        _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cabin === "Auto" ? mincabin : Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getForcedCabin */ "c"])()
-      ];
+    url += "&cabinclass=" + cabin;
     // Add locale ("market"):
-    skyscannerUrl += "&ref=day-view&market=" + market;
+    url += "&ref=day-view&market=" + market;
 
-    return skyscannerUrl;
+    return url;
   };
-  var skyscannerUrl = SkyscannerCreateUrl("Skyscanner.com");
-  var SkyscannerExtra =
+  var url = createUrl("US");
+  var extra =
     ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
-  SkyscannerExtra += SkyscannerEditions.map(function(obj, i) {
-    return (
-      '<a href="' +
-      SkyscannerCreateUrl(obj.market) +
-      '" target="_blank">' +
-      obj.name +
-      "</a>"
-    );
-  }).join("<br/>");
-  SkyscannerExtra += "</span></span>";
+  extra += editions
+    .map(function(obj, i) {
+      return (
+        '<a href="' +
+        createUrl(obj.market) +
+        '" target="_blank">' +
+        obj.name +
+        "</a>"
+      );
+    })
+    .join("<br/>");
+  extra += "</span></span>";
 
   return {
-    url: skyscannerUrl,
+    url,
     title: "Skyscanner",
-    extra: SkyscannerExtra
+    desc:
+      _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].language == "de"
+        ? `Benutze ${segs.length} Segment(e)`
+        : `Based on ${segs.length} segment(s)`,
+    extra
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("meta", printSkyscanner);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(0));
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(1));
 
 
 /***/ }),
 /* 41 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
+
+
+
+
+
+
+const editions = [
+  { name: "Arabic", host: "ar.tripadvisor.com" },
+  { name: "Argentina", host: "www.tripadvisor.com.ar" },
+  { name: "Australia", host: "www.tripadvisor.com.au" },
+  { name: "Austria", host: "www.tripadvisor.at" },
+  { name: "Belgium", host: "fr.tripadvisor.be" },
+  { name: "Belgium", host: "www.tripadvisor.be" },
+  { name: "Brazil", host: "www.tripadvisor.com.br" },
+  { name: "Canada (English)", host: "www.tripadvisor.ca" },
+  { name: "Canada (French)", host: "fr.tripadvisor.ca" },
+  { name: "Chile", host: "www.tripadvisor.cl" },
+  { name: "China", host: "www.tripadvisor.cn" },
+  { name: "Chinese International", host: "cn.tripadvisor.com" },
+  { name: "Colombia", host: "www.tripadvisor.co" },
+  { name: "Czech Republic", host: "www.tripadvisor.cz" },
+  { name: "Denmark", host: "www.tripadvisor.dk" },
+  { name: "Egypt", host: "www.tripadvisor.com.eg" },
+  { name: "Finland", host: "www.tripadvisor.fi" },
+  { name: "France", host: "www.tripadvisor.fr" },
+  { name: "Germany", host: "www.tripadvisor.de" },
+  { name: "Greece", host: "www.tripadvisor.com.gr" },
+  { name: "Hong Kong", host: "en.tripadvisor.com.hk" },
+  { name: "Hong Kong", host: "www.tripadvisor.com.hk" },
+  { name: "Hungary", host: "www.tripadvisor.co.hu" },
+  { name: "India", host: "www.tripadvisor.in" },
+  { name: "Indonesia", host: "www.tripadvisor.co.id" },
+  { name: "Ireland", host: "www.tripadvisor.ie" },
+  { name: "Israel", host: "www.tripadvisor.co.il" },
+  { name: "Italy", host: "www.tripadvisor.it" },
+  { name: "Japan", host: "www.tripadvisor.jp" },
+  { name: "Malaysia", host: "www.tripadvisor.com.my" },
+  { name: "Mexico", host: "www.tripadvisor.com.mx" },
+  { name: "New Zealand", host: "www.tripadvisor.co.nz" },
+  { name: "Norway", host: "no.tripadvisor.com" },
+  { name: "Peru", host: "www.tripadvisor.com.pe" },
+  { name: "Philippines", host: "www.tripadvisor.com.ph" },
+  { name: "Poland", host: "pl.tripadvisor.com" },
+  { name: "Portugal", host: "www.tripadvisor.pt" },
+  { name: "Russia", host: "www.tripadvisor.ru" },
+  { name: "Serbia", host: "www.tripadvisor.rs" },
+  { name: "Singapore", host: "www.tripadvisor.com.sg" },
+  { name: "Slovakia", host: "www.tripadvisor.sk" },
+  { name: "South Africa", host: "www.tripadvisor.co.za" },
+  { name: "South Korea", host: "www.tripadvisor.co.kr" },
+  { name: "Spain", host: "www.tripadvisor.es" },
+  { name: "Sweden", host: "www.tripadvisor.se" },
+  { name: "Switzerland", host: "www.tripadvisor.ch" },
+  { name: "Switzerland", host: "fr.tripadvisor.ch" },
+  { name: "Switzerland", host: "it.tripadvisor.ch" },
+  { name: "Taiwan", host: "www.tripadvisor.com.tw" },
+  { name: "Thailand", host: "th.tripadvisor.com" },
+  { name: "The Netherlands", host: "www.tripadvisor.nl" },
+  { name: "Turkey", host: "www.tripadvisor.com.tr" },
+  { name: "United Kingdom", host: "www.tripadvisor.co.uk" },
+  { name: "United States", host: "www.tripadvisor.com" },
+  { name: "Venezuela", host: "www.tripadvisor.com.ve" },
+  { name: "Vietnam", host: "www.tripadvisor.com.vn" }
+];
+
+const cabins = ["0", "3", "1", "2"];
+
+function print(method) {
+  // method: 0 = based on leg; 1 = based on segment
+  const segs = !method ? _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin : Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])();
+  if (method && _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === segs.length) return;
+
+  const pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    maxPaxcount: 8,
+    countInf: false,
+    childAsAdult: 12,
+    sepInfSeat: false,
+    childMinAge: 2
+  });
+  if (!pax) {
+    Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printOvago");
+    return;
+  }
+
+  const cabin =
+    cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getCabin */ "b"])(Math.min(...Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])().map(seg => seg.cabin)))];
+
+  const nonstop = method ? "yes" : "no";
+
+  const createUrl = function(host) {
+    let url = `https://${host}/CheapFlightsSearchResults?&cos=${cabin}&nonstop=${nonstop}`;
+
+    let paxNum = 0;
+
+    const addPax = age => (url += `&pax${paxNum++}=${age}`);
+
+    Array.apply(null, { length: pax.adults }).forEach(o => addPax("a"));
+    Array.apply(null, { length: pax.infLap }).forEach(o => addPax(0));
+    pax.children.forEach(age => addPax(age));
+
+    url +=
+      "&" +
+      segs
+        .map(
+          (seg, i) =>
+            `date${i * 2}=${seg.dep.year}${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(seg.dep.month)}${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(
+              seg.dep.day
+            )}&airport${i * 2}=${seg.orig}&nearby${i * 2}=no&airport${i * 2 +
+              1}=${seg.dest}&nearby${i * 2 + 1}=no`
+        )
+        .join("&");
+
+    return url;
+  };
+  const url = createUrl("www.tripadvisor.com");
+  let extra =
+    ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  extra += editions
+    .map(function(obj, i) {
+      return (
+        '<a href="' +
+        createUrl(obj.host) +
+        '" target="_blank">' +
+        obj.name +
+        "</a>"
+      );
+    })
+    .join("<br/>");
+  extra += "</span></span>";
+
+  return {
+    url,
+    title: "Tripadvisor",
+    desc:
+      _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].language == "de"
+        ? `Benutze ${segs.length} Segment(e)`
+        : `Based on ${segs.length} segment(s)`,
+    extra
+  };
+}
+
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(0));
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(1));
+
+
+/***/ }),
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10644,7 +10682,7 @@ function printCheapOair() {
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
   var cabins = ["Economy", "PremiumEconomy", "Business", "First"];
   var coaUrl = "http://www.cheapoair.com/default.aspx?tabid=1832&ulang=en";
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "d"])({
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "c"])({
     maxPaxcount: 9,
     countInf: true,
     childAsAdult: 12,
@@ -10718,11 +10756,11 @@ function printCheapOair() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas", printCheapOair);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", printCheapOair);
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10804,7 +10842,7 @@ const travellink = [
 const cabins = ["TOURIST", "PREMIUM_ECONOMY", "BUSINESS", "FIRST"];
 
 function printEdreams(title, editions) {
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "d"])({
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "c"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -10870,13 +10908,13 @@ function printEdreams(title, editions) {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas", () => printEdreams("eDreams", eDreams));
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas", () => printEdreams("Opodo", opodo));
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas", () => printEdreams("Travellink", travellink));
+Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", () => printEdreams("eDreams", eDreams));
+Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", () => printEdreams("Opodo", opodo));
+Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", () => printEdreams("Travellink", travellink));
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11009,11 +11047,11 @@ function printEtraveli() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas", printEtraveli);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", printEtraveli);
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11048,7 +11086,7 @@ const editions = [
 ];
 
 function printExpedia() {
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
     maxPaxcount: 9,
     countInf: true,
     childAsAdult: 18,
@@ -11147,11 +11185,11 @@ function printExpedia() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("otas", printExpedia);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("otas", printExpedia);
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11179,7 +11217,7 @@ const editions = [
 ];
 
 function printFN() {
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "d"])({
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "c"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -11254,11 +11292,11 @@ function formatDate(date) {
   );
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas", printFN);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", printFN);
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11280,7 +11318,7 @@ const editions = [
 const cabins = ["Y", "S", "C", "F"];
 
 function print() {
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "d"])({
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "c"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -11340,11 +11378,11 @@ function print() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas", print);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", print);
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11380,7 +11418,7 @@ function printLucky2go() {
   var createUrl = function(edition) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["Economy", "Economy", "Business", "First"];
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "d"])({
+    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -11492,11 +11530,11 @@ function printLucky2go() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("otas", printLucky2go);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("otas", printLucky2go);
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11557,7 +11595,7 @@ function printPriceline() {
     }
   }
   searchparam = searchparam.substring(1, searchparam.length - 1);
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "d"])({
+  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "c"])({
     maxPaxcount: 9,
     countInf: true,
     childAsAdult: 18,
@@ -11587,11 +11625,78 @@ function printPriceline() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas", printPriceline);
+Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", printPriceline);
 
 
 /***/ }),
-/* 49 */
+/* 50 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+
+
+
+function printGCM() {
+  let url = "";
+  // Build multi-city search based on segments
+  // Keeping continous path as long as possible
+  for (let i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_0__[/* currentItin */ "a"].itin.length; i++) {
+    for (let j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_0__[/* currentItin */ "a"].itin[i].seg.length; j++) {
+      url += _parse_itin__WEBPACK_IMPORTED_MODULE_0__[/* currentItin */ "a"].itin[i].seg[j].orig + "-";
+      if (j + 1 < _parse_itin__WEBPACK_IMPORTED_MODULE_0__[/* currentItin */ "a"].itin[i].seg.length) {
+        if (
+          _parse_itin__WEBPACK_IMPORTED_MODULE_0__[/* currentItin */ "a"].itin[i].seg[j].dest != _parse_itin__WEBPACK_IMPORTED_MODULE_0__[/* currentItin */ "a"].itin[i].seg[j + 1].orig
+        ) {
+          url += _parse_itin__WEBPACK_IMPORTED_MODULE_0__[/* currentItin */ "a"].itin[i].seg[j].dest + ";";
+        }
+      } else {
+        url += _parse_itin__WEBPACK_IMPORTED_MODULE_0__[/* currentItin */ "a"].itin[i].seg[j].dest + ";";
+      }
+    }
+  }
+
+  return {
+    img: "http://www.gcmap.com/map?MR=900&MX=182x182&PM=*&P=" + url,
+    url: "http://www.gcmap.com/mapui?P=" + url,
+    title: "GCM"
+  };
+}
+
+Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("other", printGCM);
+
+
+/***/ }),
+/* 51 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+
+
+
+function printWheretocredit() {
+  return {
+    url:
+      "https://www.wheretocredit.com/calculator#" +
+      Object(_parse_itin__WEBPACK_IMPORTED_MODULE_0__[/* getCurrentSegs */ "b"])()
+        .map(seg =>
+          [seg.orig, seg.dest, seg.carrier, seg.bookingclass].join("-")
+        )
+        .join("/"),
+    title: "Where to Credit"
+  };
+}
+
+Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("other", printWheretocredit);
+
+
+/***/ }),
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11661,7 +11766,7 @@ function render() {
 
   if (userSettings["a" /* default */].enableInlineMode == 1) printCPM();
 
-  Object(links["b" /* printLinksContainer */])();
+  Object(links["a" /* printLinksContainer */])();
 
   if (userSettings["a" /* default */].enableSeatguru == 1) bindSeatguru();
   if (userSettings["a" /* default */].enablePlanefinder == 1) bindPlanefinder();
@@ -11733,25 +11838,14 @@ function removeEditor() {
 }
 
 function bindPageLayout() {
-  if (userSettings["a" /* default */].enableInlineMode == 1) {
-    Object(utils["c" /* findtarget */])(itaSettings["a" /* default */].resultpage.milagecontainer, 1).setAttribute(
-      "rowspan",
-      "10"
-    );
-  } else if (
-    userSettings["a" /* default */].enableInlineMode == 0 &&
-    userSettings["a" /* default */].enablePricebreakdown == 1
-  ) {
-    Object(utils["c" /* findtarget */])(itaSettings["a" /* default */].resultpage.milagecontainer, 1).setAttribute(
-      "rowspan",
-      "3"
-    );
-  } else {
-    Object(utils["c" /* findtarget */])(itaSettings["a" /* default */].resultpage.milagecontainer, 1).setAttribute(
-      "rowspan",
-      "2"
-    );
-  }
+  Object(utils["c" /* findtarget */])(itaSettings["a" /* default */].resultpage.milagecontainer, 1).setAttribute(
+    "rowspan",
+    "10"
+  );
+  Object(utils["c" /* findtarget */])(
+    itaSettings["a" /* default */].resultpage.htbContainer,
+    1
+  ).parentElement.parentElement.setAttribute("valign", "top");
 }
 
 function bind24HourTime() {
@@ -12042,11 +12136,14 @@ function bindTranslations(page, lang, target) {
 }
 
 function printCPM() {
-  Object(links["a" /* printItemInline */])(
-    (Number(parse_itin["a" /* currentItin */].price) / Number(parse_itin["a" /* currentItin */].dist)).toFixed(4) + " cpm",
-    "",
-    1
-  );
+  document
+    .querySelector(".KIR33AB-y-c:nth-of-type(1)")
+    .insertAdjacentHTML(
+      "beforeend",
+      `<li class="powertoolsitem">${(
+        Number(parse_itin["a" /* currentItin */].price) / Number(parse_itin["a" /* currentItin */].dist)
+      ).toFixed(4)} cpm</li>`
+    );
 }
 
 function bindSeatguru() {
@@ -12598,7 +12695,7 @@ function toggleSettings(target) {
         document.getElementById("mptCabinMode").innerHTML = appSettings["a" /* default */].cabin;
 
         // refresh links
-        Object(links["b" /* printLinksContainer */])();
+        Object(links["a" /* printLinksContainer */])();
         break;
       default:
         if (userSettings["a" /* default */][target] == 1) {
@@ -12640,7 +12737,7 @@ function processPassengers() {
   document.getElementById("mtpPaxCount").innerHTML = paxText;
   Object(utils["l" /* toggleVis */])(document.getElementById("mptPassengers"));
   // reload links
-  Object(links["b" /* printLinksContainer */])();
+  Object(links["a" /* printLinksContainer */])();
 }
 
 function processChild(target) {

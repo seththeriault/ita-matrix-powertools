@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.45.0] - 2020-02-21
+
+Edited by IAkH
+
+- added Tripadvisor
+- added by-segment search to Skyscanner and Momondo
+- added children support to Kayak, Skyscanner, Momondo and FlightNetwork (thanks again @andydd!)
+- removed duplicate by-segment search when all segments are one-ways
+- fixed max passenger logic
+- fixed white space, updated inline layout and colors
+- added Edge and Opera addons
+
 ## [0.44.6] - 2020-02-18
 
 Edited by IAkH
