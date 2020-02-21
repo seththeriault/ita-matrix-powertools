@@ -210,7 +210,7 @@ function printLink(link) {
   if (link.desc)
     html += `<br/><label style="font-size:${Number(
       mptUserSettings.linkFontsize
-    ) - 15}%">(${link.desc})</label>`;
+    ) - 15}%">${link.desc}</label>`;
   html += "</div";
   return html;
 }
