@@ -1,8 +1,10 @@
-import mptSettings, { getForcedCabin } from "../../settings/appSettings";
-import { registerLink } from "../../print/links";
-import { currentItin } from "../../parse/itin";
+import { getCabin } from "../../settings/appSettings";
+import mptUserSettings from "../../settings/userSettings";
+import { registerLink, validatePaxcount } from "../../print/links";
+import { currentItin, getCurrentSegs } from "../../parse/itin";
+import { printNotification, to2digits } from "../../utils";
 
-const SkyscannerEditions = [
+const editions = [
   { name: "Skyscanner.com", market: "US" },
   { name: "Skyscanner.de", market: "DE" },
   { name: "Skyscanner.it", market: "IT" },
@@ -19,68 +21,85 @@ const SkyscannerEditions = [
   { name: "Skyscanner.ru", market: "RU" }
 ];
 
-function printSkyscanner() {
+var cabins = ["", "premiumeconomy", "business", "first"];
+
+function print(method) {
   //example https://www.skyscanner.ru/transport/d/stoc/2017-09-02/akl/akl/2017-09-16/stoc/akl/2017-09-29/syd?adults=1&children=0&adultsv2=1&childrenv2=&infants=0&cabinclass=economy&ref=day-view#results
-  var skyscannerTravelClass = ["", "premiumeconomy", "business", "first"];
-  var SkyscannerCreateUrl = function(market) {
-    var skyscannerUrl = "http://www.skyscanner.com/transport/d";
-    var seg = 0;
-    var mincabin = 3;
-    for (var i = 0; i < currentItin.itin.length; i++) {
-      skyscannerUrl += "/" + currentItin.itin[i].orig;
-      // Add the segments:
-      skyscannerUrl +=
-        "/" +
-        currentItin.itin[i].dep.year +
-        "-" +
-        ("0" + currentItin.itin[i].dep.month).slice(-2) +
-        "-" +
-        ("0" + currentItin.itin[i].dep.day).slice(-2);
-      skyscannerUrl += "/" + currentItin.itin[i].dest;
+  // method: 0 = based on leg; 1 = based on segment
+  const segs = !method ? currentItin.itin : getCurrentSegs();
+  if (method && currentItin.itin.length === segs.length) return;
 
-      for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
-        // check the min cabin:
-        if (currentItin.itin[i].seg[j].cabin < mincabin) {
-          mincabin = currentItin.itin[i].seg[j].cabin;
-        }
-      }
+  var pax = validatePaxcount({
+    maxPaxcount: 8,
+    countInf: false,
+    childAsAdult: 12,
+    sepInfSeat: false,
+    childMinAge: 2
+  });
+  if (!pax) {
+    printNotification("Error: Failed to validate Passengers in printOvago");
+    return;
+  }
 
-      seg++;
-    }
+  const cabin =
+    cabins[getCabin(Math.min(...getCurrentSegs().map(seg => seg.cabin)))];
+
+  var createUrl = function(market) {
+    var url = "http://www.skyscanner.com/transport/d/";
+
+    // Add the segments:
+    url += segs
+      .map(
+        seg =>
+          `${seg.orig}/${seg.dep.year}-${to2digits(seg.dep.month)}-${to2digits(
+            seg.dep.day
+          )}/${seg.dest}`
+      )
+      .join("/");
 
     // Add passenger info:
-    skyscannerUrl +=
-      "?adults=" + currentItin.numPax + "adultsv2=" + currentItin.numPax;
+    url += "?adults=" + pax.adults + "adultsv2=" + pax.adults;
+    if (pax.children.length || pax.infLap)
+      url +=
+        "&childrenv2=" +
+        Array.apply(null, { length: pax.infLap })
+          .map(o => 0)
+          .concat(pax.children)
+          .join("|");
+    if (pax.infLap) url += "&infants=" + pax.infLap;
     // Add cabin / class of service:
-    skyscannerUrl +=
-      "&cabinclass=" +
-      skyscannerTravelClass[
-        mptSettings.cabin === "Auto" ? mincabin : getForcedCabin()
-      ];
+    url += "&cabinclass=" + cabin;
     // Add locale ("market"):
-    skyscannerUrl += "&ref=day-view&market=" + market;
+    url += "&ref=day-view&market=" + market;
 
-    return skyscannerUrl;
+    return url;
   };
-  var skyscannerUrl = SkyscannerCreateUrl("Skyscanner.com");
-  var SkyscannerExtra =
+  var url = createUrl("US");
+  var extra =
     ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
-  SkyscannerExtra += SkyscannerEditions.map(function(obj, i) {
-    return (
-      '<a href="' +
-      SkyscannerCreateUrl(obj.market) +
-      '" target="_blank">' +
-      obj.name +
-      "</a>"
-    );
-  }).join("<br/>");
-  SkyscannerExtra += "</span></span>";
+  extra += editions
+    .map(function(obj, i) {
+      return (
+        '<a href="' +
+        createUrl(obj.market) +
+        '" target="_blank">' +
+        obj.name +
+        "</a>"
+      );
+    })
+    .join("<br/>");
+  extra += "</span></span>";
 
   return {
-    url: skyscannerUrl,
+    url,
     title: "Skyscanner",
-    extra: SkyscannerExtra
+    desc:
+      mptUserSettings.language == "de"
+        ? `Benutze ${segs.length} Segment(e)`
+        : `Based on ${segs.length} segment(s)`,
+    extra
   };
 }
 
-registerLink("meta", printSkyscanner);
+registerLink("meta", () => print(0));
+registerLink("meta", () => print(1));
