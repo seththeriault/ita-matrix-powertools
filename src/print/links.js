@@ -107,19 +107,15 @@ export function validatePaxcount(config) {
     }
   }
   // check Pax-Count
-  if (config.countInf === true) {
-    if (
-      config.maxPaxcount <
-      ret.adults + ret.infLap + ret.infSeat + ret.children.length
-    ) {
-      console.log("Too many passengers");
-      return;
-    }
-  } else {
-    if (config.maxPaxcount < ret.adults + ret.infSeat + ret.children.length) {
-      console.log("Too many passengers");
-      return;
-    }
+  if (
+    config.maxPaxcount <=
+    ret.adults +
+      (config.countInf && ret.infLap) +
+      ret.infSeat +
+      ret.children.length
+  ) {
+    console.log("Too many passengers");
+    return;
   }
   if (0 === ret.adults + ret.infSeat + ret.children.length) {
     console.log("No passengers");
