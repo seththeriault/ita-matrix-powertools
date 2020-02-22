@@ -1,6 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const editions = [
@@ -25,7 +25,7 @@ function printLucky2go() {
   var createUrl = function(edition) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["Economy", "Economy", "Business", "First"];
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -137,4 +137,4 @@ function printLucky2go() {
   };
 }
 
-registerLink("otas", printLucky2go);
+register("otas", printLucky2go);

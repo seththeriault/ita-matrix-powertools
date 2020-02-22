@@ -7,7 +7,7 @@ import {
   to4digitTime,
   inArray
 } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin, getCurrentSegs } from "../../parse/itin";
 
 const klEditions = [
@@ -31,7 +31,7 @@ function printKL() {
   }
 
   var createUrl = function(edition) {
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -104,5 +104,5 @@ function printKL() {
   };
 }
 
-registerLink("airlines", printKL);
+register("airlines", printKL);
 registerSetting("KLM", "klEdition", klEditions, "us_en");

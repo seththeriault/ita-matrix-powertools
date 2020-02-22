@@ -1,6 +1,6 @@
 import mptUserSettings from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 import {
   getAmadeusUrl,
@@ -20,7 +20,7 @@ function printOA() {
 
   var url =
     "https://e-ticket.olympicair.com/A3Responsive/dyn/air/booking/?BOOKING_FLOW=REVENUE&FLEXIBILITY=3&DISPLAY_TYPE=2&FORCE_OVERRIDE=TRUE&PRICING_TYPE=O";
-  var pax = validatePaxcount({
+  var pax = validatePax({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -58,4 +58,4 @@ function printOA() {
   };
 }
 
-registerLink("airlines", printOA);
+register("airlines", printOA);

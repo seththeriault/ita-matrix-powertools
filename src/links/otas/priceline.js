@@ -1,5 +1,5 @@
 import { printNotification } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 function printPriceline() {
@@ -51,7 +51,7 @@ function printPriceline() {
     }
   }
   searchparam = searchparam.substring(1, searchparam.length - 1);
-  var pax = validatePaxcount({
+  var pax = validatePax({
     maxPaxcount: 9,
     countInf: true,
     childAsAdult: 18,
@@ -81,4 +81,4 @@ function printPriceline() {
   };
 }
 
-registerLink("otas", printPriceline);
+register("otas", printPriceline);

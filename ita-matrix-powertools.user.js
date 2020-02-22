@@ -710,255 +710,67 @@ async function loadUserSettings() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return registerLink; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return printLinksContainer; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return validatePaxcount; });
-/* unused harmony export printImage */
-/* unused harmony export getSidebarContainer */
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-/* harmony import */ var _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
-/* harmony import */ var _settings_translations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
-/* harmony import */ var _settings_paxSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1);
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "registerLink", function() { return registerLink; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validatePaxcount", function() { return validatePaxcount; });
+/* harmony import */ var _settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 
 
 
+const req = __webpack_require__(13);
 
+req.keys().forEach(req);
 
-
-
-
-/** @type {{ [key: string]: ((itin: typeof currentItin) => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string })[]}} */
-const links = {};
-
-__webpack_require__(10);
-
-var skimlinks = document.createElement("script");
-skimlinks.setAttribute(
-  "src",
-  "https://s.skimresources.com/js/122783X1611548.skimlinks.js"
-);
-
-/**
- * Registers a link
- * @param {(itin: typeof currentItin) => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string }} factory
- */
 function registerLink(type, factory) {
-  if (!links[type]) links[type] = [];
-  links[type].push(factory);
-}
-
-function printLinksContainer() {
-  // do nothing if editor mode is active
-  if (Object(_utils__WEBPACK_IMPORTED_MODULE_5__[/* findtargets */ "d"])("editoritem").length > 0) {
-    return false;
-  }
-
-  // empty outputcontainer
-  const div = getSidebarContainer();
-  div.innerHTML = "";
-
-  //  S&D powertool items
-  const elems = Object(_utils__WEBPACK_IMPORTED_MODULE_5__[/* findtargets */ "d"])("powertoolsitem");
-  for (let i = elems.length - 1; i >= 1; i--) {
-    elems[i].parentElement.removeChild(elems[i]);
-  }
-
-  const groups = Object.keys(links);
-  groups.forEach((group, i) => {
-    const groupLinks = links[group]
-      .map(link => link(_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"]))
-      .sort((a, b) => {
-        return a.title.localeCompare(b.title);
-      });
-    groupLinks.forEach(link => {
-      if (!link) return;
-
-      if (link.img) {
-        printImage(link);
-      } else if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1) {
-        printUrlInline(link);
-      } else {
-        printUrl(link);
-      }
-    });
-
-    _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableDeviders == 1 &&
-      links[group].length &&
-      i != groups.length - 1 &&
-      printSeperator();
-  });
-
-  /*** attach JS events after building link container  ***/
-  bindLinkClicks();
-}
-
-function bindLinkClicks() {
-  if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableAffiliates == 1) {
-    skimlinks.parentNode && skimlinks.parentNode.removeChild(skimlinks);
-    document.body.appendChild(skimlinks);
-  }
+    Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])(type, factory);
 }
 
 function validatePaxcount(config) {
-  //{maxPaxcount:7, countInf:false, childAsAdult:12, sepInfSeat:false, childMinAge:2}
-  var tmpChildren = new Array();
-  // push cur children
-  for (var i = 0; i < _settings_paxSettings__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"].cAges.length; i++) {
-    tmpChildren.push(_settings_paxSettings__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"].cAges[i]);
-  }
-  var ret = {
-    adults: _settings_paxSettings__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"].adults,
-    children: new Array(),
-    infLap: _settings_paxSettings__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"].infantsLap,
-    infSeat: 0
-  };
-  if (config.sepInfSeat === true) {
-    ret.infSeat = _settings_paxSettings__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"].infantsSeat;
-  } else {
-    for (var i = 0; i < _settings_paxSettings__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"].infantsSeat; i++) {
-      tmpChildren.push(config.childMinAge);
+    //{maxPaxcount:7, countInf:false, childAsAdult:12, sepInfSeat:false, childMinAge:2}
+    var tmpChildren = new Array();
+    // push cur children
+    for (var i = 0; i < _settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cAges.length; i++) {
+      tmpChildren.push(_settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cAges[i]);
     }
-  }
-  // process children
-  for (var i = 0; i < tmpChildren.length; i++) {
-    if (tmpChildren[i] < config.childAsAdult) {
-      ret.children.push(tmpChildren[i]);
+    var ret = {
+      adults: _settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].adults,
+      children: new Array(),
+      infLap: _settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].infantsLap,
+      infSeat: 0
+    };
+    if (config.sepInfSeat === true) {
+      ret.infSeat = _settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].infantsSeat;
     } else {
-      ret.adults++;
+      for (var i = 0; i < _settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].infantsSeat; i++) {
+        tmpChildren.push(config.childMinAge);
+      }
     }
+    // process children
+    for (var i = 0; i < tmpChildren.length; i++) {
+      if (tmpChildren[i] < config.childAsAdult) {
+        ret.children.push(tmpChildren[i]);
+      } else {
+        ret.adults++;
+      }
+    }
+    // check Pax-Count
+    if (
+      config.maxPaxcount <=
+      ret.adults +
+        (config.countInf && ret.infLap) +
+        ret.infSeat +
+        ret.children.length
+    ) {
+      console.log("Too many passengers");
+      return;
+    }
+    if (0 === ret.adults + ret.infSeat + ret.children.length) {
+      console.log("No passengers");
+      return;
+    }
+    return ret;
   }
-  // check Pax-Count
-  if (
-    config.maxPaxcount <=
-    ret.adults +
-      (config.countInf && ret.infLap) +
-      ret.infSeat +
-      ret.children.length
-  ) {
-    console.log("Too many passengers");
-    return;
-  }
-  if (0 === ret.adults + ret.infSeat + ret.children.length) {
-    console.log("No passengers");
-    return;
-  }
-  return ret;
-}
-
-// Inline Stuff
-function printUrlInline(link) {
-  var item = `<li class="powertoolsitem">${printLink(link)}</li>`;
-  const container = getSidebarContainer();
-  container.insertAdjacentHTML("beforeend", item);
-}
-
-function printImage(link) {
-  const div = getSidebarContainer();
-  const imgLink =
-    (link.url
-      ? '<a href="' + link.url + '" target="_blank" class="powertoolsitem">'
-      : "") +
-    '<img src="' +
-    link.img +
-    '" style="margin-top:10px;"' +
-    (!link.url ? ' class="powertoolsitem"' : "") +
-    "/>" +
-    (link.url ? "</a>" : "");
-  if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableIMGautoload == 1) {
-    div.insertAdjacentHTML("beforeend", imgLink);
-  } else {
-    var id = Math.random().toString();
-    div.insertAdjacentHTML(
-      "beforeend",
-      `<div id="${id}" class="powertoolsitem" style="width:184px;height:100px;background-color:white;border:1px solid #808080;cursor:pointer;text-align:center;margin-top:10px;padding-top:84px;"><span>${link.title}</span></div>`
-    );
-
-    document.getElementById(id).addEventListener("click", function() {
-      this.outerHTML = imgLink;
-    });
-  }
-}
-
-function getSidebarContainer() {
-  if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1) {
-    return (
-      document.getElementById("powertoolslinkinlinecontainer") ||
-      createUrlContainerInline()
-    );
-  } else {
-    return (
-      document.getElementById("powertoolslinkcontainer") || createUrlContainer()
-    );
-  }
-}
-
-function createUrlContainerInline() {
-  var newdiv = document.createElement("div");
-  newdiv.setAttribute("class", _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcDiv);
-  newdiv.style.backgroundColor = "#f2f2f2";
-  newdiv.innerHTML =
-    '<div class="' +
-    _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcHeader +
-    '">Powertools</div><ul id="powertoolslinkinlinecontainer" class="' +
-    _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcLinkList +
-    '"></ul>';
-  Object(_utils__WEBPACK_IMPORTED_MODULE_5__[/* findtarget */ "c"])(_settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcDiv, 1).parentElement.appendChild(
-    newdiv
-  );
-  return document.getElementById("powertoolslinkinlinecontainer");
-}
-
-// Printing Stuff
-function printUrl(link) {
-  var item = `<div class="powertoolsitem" style="margin:5px 0px 10px 0px">${printLink(
-    link
-  )}</div>`;
-  const container = getSidebarContainer();
-  container.insertAdjacentHTML("beforeend", item);
-}
-
-function printLink(link) {
-  let html = `<div><label style="font-size:${Number(
-    _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].linkFontsize
-  )}%;font-weight:600">
-    <a href="${link.url}" target=${link.target || "_blank"}>${(_settings_translations__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"][
-    _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language
-  ] &&
-    _settings_translations__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"][_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language]["use"]) ||
-    "Use "} ${link.title}</a>
-  </label>`;
-  if (link.extra) html += link.extra;
-  if (link.desc)
-    html += `<br/><label style="font-size:${Number(
-      _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].linkFontsize
-    ) - 15}%">${link.desc}</label>`;
-  html += "</div";
-  return html;
-}
-
-function createUrlContainer() {
-  var newdiv = document.createElement("div");
-  newdiv.setAttribute("id", "powertoolslinkcontainer");
-  newdiv.setAttribute("style", "margin:15px 0px 0px 10px");
-  return Object(_utils__WEBPACK_IMPORTED_MODULE_5__[/* findtarget */ "c"])(_settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.milagecontainer, 1).appendChild(
-    newdiv
-  );
-}
-
-function printSeperator() {
-  var container = getSidebarContainer();
-  if (container) {
-    container.insertAdjacentHTML(
-      "beforeend",
-      _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode
-        ? '<hr class="powertoolsitem"/>'
-        : "<hr/>"
-    );
-  }
-}
-
 
 /***/ }),
 /* 4 */
@@ -1389,6 +1201,212 @@ const de = {
 
 /***/ }),
 /* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return registerLink; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return printLinksContainer; });
+/* unused harmony export printImage */
+/* unused harmony export getSidebarContainer */
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
+/* harmony import */ var _settings_translations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
+
+
+
+
+
+
+
+/** @type {{ [key: string]: ((itin: typeof currentItin) => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string })[]}} */
+const links = {};
+
+__webpack_require__(3);
+
+var skimlinks = document.createElement("script");
+skimlinks.setAttribute(
+  "src",
+  "https://s.skimresources.com/js/122783X1611548.skimlinks.js"
+);
+
+/**
+ * Registers a link
+ * @param {(itin: typeof currentItin) => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string }} factory
+ */
+function registerLink(type, factory) {
+  if (!links[type]) links[type] = [];
+  links[type].push(factory);
+}
+
+function printLinksContainer() {
+  // do nothing if editor mode is active
+  if (Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* findtargets */ "d"])("editoritem").length > 0) {
+    return false;
+  }
+
+  // empty outputcontainer
+  const div = getSidebarContainer();
+  div.innerHTML = "";
+
+  //  S&D powertool items
+  const elems = Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* findtargets */ "d"])("powertoolsitem");
+  for (let i = elems.length - 1; i >= 1; i--) {
+    elems[i].parentElement.removeChild(elems[i]);
+  }
+
+  const groups = Object.keys(links);
+  groups.forEach((group, i) => {
+    const groupLinks = links[group]
+      .map(link => link(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"]))
+      .sort((a, b) => {
+        return a.title.localeCompare(b.title);
+      });
+    groupLinks.forEach(link => {
+      if (!link) return;
+
+      if (link.img) {
+        printImage(link);
+      } else if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1) {
+        printUrlInline(link);
+      } else {
+        printUrl(link);
+      }
+    });
+
+    _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableDeviders == 1 &&
+      links[group].length &&
+      i != groups.length - 1 &&
+      printSeperator();
+  });
+
+  /*** attach JS events after building link container  ***/
+  bindLinkClicks();
+}
+
+function bindLinkClicks() {
+  if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableAffiliates == 1) {
+    skimlinks.parentNode && skimlinks.parentNode.removeChild(skimlinks);
+    document.body.appendChild(skimlinks);
+  }
+}
+
+// Inline Stuff
+function printUrlInline(link) {
+  var item = `<li class="powertoolsitem">${printLink(link)}</li>`;
+  const container = getSidebarContainer();
+  container.insertAdjacentHTML("beforeend", item);
+}
+
+function printImage(link) {
+  const div = getSidebarContainer();
+  const imgLink =
+    (link.url
+      ? '<a href="' + link.url + '" target="_blank" class="powertoolsitem">'
+      : "") +
+    '<img src="' +
+    link.img +
+    '" style="margin-top:10px;"' +
+    (!link.url ? ' class="powertoolsitem"' : "") +
+    "/>" +
+    (link.url ? "</a>" : "");
+  if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableIMGautoload == 1) {
+    div.insertAdjacentHTML("beforeend", imgLink);
+  } else {
+    var id = Math.random().toString();
+    div.insertAdjacentHTML(
+      "beforeend",
+      `<div id="${id}" class="powertoolsitem" style="width:184px;height:100px;background-color:white;border:1px solid #808080;cursor:pointer;text-align:center;margin-top:10px;padding-top:84px;"><span>${link.title}</span></div>`
+    );
+
+    document.getElementById(id).addEventListener("click", function() {
+      this.outerHTML = imgLink;
+    });
+  }
+}
+
+function getSidebarContainer() {
+  if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1) {
+    return (
+      document.getElementById("powertoolslinkinlinecontainer") ||
+      createUrlContainerInline()
+    );
+  } else {
+    return (
+      document.getElementById("powertoolslinkcontainer") || createUrlContainer()
+    );
+  }
+}
+
+function createUrlContainerInline() {
+  var newdiv = document.createElement("div");
+  newdiv.setAttribute("class", _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcDiv);
+  newdiv.style.backgroundColor = "#f2f2f2";
+  newdiv.innerHTML =
+    '<div class="' +
+    _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcHeader +
+    '">Powertools</div><ul id="powertoolslinkinlinecontainer" class="' +
+    _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcLinkList +
+    '"></ul>';
+  Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* findtarget */ "c"])(_settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcDiv, 1).parentElement.appendChild(
+    newdiv
+  );
+  return document.getElementById("powertoolslinkinlinecontainer");
+}
+
+// Printing Stuff
+function printUrl(link) {
+  var item = `<div class="powertoolsitem" style="margin:5px 0px 10px 0px">${printLink(
+    link
+  )}</div>`;
+  const container = getSidebarContainer();
+  container.insertAdjacentHTML("beforeend", item);
+}
+
+function printLink(link) {
+  let html = `<div><label style="font-size:${Number(
+    _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].linkFontsize
+  )}%;font-weight:600">
+    <a href="${link.url}" target=${link.target || "_blank"}>${(_settings_translations__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"][
+    _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language
+  ] &&
+    _settings_translations__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"][_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language]["use"]) ||
+    "Use "} ${link.title}</a>
+  </label>`;
+  if (link.extra) html += link.extra;
+  if (link.desc)
+    html += `<br/><label style="font-size:${Number(
+      _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].linkFontsize
+    ) - 15}%">${link.desc}</label>`;
+  html += "</div";
+  return html;
+}
+
+function createUrlContainer() {
+  var newdiv = document.createElement("div");
+  newdiv.setAttribute("id", "powertoolslinkcontainer");
+  newdiv.setAttribute("style", "margin:15px 0px 0px 10px");
+  return Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* findtarget */ "c"])(_settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.milagecontainer, 1).appendChild(
+    newdiv
+  );
+}
+
+function printSeperator() {
+  var container = getSidebarContainer();
+  if (container) {
+    container.insertAdjacentHTML(
+      "beforeend",
+      _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode
+        ? '<hr class="powertoolsitem"/>'
+        : "<hr/>"
+    );
+  }
+}
+
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var require;//! moment.js
@@ -5996,24 +6014,13 @@ const de = {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)(module)))
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const req = __webpack_require__(13);
-
-const modules = req.keys().map(req);
-
-module.exports = modules;
-
-
-/***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
 ;(function (global, factory) {
-    true ? factory(__webpack_require__(9)) :
+    true ? factory(__webpack_require__(10)) :
    undefined
 }(this, (function (moment) { 'use strict';
 
@@ -6114,7 +6121,7 @@ var map = {
 	"./airlines/ps.js": 34,
 	"./airlines/qf.js": 35,
 	"./airlines/tk.js": 36,
-	"./index.js": 10,
+	"./index.js": 3,
 	"./meta/jetcost.js": 37,
 	"./meta/kayak.js": 38,
 	"./meta/momondo.js": 39,
@@ -6160,7 +6167,7 @@ webpackContext.id = 13;
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -6274,7 +6281,7 @@ function printAA() {
     search += edition[0].toUpperCase() + ","; // Language
     search += "3,";
     // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
       maxPaxcount: 7,
       countInf: false,
       childAsAdult: 12,
@@ -6329,7 +6336,7 @@ function printAA() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printAA);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printAA);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])(
   "American (Europe/Asia/Pacific)",
   "aaEdition",
@@ -6346,7 +6353,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _json_timezones_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(12);
 var _json_timezones_json__WEBPACK_IMPORTED_MODULE_4___namespace = /*#__PURE__*/__webpack_require__.t(12, 1);
@@ -6411,7 +6418,7 @@ function printAaSabre() {
 
   // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
   var createUrl = function(edition) {
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
       maxPaxcount: 6,
       countInf: true,
       childAsAdult: 12,
@@ -6559,7 +6566,7 @@ function printAaSabre() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printAaSabre);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printAaSabre);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])(
   "American (America & UK)",
   "aaSabreEdition",
@@ -6591,9 +6598,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 	/*global define*/
 	if ( true && module.exports) {
-		module.exports = factory(__webpack_require__(9)); // Node
+		module.exports = factory(__webpack_require__(10)); // Node
 	} else if (true) {
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));                 // AMD
@@ -7283,7 +7290,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _settings_translations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(0);
 /* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7);
 
@@ -7381,7 +7388,7 @@ function printAC() {
         ? "&language=de"
         : "&language=en");
     // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_4__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_4__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 16,
@@ -7501,7 +7508,7 @@ function addACPromo() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_4__[/* registerLink */ "b"])("airlines", printAC);
+Object(___WEBPACK_IMPORTED_MODULE_4__["registerLink"])("airlines", printAC);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Air Canada", "acEdition", acEditions, "us");
 
 
@@ -7514,7 +7521,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 
 
@@ -7603,7 +7610,7 @@ function printAF() {
     afUrl +=
       "&cabin=" +
       cabins[_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cabin === "Auto" ? mincabin : Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getForcedCabin */ "c"])()];
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 18,
@@ -7674,7 +7681,7 @@ function printAF() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "b"])("airlines", printAF);
+Object(___WEBPACK_IMPORTED_MODULE_3__["registerLink"])("airlines", printAF);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Air France", "afEdition", afEditions, "US/en");
 
 
@@ -7686,7 +7693,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -7703,7 +7710,7 @@ function printAS() {
 
   // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
   var createUrl = function() {
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
       maxPaxcount: 6,
       countInf: true,
       childAsAdult: 6,
@@ -7760,7 +7767,7 @@ function printAS() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printAS);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printAS);
 
 
 /***/ }),
@@ -7771,7 +7778,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airli
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -7865,7 +7872,7 @@ function printAZ() {
         seg++;
       }
     }
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
       maxPaxcount: 7,
       countInf: false,
       childAsAdult: 12,
@@ -7913,7 +7920,7 @@ function printAZ() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printAZ);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printAZ);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("Alitalia", "azEdition", azEditions, "us_en");
 
 
@@ -7926,7 +7933,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 
 
@@ -8170,7 +8177,7 @@ function printBA() {
   var createUrl = function(edition, language) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["M", "W", "C", "F"];
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 16,
@@ -8274,7 +8281,7 @@ function printBA() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "b"])("airlines", printBA);
+Object(___WEBPACK_IMPORTED_MODULE_3__["registerLink"])("airlines", printBA);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("British Airways", "baEdition", baEditions, "US");
 
 
@@ -8286,7 +8293,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
 
@@ -8372,7 +8379,7 @@ function printCZ() {
 
   var createUrl = function(edition) {
     var paxConfig = { allowinf: 1, youthage: 0 };
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -8436,7 +8443,7 @@ function printCZ() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printCZ);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printCZ);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("China Southern", "czEdition", czEditions, "US-GB");
 
 
@@ -8449,7 +8456,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 
 
@@ -8471,7 +8478,7 @@ function printDL() {
     var cabins = ["MAIN", "DPPS", "BU", "FIRST"];
     var mincabin = 3;
     var farebases = new Array();
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 12,
@@ -8583,7 +8590,7 @@ function printDL() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "b"])("airlines", printDL);
+Object(___WEBPACK_IMPORTED_MODULE_3__["registerLink"])("airlines", printDL);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Delta", "dlEdition", dlEditions, "www_us");
 
 
@@ -8595,7 +8602,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -8723,7 +8730,7 @@ function printIB() {
   var createUrl = function(edition, currency) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["Economy", "Economy", "Business", "First"];
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -8833,7 +8840,7 @@ function printIB() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printIB);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printIB);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("Iberia", "ibEdition", ibEditions, "en-US");
 
 
@@ -8846,7 +8853,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 
 
@@ -8875,7 +8882,7 @@ function printKL() {
   }
 
   var createUrl = function(edition) {
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -8948,7 +8955,7 @@ function printKL() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "b"])("airlines", printKL);
+Object(___WEBPACK_IMPORTED_MODULE_3__["registerLink"])("airlines", printKL);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("KLM", "klEdition", klEditions, "us_en");
 
 
@@ -8960,7 +8967,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -9000,7 +9007,7 @@ function printLA() {
 
   // NOTE: currency will be determined by the locale; the deeplink does not support manually specifying the currency
   var createUrl = function(edition) {
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9113,7 +9120,7 @@ function printLA() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printLA);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printLA);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("LATAM", "laEdition", laEditions, "en/us");
 
 
@@ -9125,7 +9132,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
 
@@ -9259,7 +9266,7 @@ function printLH() {
   var createUrl = function(edition) {
     var style = 0; // 0 is direct booking - 1 is pre selected
     var paxConfig = { allowinf: 1, youthage: 0 };
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9333,7 +9340,7 @@ function printLH() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printLH);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printLH);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("Lufthansa", "lhEdition", lhEditions, "US-gb");
 
 
@@ -9346,7 +9353,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 
 
@@ -9377,7 +9384,7 @@ function printLX() {
       "/" +
       edition[1] +
       "/Book/Combined";
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9468,7 +9475,7 @@ function printLX() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "b"])("airlines", printLX);
+Object(___WEBPACK_IMPORTED_MODULE_3__["registerLink"])("airlines", printLX);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Swiss", "lxEdition", lxEditions, "us_en");
 
 
@@ -9480,7 +9487,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
 
@@ -9501,7 +9508,7 @@ function printOA() {
 
   var url =
     "https://e-ticket.olympicair.com/A3Responsive/dyn/air/booking/?BOOKING_FLOW=REVENUE&FLEXIBILITY=3&DISPLAY_TYPE=2&FORCE_OVERRIDE=TRUE&PRICING_TYPE=O";
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -9539,7 +9546,7 @@ function printOA() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printOA);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printOA);
 
 
 /***/ }),
@@ -9550,7 +9557,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airli
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -9568,7 +9575,7 @@ function printPS() {
   var createUrl = function(edition, currency) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["Economy", "Economy", "Business", "First"];
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9661,7 +9668,7 @@ function printPS() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printPS);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printPS);
 
 
 /***/ }),
@@ -9673,7 +9680,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 
 
@@ -9712,7 +9719,7 @@ function printQF() {
     // Start the minimum cabin at highest possible (it will drop as we check each leg):
     var mincabin = 3;
     // Validate the passenger totals first:
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 16,
@@ -9873,7 +9880,7 @@ function printQF() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* registerLink */ "b"])("airlines", printQF);
+Object(___WEBPACK_IMPORTED_MODULE_3__["registerLink"])("airlines", printQF);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Qantas", "qfEdition", qfEditions, "EN_US");
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Qantas", "qfCurrency", qfCurrencies, "USD");
 
@@ -9886,7 +9893,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
 
@@ -9906,7 +9913,7 @@ function printTK() {
   var url =
     "https://book.eu2.amadeus.com/plnext/turkishairlines/Override.action?";
   var paxConfig = { allowinf: 1, youthage: 0 };
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -9944,7 +9951,7 @@ function printTK() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airlines", printTK);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printTK);
 
 
 /***/ }),
@@ -9953,7 +9960,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("airli
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
@@ -10025,7 +10032,7 @@ function print() {
   )
     return; // no open jaws
 
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_0__[/* validatePaxcount */ "c"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_0__["validatePaxcount"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -10084,7 +10091,7 @@ function formatDate(date) {
   return `${date.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(date.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(date.day)}`;
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_0__[/* registerLink */ "b"])("meta", print);
+Object(___WEBPACK_IMPORTED_MODULE_0__["registerLink"])("meta", print);
 
 
 /***/ }),
@@ -10095,7 +10102,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_0__[/* registerLink */ "b"])("meta"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
 
@@ -10157,7 +10164,7 @@ function print(method) {
   const segs = !method ? _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin : Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])();
   if (method && _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === segs.length) return;
 
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -10237,8 +10244,8 @@ function print(method) {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(0));
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(1));
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(0));
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(1));
 
 
 /***/ }),
@@ -10249,7 +10256,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
 
@@ -10309,7 +10316,7 @@ function print(method) {
   const segs = !method ? _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin : Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])();
   if (method && _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === segs.length) return;
 
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -10385,8 +10392,8 @@ function print(method) {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(0));
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(1));
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(0));
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(1));
 
 
 /***/ }),
@@ -10397,7 +10404,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
 
@@ -10431,7 +10438,7 @@ function print(method) {
   const segs = !method ? _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin : Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])();
   if (method && _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === segs.length) return;
 
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
     maxPaxcount: 8,
     countInf: false,
     childAsAdult: 12,
@@ -10503,8 +10510,8 @@ function print(method) {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(0));
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(1));
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(0));
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(1));
 
 
 /***/ }),
@@ -10515,7 +10522,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
 
@@ -10590,7 +10597,7 @@ function print(method) {
   const segs = !method ? _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin : Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])();
   if (method && _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === segs.length) return;
 
-  const pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+  const pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
     maxPaxcount: 8,
     countInf: false,
     childAsAdult: 12,
@@ -10659,8 +10666,8 @@ function print(method) {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(0));
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta", () => print(1));
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(0));
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(1));
 
 
 /***/ }),
@@ -10670,7 +10677,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("meta"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
@@ -10682,7 +10689,7 @@ function printCheapOair() {
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
   var cabins = ["Economy", "PremiumEconomy", "Business", "First"];
   var coaUrl = "http://www.cheapoair.com/default.aspx?tabid=1832&ulang=en";
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "c"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePaxcount"])({
     maxPaxcount: 9,
     countInf: true,
     childAsAdult: 12,
@@ -10756,7 +10763,7 @@ function printCheapOair() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", printCheapOair);
+Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", printCheapOair);
 
 
 /***/ }),
@@ -10766,7 +10773,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
 
@@ -10842,7 +10849,7 @@ const travellink = [
 const cabins = ["TOURIST", "PREMIUM_ECONOMY", "BUSINESS", "FIRST"];
 
 function printEdreams(title, editions) {
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "c"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePaxcount"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -10908,9 +10915,9 @@ function printEdreams(title, editions) {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", () => printEdreams("eDreams", eDreams));
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", () => printEdreams("Opodo", opodo));
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", () => printEdreams("Travellink", travellink));
+Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", () => printEdreams("eDreams", eDreams));
+Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", () => printEdreams("Opodo", opodo));
+Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", () => printEdreams("Travellink", travellink));
 
 
 /***/ }),
@@ -10920,7 +10927,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 
 
@@ -11047,7 +11054,7 @@ function printEtraveli() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", printEtraveli);
+Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", printEtraveli);
 
 
 /***/ }),
@@ -11058,7 +11065,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -11086,7 +11093,7 @@ const editions = [
 ];
 
 function printExpedia() {
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
     maxPaxcount: 9,
     countInf: true,
     childAsAdult: 18,
@@ -11185,7 +11192,7 @@ function printExpedia() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("otas", printExpedia);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("otas", printExpedia);
 
 
 /***/ }),
@@ -11195,7 +11202,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("otas"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 
 
@@ -11217,7 +11224,7 @@ const editions = [
 ];
 
 function printFN() {
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "c"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePaxcount"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -11292,7 +11299,7 @@ function formatDate(date) {
   );
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", printFN);
+Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", printFN);
 
 
 /***/ }),
@@ -11302,7 +11309,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
 
@@ -11318,7 +11325,7 @@ const editions = [
 const cabins = ["Y", "S", "C", "F"];
 
 function print() {
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "c"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePaxcount"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -11378,7 +11385,7 @@ function print() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", print);
+Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", print);
 
 
 /***/ }),
@@ -11389,7 +11396,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -11418,7 +11425,7 @@ function printLucky2go() {
   var createUrl = function(edition) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["Economy", "Economy", "Business", "First"];
-    var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* validatePaxcount */ "c"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -11530,7 +11537,7 @@ function printLucky2go() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("otas", printLucky2go);
+Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("otas", printLucky2go);
 
 
 /***/ }),
@@ -11540,7 +11547,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])("otas"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 
 
@@ -11595,7 +11602,7 @@ function printPriceline() {
     }
   }
   searchparam = searchparam.substring(1, searchparam.length - 1);
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "c"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePaxcount"])({
     maxPaxcount: 9,
     countInf: true,
     childAsAdult: 18,
@@ -11625,7 +11632,7 @@ function printPriceline() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas", printPriceline);
+Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", printPriceline);
 
 
 /***/ }),
@@ -11635,7 +11642,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("otas"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 
 
 
@@ -11665,7 +11672,7 @@ function printGCM() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("other", printGCM);
+Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("other", printGCM);
 
 
 /***/ }),
@@ -11675,7 +11682,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("other
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 
 
 
@@ -11692,7 +11699,7 @@ function printWheretocredit() {
   };
 }
 
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("other", printWheretocredit);
+Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("other", printWheretocredit);
 
 
 /***/ }),
@@ -11721,7 +11728,7 @@ var parse_itin = __webpack_require__(0);
 var translations = __webpack_require__(8);
 
 // EXTERNAL MODULE: ./src/print/links.js
-var links = __webpack_require__(3);
+var links = __webpack_require__(9);
 
 // CONCATENATED MODULE: ./src/print/index.js
 
@@ -11842,10 +11849,10 @@ function bindPageLayout() {
     "rowspan",
     "10"
   );
-  Object(utils["c" /* findtarget */])(
-    itaSettings["a" /* default */].resultpage.htbContainer,
-    1
-  ).parentElement.parentElement.setAttribute("valign", "top");
+  const target = Object(utils["c" /* findtarget */])(itaSettings["a" /* default */].resultpage.htbContainer, 1)
+    .parentElement.parentElement;
+  target.setAttribute("valign", "top");
+  target.setAttribute("height", "100%");
 }
 
 function bind24HourTime() {

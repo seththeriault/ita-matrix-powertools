@@ -1,7 +1,7 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, monthnumberToName } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const dlEditions = [
@@ -18,7 +18,7 @@ function printDL() {
     var cabins = ["MAIN", "DPPS", "BU", "FIRST"];
     var mincabin = 3;
     var farebases = new Array();
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 12,
@@ -130,5 +130,5 @@ function printDL() {
   };
 }
 
-registerLink("airlines", printDL);
+register("airlines", printDL);
 registerSetting("Delta", "dlEdition", dlEditions, "www_us");

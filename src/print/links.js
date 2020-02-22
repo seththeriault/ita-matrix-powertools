@@ -1,12 +1,10 @@
 import mptUserSettings from "../settings/userSettings";
 import classSettings from "../settings/itaSettings";
 import translations from "../settings/translations";
-import mtpPassengerConfig from "../settings/paxSettings";
 
-import { currentItin } from "../parse/itin";
 import { findtargets, findtarget } from "../utils";
 
-/** @type {{ [key: string]: ((itin: typeof currentItin) => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string })[]}} */
+/** @type {{ [key: string]: (() => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string })[]}} */
 const links = {};
 
 require("../links");
@@ -19,7 +17,7 @@ skimlinks.setAttribute(
 
 /**
  * Registers a link
- * @param {(itin: typeof currentItin) => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string }} factory
+ * @param {() => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string }} factory
  */
 export function registerLink(type, factory) {
   if (!links[type]) links[type] = [];
@@ -45,7 +43,7 @@ export function printLinksContainer() {
   const groups = Object.keys(links);
   groups.forEach((group, i) => {
     const groupLinks = links[group]
-      .map(link => link(currentItin))
+      .map(link => link())
       .sort((a, b) => {
         return a.title.localeCompare(b.title);
       });
@@ -76,52 +74,6 @@ function bindLinkClicks() {
     skimlinks.parentNode && skimlinks.parentNode.removeChild(skimlinks);
     document.body.appendChild(skimlinks);
   }
-}
-
-export function validatePaxcount(config) {
-  //{maxPaxcount:7, countInf:false, childAsAdult:12, sepInfSeat:false, childMinAge:2}
-  var tmpChildren = new Array();
-  // push cur children
-  for (var i = 0; i < mtpPassengerConfig.cAges.length; i++) {
-    tmpChildren.push(mtpPassengerConfig.cAges[i]);
-  }
-  var ret = {
-    adults: mtpPassengerConfig.adults,
-    children: new Array(),
-    infLap: mtpPassengerConfig.infantsLap,
-    infSeat: 0
-  };
-  if (config.sepInfSeat === true) {
-    ret.infSeat = mtpPassengerConfig.infantsSeat;
-  } else {
-    for (var i = 0; i < mtpPassengerConfig.infantsSeat; i++) {
-      tmpChildren.push(config.childMinAge);
-    }
-  }
-  // process children
-  for (var i = 0; i < tmpChildren.length; i++) {
-    if (tmpChildren[i] < config.childAsAdult) {
-      ret.children.push(tmpChildren[i]);
-    } else {
-      ret.adults++;
-    }
-  }
-  // check Pax-Count
-  if (
-    config.maxPaxcount <=
-    ret.adults +
-      (config.countInf && ret.infLap) +
-      ret.infSeat +
-      ret.children.length
-  ) {
-    console.log("Too many passengers");
-    return;
-  }
-  if (0 === ret.adults + ret.infSeat + ret.children.length) {
-    console.log("No passengers");
-    return;
-  }
-  return ret;
 }
 
 // Inline Stuff

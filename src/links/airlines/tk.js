@@ -1,6 +1,6 @@
 import mptUserSettings from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 import {
   getAmadeusUrl,
@@ -19,7 +19,7 @@ function printTK() {
   var url =
     "https://book.eu2.amadeus.com/plnext/turkishairlines/Override.action?";
   var paxConfig = { allowinf: 1, youthage: 0 };
-  var pax = validatePaxcount({
+  var pax = validatePax({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -57,4 +57,4 @@ function printTK() {
   };
 }
 
-registerLink("airlines", printTK);
+register("airlines", printTK);

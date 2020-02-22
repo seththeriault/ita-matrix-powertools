@@ -1,7 +1,7 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const baEditions = [
@@ -240,7 +240,7 @@ function printBA() {
   var createUrl = function(edition, language) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["M", "W", "C", "F"];
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 16,
@@ -344,5 +344,5 @@ function printBA() {
   };
 }
 
-registerLink("airlines", printBA);
+register("airlines", printBA);
 registerSetting("British Airways", "baEdition", baEditions, "US");

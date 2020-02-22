@@ -1,5 +1,5 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { printNotification } from "../../utils";
 import { currentItin } from "../../parse/itin";
 
@@ -7,7 +7,7 @@ function printCheapOair() {
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
   var cabins = ["Economy", "PremiumEconomy", "Business", "First"];
   var coaUrl = "http://www.cheapoair.com/default.aspx?tabid=1832&ulang=en";
-  var pax = validatePaxcount({
+  var pax = validatePax({
     maxPaxcount: 9,
     countInf: true,
     childAsAdult: 12,
@@ -81,4 +81,4 @@ function printCheapOair() {
   };
 }
 
-registerLink("otas", printCheapOair);
+register("otas", printCheapOair);

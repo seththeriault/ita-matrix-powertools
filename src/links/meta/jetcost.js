@@ -1,4 +1,4 @@
-import { registerLink, validatePaxcount } from "../../print/links";
+import { register, validatePax } from "..";
 import { currentItin, getCurrentSegs } from "../../parse/itin";
 import { printNotification, to2digits } from "../../utils";
 import { getCabin } from "../../settings/appSettings";
@@ -66,7 +66,7 @@ function print() {
   )
     return; // no open jaws
 
-  var pax = validatePaxcount({
+  var pax = validatePax({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -125,4 +125,4 @@ function formatDate(date) {
   return `${date.year}-${to2digits(date.month)}-${to2digits(date.day)}`;
 }
 
-registerLink("meta", print);
+register("meta", print);

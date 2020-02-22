@@ -1,6 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
-import { printNotification, iataToUtcOffset } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { printNotification } from "../../utils";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 import apTimeZones from "../../json/timezones.json";
 
@@ -59,7 +59,7 @@ function printAaSabre() {
 
   // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
   var createUrl = function(edition) {
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 6,
       countInf: true,
       childAsAdult: 12,
@@ -207,7 +207,7 @@ function printAaSabre() {
   };
 }
 
-registerLink("airlines", printAaSabre);
+register("airlines", printAaSabre);
 registerSetting(
   "American (America & UK)",
   "aaSabreEdition",

@@ -1,6 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const azEditions = [
@@ -90,7 +90,7 @@ function printAZ() {
         seg++;
       }
     }
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 7,
       countInf: false,
       childAsAdult: 12,
@@ -138,5 +138,5 @@ function printAZ() {
   };
 }
 
-registerLink("airlines", printAZ);
+register("airlines", printAZ);
 registerSetting("Alitalia", "azEdition", azEditions, "us_en");

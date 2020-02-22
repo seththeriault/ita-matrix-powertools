@@ -1,7 +1,7 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const lxEditions = [
@@ -27,7 +27,7 @@ function printLX() {
       "/" +
       edition[1] +
       "/Book/Combined";
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -118,5 +118,5 @@ function printLX() {
   };
 }
 
-registerLink("airlines", printLX);
+register("airlines", printLX);
 registerSetting("Swiss", "lxEdition", lxEditions, "us_en");

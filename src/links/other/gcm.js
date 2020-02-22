@@ -1,5 +1,5 @@
 import { currentItin } from "../../parse/itin";
-import { registerLink } from "../../print/links";
+import { register } from "..";
 
 function printGCM() {
   let url = "";
@@ -27,4 +27,4 @@ function printGCM() {
   };
 }
 
-registerLink("other", printGCM);
+register("other", printGCM);

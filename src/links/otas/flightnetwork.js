@@ -1,5 +1,5 @@
 import { printNotification, to2digits } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const editions = [
@@ -18,7 +18,7 @@ const editions = [
 ];
 
 function printFN() {
-  var pax = validatePaxcount({
+  var pax = validatePax({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -93,4 +93,4 @@ function formatDate(date) {
   );
 }
 
-registerLink("otas", printFN);
+register("otas", printFN);

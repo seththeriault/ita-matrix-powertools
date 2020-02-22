@@ -1,6 +1,6 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
 import { printNotification } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const editions = [
@@ -24,7 +24,7 @@ const editions = [
 ];
 
 function printExpedia() {
-  var pax = validatePaxcount({
+  var pax = validatePax({
     maxPaxcount: 9,
     countInf: true,
     childAsAdult: 18,
@@ -123,4 +123,4 @@ function printExpedia() {
   };
 }
 
-registerLink("otas", printExpedia);
+register("otas", printExpedia);

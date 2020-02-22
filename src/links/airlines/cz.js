@@ -1,6 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 import { getAmadeusUrl, getAmadeusPax } from "../../print/amadeus";
 
@@ -81,7 +81,7 @@ function printCZ() {
 
   var createUrl = function(edition) {
     var paxConfig = { allowinf: 1, youthage: 0 };
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -145,5 +145,5 @@ function printCZ() {
   };
 }
 
-registerLink("airlines", printCZ);
+register("airlines", printCZ);
 registerSetting("China Southern", "czEdition", czEditions, "US-GB");

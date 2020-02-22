@@ -1,6 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const aaEditions = [
@@ -110,7 +110,7 @@ function printAA() {
     search += edition[0].toUpperCase() + ","; // Language
     search += "3,";
     // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 7,
       countInf: false,
       childAsAdult: 12,
@@ -165,7 +165,7 @@ function printAA() {
   };
 }
 
-registerLink("airlines", printAA);
+register("airlines", printAA);
 registerSetting(
   "American (Europe/Asia/Pacific)",
   "aaEdition",

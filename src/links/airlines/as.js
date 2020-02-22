@@ -1,6 +1,6 @@
 import mptUserSettings from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 function printAS() {
@@ -13,7 +13,7 @@ function printAS() {
 
   // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
   var createUrl = function() {
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 6,
       countInf: true,
       childAsAdult: 6,
@@ -70,4 +70,4 @@ function printAS() {
   };
 }
 
-registerLink("airlines", printAS);
+register("airlines", printAS);

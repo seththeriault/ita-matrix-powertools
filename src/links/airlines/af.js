@@ -1,7 +1,7 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const afEditions = [
@@ -85,7 +85,7 @@ function printAF() {
     afUrl +=
       "&cabin=" +
       cabins[mptSettings.cabin === "Auto" ? mincabin : getForcedCabin()];
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 18,
@@ -156,5 +156,5 @@ function printAF() {
   };
 }
 
-registerLink("airlines", printAF);
+register("airlines", printAF);
 registerSetting("Air France", "afEdition", afEditions, "US/en");

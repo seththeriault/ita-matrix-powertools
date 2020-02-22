@@ -1,5 +1,5 @@
 import { getCurrentSegs } from "../../parse/itin";
-import { registerLink } from "../../print/links";
+import { register } from "..";
 
 function printWheretocredit() {
   return {
@@ -14,4 +14,4 @@ function printWheretocredit() {
   };
 }
 
-registerLink("other", printWheretocredit);
+register("other", printWheretocredit);

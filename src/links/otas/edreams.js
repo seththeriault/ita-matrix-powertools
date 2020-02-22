@@ -1,5 +1,5 @@
 import { printNotification, to2digits } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin, getCurrentSegs } from "../../parse/itin";
 import { getCabin } from "../../settings/appSettings";
 
@@ -71,7 +71,7 @@ const travellink = [
 const cabins = ["TOURIST", "PREMIUM_ECONOMY", "BUSINESS", "FIRST"];
 
 function printEdreams(title, editions) {
-  var pax = validatePaxcount({
+  var pax = validatePax({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -137,6 +137,6 @@ function printEdreams(title, editions) {
   };
 }
 
-registerLink("otas", () => printEdreams("eDreams", eDreams));
-registerLink("otas", () => printEdreams("Opodo", opodo));
-registerLink("otas", () => printEdreams("Travellink", travellink));
+register("otas", () => printEdreams("eDreams", eDreams));
+register("otas", () => printEdreams("Opodo", opodo));
+register("otas", () => printEdreams("Travellink", travellink));

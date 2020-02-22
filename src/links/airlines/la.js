@@ -1,6 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const laEditions = [
@@ -36,7 +36,7 @@ function printLA() {
 
   // NOTE: currency will be determined by the locale; the deeplink does not support manually specifying the currency
   var createUrl = function(edition) {
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -149,5 +149,5 @@ function printLA() {
   };
 }
 
-registerLink("airlines", printLA);
+register("airlines", printLA);
 registerSetting("LATAM", "laEdition", laEditions, "en/us");

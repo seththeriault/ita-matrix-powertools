@@ -1,6 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const ibEditions = [
@@ -124,7 +124,7 @@ function printIB() {
   var createUrl = function(edition, currency) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["Economy", "Economy", "Business", "First"];
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -234,5 +234,5 @@ function printIB() {
   };
 }
 
-registerLink("airlines", printIB);
+register("airlines", printIB);
 registerSetting("Iberia", "ibEdition", ibEditions, "en-US");

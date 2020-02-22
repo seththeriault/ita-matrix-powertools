@@ -1,6 +1,6 @@
 import { getCabin } from "../../settings/appSettings";
 import mptUserSettings from "../../settings/userSettings";
-import { registerLink, validatePaxcount } from "../../print/links";
+import { register, validatePax } from "..";
 import { currentItin, getCurrentSegs } from "../../parse/itin";
 import { printNotification, to2digits } from "../../utils";
 
@@ -29,7 +29,7 @@ function print(method) {
   const segs = !method ? currentItin.itin : getCurrentSegs();
   if (method && currentItin.itin.length === segs.length) return;
 
-  var pax = validatePaxcount({
+  var pax = validatePax({
     maxPaxcount: 8,
     countInf: false,
     childAsAdult: 12,
@@ -101,5 +101,5 @@ function print(method) {
   };
 }
 
-registerLink("meta", () => print(0));
-registerLink("meta", () => print(1));
+register("meta", () => print(0));
+register("meta", () => print(1));

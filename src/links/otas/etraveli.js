@@ -1,5 +1,5 @@
 import { monthnumberToName } from "../../utils";
-import { registerLink } from "../../print/links";
+import { register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const editions = [
@@ -123,4 +123,4 @@ function printEtraveli() {
   };
 }
 
-registerLink("otas", printEtraveli);
+register("otas", printEtraveli);

@@ -1,5 +1,5 @@
 import { printNotification, to2digits } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin, getCurrentSegs } from "../../parse/itin";
 import { getCabin } from "../../settings/appSettings";
 
@@ -11,7 +11,7 @@ const editions = [
 const cabins = ["Y", "S", "C", "F"];
 
 function print() {
-  var pax = validatePaxcount({
+  var pax = validatePax({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -71,4 +71,4 @@ function print() {
   };
 }
 
-registerLink("otas", print);
+register("otas", print);

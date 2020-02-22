@@ -2,7 +2,7 @@ import mptSettings from "../../settings/appSettings";
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import translations from "../../settings/translations";
 import { printNotification } from "../../utils";
-import { validatePaxcount, registerLink } from "../../print/links";
+import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 import {
   getAmadeusUrl,
@@ -97,7 +97,7 @@ function printAC() {
         ? "&language=de"
         : "&language=en");
     // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
-    var pax = validatePaxcount({
+    var pax = validatePax({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 16,
@@ -217,5 +217,5 @@ function addACPromo() {
   };
 }
 
-registerLink("airlines", printAC);
+register("airlines", printAC);
 registerSetting("Air Canada", "acEdition", acEditions, "us");

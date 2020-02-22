@@ -9,7 +9,7 @@ import {
   findtargets,
   toggleVis
 } from "../utils";
-import { printLinksContainer, printItemInline } from "./links";
+import { printLinksContainer } from "./links";
 
 export function render() {
   // Editor mode?
