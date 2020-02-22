@@ -122,10 +122,10 @@ function bindPageLayout() {
     "rowspan",
     "10"
   );
-  findtarget(
-    classSettings.resultpage.htbContainer,
-    1
-  ).parentElement.parentElement.setAttribute("valign", "top");
+  const target = findtarget(classSettings.resultpage.htbContainer, 1)
+    .parentElement.parentElement;
+  target.setAttribute("valign", "top");
+  target.setAttribute("height", "100%");
 }
 
 function bind24HourTime() {
