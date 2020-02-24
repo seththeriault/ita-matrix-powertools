@@ -8,7 +8,7 @@ const defaultSettings = {
 
   // booleans to toggle specific settings:
   enableDeviders: 1, // Print deviders in links after group (airlines/otas/other stuff) - valid: 0 / 1
-  enableInlineMode: 0, // enables inline mode - valid: 0 / 1
+  enableInlineMode: 1, // enables inline mode - valid: 0 / 1
   enableEditormode: 0, // prevents the script from automatically parsing the itinerary - valid: 0 / 1
   enableIMGautoload: 0, // enables images to auto load - valid: 0 / 1
   enableFarerules: 1, // enables fare rule opening in new window - valid: 0 / 1
