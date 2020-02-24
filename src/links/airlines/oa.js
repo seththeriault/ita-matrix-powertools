@@ -1,7 +1,6 @@
 import mptUserSettings from "../../settings/userSettings";
-import { printNotification, inArray } from "../../utils";
-import { validatePax, register } from "..";
-import { currentItin } from "../../parse/itin";
+import { printNotification } from "../../utils";
+import { validatePax, register, anyCarriers } from "..";
 import {
   getAmadeusUrl,
   getAmadeusTriptype,
@@ -9,12 +8,7 @@ import {
 } from "../../print/amadeus";
 
 function printOA() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !(
-      inArray("OA", currentItin.carriers) || inArray("A3", currentItin.carriers)
-    )
-  ) {
+  if (!anyCarriers("OA", "A3")) {
     return;
   }
 

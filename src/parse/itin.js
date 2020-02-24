@@ -1,4 +1,4 @@
-import { printNotification, exRE, inArray } from "../utils";
+import { printNotification, exRE } from "../utils";
 
 // initialize local storage for current itin
 /** @type {{ cur?: string; price?: number; basefares?: number; taxes?: number; surcharges?: number; dist?: number; numPax?: number; carriers?: string[]; farebases?: string[]; itin?: { orig: string; dest: string; dist?: number; dep: { day: number; month: number; year: number; time: string; offset?: string; }; arr: { day: number; month: number; year: number; time: string; offset?: string; }; seg?: { carrier: string; orig: string; dest: string; dist?: number; dep: { day: number; month: number; year: number; time: string; time24: string; timeDisplay: string; offset?: string; }; arr: { day: number; month: number; year: number; time: string; time24: string; timeDisplay: string; offset?: string; }; fnr: string; duration: number; aircraft: string; cabin: number; bookingclass: string; codeshare: number; layoverduration: number; airportchange: number; farebase: string; farecarrier: string; }[]}[]}} */
@@ -108,7 +108,7 @@ function readItinerary() {
     if (itin[legnr].seg === undefined) itin[legnr].seg = new Array();
     itin[legnr].seg.push(seg);
     // push carrier
-    if (!inArray(seg.carrier, carrieruarray)) {
+    if (!carrieruarray.some(cxr => cxr === seg.carrier)) {
       carrieruarray.push(seg.carrier);
     }
     // push dates and times into leg-array

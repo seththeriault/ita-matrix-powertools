@@ -1,7 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
-import { printNotification, inArray } from "../../utils";
-import { validatePax, register } from "..";
-import { currentItin } from "../../parse/itin";
+import { printNotification } from "../../utils";
+import { validatePax, register, anyCarriers } from "..";
 import { getAmadeusUrl, getAmadeusPax } from "../../print/amadeus";
 
 const czEditions = [
@@ -72,10 +71,7 @@ const czEditions = [
 ];
 
 function printCZ() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !(currentItin.itin.length >= 3 && inArray("CZ", currentItin.carriers))
-  ) {
+  if (!anyCarriers("CZ")) {
     return;
   }
 

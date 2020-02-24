@@ -1,7 +1,6 @@
 import mptUserSettings from "../../settings/userSettings";
-import { printNotification, inArray } from "../../utils";
-import { validatePax, register } from "..";
-import { currentItin } from "../../parse/itin";
+import { printNotification } from "../../utils";
+import { validatePax, register, anyCarriers } from "..";
 import {
   getAmadeusUrl,
   getAmadeusTriptype,
@@ -9,10 +8,7 @@ import {
 } from "../../print/amadeus";
 
 function printTK() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !inArray("TK", currentItin.carriers)
-  ) {
+  if (!anyCarriers("TK")) {
     return;
   }
 

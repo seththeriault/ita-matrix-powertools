@@ -1,16 +1,12 @@
-import mptUserSettings from "../../settings/userSettings";
 import { printNotification, to2digits } from "../../utils";
-import { validatePax, register } from "..";
+import { validatePax, register, allCarriers } from "..";
 import { currentItin, getCurrentSegs } from "../../parse/itin";
 import appSettings, { getCabin } from "../../settings/appSettings";
 
 var cabins = ["E", "E", "B", "F"];
 
 function print() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !currentItin.carriers.every(cxr => cxr === "QR")
-  ) {
+  if (!allCarriers("QR")) {
     return;
   }
 

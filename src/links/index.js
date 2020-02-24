@@ -1,5 +1,7 @@
+import mptUserSettings from "../settings/userSettings";
 import mtpPassengerConfig from "../settings/paxSettings";
 import { registerLink } from "../print/links";
+import { currentItin } from "../parse/itin";
 
 const req = require.context("./", true, /.js$/);
 
@@ -11,6 +13,22 @@ req.keys().forEach(req);
  */
 export function register(type, factory) {
   registerLink(type, factory);
+}
+
+export function allCarriers() {
+  const args = Array.from(arguments);
+  return (
+    mptUserSettings.showAllAirlines ||
+    currentItin.carriers.every(cxr => args.some(arg => cxr === arg))
+  );
+}
+
+export function anyCarriers() {
+  const args = Array.from(arguments);
+  return (
+    mptUserSettings.showAllAirlines ||
+    currentItin.carriers.some(cxr => args.some(arg => cxr === arg))
+  );
 }
 
 export function validatePax(config) {

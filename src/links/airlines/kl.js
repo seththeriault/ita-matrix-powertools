@@ -4,10 +4,9 @@ import {
   printNotification,
   to2digits,
   to4digits,
-  to4digitTime,
-  inArray
+  to4digitTime
 } from "../../utils";
-import { validatePax, register } from "..";
+import { validatePax, register, anyCarriers } from "..";
 import { currentItin, getCurrentSegs } from "../../parse/itin";
 
 const klEditions = [
@@ -23,10 +22,7 @@ const klEditions = [
 const cabins = ["M", "W", "C", "F"];
 
 function printKL() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !inArray("KL", currentItin.carriers)
-  ) {
+  if (!anyCarriers("KL")) {
     return;
   }
 

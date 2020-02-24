@@ -1,7 +1,7 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
-import { printNotification, inArray } from "../../utils";
-import { validatePax, register } from "..";
+import { printNotification } from "../../utils";
+import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
 const lxEditions = [
@@ -10,10 +10,7 @@ const lxEditions = [
 ];
 
 function printLX() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !(currentItin.itin.length <= 2 && inArray("LX", currentItin.carriers))
-  ) {
+  if (!anyCarriers("LX")) {
     return;
   }
 

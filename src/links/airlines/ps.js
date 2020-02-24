@@ -1,13 +1,9 @@
-import mptUserSettings from "../../settings/userSettings";
-import { printNotification, inArray } from "../../utils";
-import { validatePax, register } from "..";
+import { printNotification } from "../../utils";
+import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
 function printPS() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !inArray("PS", currentItin.carriers)
-  ) {
+  if (!anyCarriers("PS")) {
     return;
   }
 

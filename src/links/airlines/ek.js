@@ -1,6 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, to2digits, monthnumberToName } from "../../utils";
-import { validatePax, register } from "..";
+import { validatePax, register, anyCarriers } from "..";
 import { currentItin, getCurrentSegs } from "../../parse/itin";
 import { getCabin } from "../../settings/appSettings";
 
@@ -107,10 +107,7 @@ const editions = [
 ];
 
 function print() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !currentItin.carriers.some(cxr => cxr === "EK")
-  ) {
+  if (!anyCarriers("EK")) {
     return;
   }
 

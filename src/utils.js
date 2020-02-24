@@ -76,14 +76,6 @@ export function exRE(str, re) {
   return ret;
 }
 
-export function inArray(needle, haystack) {
-  var length = haystack.length;
-  for (var i = 0; i < length; i++) {
-    if (haystack[i] == needle) return true;
-  }
-  return false;
-}
-
 export function to2digits(str) {
   return ("00" + str).slice(-2);
 }

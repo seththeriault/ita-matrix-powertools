@@ -1,7 +1,7 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
-import { printNotification, inArray } from "../../utils";
-import { validatePax, register } from "..";
+import { printNotification } from "../../utils";
+import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
 const qfEditions = [
@@ -17,14 +17,7 @@ const qfCurrencies = [
 ];
 
 function printQF() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !(
-      inArray("QF", currentItin.carriers) ||
-      inArray("JQ", currentItin.carriers) ||
-      inArray("NZ", currentItin.carriers)
-    )
-  ) {
+  if (!anyCarriers("QF", "JQ", "NZ")) {
     return;
   }
 

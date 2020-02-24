@@ -1,6 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
-import { printNotification, inArray } from "../../utils";
-import { validatePax, register } from "..";
+import { printNotification } from "../../utils";
+import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
 const azEditions = [
@@ -17,10 +17,7 @@ const azEditions = [
 ];
 
 function printAZ() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !(currentItin.carriers.length == 1 && inArray("AZ", currentItin.carriers))
-  ) {
+  if (!anyCarriers("AZ")) {
     return;
   }
 

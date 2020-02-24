@@ -1,7 +1,7 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
-import { printNotification, inArray } from "../../utils";
-import { validatePax, register } from "..";
+import { printNotification } from "../../utils";
+import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
 const baEditions = [
@@ -228,12 +228,7 @@ const baEditions = [
 ];
 
 function printBA() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !(
-      inArray("IB", currentItin.carriers) || inArray("BA", currentItin.carriers)
-    )
-  ) {
+  if (!anyCarriers("IB", "BA")) {
     return;
   }
 

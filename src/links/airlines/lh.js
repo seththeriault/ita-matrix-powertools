@@ -1,7 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
-import { printNotification, inArray } from "../../utils";
-import { validatePax, register } from "..";
-import { currentItin } from "../../parse/itin";
+import { printNotification } from "../../utils";
+import { validatePax, register, anyCarriers } from "..";
 import {
   getAmadeusUrl,
   getAmadeusTriptype,
@@ -121,12 +120,7 @@ const lhEditions = [
 ];
 
 function printLH() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !(
-      inArray("LH", currentItin.carriers) || inArray("OS", currentItin.carriers)
-    )
-  ) {
+  if (!anyCarriers("LH", "OS")) {
     return;
   }
 

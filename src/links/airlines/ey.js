@@ -1,22 +1,13 @@
-import mptUserSettings from "../../settings/userSettings";
-import {
-  printNotification,
-  to2digits,
-  inArray,
-  to4digitTime
-} from "../../utils";
+import { printNotification, to2digits, to4digitTime } from "../../utils";
 import { registerLink } from "../../print/links";
 import { currentItin } from "../../parse/itin";
 import { getCabin } from "../../settings/appSettings";
-import { validatePax } from "..";
+import { validatePax, anyCarriers } from "..";
 
 const cabins = ["ECONOMY", "ECONOMY", "BUSINESS", "FIRST"];
 
 function printEY() {
-  if (
-    !mptUserSettings.showAllAirlines &&
-    !inArray("EY", currentItin.carriers)
-  ) {
+  if (!anyCarriers("EY")) {
     return;
   }
 
