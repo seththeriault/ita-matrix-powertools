@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.46.0] - 2020-02-24
+
+Edited by IAkH
+
+- added Emirates, Etihad, Google Flights, and Qatar links
+- default to "inline mode"
+- small white space fix
+
 ## [0.45.0] - 2020-02-21
 
 Edited by IAkH

@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.45.0
+// @version 0.46.0
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -116,7 +116,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 52);
+/******/ 	return __webpack_require__(__webpack_require__.s = 56);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -238,7 +238,7 @@ function readItinerary() {
     if (itin[legnr].seg === undefined) itin[legnr].seg = new Array();
     itin[legnr].seg.push(seg);
     // push carrier
-    if (!Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* inArray */ "f"])(seg.carrier, carrieruarray)) {
+    if (!carrieruarray.some(cxr => cxr === seg.carrier)) {
       carrieruarray.push(seg.carrier);
     }
     // push dates and times into leg-array
@@ -312,7 +312,7 @@ function readItinerary() {
         }
       }
       if (l == 0) {
-        Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "h"])("Unused fare:" + dirtyFare[i]);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "g"])("Unused fare:" + dirtyFare[i]);
       }
     }
   }
@@ -499,15 +499,14 @@ function trimStr(x) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return findtarget; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return findtargets; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return hasClass; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return toggleVis; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return toggleVis; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return clearNotification; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return printNotification; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return printNotification; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return exRE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return inArray; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return to2digits; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return to4digits; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return to4digitTime; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return monthnumberToName; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return to2digits; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return to4digits; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return to4digitTime; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return monthnumberToName; });
 function findtarget(tclass, nth) {
   var elems = document.getElementsByTagName("*"),
     i;
@@ -586,14 +585,6 @@ function exRE(str, re) {
   return ret;
 }
 
-function inArray(needle, haystack) {
-  var length = haystack.length;
-  for (var i = 0; i < length; i++) {
-    if (haystack[i] == needle) return true;
-  }
-  return false;
-}
-
 function to2digits(str) {
   return ("00" + str).slice(-2);
 }
@@ -645,7 +636,7 @@ const defaultSettings = {
 
   // booleans to toggle specific settings:
   enableDeviders: 1, // Print deviders in links after group (airlines/otas/other stuff) - valid: 0 / 1
-  enableInlineMode: 0, // enables inline mode - valid: 0 / 1
+  enableInlineMode: 1, // enables inline mode - valid: 0 / 1
   enableEditormode: 0, // prevents the script from automatically parsing the itinerary - valid: 0 / 1
   enableIMGautoload: 0, // enables images to auto load - valid: 0 / 1
   enableFarerules: 1, // enables fare rule opening in new window - valid: 0 / 1
@@ -711,10 +702,16 @@ async function loadUserSettings() {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "registerLink", function() { return registerLink; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validatePaxcount", function() { return validatePaxcount; });
-/* harmony import */ var _settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "register", function() { return register; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "allCarriers", function() { return allCarriers; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "anyCarriers", function() { return anyCarriers; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validatePax", function() { return validatePax; });
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_paxSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
+/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
+
+
 
 
 
@@ -722,55 +719,76 @@ const req = __webpack_require__(13);
 
 req.keys().forEach(req);
 
-function registerLink(type, factory) {
-    Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])(type, factory);
+/**
+ * Registers a link
+ * @param {() => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string }} factory
+ */
+function register(type, factory) {
+  Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "b"])(type, factory);
 }
 
-function validatePaxcount(config) {
-    //{maxPaxcount:7, countInf:false, childAsAdult:12, sepInfSeat:false, childMinAge:2}
-    var tmpChildren = new Array();
-    // push cur children
-    for (var i = 0; i < _settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cAges.length; i++) {
-      tmpChildren.push(_settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cAges[i]);
-    }
-    var ret = {
-      adults: _settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].adults,
-      children: new Array(),
-      infLap: _settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].infantsLap,
-      infSeat: 0
-    };
-    if (config.sepInfSeat === true) {
-      ret.infSeat = _settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].infantsSeat;
-    } else {
-      for (var i = 0; i < _settings_paxSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].infantsSeat; i++) {
-        tmpChildren.push(config.childMinAge);
-      }
-    }
-    // process children
-    for (var i = 0; i < tmpChildren.length; i++) {
-      if (tmpChildren[i] < config.childAsAdult) {
-        ret.children.push(tmpChildren[i]);
-      } else {
-        ret.adults++;
-      }
-    }
-    // check Pax-Count
-    if (
-      config.maxPaxcount <=
-      ret.adults +
-        (config.countInf && ret.infLap) +
-        ret.infSeat +
-        ret.children.length
-    ) {
-      console.log("Too many passengers");
-      return;
-    }
-    if (0 === ret.adults + ret.infSeat + ret.children.length) {
-      console.log("No passengers");
-      return;
-    }
-    return ret;
+function allCarriers() {
+  const args = Array.from(arguments);
+  return (
+    _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].showAllAirlines ||
+    _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers.every(cxr => args.some(arg => cxr === arg))
+  );
+}
+
+function anyCarriers() {
+  const args = Array.from(arguments);
+  return (
+    _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].showAllAirlines ||
+    _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers.some(cxr => args.some(arg => cxr === arg))
+  );
+}
+
+function validatePax(config) {
+  //{maxPaxcount:7, countInf:false, childAsAdult:12, sepInfSeat:false, childMinAge:2}
+  var tmpChildren = new Array();
+  // push cur children
+  for (var i = 0; i < _settings_paxSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].cAges.length; i++) {
+    tmpChildren.push(_settings_paxSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].cAges[i]);
   }
+  var ret = {
+    adults: _settings_paxSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].adults,
+    children: new Array(),
+    infLap: _settings_paxSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].infantsLap,
+    infSeat: 0
+  };
+  if (config.sepInfSeat === true) {
+    ret.infSeat = _settings_paxSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].infantsSeat;
+  } else {
+    for (var i = 0; i < _settings_paxSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].infantsSeat; i++) {
+      tmpChildren.push(config.childMinAge);
+    }
+  }
+  // process children
+  for (var i = 0; i < tmpChildren.length; i++) {
+    if (tmpChildren[i] < config.childAsAdult) {
+      ret.children.push(tmpChildren[i]);
+    } else {
+      ret.adults++;
+    }
+  }
+  // check Pax-Count
+  if (
+    config.maxPaxcount <=
+    ret.adults +
+      (config.countInf && ret.infLap) +
+      ret.infSeat +
+      ret.children.length
+  ) {
+    console.log("Too many passengers");
+    return;
+  }
+  if (0 === ret.adults + ret.infSeat + ret.children.length) {
+    console.log("No passengers");
+    return;
+  }
+  return ret;
+}
+
 
 /***/ }),
 /* 4 */
@@ -788,7 +806,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.45.0",
+  version: "0.46.0",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -1211,16 +1229,14 @@ const de = {
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
 /* harmony import */ var _settings_translations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
 
 
 
 
 
 
-
-/** @type {{ [key: string]: ((itin: typeof currentItin) => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string })[]}} */
+/** @type {{ [key: string]: (() => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string })[]}} */
 const links = {};
 
 __webpack_require__(3);
@@ -1233,7 +1249,7 @@ skimlinks.setAttribute(
 
 /**
  * Registers a link
- * @param {(itin: typeof currentItin) => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string }} factory
+ * @param {() => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string }} factory
  */
 function registerLink(type, factory) {
   if (!links[type]) links[type] = [];
@@ -1242,7 +1258,7 @@ function registerLink(type, factory) {
 
 function printLinksContainer() {
   // do nothing if editor mode is active
-  if (Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* findtargets */ "d"])("editoritem").length > 0) {
+  if (Object(_utils__WEBPACK_IMPORTED_MODULE_3__[/* findtargets */ "d"])("editoritem").length > 0) {
     return false;
   }
 
@@ -1251,7 +1267,7 @@ function printLinksContainer() {
   div.innerHTML = "";
 
   //  S&D powertool items
-  const elems = Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* findtargets */ "d"])("powertoolsitem");
+  const elems = Object(_utils__WEBPACK_IMPORTED_MODULE_3__[/* findtargets */ "d"])("powertoolsitem");
   for (let i = elems.length - 1; i >= 1; i--) {
     elems[i].parentElement.removeChild(elems[i]);
   }
@@ -1259,7 +1275,7 @@ function printLinksContainer() {
   const groups = Object.keys(links);
   groups.forEach((group, i) => {
     const groupLinks = links[group]
-      .map(link => link(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"]))
+      .map(link => link())
       .sort((a, b) => {
         return a.title.localeCompare(b.title);
       });
@@ -1349,7 +1365,7 @@ function createUrlContainerInline() {
     '">Powertools</div><ul id="powertoolslinkinlinecontainer" class="' +
     _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcLinkList +
     '"></ul>';
-  Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* findtarget */ "c"])(_settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcDiv, 1).parentElement.appendChild(
+  Object(_utils__WEBPACK_IMPORTED_MODULE_3__[/* findtarget */ "c"])(_settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcDiv, 1).parentElement.appendChild(
     newdiv
   );
   return document.getElementById("powertoolslinkinlinecontainer");
@@ -1387,7 +1403,7 @@ function createUrlContainer() {
   var newdiv = document.createElement("div");
   newdiv.setAttribute("id", "powertoolslinkcontainer");
   newdiv.setAttribute("style", "margin:15px 0px 0px 10px");
-  return Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* findtarget */ "c"])(_settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.milagecontainer, 1).appendChild(
+  return Object(_utils__WEBPACK_IMPORTED_MODULE_3__[/* findtarget */ "c"])(_settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.milagecontainer, 1).appendChild(
     newdiv
   );
 }
@@ -6112,31 +6128,35 @@ var map = {
 	"./airlines/ba.js": 25,
 	"./airlines/cz.js": 26,
 	"./airlines/dl.js": 27,
-	"./airlines/ib.js": 28,
-	"./airlines/kl.js": 29,
-	"./airlines/la.js": 30,
-	"./airlines/lh.js": 31,
-	"./airlines/lx.js": 32,
-	"./airlines/oa.js": 33,
-	"./airlines/ps.js": 34,
-	"./airlines/qf.js": 35,
-	"./airlines/tk.js": 36,
+	"./airlines/ek.js": 28,
+	"./airlines/ey.js": 29,
+	"./airlines/ib.js": 30,
+	"./airlines/kl.js": 31,
+	"./airlines/la.js": 32,
+	"./airlines/lh.js": 33,
+	"./airlines/lx.js": 34,
+	"./airlines/oa.js": 35,
+	"./airlines/ps.js": 36,
+	"./airlines/qf.js": 37,
+	"./airlines/qr.js": 38,
+	"./airlines/tk.js": 39,
 	"./index.js": 3,
-	"./meta/jetcost.js": 37,
-	"./meta/kayak.js": 38,
-	"./meta/momondo.js": 39,
-	"./meta/skyscanner.js": 40,
-	"./meta/tripadvisor.js": 41,
-	"./otas/cheapoair.js": 42,
-	"./otas/edreams.js": 43,
-	"./otas/etraveli.js": 44,
-	"./otas/expedia.js": 45,
-	"./otas/flightnetwork.js": 46,
-	"./otas/hop2.js": 47,
-	"./otas/lucky2go.js": 48,
-	"./otas/priceline.js": 49,
-	"./other/gcm.js": 50,
-	"./other/wheretocredit.js": 51
+	"./meta/googleFlights.js": 40,
+	"./meta/jetcost.js": 41,
+	"./meta/kayak.js": 42,
+	"./meta/momondo.js": 43,
+	"./meta/skyscanner.js": 44,
+	"./meta/tripadvisor.js": 45,
+	"./otas/cheapoair.js": 46,
+	"./otas/edreams.js": 47,
+	"./otas/etraveli.js": 48,
+	"./otas/expedia.js": 49,
+	"./otas/flightnetwork.js": 50,
+	"./otas/hop2.js": 51,
+	"./otas/lucky2go.js": 52,
+	"./otas/priceline.js": 53,
+	"./other/gcm.js": 54,
+	"./other/wheretocredit.js": 55
 };
 
 
@@ -6281,7 +6301,7 @@ function printAA() {
     search += edition[0].toUpperCase() + ","; // Language
     search += "3,";
     // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
       maxPaxcount: 7,
       countInf: false,
       childAsAdult: 12,
@@ -6289,7 +6309,7 @@ function printAA() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printAA");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printAA");
       return;
     }
     search += pax.adults + ","; // ADT
@@ -6306,7 +6326,7 @@ function printAA() {
   // get edition
   var edition = _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].aaEdition.split("_");
   if (edition.length != 2) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error:Invalid AA-Edition");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error:Invalid AA-Edition");
     return;
   }
   var url = createUrl(edition);
@@ -6336,7 +6356,7 @@ function printAA() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printAA);
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", printAA);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])(
   "American (Europe/Asia/Pacific)",
   "aaEdition",
@@ -6418,7 +6438,7 @@ function printAaSabre() {
 
   // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
   var createUrl = function(edition) {
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
       maxPaxcount: 6,
       countInf: true,
       childAsAdult: 12,
@@ -6426,7 +6446,7 @@ function printAaSabre() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printAaSabre");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printAaSabre");
       return false;
     }
     var url = "https://www.aa.com/goto/metasearch?ITEN=GOOGLE,0,";
@@ -6566,7 +6586,7 @@ function printAaSabre() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printAaSabre);
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", printAaSabre);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])(
   "American (America & UK)",
   "aaSabreEdition",
@@ -7388,7 +7408,7 @@ function printAC() {
         ? "&language=de"
         : "&language=en");
     // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_4__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_4__["validatePax"])({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 16,
@@ -7396,7 +7416,7 @@ function printAC() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_3__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printAC");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_3__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printAC");
       return;
     }
     var paxConfig = { allowinf: 0, youthage: 12 }; // AC does not allow booking of infants for int. flights
@@ -7508,7 +7528,7 @@ function addACPromo() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_4__["registerLink"])("airlines", printAC);
+Object(___WEBPACK_IMPORTED_MODULE_4__["register"])("airlines", printAC);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Air Canada", "acEdition", acEditions, "us");
 
 
@@ -7610,7 +7630,7 @@ function printAF() {
     afUrl +=
       "&cabin=" +
       cabins[_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cabin === "Auto" ? mincabin : Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getForcedCabin */ "c"])()];
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePax"])({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 18,
@@ -7618,7 +7638,7 @@ function printAF() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printAF");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printAF");
       return;
     }
     var tmpPax = { c: 0, y: 0 };
@@ -7681,7 +7701,7 @@ function printAF() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_3__["registerLink"])("airlines", printAF);
+Object(___WEBPACK_IMPORTED_MODULE_3__["register"])("airlines", printAF);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Air France", "afEdition", afEditions, "US/en");
 
 
@@ -7691,26 +7711,21 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
-
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 
 
 
 
 function printAS() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].showAllAirlines &&
-    !Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* inArray */ "f"])("AS", _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers)
-  ) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_1__["anyCarriers"])("AS")) {
     return;
   }
 
   // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
   var createUrl = function() {
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePax"])({
       maxPaxcount: 6,
       countInf: true,
       childAsAdult: 6,
@@ -7718,12 +7733,12 @@ function printAS() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printAS");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printAS");
       return;
     }
     var url = "https://www.alaskaair.com/planbook/shoppingstart?";
     url += "A=" + pax.adults + "&C=" + pax.children.length + "&FT=";
-    if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length == 1) {
+    if (_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length == 1) {
       url += "ow";
     } else {
       url += "rt";
@@ -7731,29 +7746,29 @@ function printAS() {
 
     var k = 0;
     //Build multi-city search based on legs
-    for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length; i++) {
+    for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length; i++) {
       // walks each leg
-      for (var j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg.length; j++) {
+      for (var j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg.length; j++) {
         //walks each segment of leg
         var itinseg =
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].orig +
+          _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].orig +
           "|" +
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dest;
+          _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].dest;
         itinseg +=
           "|" +
-          ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.month).slice(-2) +
+          ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].dep.month).slice(-2) +
           "/" +
-          ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.day).slice(-2);
-        itinseg += "/" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.year;
-        itinseg += "|" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].fnr + "|";
-        itinseg += _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].cabin ? "f" : "c";
+          ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].dep.day).slice(-2);
+        itinseg += "/" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].dep.year;
+        itinseg += "|" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].fnr + "|";
+        itinseg += _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].cabin ? "f" : "c";
         url += "&F" + ++k + "=" + encodeURIComponent(itinseg);
       }
     }
     url +=
       "&DEST=" +
-      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg[_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg.length - 1].dest;
-    url += "&FARE=" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].price + "&frm=cart&META=GOO_CS";
+      _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[0].seg[_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[0].seg.length - 1].dest;
+    url += "&FARE=" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].price + "&frm=cart&META=GOO_CS";
     return url;
   };
   var url = createUrl();
@@ -7767,7 +7782,7 @@ function printAS() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printAS);
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("airlines", printAS);
 
 
 /***/ }),
@@ -7799,10 +7814,7 @@ const azEditions = [
 ];
 
 function printAZ() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].showAllAirlines &&
-    !(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers.length == 1 && Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* inArray */ "f"])("AZ", _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers))
-  ) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_2__["anyCarriers"])("AZ")) {
     return;
   }
 
@@ -7872,7 +7884,7 @@ function printAZ() {
         seg++;
       }
     }
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
       maxPaxcount: 7,
       countInf: false,
       childAsAdult: 12,
@@ -7880,7 +7892,7 @@ function printAZ() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printAZ");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printAZ");
       return false;
     }
     azUrl +=
@@ -7920,7 +7932,7 @@ function printAZ() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printAZ);
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", printAZ);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("Alitalia", "azEdition", azEditions, "us_en");
 
 
@@ -8165,19 +8177,14 @@ const baEditions = [
 ];
 
 function printBA() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].showAllAirlines &&
-    !(
-      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* inArray */ "f"])("IB", _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].carriers) || Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* inArray */ "f"])("BA", _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].carriers)
-    )
-  ) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_3__["anyCarriers"])("IB", "BA")) {
     return;
   }
 
   var createUrl = function(edition, language) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["M", "W", "C", "F"];
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePax"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 16,
@@ -8185,7 +8192,7 @@ function printBA() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printBA");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printBA");
       return false;
     }
     var tmpPax = { c: 0, y: 0 };
@@ -8281,7 +8288,7 @@ function printBA() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_3__["registerLink"])("airlines", printBA);
+Object(___WEBPACK_IMPORTED_MODULE_3__["register"])("airlines", printBA);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("British Airways", "baEdition", baEditions, "US");
 
 
@@ -8294,9 +8301,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 /* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
-/* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
-
+/* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7);
 
 
 
@@ -8370,16 +8375,13 @@ const czEditions = [
 ];
 
 function printCZ() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].showAllAirlines &&
-    !(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length >= 3 && Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* inArray */ "f"])("CZ", _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers))
-  ) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_2__["anyCarriers"])("CZ")) {
     return;
   }
 
   var createUrl = function(edition) {
     var paxConfig = { allowinf: 1, youthage: 0 };
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -8387,7 +8389,7 @@ function printCZ() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printCZ");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printCZ");
       return;
     }
     var amadeusConfig = {
@@ -8402,19 +8404,19 @@ function printCZ() {
       "&PRICING_TYPE=O&COUNTRY_SITE=" +
       edition[0] +
       "&DISPLAY_TYPE=1";
-    var tmpPax = Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_4__[/* getAmadeusPax */ "a"])(pax, paxConfig);
+    var tmpPax = Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_3__[/* getAmadeusPax */ "a"])(pax, paxConfig);
     url += tmpPax.url;
     url += "&NB_ADT=" + tmpPax.adults;
     url += "&NB_INF=" + tmpPax.infants;
     url += "&NB_CHD=" + tmpPax.children;
     url += "&TRIP_TYPE=M";
-    url += Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_4__[/* getAmadeusUrl */ "c"])(amadeusConfig);
+    url += Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_3__[/* getAmadeusUrl */ "c"])(amadeusConfig);
     return url;
   };
   // get edition
   var edition = _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].czEdition.split("-");
   if (edition.length != 2) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error:Invalid CZ-Edition");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error:Invalid CZ-Edition");
     return;
   }
   var url = createUrl(edition);
@@ -8443,7 +8445,7 @@ function printCZ() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printCZ);
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", printCZ);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("China Southern", "czEdition", czEditions, "US-GB");
 
 
@@ -8478,7 +8480,7 @@ function printDL() {
     var cabins = ["MAIN", "DPPS", "BU", "FIRST"];
     var mincabin = 3;
     var farebases = new Array();
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePax"])({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 12,
@@ -8486,7 +8488,7 @@ function printDL() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printDL");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printDL");
       return;
     }
 
@@ -8519,7 +8521,7 @@ function printDL() {
           _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].fnr;
         deltaURL +=
           ":" +
-          Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* monthnumberToName */ "g"])(_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dep.month) +
+          Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* monthnumberToName */ "f"])(_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dep.month) +
           ":" +
           (_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dep.day < 10 ? "0" : "") +
           _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dep.day +
@@ -8561,7 +8563,7 @@ function printDL() {
   // get edition
   var edition = _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].dlEdition.split("_");
   if (edition.length != 2) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error:Invalid Delta-Edition");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "g"])("Error:Invalid Delta-Edition");
     return;
   }
   var url = createUrl(edition);
@@ -8590,12 +8592,309 @@ function printDL() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_3__["registerLink"])("airlines", printDL);
+Object(___WEBPACK_IMPORTED_MODULE_3__["register"])("airlines", printDL);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Delta", "dlEdition", dlEditions, "www_us");
 
 
 /***/ }),
 /* 28 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
+/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
+
+
+
+
+
+
+const cabins = ["0", "0", "1", "2"];
+
+const editions = [
+  { name: "Arabic (AE)", value: "/ae/arabic" },
+  { name: "Arabic (BH)", value: "/bh/arabic" },
+  { name: "Arabic (DZ)", value: "/dz/arabic" },
+  { name: "Arabic (EG)", value: "/eg/arabic" },
+  { name: "Arabic (IQ)", value: "/iq/arabic" },
+  { name: "Arabic (JO)", value: "/jo/arabic" },
+  { name: "Arabic (KW)", value: "/kw/arabic" },
+  { name: "Arabic (LB)", value: "/lb/arabic" },
+  { name: "Arabic (LY)", value: "/ly/arabic" },
+  { name: "Arabic (MA)", value: "/ma/arabic" },
+  { name: "Arabic (OM)", value: "/om/arabic" },
+  { name: "Arabic (QA)", value: "/qa/arabic" },
+  { name: "Arabic (SA)", value: "/sa/arabic" },
+  { name: "Arabic (SD)", value: "/sd/arabic" },
+  { name: "Arabic (SY)", value: "/sy/arabic" },
+  { name: "Arabic (YE)", value: "/ye/arabic" },
+  { name: "Chinese (CN)", value: "/cn/chinese" },
+  { name: "Chinese (HK)", value: "/hk/chinese" },
+  { name: "Chinese (TW)", value: "/tw/chinese" },
+  { name: "Czech (CZ)", value: "/cz/czech" },
+  { name: "Danish (DK)", value: "/dk/danish" },
+  { name: "Dutch (BE)", value: "/be/dutch" },
+  { name: "Dutch (NL)", value: "/nl/dutch" },
+  { name: "English (AF)", value: "/af/english" },
+  { name: "English (AU)", value: "/au/english" },
+  { name: "English (BD)", value: "/bd/english" },
+  { name: "English (BG)", value: "/bg/english" },
+  { name: "English (EE)", value: "/ee/english" },
+  { name: "English (ET)", value: "/et/english" },
+  { name: "English (FI)", value: "/fi/english" },
+  { name: "English (GH)", value: "/gh/english" },
+  { name: "English (Global)", value: "/global/english" },
+  { name: "English (HR)", value: "/hr/english" },
+  { name: "English (IE)", value: "/ie/english" },
+  { name: "English (IN)", value: "/in/english" },
+  { name: "English (IR)", value: "/ir/english" },
+  { name: "English (IS)", value: "/is/english" },
+  { name: "English (KE)", value: "/ke/english" },
+  { name: "English (KH)", value: "/kh/english" },
+  { name: "English (LK)", value: "/lk/english" },
+  { name: "English (LT)", value: "/lt/english" },
+  { name: "English (LV)", value: "/lv/english" },
+  { name: "English (MM)", value: "/mm/english" },
+  { name: "English (MT)", value: "/mt/english" },
+  { name: "English (MU)", value: "/mu/english" },
+  { name: "English (MV)", value: "/mv/english" },
+  { name: "English (MY)", value: "/my/english" },
+  { name: "English (NG)", value: "/ng/english" },
+  { name: "English (NZ)", value: "/nz/english" },
+  { name: "English (PH)", value: "/ph/english" },
+  { name: "English (PK)", value: "/pk/english" },
+  { name: "English (RO)", value: "/ro/english" },
+  { name: "English (SC)", value: "/sc/english" },
+  { name: "English (SG)", value: "/sg/english" },
+  { name: "English (TZ)", value: "/tz/english" },
+  { name: "English (UG)", value: "/ug/english" },
+  { name: "English (UK)", value: "/uk/english" },
+  { name: "English (US)", value: "/us/english" },
+  { name: "English (ZA)", value: "/za/english" },
+  { name: "English (ZM)", value: "/zm/english" },
+  { name: "English (ZW)", value: "/zw/english" },
+  { name: "French (CA)", value: "/ca/french" },
+  { name: "French (CI)", value: "/ci/french" },
+  { name: "French (FR)", value: "/fr/french" },
+  { name: "French (GN)", value: "/gn/french" },
+  { name: "French (SN)", value: "/sn/french" },
+  { name: "French (TN)", value: "/tn/french" },
+  { name: "German (AT)", value: "/at/german" },
+  { name: "German (DE)", value: "/de/german" },
+  { name: "Greek (CY)", value: "/cy/greek" },
+  { name: "Greek (GR)", value: "/gr/greek" },
+  { name: "Hungarian (HU)", value: "/hu/hungarian" },
+  { name: "Indonesian (ID)", value: "/id/indonesian" },
+  { name: "Italian (CH)", value: "/ch/italian" },
+  { name: "Italian (IT)", value: "/it/italian" },
+  { name: "Japanese (JP)", value: "/jp/japanese" },
+  { name: "Korean (KR)", value: "/kr/korean" },
+  { name: "Norwegian (NO)", value: "/no/norwegian" },
+  { name: "Polish (PL)", value: "/pl/polish" },
+  { name: "Portuguese (AO)", value: "/ao/portuguese" },
+  { name: "Portuguese (BR)", value: "/br/portuguese" },
+  { name: "Portuguese (PT)", value: "/pt/portuguese" },
+  { name: "Russian (RU)", value: "/ru/russian" },
+  { name: "Russian (UA)", value: "/ua/russian" },
+  { name: "Spanish (AR)", value: "/ar/spanish" },
+  { name: "Spanish (CL)", value: "/cl/spanish" },
+  { name: "Spanish (CO)", value: "/co/spanish" },
+  { name: "Spanish (EC)", value: "/ec/spanish" },
+  { name: "Spanish (ES)", value: "/es/spanish" },
+  { name: "Spanish (MX)", value: "/mx/spanish" },
+  { name: "Spanish (PA)", value: "/pa/spanish" },
+  { name: "Spanish (PE)", value: "/pe/spanish" },
+  { name: "Spanish (UY)", value: "/uy/spanish" },
+  { name: "Swedish (SE)", value: "/se/swedish" },
+  { name: "Thai (TH)", value: "/th/thai" },
+  { name: "Turkish (TR)", value: "/tr/turkish" },
+  { name: "Vietnamese (VN)", value: "/vn/vietnamese" }
+];
+
+function print() {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_2__["anyCarriers"])("EK")) {
+    return;
+  }
+
+  const pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
+    maxPaxcount: 9,
+    countInf: false,
+    childAsAdult: 12,
+    sepInfSeat: false,
+    childMinAge: 2
+  });
+  if (!pax) {
+    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printEK");
+    return;
+  }
+
+  let desc = "";
+  const createUrl = function(edition) {
+    let url = `https://www.emirates.com/sessionhandler.aspx?pageurl=/IBE.aspx&pub=${edition}&j=f&section=IBE&j=t&seldcity1=${
+      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].orig
+    }&selacity1=${_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].dest}&selddate1=${formatDate(
+      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].dep
+    )}&seladults=${pax.adults}&selofw=0&selteenager=0&selchildren=${
+      pax.children.length
+    }&selinfants=${pax.infLap}&selcabinclass=${
+      cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_4__[/* getCabin */ "b"])(Math.max(...Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])().map(seg => seg.cabin)))]
+    }&selcabinclass1=${
+      cabins[
+        Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_4__[/* getCabin */ "b"])(Math.max(..._parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].seg.map(seg => seg.cabin)))
+      ]
+    }&showsearch=false&showTeenager=false&showOFW=false&chkFlexibleDates=false&resultby=0&multiCity=`;
+    if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length == 1) {
+      url += `&seladate1=&TID=OW`;
+    } else if (
+      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length == 2 &&
+      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].orig == _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[1].dest &&
+      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].dest == _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[1].orig
+    ) {
+      url += `&seladate1=${formatDate(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[1].dep)}&TID=SB`;
+    } else {
+      // open-jaw and multi-city for mobile only (TID=AS)
+      url =
+        `https://mobile.emirates.com${edition}/CAB/IBE/searchResults.xhtml?cugoDisabledCabinClass=true&flexiDate=false&searchType=MC&classTypeRadioMulti=0&bookingType=Revenue&originInterlineFlag=false&destInterlineFlag=false&totalAdults=${pax.adults}&totalTeens=0&totalChildren=${pax.children.length}&totalInfants=${pax.infLap}&` +
+        _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin
+          .map(
+            itin =>
+              `fromCity=${itin.orig}&toCity=${itin.dest}&classType=${
+                cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_4__[/* getCabin */ "b"])(Math.max(...itin.seg.map(seg => seg.cabin)))]
+              }&departDay=${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "h"])(itin.dep.day)}&departMonth=${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "h"])(
+                itin.dep.month
+              )}&departYear=${
+                itin.dep.year
+              }&returnDay=&returnMonth=&returnYear=`
+          )
+          .join("&");
+      desc = "Mobile (or resize browser)";
+    }
+    return url;
+  };
+
+  const url = createUrl(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].ekEdition);
+  if (!url) {
+    return;
+  }
+  let extra =
+    ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  extra += editions
+    .map(function(edition, i) {
+      return (
+        '<a href="' +
+        createUrl(edition.value) +
+        '" target="_blank">' +
+        edition.name +
+        "</a>"
+      );
+    })
+    .join("<br/>");
+  extra += "</span></span>";
+
+  return {
+    url,
+    title: "Emirates",
+    desc,
+    extra
+  };
+}
+
+function formatDate(date) {
+  return `${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "h"])(date.day)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* monthnumberToName */ "f"])(date.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "h"])(
+    date.year
+  )}`;
+}
+
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", print);
+Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("Emirates", "ekEdition", editions, "/global/english");
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
+/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3);
+
+
+
+
+
+
+const cabins = ["ECONOMY", "ECONOMY", "BUSINESS", "FIRST"];
+
+function printEY() {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_4__["anyCarriers"])("EY")) {
+    return;
+  }
+
+  var createUrl = function() {
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_4__["validatePax"])({
+      maxPaxcount: 9,
+      countInf: false,
+      childAsAdult: 12,
+      sepInfSeat: false,
+      childMinAge: 2
+    });
+    if (!pax) {
+      Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printEY");
+      return;
+    }
+
+    let url =
+      "https://booking.etihad.com/SSW2010/EYEY/webqtrip.html?journeySpan=MC";
+    url += `&numAdults=${pax.adults}`;
+    url += `&numChildren=${pax.children.length}`;
+    url += `&numInfants=${pax.infLap}`;
+    url += `&advertisedFare=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].price}`;
+    url += `&currency=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].cur || "USD"}`;
+
+    let segnum = 0;
+    _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.forEach((itin, legnum) => {
+      itin.seg.forEach(seg => {
+        url += `&ms[${segnum}].from=${seg.orig}`;
+        url += `&ms[${segnum}].to=${seg.dest}`;
+        url += `&ms[${segnum}].departure=${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "h"])(
+          seg.dep.month
+        )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "h"])(seg.dep.day)}T${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to4digitTime */ "i"])(seg.dep.time24)}`;
+        url += `&ms[${segnum}].arrival=${seg.arr.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "h"])(
+          seg.arr.month
+        )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "h"])(seg.arr.day)}T${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to4digitTime */ "i"])(seg.arr.time24)}`;
+        url += `&ms[${segnum}].leg=${legnum}`;
+        url += `&ms[${segnum}].cbnClass=${cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_3__[/* getCabin */ "b"])(seg.cabin)]}`;
+
+        segnum++;
+      });
+    });
+
+    return url;
+  };
+
+  var url = createUrl();
+  if (!url) {
+    return;
+  }
+
+  return {
+    url,
+    title: "Etihad"
+  };
+}
+
+Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("airlines", printEY);
+
+
+/***/ }),
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8718,19 +9017,14 @@ const ibEditions = [
 ];
 
 function printIB() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].showAllAirlines &&
-    !(
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* inArray */ "f"])("IB", _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers) || Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* inArray */ "f"])("BA", _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers)
-    )
-  ) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_2__["anyCarriers"])("IB", "BA")) {
     return;
   }
 
   var createUrl = function(edition, currency) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["Economy", "Economy", "Business", "First"];
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -8738,7 +9032,7 @@ function printIB() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printIB");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printIB");
       return;
     }
     var url =
@@ -8840,12 +9134,12 @@ function printIB() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printIB);
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", printIB);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("Iberia", "ibEdition", ibEditions, "en-US");
 
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8874,15 +9168,12 @@ const klEditions = [
 const cabins = ["M", "W", "C", "F"];
 
 function printKL() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].showAllAirlines &&
-    !Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* inArray */ "f"])("KL", _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].carriers)
-  ) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_3__["anyCarriers"])("KL")) {
     return;
   }
 
   var createUrl = function(edition) {
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePax"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -8890,7 +9181,7 @@ function printKL() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printKL");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printKL");
       return;
     }
 
@@ -8903,9 +9194,9 @@ function printKL() {
       segs
         .map(
           seg =>
-            `${seg.orig}:${seg.dep.year}${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(seg.dep.month)}${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(
+            `${seg.orig}:${seg.dep.year}${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "h"])(seg.dep.month)}${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "h"])(
               seg.dep.day
-            )}@${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to4digitTime */ "j"])(seg.dep.time)}:${seg.carrier}${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to4digits */ "k"])(
+            )}@${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to4digitTime */ "i"])(seg.dep.time)}:${seg.carrier}${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to4digits */ "j"])(
               seg.fnr
             )}:${seg.bookingclass}>${seg.dest}`
         )
@@ -8926,7 +9217,7 @@ function printKL() {
   // get edition
   var edition = _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].klEdition.split("_");
   if (edition.length != 2) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error:Invalid KLM-Edition");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "g"])("Error:Invalid KLM-Edition");
     return;
   }
   var url = createUrl(edition);
@@ -8955,12 +9246,12 @@ function printKL() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_3__["registerLink"])("airlines", printKL);
+Object(___WEBPACK_IMPORTED_MODULE_3__["register"])("airlines", printKL);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("KLM", "klEdition", klEditions, "us_en");
 
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8998,16 +9289,13 @@ const laEditions = [
 ];
 
 function printLA() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].showAllAirlines &&
-    !Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* inArray */ "f"])("LA", _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers)
-  ) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_2__["anyCarriers"])("LA")) {
     return;
   }
 
   // NOTE: currency will be determined by the locale; the deeplink does not support manually specifying the currency
   var createUrl = function(edition) {
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9015,7 +9303,7 @@ function printLA() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printLA");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printLA");
       return;
     }
     var laUrl = '"trip":{"flights":[';
@@ -9120,12 +9408,12 @@ function printLA() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printLA);
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", printLA);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("LATAM", "laEdition", laEditions, "en/us");
 
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9133,9 +9421,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 /* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
-/* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
-
+/* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7);
 
 
 
@@ -9254,19 +9540,14 @@ const lhEditions = [
 ];
 
 function printLH() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].showAllAirlines &&
-    !(
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* inArray */ "f"])("LH", _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers) || Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* inArray */ "f"])("OS", _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers)
-    )
-  ) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_2__["anyCarriers"])("LH", "OS")) {
     return;
   }
 
   var createUrl = function(edition) {
     var style = 0; // 0 is direct booking - 1 is pre selected
     var paxConfig = { allowinf: 1, youthage: 0 };
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9274,7 +9555,7 @@ function printLH() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printLH");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printLH");
       return false;
     }
     var amadeusConfig = {
@@ -9298,20 +9579,20 @@ function printLH() {
       "&LANGUAGE=" +
       edition[1].toUpperCase() +
       "&SECURE=TRUE&SITE=LUFTLUFT&SO_SITE_LH_FRONTEND_URL=www.lufthansa.com&WDS_WR_CHANNEL=LHCOM";
-    var tmpPax = Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_4__[/* getAmadeusPax */ "a"])(pax, paxConfig);
+    var tmpPax = Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_3__[/* getAmadeusPax */ "a"])(pax, paxConfig);
     url += tmpPax.url;
     url += "&NB_ADT=" + tmpPax.adults;
     url += "&NB_INF=" + tmpPax.infants;
     url += "&NB_CHD=" + tmpPax.children;
-    url += "&TRIP_TYPE=" + Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_4__[/* getAmadeusTriptype */ "b"])();
-    url += Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_4__[/* getAmadeusUrl */ "c"])(amadeusConfig);
+    url += "&TRIP_TYPE=" + Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_3__[/* getAmadeusTriptype */ "b"])();
+    url += Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_3__[/* getAmadeusUrl */ "c"])(amadeusConfig);
 
     return url;
   };
   // get edition
   var edition = _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].lhEdition.split("-");
   if (edition.length != 2) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error:Invalid Lufthansa-Edition");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error:Invalid Lufthansa-Edition");
     return;
   }
   var url = createUrl(edition);
@@ -9340,12 +9621,12 @@ function printLH() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printLH);
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", printLH);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("Lufthansa", "lhEdition", lhEditions, "US-gb");
 
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9367,10 +9648,7 @@ const lxEditions = [
 ];
 
 function printLX() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].showAllAirlines &&
-    !(_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin.length <= 2 && Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* inArray */ "f"])("LX", _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].carriers))
-  ) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_3__["anyCarriers"])("LX")) {
     return;
   }
 
@@ -9384,7 +9662,7 @@ function printLX() {
       "/" +
       edition[1] +
       "/Book/Combined";
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePax"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9392,7 +9670,7 @@ function printLX() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printLX");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printLX");
       return;
     }
     //Build multi-city search based on legs
@@ -9446,7 +9724,7 @@ function printLX() {
   // get edition
   var edition = _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].lxEdition.split("_");
   if (edition.length != 2) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error:Invalid Swiss-Edition");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "g"])("Error:Invalid Swiss-Edition");
     return;
   }
   var url = createUrl(edition);
@@ -9475,12 +9753,12 @@ function printLX() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_3__["registerLink"])("airlines", printLX);
+Object(___WEBPACK_IMPORTED_MODULE_3__["register"])("airlines", printLX);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Swiss", "lxEdition", lxEditions, "us_en");
 
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9488,27 +9766,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 /* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
-/* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
-
+/* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7);
 
 
 
 
 
 function printOA() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].showAllAirlines &&
-    !(
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* inArray */ "f"])("OA", _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers) || Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* inArray */ "f"])("A3", _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers)
-    )
-  ) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_2__["anyCarriers"])("OA", "A3")) {
     return;
   }
 
   var url =
     "https://e-ticket.olympicair.com/A3Responsive/dyn/air/booking/?BOOKING_FLOW=REVENUE&FLEXIBILITY=3&DISPLAY_TYPE=2&FORCE_OVERRIDE=TRUE&PRICING_TYPE=O";
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -9516,7 +9787,7 @@ function printOA() {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printOA");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printOA");
     return;
   }
   var paxConfig = { allowinf: 1, youthage: 0 };
@@ -9526,10 +9797,10 @@ function printOA() {
     allowpremium: 1,
     inctimes: 1
   };
-  var tmpPax = Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_4__[/* getAmadeusPax */ "a"])(pax, paxConfig);
-  url += "&TRIP_TYPE=" + Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_4__[/* getAmadeusTriptype */ "b"])();
+  var tmpPax = Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_3__[/* getAmadeusPax */ "a"])(pax, paxConfig);
+  url += "&TRIP_TYPE=" + Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_3__[/* getAmadeusTriptype */ "b"])();
   url += tmpPax.url;
-  url += Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_4__[/* getAmadeusUrl */ "c"])(amadeusConfig);
+  url += Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_3__[/* getAmadeusUrl */ "c"])(amadeusConfig);
   url +=
     "&SITE=E00KE00K&SKIN=skin_oa&SO_GL=%3CSO_GL%3E%09%3CGLOBAL_LIST%3E%09%09%3CNAME%3ESL_TRAVELLER_TYPE_LIST%3C%2FNAME%3E%09%09%3CLIST_ELEMENT%3E%3CCODE%3EADT%3C%2FCODE%3E%3CLIST_VALUE%3EAdult%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EN%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EADT%3C%2FLIST_VALUE%3E%3C%2FLIST_ELEMENT%3E%09%09%3CLIST_ELEMENT%3E%3CCODE%3EB15%3C%2FCODE%3E%3CLIST_VALUE%3EYoung+adult%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EN%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EB15%3C%2FLIST_VALUE%3E%3C%2FLIST_ELEMENT%3E%09%09%3CLIST_ELEMENT%3E%3CCODE%3EC07%3C%2FCODE%3E%3CLIST_VALUE%3EYouth%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EN%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EC07%3C%2FLIST_VALUE%3E%3C%2FLIST_ELEMENT%3E%09%09%3CLIST_ELEMENT%3E%3CCODE%3EC03%3C%2FCODE%3E%3CLIST_VALUE%3EChild%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EN%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EC03%3C%2FLIST_VALUE%3E%3C%2FLIST_ELEMENT%3E%09%09%3CLIST_ELEMENT%3E%3CCODE%3EINF%3C%2FCODE%3E%3CLIST_VALUE%3EInfant%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EN%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EINF%3C%2FLIST_VALUE%3E%3C%2FLIST_ELEMENT%3E++++++++%3CLIST_ELEMENT%3E%3CCODE%3EUNN%3C%2FCODE%3E%3CLIST_VALUE%3EUMNR%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EN%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EUNN%3C%2FLIST_VALUE%3E%3C%2FLIST_ELEMENT%3E%09%3C%2FGLOBAL_LIST%3E%3C%2FSO_GL%3E&SO_SITE_ETKT_Q_OFFICE_ID=ATHA308OA&SO_SITE_OFFICE_ID=ATHA308OA&SO_SITE_POINT_OF_SALE=ATH&SO_SITE_POINT_OF_TICKETING=ATH&SO_SITE_PREBOOK_DURATION=I180&SO_SITE_QUEUE_OFFICE_ID=ATHA308OA&SO_SITE_SP_QUEUE_OFFICE_ID=ATHA308OA";
   url +=
@@ -9546,36 +9817,31 @@ function printOA() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printOA);
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", printOA);
 
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
-
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 
 
 
 
 function printPS() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].showAllAirlines &&
-    !Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* inArray */ "f"])("PS", _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers)
-  ) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_1__["anyCarriers"])("PS")) {
     return;
   }
 
   var createUrl = function(edition, currency) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["Economy", "Economy", "Business", "First"];
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePax"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -9583,7 +9849,7 @@ function printPS() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printPS");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printPS");
       return false;
     }
     var url =
@@ -9600,12 +9866,12 @@ function printPS() {
       "&UserLanguage=" +
       edition[0] +
       "&TripType=";
-    if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length == 1) {
+    if (_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length == 1) {
       url += "OneWay";
     } else if (
-      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length == 2 &&
-      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].orig == _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[1].dest &&
-      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[0].dest == _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[1].orig
+      _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length == 2 &&
+      _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[0].orig == _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[1].dest &&
+      _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[0].dest == _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[1].orig
     ) {
       url += "RoundTrip";
     } else {
@@ -9616,38 +9882,38 @@ function printPS() {
     var slice = 1;
     var slicestr = "";
     //Build multi-city search based on legs
-    for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length; i++) {
+    for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length; i++) {
       // walks each leg
-      for (var j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg.length; j++) {
+      for (var j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg.length; j++) {
         seg++;
         //walks each segment of leg
         var k = 0;
         // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
-        while (j + k < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg.length - 1) {
+        while (j + k < _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg.length - 1) {
           if (
-            _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].fnr !=
-              _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k + 1].fnr ||
-            _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].layoverduration >= 1440
+            _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j + k].fnr !=
+              _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j + k + 1].fnr ||
+            _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j + k].layoverduration >= 1440
           )
             break;
           k++;
         }
-        url += "&Origin" + seg + "=" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].orig;
-        url += "&Destination" + seg + "=" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].dest;
-        url += "&Carrier" + seg + "=" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].carrier;
+        url += "&Origin" + seg + "=" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].orig;
+        url += "&Destination" + seg + "=" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j + k].dest;
+        url += "&Carrier" + seg + "=" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].carrier;
         url +=
           "&DepartureDate" +
           seg +
           "=" +
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.year +
+          _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].dep.year +
           "-" +
-          ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.month).slice(-2) +
+          ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].dep.month).slice(-2) +
           "-" +
-          ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].dep.day).slice(-2);
-        url += "&FlightNumber" + seg + "=" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].fnr;
+          ("0" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].dep.day).slice(-2);
+        url += "&FlightNumber" + seg + "=" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].fnr;
         url +=
-          "&BookingCode" + seg + "=" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].bookingclass;
-        url += "&Cabin" + seg + "=" + cabins[_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].cabin];
+          "&BookingCode" + seg + "=" + _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].bookingclass;
+        url += "&Cabin" + seg + "=" + cabins[_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin[i].seg[j].cabin];
         slicestr += (slicestr === "" ? "" : "%2C") + seg;
         j += k;
       }
@@ -9668,11 +9934,11 @@ function printPS() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printPS);
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("airlines", printPS);
 
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9701,14 +9967,7 @@ const qfCurrencies = [
 ];
 
 function printQF() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].showAllAirlines &&
-    !(
-      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* inArray */ "f"])("QF", _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].carriers) ||
-      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* inArray */ "f"])("JQ", _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].carriers) ||
-      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* inArray */ "f"])("NZ", _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].carriers)
-    )
-  ) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_3__["anyCarriers"])("QF", "JQ", "NZ")) {
     return;
   }
 
@@ -9719,7 +9978,7 @@ function printQF() {
     // Start the minimum cabin at highest possible (it will drop as we check each leg):
     var mincabin = 3;
     // Validate the passenger totals first:
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePax"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 16,
@@ -9727,7 +9986,7 @@ function printQF() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printQF");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printQF");
       return false;
     }
     var nbrChildren = pax.children.length;
@@ -9880,40 +10139,34 @@ function printQF() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_3__["registerLink"])("airlines", printQF);
+Object(___WEBPACK_IMPORTED_MODULE_3__["register"])("airlines", printQF);
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Qantas", "qfEdition", qfEditions, "EN_US");
 Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Qantas", "qfCurrency", qfCurrencies, "USD");
 
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
-/* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
+/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
 
 
 
 
 
+var cabins = ["E", "E", "B", "F"];
 
-function printTK() {
-  if (
-    !_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].showAllAirlines &&
-    !Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* inArray */ "f"])("TK", _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].carriers)
-  ) {
+function print() {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_1__["allCarriers"])("QR")) {
     return;
   }
 
-  var url =
-    "https://book.eu2.amadeus.com/plnext/turkishairlines/Override.action?";
-  var paxConfig = { allowinf: 1, youthage: 0 };
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+  const pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePax"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -9921,7 +10174,70 @@ function printTK() {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printTK");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printQR");
+    return;
+  }
+
+  const cabin =
+    cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_3__[/* getCabin */ "b"])(Math.min(...Object(_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* getCurrentSegs */ "b"])().map(seg => seg.cabin)))];
+
+  const tripType = _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length > 1 ? "M" : "O";
+
+  let url = `https://booking.qatarairways.com/nsp/views/showBooking.action?widget=MLC&selLang=${_settings_appSettings__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"].itaLanguage}&tripType=${tripType}&bookingClass=${cabin}&adults=${pax.adults}&children=${pax.children.length}&infants=${pax.infLap}&isMetaSearch=true&`;
+  url += _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin
+    .map((itin, i) => {
+      let qs = `fromStation=${itin.orig}&toStation=${itin.dest}&departing=${
+        itin.dep.year
+      }-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "h"])(itin.dep.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "h"])(itin.dep.day)}`;
+      if (i <= 1)
+        qs += `&${i === 0 ? "out" : "in"}boundFltNumber=${itin.seg
+          .map(seg => seg.fnr)
+          .join(",")}`;
+      return qs;
+    })
+    .join("&");
+  if (_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.length <= 2) url += "&price=0";
+  return {
+    url,
+    title: "Qatar Airways"
+  };
+}
+
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("airlines", print);
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7);
+
+
+
+
+
+function printTK() {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_2__["anyCarriers"])("TK")) {
+    return;
+  }
+
+  var url =
+    "https://book.eu2.amadeus.com/plnext/turkishairlines/Override.action?";
+  var paxConfig = { allowinf: 1, youthage: 0 };
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
+    maxPaxcount: 9,
+    countInf: false,
+    childAsAdult: 12,
+    sepInfSeat: false,
+    childMinAge: 2
+  });
+  if (!pax) {
+    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printTK");
     return;
   }
   var amadeusConfig = {
@@ -9930,10 +10246,10 @@ function printTK() {
     allowpremium: 1,
     inctimes: 1
   };
-  var tmpPax = Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_4__[/* getAmadeusPax */ "a"])(pax, paxConfig);
-  url += "TRIP_TYPE=" + Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_4__[/* getAmadeusTriptype */ "b"])();
+  var tmpPax = Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_3__[/* getAmadeusPax */ "a"])(pax, paxConfig);
+  url += "TRIP_TYPE=" + Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_3__[/* getAmadeusTriptype */ "b"])();
   url += tmpPax.url;
-  url += Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_4__[/* getAmadeusUrl */ "c"])(amadeusConfig);
+  url += Object(_print_amadeus__WEBPACK_IMPORTED_MODULE_3__[/* getAmadeusUrl */ "c"])(amadeusConfig);
   url +=
     "&PORT_TSC=FALSE&SO_SITE_ALLOW_SERVICE_FEE=0&SO_SITE_SERVICE_FEE_MODE=AIR&SITE=BBAHBBAH";
   url +=
@@ -9951,11 +10267,75 @@ function printTK() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("airlines", printTK);
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", printTK);
 
 
 /***/ }),
-/* 37 */
+/* 40 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
+/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
+
+
+
+
+
+const cabins = ["", "p", "b", "f"];
+
+function print() {
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_0__["validatePax"])({
+    maxPaxcount: 9,
+    countInf: false,
+    childAsAdult: 12,
+    sepInfSeat: true,
+    childMinAge: 2
+  });
+  if (!pax) {
+    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "g"])(
+      "Error: Failed to validate Passengers in printGoogleFlights"
+    );
+    return;
+  }
+
+  const cabin =
+    cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_3__[/* getCabin */ "b"])(Math.min(...Object(_parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* getCurrentSegs */ "b"])().map(seg => seg.cabin)))];
+
+  const url =
+    "https://www.google.com/flights/#flt=" +
+    _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin
+      .map(
+        itin =>
+          `${itin.orig}.${itin.dest}.${itin.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "h"])(
+            itin.dep.month
+          )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "h"])(itin.dep.day)}.${itin.seg
+            .map(
+              (seg, j) => `${seg.orig}${seg.dest}${j}${seg.carrier}${seg.fnr}`
+            )
+            .join("~")}`
+      )
+      .join("*") +
+    `;c:${_parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].cur || "USD"};px:${pax.adults},${pax.children.length},${
+      pax.infLap
+    },${pax.infSeat};sc:${cabin};tt:${
+      _parse_itin__WEBPACK_IMPORTED_MODULE_1__[/* currentItin */ "a"].itin.length === 1 ? "o" : "m"
+    }`;
+
+  return {
+    url,
+    title: "Google Flights"
+  };
+}
+
+Object(___WEBPACK_IMPORTED_MODULE_0__["register"])("meta", print);
+
+
+/***/ }),
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10032,7 +10412,7 @@ function print() {
   )
     return; // no open jaws
 
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_0__["validatePaxcount"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_0__["validatePax"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -10040,7 +10420,7 @@ function print() {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printOvago");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printOvago");
     return;
   }
 
@@ -10088,14 +10468,14 @@ function print() {
 }
 
 function formatDate(date) {
-  return `${date.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(date.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(date.day)}`;
+  return `${date.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "h"])(date.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "h"])(date.day)}`;
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_0__["registerLink"])("meta", print);
+Object(___WEBPACK_IMPORTED_MODULE_0__["register"])("meta", print);
 
 
 /***/ }),
-/* 38 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10164,7 +10544,7 @@ function print(method) {
   const segs = !method ? _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin : Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])();
   if (method && _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === segs.length) return;
 
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -10172,7 +10552,7 @@ function print(method) {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printOvago");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printOvago");
     return;
   }
 
@@ -10185,9 +10565,9 @@ function print(method) {
       segs
         .map(
           seg =>
-            `${seg.orig}-${seg.dest}/${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(
+            `${seg.orig}-${seg.dest}/${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "h"])(
               seg.dep.month
-            )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(seg.dep.day)}`
+            )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "h"])(seg.dep.day)}`
         )
         .join("/");
 
@@ -10244,12 +10624,12 @@ function print(method) {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(0));
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(1));
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("meta", () => print(0));
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("meta", () => print(1));
 
 
 /***/ }),
-/* 39 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10316,7 +10696,7 @@ function print(method) {
   const segs = !method ? _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin : Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])();
   if (method && _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === segs.length) return;
 
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -10324,7 +10704,7 @@ function print(method) {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printOvago");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printOvago");
     return;
   }
 
@@ -10337,9 +10717,9 @@ function print(method) {
       segs
         .map(
           seg =>
-            `${seg.orig}-${seg.dest}/${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(
+            `${seg.orig}-${seg.dest}/${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "h"])(
               seg.dep.month
-            )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(seg.dep.day)}`
+            )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "h"])(seg.dep.day)}`
         )
         .join("/");
 
@@ -10392,12 +10772,12 @@ function print(method) {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(0));
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(1));
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("meta", () => print(0));
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("meta", () => print(1));
 
 
 /***/ }),
-/* 40 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10438,7 +10818,7 @@ function print(method) {
   const segs = !method ? _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin : Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])();
   if (method && _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === segs.length) return;
 
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
     maxPaxcount: 8,
     countInf: false,
     childAsAdult: 12,
@@ -10446,7 +10826,7 @@ function print(method) {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printOvago");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printOvago");
     return;
   }
 
@@ -10460,7 +10840,7 @@ function print(method) {
     url += segs
       .map(
         seg =>
-          `${seg.orig}/${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(seg.dep.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(
+          `${seg.orig}/${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "h"])(seg.dep.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "h"])(
             seg.dep.day
           )}/${seg.dest}`
       )
@@ -10510,12 +10890,12 @@ function print(method) {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(0));
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(1));
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("meta", () => print(0));
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("meta", () => print(1));
 
 
 /***/ }),
-/* 41 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10597,7 +10977,7 @@ function print(method) {
   const segs = !method ? _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin : Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getCurrentSegs */ "b"])();
   if (method && _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length === segs.length) return;
 
-  const pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+  const pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
     maxPaxcount: 8,
     countInf: false,
     childAsAdult: 12,
@@ -10605,7 +10985,7 @@ function print(method) {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printOvago");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printOvago");
     return;
   }
 
@@ -10630,7 +11010,7 @@ function print(method) {
       segs
         .map(
           (seg, i) =>
-            `date${i * 2}=${seg.dep.year}${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(seg.dep.month)}${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "i"])(
+            `date${i * 2}=${seg.dep.year}${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "h"])(seg.dep.month)}${Object(_utils__WEBPACK_IMPORTED_MODULE_4__[/* to2digits */ "h"])(
               seg.dep.day
             )}&airport${i * 2}=${seg.orig}&nearby${i * 2}=no&airport${i * 2 +
               1}=${seg.dest}&nearby${i * 2 + 1}=no`
@@ -10666,12 +11046,12 @@ function print(method) {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(0));
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("meta", () => print(1));
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("meta", () => print(0));
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("meta", () => print(1));
 
 
 /***/ }),
-/* 42 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10689,7 +11069,7 @@ function printCheapOair() {
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
   var cabins = ["Economy", "PremiumEconomy", "Business", "First"];
   var coaUrl = "http://www.cheapoair.com/default.aspx?tabid=1832&ulang=en";
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePaxcount"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePax"])({
     maxPaxcount: 9,
     countInf: true,
     childAsAdult: 12,
@@ -10697,7 +11077,7 @@ function printCheapOair() {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printCheapOair");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printCheapOair");
     return;
   }
   coaUrl +=
@@ -10763,11 +11143,11 @@ function printCheapOair() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", printCheapOair);
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", printCheapOair);
 
 
 /***/ }),
-/* 43 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10849,7 +11229,7 @@ const travellink = [
 const cabins = ["TOURIST", "PREMIUM_ECONOMY", "BUSINESS", "FIRST"];
 
 function printEdreams(title, editions) {
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePaxcount"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePax"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -10857,7 +11237,7 @@ function printEdreams(title, editions) {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printEdreams");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printEdreams");
     return;
   }
 
@@ -10868,7 +11248,7 @@ function printEdreams(title, editions) {
     const deeplink = `/results/type=M;${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin
       .map(
         (itin, i) =>
-          `dep${i}=${itin.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "i"])(itin.dep.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "i"])(
+          `dep${i}=${itin.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "h"])(itin.dep.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "h"])(
             itin.dep.day
           )};from${i}=${itin.orig};to${i}=${itin.dest}`
       )
@@ -10915,13 +11295,13 @@ function printEdreams(title, editions) {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", () => printEdreams("eDreams", eDreams));
-Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", () => printEdreams("Opodo", opodo));
-Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", () => printEdreams("Travellink", travellink));
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", () => printEdreams("eDreams", eDreams));
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", () => printEdreams("Opodo", opodo));
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", () => printEdreams("Travellink", travellink));
 
 
 /***/ }),
-/* 44 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10996,7 +11376,7 @@ function printEtraveli() {
   var convertDate = function(date, withYear) {
     return (
       ("0" + date.day).slice(-2) +
-      Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* monthnumberToName */ "g"])(date.month) +
+      Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* monthnumberToName */ "f"])(date.month) +
       (withYear ? date.year.toString().slice(-2) : "")
     );
   };
@@ -11054,11 +11434,11 @@ function printEtraveli() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", printEtraveli);
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", printEtraveli);
 
 
 /***/ }),
-/* 45 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11093,7 +11473,7 @@ const editions = [
 ];
 
 function printExpedia() {
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
     maxPaxcount: 9,
     countInf: true,
     childAsAdult: 18,
@@ -11101,7 +11481,7 @@ function printExpedia() {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printExpedia");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printExpedia");
     return;
   }
   let expediaClasses = ["coach", "premium", "business", "first"];
@@ -11192,11 +11572,11 @@ function printExpedia() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("otas", printExpedia);
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("otas", printExpedia);
 
 
 /***/ }),
-/* 46 */
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11224,7 +11604,7 @@ const editions = [
 ];
 
 function printFN() {
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePaxcount"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePax"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -11232,7 +11612,7 @@ function printFN() {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printFN");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printFN");
     return;
   }
 
@@ -11293,17 +11673,17 @@ function formatDate(date) {
   return (
     "" +
     date.year +
-    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "i"])(date.month) +
-    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "i"])(date.day) +
+    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "h"])(date.month) +
+    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "h"])(date.day) +
     date.time24.replace(":", "")
   );
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", printFN);
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", printFN);
 
 
 /***/ }),
-/* 47 */
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11325,7 +11705,7 @@ const editions = [
 const cabins = ["Y", "S", "C", "F"];
 
 function print() {
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePaxcount"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePax"])({
     maxPaxcount: 9,
     countInf: false,
     childAsAdult: 12,
@@ -11333,7 +11713,7 @@ function print() {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printHop2");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printHop2");
     return;
   }
 
@@ -11348,7 +11728,7 @@ function print() {
       itin =>
         itin.orig +
         itin.dest +
-        `${itin.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "i"])(itin.dep.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "i"])(
+        `${itin.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "h"])(itin.dep.month)}-${Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "h"])(
           itin.dep.day
         )}`
     )
@@ -11385,11 +11765,11 @@ function print() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", print);
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", print);
 
 
 /***/ }),
-/* 48 */
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11425,7 +11805,7 @@ function printLucky2go() {
   var createUrl = function(edition) {
     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
     var cabins = ["Economy", "Economy", "Business", "First"];
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePaxcount"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
       maxPaxcount: 9,
       countInf: false,
       childAsAdult: 12,
@@ -11433,7 +11813,7 @@ function printLucky2go() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "h"])(
+      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "g"])(
         "Error: Failed to validate Passengers in printLucky2go"
       );
       return;
@@ -11537,11 +11917,11 @@ function printLucky2go() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_2__["registerLink"])("otas", printLucky2go);
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("otas", printLucky2go);
 
 
 /***/ }),
-/* 49 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11602,7 +11982,7 @@ function printPriceline() {
     }
   }
   searchparam = searchparam.substring(1, searchparam.length - 1);
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePaxcount"])({
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePax"])({
     maxPaxcount: 9,
     countInf: true,
     childAsAdult: 18,
@@ -11610,7 +11990,7 @@ function printPriceline() {
     childMinAge: 2
   });
   if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printPriceline");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "g"])("Error: Failed to validate Passengers in printPriceline");
     return;
   }
   pricelineurl +=
@@ -11632,11 +12012,11 @@ function printPriceline() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("otas", printPriceline);
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", printPriceline);
 
 
 /***/ }),
-/* 50 */
+/* 54 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11672,11 +12052,11 @@ function printGCM() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("other", printGCM);
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("other", printGCM);
 
 
 /***/ }),
-/* 51 */
+/* 55 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11699,11 +12079,11 @@ function printWheretocredit() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_1__["registerLink"])("other", printWheretocredit);
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("other", printWheretocredit);
 
 
 /***/ }),
-/* 52 */
+/* 56 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11744,11 +12124,11 @@ function render() {
     userSettings["a" /* default */].enableEditormode == 1 &&
     Object(utils["d" /* findtargets */])("editoritem").length === 0
   ) {
-    Object(utils["l" /* toggleVis */])(document.getElementById("mptStartparse"), "inline-block");
+    Object(utils["k" /* toggleVis */])(document.getElementById("mptStartparse"), "inline-block");
     addEditor();
     return;
   } else if (Object(utils["d" /* findtargets */])("editoritem").length > 0) {
-    Object(utils["l" /* toggleVis */])(document.getElementById("mptStartparse"));
+    Object(utils["k" /* toggleVis */])(document.getElementById("mptStartparse"));
     removeEditor();
     Object(parse_itin["c" /* readItinerary */])();
   }
@@ -12124,11 +12504,11 @@ function bindPriceBreakdown() {
 
 function bindTranslations(page, lang, target) {
   if (translations["a" /* default */][lang] === undefined) {
-    Object(utils["h" /* printNotification */])("Error: Translation " + lang + " not found");
+    Object(utils["g" /* printNotification */])("Error: Translation " + lang + " not found");
     return false;
   }
   if (translations["a" /* default */][lang][page] === undefined) {
-    Object(utils["h" /* printNotification */])(
+    Object(utils["g" /* printNotification */])(
       "Error: Translation " + lang + " not found for page " + page
     );
     return false;
@@ -12172,7 +12552,7 @@ function bindSeatguru() {
       // build the search to identify flight:
       var target = findItinTarget(i + 1, j + 1, "plane");
       if (!target) {
-        Object(utils["h" /* printNotification */])("Error: Could not find target in bindSeatguru");
+        Object(utils["g" /* printNotification */])("Error: Could not find target in bindSeatguru");
         return false;
       } else {
         var url =
@@ -12219,7 +12599,7 @@ function bindPlanefinder() {
       // build the search to identify flight:
       var target = findItinTarget(i + 1, j + 1, "flight");
       if (!target) {
-        Object(utils["h" /* printNotification */])("Error: Could not find target in bindPlanefinder");
+        Object(utils["g" /* printNotification */])("Error: Could not find target in bindPlanefinder");
         return false;
       } else {
         var url =
@@ -12245,7 +12625,7 @@ function bindWheretocredit() {
       //walks each segment of leg
       var target = findItinTarget(i + 1, j + 1, "cabin");
       if (!target) {
-        Object(utils["h" /* printNotification */])("Error: Could not find target in bindWheretocredit");
+        Object(utils["g" /* printNotification */])("Error: Could not find target in bindWheretocredit");
         return false;
       } else {
         var url =
@@ -12274,14 +12654,14 @@ function bindWheretocredit() {
 function findItinTarget(leg, seg, tcell) {
   var target = Object(utils["c" /* findtarget */])(itaSettings["a" /* default */].resultpage.itin, 1);
   if (!target) {
-    Object(utils["h" /* printNotification */])("Error: Itin not found in findItinTarget-function");
+    Object(utils["g" /* printNotification */])("Error: Itin not found in findItinTarget-function");
     return;
   }
 
   // go to leg
   var targetLeg = target.nextElementSibling.children[leg - 1];
   if (targetLeg === undefined) {
-    Object(utils["h" /* printNotification */])("Error: Leg not found in findItinTarget-function");
+    Object(utils["g" /* printNotification */])("Error: Leg not found in findItinTarget-function");
     return;
   }
   // go to segments of leg
@@ -12307,7 +12687,7 @@ function findItinTarget(leg, seg, tcell) {
     } // end-for
     if (i == targetSeg.length) {
       //target not found
-      Object(utils["h" /* printNotification */])(
+      Object(utils["g" /* printNotification */])(
         "Error: Call to unreachable Segment in Leg " +
           leg +
           " in findItinTarget-function"
@@ -12356,12 +12736,12 @@ function findItinTarget(leg, seg, tcell) {
         columnoffset = 5;
         break;
       default:
-        Object(utils["h" /* printNotification */])("Error: Unknown Target in findItinTarget-function");
+        Object(utils["g" /* printNotification */])("Error: Unknown Target in findItinTarget-function");
         return;
     }
     return targetSeg[index + rowoffset].children[columnoffset];
   } else {
-    Object(utils["h" /* printNotification */])("Error: Unknown error in findItinTarget-function");
+    Object(utils["g" /* printNotification */])("Error: Unknown error in findItinTarget-function");
     return;
   }
 }
@@ -12391,10 +12771,10 @@ function createUsersettings() {
   var target = document.getElementById("contentwrapper");
   target.parentElement.insertBefore(settingscontainer, target);
   document.getElementById("settingsVisToggler").onclick = function() {
-    Object(utils["l" /* toggleVis */])(document.getElementById("mptSettings"));
+    Object(utils["k" /* toggleVis */])(document.getElementById("mptSettings"));
   };
   document.getElementById("passengerVisToggler").onclick = function() {
-    Object(utils["l" /* toggleVis */])(document.getElementById("mptPassengers"));
+    Object(utils["k" /* toggleVis */])(document.getElementById("mptPassengers"));
   };
 
   // Build settings
@@ -12535,7 +12915,7 @@ function createUsersettings() {
     toggleSettings("cabin");
   };
   document.getElementById("configcloser").onclick = function() {
-    Object(utils["l" /* toggleVis */])(document.getElementById("mptSettings"));
+    Object(utils["k" /* toggleVis */])(document.getElementById("mptSettings"));
   };
   document.getElementById("mptStartparse").onclick = function() {
     setTimeout(function() {
@@ -12623,7 +13003,7 @@ function createUsersettings() {
   str += '</div><div style="clear:both;"></div>';
   target.innerHTML = str;
   document.getElementById("mtpCancelPax").onclick = function() {
-    Object(utils["l" /* toggleVis */])(document.getElementById("mptPassengers"));
+    Object(utils["k" /* toggleVis */])(document.getElementById("mptPassengers"));
   };
   document.getElementById("mtpConfirmPax").onclick = function() {
     processPassengers();
@@ -12742,7 +13122,7 @@ function processPassengers() {
         "i"
       : "");
   document.getElementById("mtpPaxCount").innerHTML = paxText;
-  Object(utils["l" /* toggleVis */])(document.getElementById("mptPassengers"));
+  Object(utils["k" /* toggleVis */])(document.getElementById("mptPassengers"));
   // reload links
   Object(links["a" /* printLinksContainer */])();
 }
@@ -12867,7 +13247,7 @@ function getPageLang() {
 function startPage() {
   // try to get content
   if (!Object(itaSettings["b" /* findTargetSetVersion */])(settings => settings.startpage.maindiv, 1)) {
-    Object(utils["h" /* printNotification */])("Error: Unable to find content on start page.");
+    Object(utils["g" /* printNotification */])("Error: Unable to find content on start page.");
     return false;
   } else {
     // apply style-fix
@@ -12885,14 +13265,14 @@ function fePS() {
   // try to get content
   const itin = Object(itaSettings["b" /* findTargetSetVersion */])(settings => settings.resultpage.itin, 1);
   if (!itin) {
-    Object(utils["h" /* printNotification */])("Error: Unable to find Content on result page.");
+    Object(utils["g" /* printNotification */])("Error: Unable to find Content on result page.");
     return false;
   }
   // retry if itin not loaded
   if (itin.parentElement.previousElementSibling.style.display != "none") {
     appSettings["a" /* default */].retrycount++;
     if (appSettings["a" /* default */].retrycount > 50) {
-      Object(utils["h" /* printNotification */])(
+      Object(utils["g" /* printNotification */])(
         "Error: Timeout on result page. Content not found after 10s."
       );
       return false;
@@ -12905,7 +13285,7 @@ function fePS() {
   // do some self-testing to prevent crashing on class-changes
   for (let i in itaSettings["a" /* default */].resultpage) {
     if (Object(utils["c" /* findtarget */])(itaSettings["a" /* default */].resultpage[i], 1) === undefined) {
-      Object(utils["h" /* printNotification */])(
+      Object(utils["g" /* printNotification */])(
         "Error: Unable to find class " +
           itaSettings["a" /* default */].resultpage[i] +
           " for " +
