@@ -2,6 +2,7 @@ import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification } from "../../utils";
 import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
+import { zonedTimeToUtc } from "date-fns-tz";
 import apTimeZones from "../../json/timezones.json";
 
 const aaSabreEditions = [
@@ -22,14 +23,8 @@ function printAaSabre() {
      *
      * This function accepts the IATA code for a given airport and
      * retrieves the timezone from a static array of known airport data
-     * (sourced from https://openflights.org/data.html, reduced to
+     * (sourced from https://www.flightstats.com, reduced to
      * airports with IATA code, and converted to keyed json format).
-     * We use that timezone and Moment Timezone to account for DST if
-     * the future date and timezone fall in a known DST locale.
-     *
-     * Future TODO: The static airport data adds bloat and must be
-     * manually updated. Moment Timezone also adds bloat. Consider
-     * alternative implementations?
      *
      * @param y 4-digit year
      * @param m 2-digit month
@@ -50,11 +45,7 @@ function printAaSabre() {
       t +
       ":00";
 
-    // use Moment Timezone to adjust for (if needed) DST of airport:
-    // (data is filtered to only +2 years to reduce file size)
-    let moment = require("moment-timezone");
-    let adjustedStr = moment.tz(datetimeStr, apTimeZones[ap]).format();
-    return Date.parse(adjustedStr);
+    return zonedTimeToUtc(datetimeStr, apTimeZones[ap]).getTime();
   };
 
   // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
