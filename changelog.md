@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.46.1] - 2020-02-26
+
+Edited by IAkH
+
+- fixed UI crash when an "airport" did not exist in the timezone table
+
 ## [0.46.0] - 2020-02-24
 
 Edited by IAkH
