@@ -16,7 +16,8 @@
     "release:opera": "shipit opera ./webext"
   },
   "dependencies": {
-    "moment-timezone": "^0.5.27"
+    "date-fns": "^2.9.0",
+    "date-fns-tz": "^1.0.10"
   },
   "husky": {
     "hooks": {
@@ -28,8 +29,6 @@
     "@types/webpack-env": "^1.15.0",
     "@wext/shipit": "github:adamhwang/wext-shipit",
     "husky": "^4.2.1",
-    "moment-locales-webpack-plugin": "^1.1.2",
-    "moment-timezone-data-webpack-plugin": "^1.1.0",
     "path": "^0.12.7",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",
