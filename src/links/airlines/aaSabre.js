@@ -53,7 +53,7 @@ function printAaSabre() {
     // use Moment Timezone to adjust for (if needed) DST of airport:
     // (data is filtered to only +2 years to reduce file size)
     let moment = require("moment-timezone");
-    let adjustedStr = moment.tz(datetimeStr, apTimeZones[ap].Timezone).format();
+    let adjustedStr = moment.tz(datetimeStr, apTimeZones[ap]).format();
     return Date.parse(adjustedStr);
   };
 
