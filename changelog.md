@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.47.0] - 2020-02-27
+
+Edited by IAkH
+
+- added eDestinos link
+- fixed Air France and LATAM deeplinks
+- added carrier checks for American, Air Canada and Delta
+- changed timezone package for more robust handling and to reduce package size
+
 ## [0.46.1] - 2020-02-26
 
 Edited by IAkH
