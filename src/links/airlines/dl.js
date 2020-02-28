@@ -1,7 +1,7 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, monthnumberToName } from "../../utils";
-import { validatePax, register } from "..";
+import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
 const dlEditions = [
@@ -10,6 +10,10 @@ const dlEditions = [
 ];
 
 function printDL() {
+  if (!anyCarriers("DL")) {
+    return;
+  }
+
   /* Steppo: What about farebasis?
    * What about segmentskipping? */
   var createUrl = function(edition) {

@@ -1,6 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification } from "../../utils";
-import { validatePax, register } from "..";
+import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 import { zonedTimeToUtc } from "date-fns-tz";
 import apTimeZones from "../../json/timezones.json";
@@ -15,6 +15,10 @@ const aaSabreEditions = [
 ];
 
 function printAaSabre() {
+  if (!anyCarriers("AA")) {
+    return;
+  }
+
   let datetimeToEpoch = function(y, m, d, t, ap) {
     /**
      * This function converts a datetime from the local timezone of the

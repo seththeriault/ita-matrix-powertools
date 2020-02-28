@@ -1,6 +1,6 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification } from "../../utils";
-import { validatePax, register } from "..";
+import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
 const aaEditions = [
@@ -33,6 +33,10 @@ const aaEditions = [
 ];
 
 function printAA() {
+  if (!anyCarriers("AA")) {
+    return;
+  }
+
   var createUrl = function(edition) {
     var url =
       "http://i11l-services.aa.com/xaa/mseGateway/entryPoint.php?PARAM=";

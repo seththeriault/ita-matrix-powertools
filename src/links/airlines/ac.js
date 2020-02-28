@@ -2,7 +2,7 @@ import mptSettings from "../../settings/appSettings";
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import translations from "../../settings/translations";
 import { printNotification } from "../../utils";
-import { validatePax, register } from "..";
+import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 import {
   getAmadeusUrl,
@@ -85,6 +85,10 @@ const acEditions = [
 ];
 
 function printAC() {
+  if (!anyCarriers("AC")) {
+    return;
+  }
+
   var createUrl = function(edition) {
     var acUrl =
       "https://book.aircanada.com/pl/AConline/en/RedirectionServlet?FareRequest=YES&PRICING_MODE=0&fromThirdParty=YES";
