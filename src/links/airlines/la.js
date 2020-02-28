@@ -1,5 +1,5 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
-import { printNotification } from "../../utils";
+import { printNotification, to2digits } from "../../utils";
 import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
@@ -44,82 +44,41 @@ function printLA() {
       printNotification("Error: Failed to validate Passengers in printLA");
       return;
     }
-    var laUrl = '"trip":{"flights":[';
-    for (var i = 0; i < currentItin.itin.length; i++) {
-      // amount and currency required for each segment:
-      laUrl +=
-        '{"amount":"' +
-        currentItin.price +
-        '","currency":"' +
-        "USD" +
-        '","segments":[';
-      var mincabin = 3;
-      // walks each leg
-      for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
-        //walks each segment of leg
-        var k = 0;
-        // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
-        while (j + k < currentItin.itin[i].seg.length - 1) {
-          if (
-            currentItin.itin[i].seg[j + k].fnr !=
-              currentItin.itin[i].seg[j + k + 1].fnr ||
-            currentItin.itin[i].seg[j + k].layoverduration >= 1440
-          )
-            break;
-          k++;
-        }
-        laUrl +=
-          '{"departure_airport":"' +
-          currentItin.itin[i].seg[j].orig +
-          '","flight_number":"' +
-          currentItin.itin[i].seg[j].fnr +
-          '","departure_date":"' +
-          currentItin.itin[i].seg[j].dep.year.toString() +
-          "-" +
-          ("0" + currentItin.itin[i].seg[j].dep.month.toString()).slice(-2) +
-          "-" +
-          ("0" + currentItin.itin[i].seg[j].dep.day.toString()).slice(-2) +
-          '","arrival_airport":"' +
-          currentItin.itin[i].seg[j + k].dest +
-          '","farebasis":"' +
-          currentItin.itin[i].seg[j].farebase +
-          '","marketing_airline":"' +
-          currentItin.itin[i].seg[j].carrier +
-          '","class":"' +
-          currentItin.itin[i].seg[j].bookingclass +
-          '","arrival_date":"' +
-          currentItin.itin[i].seg[j].arr.year.toString() +
-          "-" +
-          ("0" + currentItin.itin[i].seg[j].arr.month.toString()).slice(-2) +
-          "-" +
-          ("0" + currentItin.itin[i].seg[j].arr.day.toString()).slice(-2) +
-          '"},';
-        // check the minimum cabin:
-        if (currentItin.itin[i].seg[j].cabin < mincabin) {
-          mincabin = currentItin.itin[i].seg[j].cabin;
-        }
-        j += k;
+
+    const parameters = {
+      passengers: {
+        numberAdults: pax.adults.toString(),
+        numberInfants: pax.infLap.toString(),
+        numberChildren: pax.children.length.toString()
+      },
+      trip: {
+        flights: currentItin.itin.map(itin => {
+          return {
+            amount: currentItin.price,
+            currency: currentItin.cur || "USD",
+            segments: itin.seg.map(seg => {
+              return {
+                departure_airport: seg.orig,
+                flight_number: seg.fnr,
+                departure_date: formatDate(seg.dep),
+                arrival_airport: seg.dest,
+                farebasis: seg.farebase,
+                marketing_airline: seg.carrier,
+                class: seg.bookingclass,
+                arrival_date: formatDate(seg.arr)
+              };
+            })
+          };
+        })
       }
-      laUrl = laUrl.substring(0, laUrl.length - 1) + "]},";
-    }
-    // Build passengers info:
-    var laPassengers =
-      '"passengers":{"numberAdults":"' +
-      pax.adults +
-      '","numberInfants":"' +
-      pax.infLap +
-      '","numberChildren":"' +
-      pax.children.length +
-      '"},';
-    // Compile the final URL (and encode it):
-    laUrl =
-      "https://ssl.lan.com/cgi-bin/compra/paso4.cgi?forced_home=" +
-      edition +
-      "&sessionParameters=%7B" +
-      encodeURIComponent(laPassengers) +
-      encodeURIComponent(laUrl.substring(0, laUrl.length - 1)) +
-      "]}}&utm_medium=metasearch&utm_source=gfs&utm_campaign=US_deeplink_s4&gclsrc=gf";
-    return laUrl;
+    };
+
+    // The booking.lan.com url as of 2/27/2020 needs to be http instead of https. Fortunately, it does redirect you
+    // to https://ssl.lan.com afterwards, but the booking link seems to be more successful than starting with ssl
+    return (
+      `http://booking.lan.com/cgi-bin/compra/paso4.cgi?forced_home=${edition}&sessionParameters=` +
+      encodeURIComponent(JSON.stringify(parameters))
+    );
   };
   var url = createUrl(mptUserSettings.laEdition);
   if (!url) {
@@ -144,6 +103,10 @@ function printLA() {
     title: "LATAM",
     extra
   };
+}
+
+function formatDate(date) {
+  return `${date.year}-${to2digits(date.month)}-${to2digits(date.day)}`;
 }
 
 register("airlines", printLA);
