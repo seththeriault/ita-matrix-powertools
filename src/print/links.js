@@ -101,7 +101,7 @@ export function printImage(link) {
     var id = Math.random().toString();
     div.insertAdjacentHTML(
       "beforeend",
-      `<div id="${id}" class="powertoolsitem" style="width:184px;height:100px;background-color:white;border:1px solid #808080;cursor:pointer;text-align:center;margin-top:10px;padding-top:84px;"><span>${link.title}</span></div>`
+      `<div id="${id}" class="powertoolsitem powertoolsimage"><span>${link.title}</span></div>`
     );
 
     document.getElementById(id).addEventListener("click", function() {
@@ -111,32 +111,28 @@ export function printImage(link) {
 }
 
 export function getSidebarContainer() {
-  if (mptUserSettings.enableInlineMode == 1) {
-    return (
-      document.getElementById("powertoolslinkinlinecontainer") ||
-      createUrlContainerInline()
-    );
-  } else {
-    return (
-      document.getElementById("powertoolslinkcontainer") || createUrlContainer()
-    );
-  }
+  return (
+    document.getElementById("powertoolslinkcontainer") ||
+    (mptUserSettings.enableInlineMode == 1
+      ? createUrlContainerInline()
+      : createUrlContainer())
+  );
 }
 
 function createUrlContainerInline() {
   var newdiv = document.createElement("div");
-  newdiv.setAttribute("class", classSettings.resultpage.mcDiv);
-  newdiv.style.backgroundColor = "#f2f2f2";
+  newdiv.classList.add(classSettings.resultpage.mcDiv);
+  newdiv.classList.add(`powertoolslinkinlinecontainer`);
   newdiv.innerHTML =
     '<div class="' +
     classSettings.resultpage.mcHeader +
-    '">Powertools</div><ul id="powertoolslinkinlinecontainer" class="' +
+    '">Powertools</div><ul id="powertoolslinkcontainer" class="' +
     classSettings.resultpage.mcLinkList +
     '"></ul>';
   findtarget(classSettings.resultpage.mcDiv, 1).parentElement.appendChild(
     newdiv
   );
-  return document.getElementById("powertoolslinkinlinecontainer");
+  return document.getElementById("powertoolslinkcontainer");
 }
 
 // Printing Stuff

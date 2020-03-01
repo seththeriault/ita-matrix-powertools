@@ -36,6 +36,10 @@ export function createUsersettings() {
     '<div style="text-align:center;font-weight:bold">**** Display Settings: ****</div>';
   str += '<div style="margin:5px 0;"><div style="float:left;width:33%">';
   str +=
+    '<div id="mptenableDarkmode">Dark mode: <label style="cursor:pointer;">' +
+    printSettingsvalue("enableDarkmode") +
+    "</label></div>";
+  str +=
     '<div id="mpttimeformat">Time Format: <label style="cursor:pointer;">' +
     printSettingsvalue("timeformat") +
     "</label></div>";
@@ -119,6 +123,9 @@ export function createUsersettings() {
   // these onClick event handlers need only be added once:
   document.getElementById("mptrestoredefault").onclick = function() {
     restoreDefaultSettings();
+  };
+  document.getElementById("mptenableDarkmode").onclick = function() {
+    toggleSettings("enableDarkmode");
   };
   document.getElementById("mpttimeformat").onclick = function() {
     toggleSettings("timeformat");

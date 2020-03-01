@@ -461,10 +461,11 @@ function bindSeatguru() {
           currentItin.itin[i].seg[j].dep.year +
           "&to=&from=" +
           currentItin.itin[i].seg[j].orig;
+        target.children[0].classList.add("pt-textlink");
         target.children[0].innerHTML =
           '<a href="' +
           url +
-          '" target="_blank" style="text-decoration:none;color:black">' +
+          '" target="_blank">' +
           target.children[0].innerHTML +
           "</a>";
       }
@@ -499,10 +500,11 @@ function bindPlanefinder() {
           "http://www.planefinder.net/data/flight/" +
           currentItin.itin[i].seg[j].carrier +
           currentItin.itin[i].seg[j].fnr;
+        target.children[0].classList.add("pt-textlink");
         target.children[0].innerHTML =
           '<a href="' +
           url +
-          '" target="_blank" style="text-decoration:none;color:black">' +
+          '" target="_blank">' +
           target.children[0].innerHTML +
           "</a>";
       }
@@ -526,6 +528,7 @@ function bindWheretocredit() {
           currentItin.itin[i].seg[j].carrier.toLowerCase() +
           "/" +
           currentItin.itin[i].seg[j].bookingclass.toLowerCase();
+        target.children[0].classList.add("pt-textlink");
         target.children[0].innerHTML = target.children[0].innerHTML
           .replace(
             /<a.*?\/a>/,
@@ -535,7 +538,7 @@ function bindWheretocredit() {
             "(" + currentItin.itin[i].seg[j].bookingclass + ")",
             '<a href="' +
               url +
-              '" target="_blank" style="text-decoration:none;color:black">(' +
+              '" target="_blank">(' +
               currentItin.itin[i].seg[j].bookingclass +
               ")</a>"
           );

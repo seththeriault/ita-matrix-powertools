@@ -7,6 +7,7 @@ import { readItinerary } from "./parse/itin";
 
 import { render, cleanUp } from "./print";
 import { createUsersettings } from "./print/settings";
+import { bindDarkmode, transformItaCss } from "./print/darkmode";
 
 /**************************************** Start Script *****************************************/
 
@@ -15,6 +16,7 @@ import { createUsersettings } from "./print/settings";
   await loadUserSettings();
   createUsersettings();
   injectCss();
+  bindDarkmode();
 
   if (window.top === window.self) {
     if (mptSettings.scriptEngine === 0) {
@@ -33,10 +35,11 @@ import { createUsersettings } from "./print/settings";
 function startScript() {
   if (window.location.href !== mptSettings.laststatus) {
     setTimeout(function() {
+      transformItaCss();
       reset();
       cleanUp();
       getPageLang();
-    }, 100);
+    }, 0);
     mptSettings.laststatus = window.location.href;
   }
   if (mptSettings.scriptrunning === 1) {
@@ -120,14 +123,25 @@ function fePS() {
 }
 
 function injectCss() {
-  var css = "",
+  let css = "",
     head = document.head || document.getElementsByTagName("head")[0],
     style = document.createElement("style");
   style.type = "text/css";
 
+  css += `body.dark-mode, body.dark-mode input[type='text'], body.dark-mode input[type='radio'], body.dark-mode textarea, body.dark-mode select, body.dark-mode button, body.dark-mode .powertoolsimage, body.dark-mode .pt-hover-menu, body.dark-mode .${classSettings.resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: black; color: #E1E1E1; }`;
+  css += "body.dark-mode img { filter: hue-rotate(180deg) invert(1); }";
+  css +=
+    "body.dark-mode a, body.dark-mode a:link, body.dark-mode a:hover, body.dark-mode a:active, body.dark-mode .linked { color: #85daff; }";
+  css += "body.dark-mode a:visited { color: #8ec6ec; }";
+  css +=
+    "body.dark-mode .pt-textlink a { text-decoration: none; color: #E1E1E1; }";
   css +=
     ".pt-hover-menu { position:absolute; padding: 8px; background-color: #FFF; border: 1px solid #808080; display:none; }";
   css += ".pt-hover-container:hover .pt-hover-menu { display:inline; }";
+  css += ".pt-textlink a { text-decoration: none; color: black; }";
+  css += `.${classSettings.resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: #f2f2f2; }`;
+  css +=
+    ".powertoolsimage { width: 184px; height: 100px; background-color: white; border: 1px solid #808080; cursor: pointer; text-align: center; margin-top: 10px; padding-top: 84px; }";
 
   style.appendChild(document.createTextNode(css));
 
