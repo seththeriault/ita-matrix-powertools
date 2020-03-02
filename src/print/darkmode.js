@@ -7,6 +7,7 @@ const tokens = {
   "#145EA9": "#85daff", // blue (tab text)
   "#0062AB": "#8ec6ec", // blue (visited link)
   "#4e8bc1": "#9ecbe6", // blue (box border)
+  "#185ea8": "#f8b85b", // blue (calendar) -> orange
   "#fff8bd": "rgb(0,0,0)", // light yellow
   "#f0f0dc": "rgb(0,0,0)", // light yellow
   "#ba0000": "#f39691", // red
@@ -17,8 +18,10 @@ const tokens = {
   black: "#E1E1E1", // black
   "#000000": "#E1E1E1", // black
   "#000": "#E1E1E1", // black
+  "#f7f7f7": "#232323", // light gray
   "#f0f0f0": "#232323", // light gray
-  "rgba\\(255,255,255,0.6\\)": "#232323" // light gray
+  "rgba\\(255,255,255,0.6\\)": "#232323", // light gray
+  "#c2e0ff": "rgba(194,224,255,.1)" // light blue
 };
 
 let headObserver;
