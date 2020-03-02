@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.47.0
+// @version 0.48.0
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -650,6 +650,7 @@ const defaultSettings = {
   enableIMGautoload: 0, // enables images to auto load - valid: 0 / 1
   enableFarerules: 1, // enables fare rule opening in new window - valid: 0 / 1
   enablePricebreakdown: 1, // enables price breakdown - valid: 0 / 1
+  enableDarkmode: 0, // enables dark mode - valid: 0 / 1
   enablePlanefinder: 1, // enables Planefinder - click on flight numbers to open Planefinder for this flight - valid: 0 / 1
   enableSeatguru: 1, // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
   enableWheretocredit: 1, // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
@@ -815,7 +816,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.47.0",
+  version: "0.48.0",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -1342,7 +1343,7 @@ function printImage(link) {
     var id = Math.random().toString();
     div.insertAdjacentHTML(
       "beforeend",
-      `<div id="${id}" class="powertoolsitem" style="width:184px;height:100px;background-color:white;border:1px solid #808080;cursor:pointer;text-align:center;margin-top:10px;padding-top:84px;"><span>${link.title}</span></div>`
+      `<div id="${id}" class="powertoolsitem powertoolsimage"><span>${link.title}</span></div>`
     );
 
     document.getElementById(id).addEventListener("click", function() {
@@ -1352,32 +1353,28 @@ function printImage(link) {
 }
 
 function getSidebarContainer() {
-  if (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1) {
-    return (
-      document.getElementById("powertoolslinkinlinecontainer") ||
-      createUrlContainerInline()
-    );
-  } else {
-    return (
-      document.getElementById("powertoolslinkcontainer") || createUrlContainer()
-    );
-  }
+  return (
+    document.getElementById("powertoolslinkcontainer") ||
+    (_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].enableInlineMode == 1
+      ? createUrlContainerInline()
+      : createUrlContainer())
+  );
 }
 
 function createUrlContainerInline() {
   var newdiv = document.createElement("div");
-  newdiv.setAttribute("class", _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcDiv);
-  newdiv.style.backgroundColor = "#f2f2f2";
+  newdiv.classList.add(_settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcDiv);
+  newdiv.classList.add(`powertoolslinkinlinecontainer`);
   newdiv.innerHTML =
     '<div class="' +
     _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcHeader +
-    '">Powertools</div><ul id="powertoolslinkinlinecontainer" class="' +
+    '">Powertools</div><ul id="powertoolslinkcontainer" class="' +
     _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcLinkList +
     '"></ul>';
   Object(_utils__WEBPACK_IMPORTED_MODULE_3__[/* findtarget */ "c"])(_settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].resultpage.mcDiv, 1).parentElement.appendChild(
     newdiv
   );
-  return document.getElementById("powertoolslinkinlinecontainer");
+  return document.getElementById("powertoolslinkcontainer");
 }
 
 // Printing Stuff
@@ -10386,10 +10383,11 @@ function bindSeatguru() {
           parse_itin["a" /* currentItin */].itin[i].seg[j].dep.year +
           "&to=&from=" +
           parse_itin["a" /* currentItin */].itin[i].seg[j].orig;
+        target.children[0].classList.add("pt-textlink");
         target.children[0].innerHTML =
           '<a href="' +
           url +
-          '" target="_blank" style="text-decoration:none;color:black">' +
+          '" target="_blank">' +
           target.children[0].innerHTML +
           "</a>";
       }
@@ -10424,10 +10422,11 @@ function bindPlanefinder() {
           "http://www.planefinder.net/data/flight/" +
           parse_itin["a" /* currentItin */].itin[i].seg[j].carrier +
           parse_itin["a" /* currentItin */].itin[i].seg[j].fnr;
+        target.children[0].classList.add("pt-textlink");
         target.children[0].innerHTML =
           '<a href="' +
           url +
-          '" target="_blank" style="text-decoration:none;color:black">' +
+          '" target="_blank">' +
           target.children[0].innerHTML +
           "</a>";
       }
@@ -10451,6 +10450,7 @@ function bindWheretocredit() {
           parse_itin["a" /* currentItin */].itin[i].seg[j].carrier.toLowerCase() +
           "/" +
           parse_itin["a" /* currentItin */].itin[i].seg[j].bookingclass.toLowerCase();
+        target.children[0].classList.add("pt-textlink");
         target.children[0].innerHTML = target.children[0].innerHTML
           .replace(
             /<a.*?\/a>/,
@@ -10460,7 +10460,7 @@ function bindWheretocredit() {
             "(" + parse_itin["a" /* currentItin */].itin[i].seg[j].bookingclass + ")",
             '<a href="' +
               url +
-              '" target="_blank" style="text-decoration:none;color:black">(' +
+              '" target="_blank">(' +
               parse_itin["a" /* currentItin */].itin[i].seg[j].bookingclass +
               ")</a>"
           );
@@ -10603,6 +10603,10 @@ function createUsersettings() {
     '<div style="text-align:center;font-weight:bold">**** Display Settings: ****</div>';
   str += '<div style="margin:5px 0;"><div style="float:left;width:33%">';
   str +=
+    '<div id="mptenableDarkmode">Dark mode: <label style="cursor:pointer;">' +
+    printSettingsvalue("enableDarkmode") +
+    "</label></div>";
+  str +=
     '<div id="mpttimeformat">Time Format: <label style="cursor:pointer;">' +
     printSettingsvalue("timeformat") +
     "</label></div>";
@@ -10686,6 +10690,9 @@ function createUsersettings() {
   // these onClick event handlers need only be added once:
   document.getElementById("mptrestoredefault").onclick = function() {
     restoreDefaultSettings();
+  };
+  document.getElementById("mptenableDarkmode").onclick = function() {
+    toggleSettings("enableDarkmode");
   };
   document.getElementById("mpttimeformat").onclick = function() {
     toggleSettings("timeformat");
@@ -10996,7 +11003,66 @@ function boolToEnabled(value) {
   }
 }
 
+// CONCATENATED MODULE: ./src/print/darkmode.js
+
+
+const tokens = {
+  "#1e1e1e": "#e1e1e1", // dark gray text
+  "#e2f2f9": "rgba(227,241,249,0.1)", // light blue box background
+  "#155fa9": "#85daff", // blue
+  "#145EA9": "#85daff", // blue (tab text)
+  "#0062AB": "#8ec6ec", // blue (visited link)
+  "#4e8bc1": "#9ecbe6", // blue (box border)
+  "#185ea8": "#f8b85b", // blue (calendar) -> orange
+  "#fff8bd": "rgb(0,0,0)", // light yellow
+  "#f0f0dc": "rgb(0,0,0)", // light yellow
+  "#ba0000": "#f39691", // red
+  white: "rgb(0,0,0)", // white
+  "#ffffff": "rgb(0,0,0)", // white
+  "#fff": "rgb(0,0,0)", // white
+  "rgb\\(0,0,0\\)-": "white-", // fix for "white-space", etc
+  black: "#E1E1E1", // black
+  "#000000": "#E1E1E1", // black
+  "#000": "#E1E1E1", // black
+  "#f7f7f7": "#232323", // light gray
+  "#f0f0f0": "#232323", // light gray
+  "rgba\\(255,255,255,0.6\\)": "#232323", // light gray
+  "#c2e0ff": "rgba(194,224,255,.1)" // light blue
+};
+
+let headObserver;
+
+function bindDarkmode() {
+  if (userSettings["a" /* default */].enableDarkmode) {
+    document.body.classList.add("dark-mode");
+    if (!headObserver) {
+      headObserver = new window.MutationObserver((mutations, observer) => {
+        mutations.forEach(m => {
+          m.addedNodes.forEach(node => {
+            if (
+              node.nodeName.toUpperCase() === "STYLE" &&
+              node.textContent.indexOf("dark-mode") === -1
+            ) {
+              const old = node.textContent;
+              node.textContent = Object.keys(tokens).reduce(
+                (css, token) =>
+                  css.replace(new RegExp(token, "gi"), tokens[token]),
+                node.textContent
+              );
+              if (old == node.textContent) alert("no changes");
+            }
+          });
+        });
+      });
+      headObserver.observe(document.head, { childList: true });
+    }
+  }
+}
+
+function transformItaCss() {}
+
 // CONCATENATED MODULE: ./src/index.js
+
 
 
 
@@ -11014,6 +11080,7 @@ function boolToEnabled(value) {
   await Object(userSettings["b" /* loadUserSettings */])();
   createUsersettings();
   injectCss();
+  bindDarkmode();
 
   if (window.top === window.self) {
     if (appSettings["a" /* default */].scriptEngine === 0) {
@@ -11032,10 +11099,11 @@ function boolToEnabled(value) {
 function startScript() {
   if (window.location.href !== appSettings["a" /* default */].laststatus) {
     setTimeout(function() {
+      transformItaCss();
       Object(appSettings["d" /* reset */])();
       cleanUp();
       getPageLang();
-    }, 100);
+    }, 0);
     appSettings["a" /* default */].laststatus = window.location.href;
   }
   if (appSettings["a" /* default */].scriptrunning === 1) {
@@ -11119,14 +11187,26 @@ function fePS() {
 }
 
 function injectCss() {
-  var css = "",
+  let css = "",
     head = document.head || document.getElementsByTagName("head")[0],
     style = document.createElement("style");
   style.type = "text/css";
 
+  css += `body.dark-mode, body.dark-mode input[type='text'], body.dark-mode input[type='radio'], body.dark-mode textarea, body.dark-mode select, body.dark-mode button, body.dark-mode .powertoolsimage, body.dark-mode .pt-hover-menu, body.dark-mode .${itaSettings["a" /* default */].resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: black; color: #E1E1E1; }`;
+  css +=
+    "body.dark-mode img.logo, body.dark-mode img[src^='data'] { filter: hue-rotate(180deg) invert(1); }";
+  css +=
+    "body.dark-mode a, body.dark-mode a:link, body.dark-mode a:hover, body.dark-mode a:active, body.dark-mode .linked { color: #85daff; }";
+  css += "body.dark-mode a:visited { color: #8ec6ec; }";
+  css +=
+    "body.dark-mode .pt-textlink a { text-decoration: none; color: #E1E1E1; }";
   css +=
     ".pt-hover-menu { position:absolute; padding: 8px; background-color: #FFF; border: 1px solid #808080; display:none; }";
   css += ".pt-hover-container:hover .pt-hover-menu { display:inline; }";
+  css += ".pt-textlink a { text-decoration: none; color: black; }";
+  css += `.${itaSettings["a" /* default */].resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: #f2f2f2; }`;
+  css +=
+    ".powertoolsimage { width: 184px; height: 100px; background-color: white; border: 1px solid #808080; cursor: pointer; text-align: center; margin-top: 10px; padding-top: 84px; }";
 
   style.appendChild(document.createTextNode(css));
 
