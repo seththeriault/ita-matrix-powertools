@@ -131,6 +131,7 @@ function injectCss() {
   css += `body.dark-mode, body.dark-mode input[type='text'], body.dark-mode input[type='radio'], body.dark-mode textarea, body.dark-mode select, body.dark-mode button, body.dark-mode .powertoolsimage, body.dark-mode .pt-hover-menu, body.dark-mode .${classSettings.resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: black; color: #E1E1E1; }`;
   css +=
     "body.dark-mode img.logo, body.dark-mode img[src^='data'] { filter: hue-rotate(180deg) invert(1); }";
+  css += "body.dark-mode img[src^='http'] { opacity: 0.75 }";
   css +=
     "body.dark-mode a, body.dark-mode a:link, body.dark-mode a:hover, body.dark-mode a:active, body.dark-mode .linked { color: #85daff; }";
   css += "body.dark-mode a:visited { color: #8ec6ec; }";
