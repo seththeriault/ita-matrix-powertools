@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.48.0
+// @version 0.48.1
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -816,7 +816,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.48.0",
+  version: "0.48.1",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -11007,23 +11007,24 @@ function boolToEnabled(value) {
 
 
 const tokens = {
-  "#1e1e1e": "#e1e1e1", // dark gray text
-  "#e2f2f9": "rgba(227,241,249,0.1)", // light blue box background
+  "#1e1e1e": "#f5f5f5", // dark gray text
+  "#e2f2f9": "#1f1f1f", // light blue box background
   "#155fa9": "#85daff", // blue
   "#145EA9": "#85daff", // blue (tab text)
   "#0062AB": "#8ec6ec", // blue (visited link)
+  "#3275b5": "#9ecbe6", // blue (box border)
   "#4e8bc1": "#9ecbe6", // blue (box border)
   "#185ea8": "#f8b85b", // blue (calendar) -> orange
-  "#fff8bd": "rgb(0,0,0)", // light yellow
-  "#f0f0dc": "rgb(0,0,0)", // light yellow
+  "#fff8bd": "#242424", // light yellow
+  "#f0f0dc": "#242424", // light yellow
   "#ba0000": "#f39691", // red
-  white: "rgb(0,0,0)", // white
-  "#ffffff": "rgb(0,0,0)", // white
-  "#fff": "rgb(0,0,0)", // white
-  "rgb\\(0,0,0\\)-": "white-", // fix for "white-space", etc
-  black: "#E1E1E1", // black
-  "#000000": "#E1E1E1", // black
-  "#000": "#E1E1E1", // black
+  white: "#121212", // white
+  "#ffffff": "#121212", // white
+  "#fff": "#121212", // white
+  "#121212-": "white-", // fix for "white-space", etc
+  black: "#f5f5f5", // black
+  "#000000": "#f5f5f5", // black
+  "#000": "#f5f5f5", // black
   "#f7f7f7": "#232323", // light gray
   "#f0f0f0": "#232323", // light gray
   "rgba\\(255,255,255,0.6\\)": "#232323", // light gray
@@ -11192,14 +11193,16 @@ function injectCss() {
     style = document.createElement("style");
   style.type = "text/css";
 
-  css += `body.dark-mode, body.dark-mode input[type='text'], body.dark-mode input[type='radio'], body.dark-mode textarea, body.dark-mode select, body.dark-mode button, body.dark-mode .powertoolsimage, body.dark-mode .pt-hover-menu, body.dark-mode .${itaSettings["a" /* default */].resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: black; color: #E1E1E1; }`;
+  css += `body.dark-mode, body.dark-mode input[type='text'], body.dark-mode input[type='radio'], body.dark-mode textarea, body.dark-mode select, body.dark-mode button, body.dark-mode .powertoolsimage, body.dark-mode .pt-hover-menu { background-color: #121212; color: #f5f5f5; }`;
+  css += `body.dark-mode .${itaSettings["a" /* default */].resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: #1f1f1f; }`;
   css +=
-    "body.dark-mode img.logo, body.dark-mode img[src^='data'] { filter: hue-rotate(180deg) invert(1); }";
+    "body.dark-mode img.logo, body.dark-mode img[src^='data'] { filter: hue-rotate(180deg) brightness(.93) invert(1); }";
+  css += "body.dark-mode img[src^='http'] { opacity: 0.75 }";
   css +=
     "body.dark-mode a, body.dark-mode a:link, body.dark-mode a:hover, body.dark-mode a:active, body.dark-mode .linked { color: #85daff; }";
   css += "body.dark-mode a:visited { color: #8ec6ec; }";
   css +=
-    "body.dark-mode .pt-textlink a { text-decoration: none; color: #E1E1E1; }";
+    "body.dark-mode .pt-textlink a { text-decoration: none; color: #f5f5f5; }";
   css +=
     ".pt-hover-menu { position:absolute; padding: 8px; background-color: #FFF; border: 1px solid #808080; display:none; }";
   css += ".pt-hover-container:hover .pt-hover-menu { display:inline; }";
