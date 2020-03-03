@@ -1,23 +1,24 @@
 import userSettings from "../settings/userSettings";
 
 const tokens = {
-  "#1e1e1e": "#e1e1e1", // dark gray text
-  "#e2f2f9": "rgba(227,241,249,0.1)", // light blue box background
+  "#1e1e1e": "#f5f5f5", // dark gray text
+  "#e2f2f9": "#1f1f1f", // light blue box background
   "#155fa9": "#85daff", // blue
   "#145EA9": "#85daff", // blue (tab text)
   "#0062AB": "#8ec6ec", // blue (visited link)
+  "#3275b5": "#9ecbe6", // blue (box border)
   "#4e8bc1": "#9ecbe6", // blue (box border)
   "#185ea8": "#f8b85b", // blue (calendar) -> orange
-  "#fff8bd": "rgb(0,0,0)", // light yellow
-  "#f0f0dc": "rgb(0,0,0)", // light yellow
+  "#fff8bd": "#242424", // light yellow
+  "#f0f0dc": "#242424", // light yellow
   "#ba0000": "#f39691", // red
-  white: "rgb(0,0,0)", // white
-  "#ffffff": "rgb(0,0,0)", // white
-  "#fff": "rgb(0,0,0)", // white
-  "rgb\\(0,0,0\\)-": "white-", // fix for "white-space", etc
-  black: "#E1E1E1", // black
-  "#000000": "#E1E1E1", // black
-  "#000": "#E1E1E1", // black
+  white: "#121212", // white
+  "#ffffff": "#121212", // white
+  "#fff": "#121212", // white
+  "#121212-": "white-", // fix for "white-space", etc
+  black: "#f5f5f5", // black
+  "#000000": "#f5f5f5", // black
+  "#000": "#f5f5f5", // black
   "#f7f7f7": "#232323", // light gray
   "#f0f0f0": "#232323", // light gray
   "rgba\\(255,255,255,0.6\\)": "#232323", // light gray

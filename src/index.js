@@ -128,15 +128,16 @@ function injectCss() {
     style = document.createElement("style");
   style.type = "text/css";
 
-  css += `body.dark-mode, body.dark-mode input[type='text'], body.dark-mode input[type='radio'], body.dark-mode textarea, body.dark-mode select, body.dark-mode button, body.dark-mode .powertoolsimage, body.dark-mode .pt-hover-menu, body.dark-mode .${classSettings.resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: black; color: #E1E1E1; }`;
+  css += `body.dark-mode, body.dark-mode input[type='text'], body.dark-mode input[type='radio'], body.dark-mode textarea, body.dark-mode select, body.dark-mode button, body.dark-mode .powertoolsimage, body.dark-mode .pt-hover-menu { background-color: #121212; color: #f5f5f5; }`;
+  css += `body.dark-mode .${classSettings.resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: #1f1f1f; }`;
   css +=
-    "body.dark-mode img.logo, body.dark-mode img[src^='data'] { filter: hue-rotate(180deg) invert(1); }";
+    "body.dark-mode img.logo, body.dark-mode img[src^='data'] { filter: hue-rotate(180deg) brightness(.93) invert(1); }";
   css += "body.dark-mode img[src^='http'] { opacity: 0.75 }";
   css +=
     "body.dark-mode a, body.dark-mode a:link, body.dark-mode a:hover, body.dark-mode a:active, body.dark-mode .linked { color: #85daff; }";
   css += "body.dark-mode a:visited { color: #8ec6ec; }";
   css +=
-    "body.dark-mode .pt-textlink a { text-decoration: none; color: #E1E1E1; }";
+    "body.dark-mode .pt-textlink a { text-decoration: none; color: #f5f5f5; }";
   css +=
     ".pt-hover-menu { position:absolute; padding: 8px; background-color: #FFF; border: 1px solid #808080; display:none; }";
   css += ".pt-hover-container:hover .pt-hover-menu { display:inline; }";
