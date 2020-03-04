@@ -28,30 +28,29 @@ const tokens = {
 let headObserver;
 
 export function bindDarkmode() {
-  if (userSettings.enableDarkmode) {
+  if (userSettings.enableDarkmode && window.MutationObserver) {
     document.body.classList.add("dark-mode");
     if (!headObserver) {
-      headObserver = new window.MutationObserver((mutations, observer) => {
-        mutations.forEach(m => {
-          m.addedNodes.forEach(node => {
-            if (
-              node.nodeName.toUpperCase() === "STYLE" &&
-              node.textContent.indexOf("dark-mode") === -1
-            ) {
-              const old = node.textContent;
-              node.textContent = Object.keys(tokens).reduce(
-                (css, token) =>
-                  css.replace(new RegExp(token, "gi"), tokens[token]),
-                node.textContent
-              );
-              if (old == node.textContent) alert("no changes");
-            }
-          });
-        });
-      });
+      document.head.querySelectorAll("style").forEach(transformCss);
+
+      headObserver = new window.MutationObserver((mutations, observer) =>
+        mutations.forEach(m => m.addedNodes.forEach(transformCss))
+      );
       headObserver.observe(document.head, { childList: true });
     }
   }
 }
 
-export function transformItaCss() {}
+const transformCss = node => {
+  if (
+    node.nodeName.toUpperCase() === "STYLE" &&
+    node.textContent.indexOf("dark-mode") === -1
+  ) {
+    const old = node.textContent;
+    node.textContent = Object.keys(tokens).reduce(
+      (css, token) => css.replace(new RegExp(token, "gi"), tokens[token]),
+      node.textContent
+    );
+    if (old == node.textContent) alert("no changes");
+  }
+};
