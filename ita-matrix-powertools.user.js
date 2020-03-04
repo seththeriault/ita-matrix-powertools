@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.48.2
+// @version 0.48.3
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -816,7 +816,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.48.2",
+  version: "0.48.3",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -11099,7 +11099,6 @@ const transformCss = node => {
 function startScript() {
   if (window.location.href !== appSettings["a" /* default */].laststatus) {
     setTimeout(function() {
-      /* Cannot get final name for export "transformItaCss" in "./src/print/darkmode.js" (known exports: bindDarkmode, known reexports: ) */ undefined();
       Object(appSettings["d" /* reset */])();
       cleanUp();
       getPageLang();
