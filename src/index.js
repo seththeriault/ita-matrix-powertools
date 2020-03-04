@@ -7,7 +7,7 @@ import { readItinerary } from "./parse/itin";
 
 import { render, cleanUp } from "./print";
 import { createUsersettings } from "./print/settings";
-import { bindDarkmode, transformItaCss } from "./print/darkmode";
+import { bindDarkmode } from "./print/darkmode";
 
 /**************************************** Start Script *****************************************/
 
@@ -35,7 +35,6 @@ import { bindDarkmode, transformItaCss } from "./print/darkmode";
 function startScript() {
   if (window.location.href !== mptSettings.laststatus) {
     setTimeout(function() {
-      transformItaCss();
       reset();
       cleanUp();
       getPageLang();
