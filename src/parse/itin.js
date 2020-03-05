@@ -1,4 +1,4 @@
-import { printNotification, exRE } from "../utils";
+import { printNotification, exRE, monthnameToNumber } from "../utils";
 
 // initialize local storage for current itin
 /** @type {{ cur?: string; price?: number; basefares?: number; taxes?: number; surcharges?: number; dist?: number; numPax?: number; carriers?: string[]; farebases?: string[]; itin?: { orig: string; dest: string; dist?: number; dep: { day: number; month: number; year: number; time: string; offset?: string; }; arr: { day: number; month: number; year: number; time: string; offset?: string; }; seg?: { carrier: string; orig: string; dest: string; dist?: number; dep: { day: number; month: number; year: number; time: string; time24: string; timeDisplay: string; offset?: string; }; arr: { day: number; month: number; year: number; time: string; time24: string; timeDisplay: string; offset?: string; }; fnr: string; duration: number; aircraft: string; cabin: number; bookingclass: string; codeshare: number; layoverduration: number; airportchange: number; farebase: string; farecarrier: string; }[]}[]}} */
@@ -308,24 +308,6 @@ function getcabincode(cabin) {
       cabin = 0;
   }
   return cabin;
-}
-
-function monthnameToNumber(month) {
-  var monthnames = [
-    "JAN",
-    "FEB",
-    "MAR",
-    "APR",
-    "MAY",
-    "JUN",
-    "JUL",
-    "AUG",
-    "SEP",
-    "OCT",
-    "NOV",
-    "DEC"
-  ];
-  return monthnames.indexOf(month.toUpperCase()) + 1;
 }
 
 function getFlightYear(day, month) {

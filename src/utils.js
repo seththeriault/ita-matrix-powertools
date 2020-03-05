@@ -77,20 +77,25 @@ export function uuidv4() {
   });
 }
 
+const monthnames = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC"
+];
+
 export function monthnumberToName(month) {
-  var monthnames = [
-    "JAN",
-    "FEB",
-    "MAR",
-    "APR",
-    "MAY",
-    "JUN",
-    "JUL",
-    "AUG",
-    "SEP",
-    "OCT",
-    "NOV",
-    "DEC"
-  ];
   return monthnames[month - 1];
+}
+
+export function monthnameToNumber(month) {
+  return monthnames.indexOf(month.toUpperCase()) + 1;
 }
