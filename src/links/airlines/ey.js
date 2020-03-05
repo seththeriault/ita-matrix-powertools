@@ -1,6 +1,6 @@
 import { printNotification, to2digits, to4digitTime } from "../../utils";
 import { registerLink } from "../../print/links";
-import { currentItin } from "../../parse/itin";
+import { currentItin, getTripType } from "../../parse/itin";
 import { getCabin } from "../../settings/appSettings";
 import { validatePax, anyCarriers } from "..";
 
@@ -25,7 +25,8 @@ function printEY() {
     }
 
     let url =
-      "https://booking.etihad.com/SSW2010/EYEY/webqtrip.html?journeySpan=MC";
+      "https://booking.etihad.com/SSW2010/EYEY/webqtrip.html?journeySpan=" +
+      getTripType("OW", "RT", "MC");
     url += `&numAdults=${pax.adults}`;
     url += `&numChildren=${pax.children.length}`;
     url += `&numInfants=${pax.infLap}`;
