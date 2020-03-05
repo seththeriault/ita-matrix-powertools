@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.48.4] - 2020-03-04
+
+Edited by IAkH
+
+- fixed Etihad url for different journey types
+
 ## [0.48.3] - 2020-03-03
 
 Edited by IAkH
