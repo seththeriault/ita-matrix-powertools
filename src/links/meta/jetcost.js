@@ -1,5 +1,5 @@
 import { register, validatePax } from "..";
-import { currentItin, getCurrentSegs } from "../../parse/itin";
+import { currentItin, getCurrentSegs, isMulticity } from "../../parse/itin";
 import { printNotification, to2digits } from "../../utils";
 import { getCabin } from "../../settings/appSettings";
 
@@ -56,15 +56,7 @@ const editions = [
 const cabins = [0, 0, 1, 2];
 
 function print() {
-  if (currentItin.itin.length > 2) return; // no multi segments
-  if (
-    currentItin.itin.length == 2 &&
-    !(
-      currentItin.itin[0].orig == currentItin.itin[1].dest &&
-      currentItin.itin[0].dest == currentItin.itin[1].orig
-    )
-  )
-    return; // no open jaws
+  if (isMulticity()) return; // no multi segments
 
   var pax = validatePax({
     maxPaxcount: 9,

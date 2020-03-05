@@ -1,6 +1,6 @@
 import { printNotification } from "../../utils";
 import { validatePax, register, anyCarriers } from "..";
-import { currentItin } from "../../parse/itin";
+import { currentItin, isOneway } from "../../parse/itin";
 
 function printAS() {
   if (!anyCarriers("AS")) {
@@ -22,11 +22,7 @@ function printAS() {
     }
     var url = "https://www.alaskaair.com/planbook/shoppingstart?";
     url += "A=" + pax.adults + "&C=" + pax.children.length + "&FT=";
-    if (currentItin.itin.length == 1) {
-      url += "ow";
-    } else {
-      url += "rt";
-    }
+    url += isOneway() ? "ow" : "rt";
 
     var k = 0;
     //Build multi-city search based on legs

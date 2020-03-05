@@ -1,6 +1,6 @@
 import { printNotification } from "../../utils";
 import { validatePax, register, anyCarriers } from "..";
-import { currentItin } from "../../parse/itin";
+import { currentItin, getTripType } from "../../parse/itin";
 
 function printPS() {
   if (!anyCarriers("PS")) {
@@ -34,18 +34,8 @@ function printPS() {
       currency +
       "&UserLanguage=" +
       edition[0] +
-      "&TripType=";
-    if (currentItin.itin.length == 1) {
-      url += "OneWay";
-    } else if (
-      currentItin.itin.length == 2 &&
-      currentItin.itin[0].orig == currentItin.itin[1].dest &&
-      currentItin.itin[0].dest == currentItin.itin[1].orig
-    ) {
-      url += "RoundTrip";
-    } else {
-      url += "MultiCity";
-    }
+      "&TripType=" +
+      getTripType("OneWay", "RoundTrip", "MultiCity");
 
     var seg = 0;
     var slice = 1;

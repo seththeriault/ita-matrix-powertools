@@ -1,7 +1,12 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, to2digits, monthnumberToName } from "../../utils";
 import { validatePax, register, anyCarriers } from "..";
-import { currentItin, getCurrentSegs } from "../../parse/itin";
+import {
+  currentItin,
+  getCurrentSegs,
+  isOneway,
+  isRoundtrip
+} from "../../parse/itin";
 import { getCabin } from "../../settings/appSettings";
 
 const cabins = ["0", "0", "1", "2"];
@@ -138,13 +143,9 @@ function print() {
         getCabin(Math.max(...currentItin.itin[0].seg.map(seg => seg.cabin)))
       ]
     }&showsearch=false&showTeenager=false&showOFW=false&chkFlexibleDates=false&resultby=0&multiCity=`;
-    if (currentItin.itin.length == 1) {
+    if (isOneway()) {
       url += `&seladate1=&TID=OW`;
-    } else if (
-      currentItin.itin.length == 2 &&
-      currentItin.itin[0].orig == currentItin.itin[1].dest &&
-      currentItin.itin[0].dest == currentItin.itin[1].orig
-    ) {
+    } else if (isRoundtrip()) {
       url += `&seladate1=${formatDate(currentItin.itin[1].dep)}&TID=SB`;
     } else {
       // open-jaw and multi-city for mobile only (TID=AS)

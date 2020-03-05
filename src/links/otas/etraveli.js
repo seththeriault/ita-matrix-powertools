@@ -1,6 +1,6 @@
 import { monthnumberToName } from "../../utils";
 import { register } from "..";
-import { currentItin } from "../../parse/itin";
+import { currentItin, isMulticity } from "../../parse/itin";
 
 const editions = [
   { name: "Seat24.se", host: "www.seat24.se" },
@@ -52,15 +52,7 @@ const editions = [
 ];
 
 function printEtraveli() {
-  if (currentItin.itin.length > 2) return; // no multi segments
-  if (
-    currentItin.itin.length == 2 &&
-    !(
-      currentItin.itin[0].orig == currentItin.itin[1].dest &&
-      currentItin.itin[0].dest == currentItin.itin[1].orig
-    )
-  )
-    return; // no open jaws
+  if (isMulticity()) return; // no multi segments
 
   var convertDate = function(date, withYear) {
     return (

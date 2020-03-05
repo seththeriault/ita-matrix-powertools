@@ -1,5 +1,5 @@
 import mptSettings, { getForcedCabin } from "../settings/appSettings";
-import { currentItin } from "../parse/itin";
+import { currentItin, getTripType } from "../parse/itin";
 
 // **** START AMADEUS ****
 export function getAmadeusUrl(config) {
@@ -225,12 +225,6 @@ export function getAmadeusPax(pax, config) {
 }
 
 export function getAmadeusTriptype() {
-  return currentItin.itin.length > 1
-    ? currentItin.itin.length == 2 &&
-      currentItin.itin[0].orig == currentItin.itin[1].dest &&
-      currentItin.itin[0].dest == currentItin.itin[1].orig
-      ? "R"
-      : "M"
-    : "O";
+  return getTripType("O", "R", "M");
 }
 // **** END AMADEUS ****

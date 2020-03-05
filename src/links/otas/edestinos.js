@@ -1,7 +1,7 @@
 import mptUserSettings from "../../settings/userSettings";
 import { printNotification, to2digits } from "../../utils";
 import { register, validatePax } from "..";
-import { currentItin } from "../../parse/itin";
+import { currentItin, getTripType } from "../../parse/itin";
 import { getCabin } from "../../settings/appSettings";
 
 const editions = [
@@ -77,18 +77,7 @@ function print() {
     let url = `https://${host}/api?PointOfSaleCountry=&UserCurrency=${cur}&DisplayedPrice=${
       currentItin.price
     }&DisplayedPriceCurrency=${cur}&UserLanguage=${mptUserSettings.language ||
-      "en"}&TripType=`;
-    if (currentItin.itin.length == 1) {
-      url += "OneWay";
-    } else if (
-      currentItin.itin.length == 2 &&
-      currentItin.itin[0].orig == currentItin.itin[1].dest &&
-      currentItin.itin[0].dest == currentItin.itin[1].orig
-    ) {
-      url += "RoundTrip";
-    } else {
-      url += "MultiCity";
-    }
+      "en"}&TripType=${getTripType("OneWay", "RoundTrip", "MultiCity")}`;
     url += "&UserLanguage=" + mptUserSettings.language || "en";
     url += "&Adult=" + pax.adults;
     url += "&Child=" + pax.children.length;

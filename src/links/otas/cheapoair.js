@@ -1,7 +1,7 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
 import { validatePax, register } from "..";
 import { printNotification } from "../../utils";
-import { currentItin } from "../../parse/itin";
+import { currentItin, getTripType } from "../../parse/itin";
 
 function printCheapOair() {
   // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
@@ -63,17 +63,7 @@ function printCheapOair() {
     coaUrl += "&Slice" + (i + 1) + "=" + slices[i];
   }
 
-  if (currentItin.itin.length == 1) {
-    coaUrl += "&tt=OneWay";
-  } else if (
-    currentItin.itin.length == 2 &&
-    currentItin.itin[0].orig == currentItin.itin[1].dest &&
-    currentItin.itin[0].dest == currentItin.itin[1].orig
-  ) {
-    coaUrl += "&tt=RoundTrip";
-  } else {
-    coaUrl += "&tt=MultiCity";
-  }
+  coaUrl += "&tt=" + getTripType("OneWay", "RoundTrip", "MultiCity");
 
   return {
     url: coaUrl,

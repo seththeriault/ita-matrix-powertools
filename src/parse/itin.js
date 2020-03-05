@@ -12,7 +12,7 @@ const matrixCurrencies = [
   { p: /RS\./, c: "INR" }
 ];
 
-function readItinerary() {
+export function readItinerary() {
   // the magical part! :-)
   var itin = new Array(),
     carrieruarray = new Array(),
@@ -261,6 +261,28 @@ export function getCurrentSegs() {
     }, []);
 }
 
+export function getTripType(ow, rt, mc) {
+  return currentItin.itin.length > 1
+    ? currentItin.itin.length === 2 &&
+      currentItin.itin[0].orig === currentItin.itin[1].dest &&
+      currentItin.itin[0].dest === currentItin.itin[1].orig
+      ? rt
+      : mc
+    : ow;
+}
+
+export function isOneway() {
+  return getTripType(true, false, false);
+}
+
+export function isRoundtrip() {
+  return getTripType(false, true, false);
+}
+
+export function isMulticity() {
+  return getTripType(false, false, true);
+}
+
 function combineTechnicalStops(allSegs) {
   if (allSegs.length <= 1) return allSegs;
 
@@ -340,4 +362,4 @@ function trimStr(x) {
   return x.replace(/^\s+|\s+$/gm, "");
 }
 
-export { currentItin, readItinerary };
+export { currentItin };

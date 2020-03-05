@@ -1,7 +1,7 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification } from "../../utils";
 import { validatePax, register, anyCarriers } from "..";
-import { currentItin } from "../../parse/itin";
+import { currentItin, isOneway } from "../../parse/itin";
 import { zonedTimeToUtc } from "date-fns-tz";
 import apTimeZones from "../../json/timezones.json";
 
@@ -67,11 +67,7 @@ function printAaSabre() {
     }
     var url = "https://www.aa.com/goto/metasearch?ITEN=GOOGLE,0,";
     url += (edition || "US") + ",";
-    if (currentItin.itin.length === 1) {
-      url += "oneWay";
-    } else {
-      url += "multi";
-    }
+    url += isOneway() ? "oneWay" : "multi";
     url +=
       ",4,A" +
       pax.adults +
