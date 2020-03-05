@@ -1,32 +1,13 @@
-export function findtarget(tclass, nth) {
-  var elems = document.getElementsByTagName("*"),
-    i;
-  let j = 0;
-  for (i in elems) {
-    if ((" " + elems[i].className + " ").indexOf(" " + tclass + " ") > -1) {
-      j++;
-      if (j == nth) {
-        return elems[i];
-        break;
-      }
-    }
-  }
+export function findtarget(className, nth) {
+  return document.getElementsByClassName(className)[(nth || 1) - 1];
 }
 
-export function findtargets(tclass) {
-  var elems = document.getElementsByTagName("*"),
-    i;
-  var ret = new Array();
-  for (i in elems) {
-    if ((" " + elems[i].className + " ").indexOf(" " + tclass + " ") > -1) {
-      ret.push(elems[i]);
-    }
-  }
-  return ret;
+export function findtargets(className) {
+  return Array.from(document.getElementsByClassName(className));
 }
 
-export function hasClass(element, cls) {
-  return (" " + element.className + " ").indexOf(" " + cls + " ") > -1;
+export function hasClass(element, className) {
+  return element.classList.contains(className);
 }
 
 export function toggleVis(target, blockType = "block") {
