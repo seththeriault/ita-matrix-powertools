@@ -11113,7 +11113,7 @@ function injectCss() {
   css +=
     "body.dark-mode .pt-textlink a { text-decoration: none; color: #f5f5f5; }";
   css +=
-    ".pt-hover-menu { position:absolute; padding: 8px; background-color: #FFF; border: 1px solid #808080; display:none; }";
+    ".pt-hover-menu { position:absolute; padding: 8px; z-index: 1; background-color: #FFF; border: 1px solid #808080; display:none; }";
   css += ".pt-hover-container:hover .pt-hover-menu { display:inline; }";
   css += ".pt-textlink a { text-decoration: none; color: black; }";
   css += `.${itaSettings["a" /* default */].resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: #f2f2f2; }`;
