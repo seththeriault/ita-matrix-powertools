@@ -99,3 +99,14 @@ export function monthnumberToName(month) {
 export function monthnameToNumber(month) {
   return monthnames.indexOf(month.toUpperCase()) + 1;
 }
+
+/** @param {{ day: number; month: number; year: number; }} dateLike */
+export function toDate(dateLike) {
+  return new Date(dateLike.year, dateLike.month, dateLike.day);
+}
+
+/** @param {Date} startDate */
+/** @param {Date} endDate */
+export function dayDiff(startDate, endDate) {
+  return Math.floor((endDate.getTime() - startDate.getTime()) / 86400000);
+}
