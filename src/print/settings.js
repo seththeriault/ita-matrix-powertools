@@ -106,6 +106,8 @@ export function createUsersettings() {
   str += '</div><div style="clear:both"></div></div>';
   str +=
     '<div style="text-align:center;font-weight:bold">**** Link Settings: ****</div>';
+  str +=
+    '<div style="text-align:center;font-style:italic;">Disclosure: Some of these links are affiliate links</div>';
   str += '<div style="margin:5px 0">';
 
   Object.keys(registeredSettings).forEach(setting => {
