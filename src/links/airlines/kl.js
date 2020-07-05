@@ -22,7 +22,7 @@ const klEditions = [
 const cabins = ["M", "W", "C", "F"];
 
 function printKL() {
-  if (!anyCarriers("KL")) {
+  if (!anyCarriers("AF", "DL", "KL", "VS")) {
     return;
   }
 

@@ -3,7 +3,7 @@ import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
 function printVS() {
-  if (!anyCarriers("VS")) {
+  if (!anyCarriers("AF", "DL", "KL", "VS")) {
     return;
   }
 

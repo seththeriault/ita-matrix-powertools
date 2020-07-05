@@ -24,7 +24,7 @@ const editions = [
 const cabins = ["ECONOMY", "W", "C", "F"];
 
 function print() {
-  if (!anyCarriers("AF", "KL")) {
+  if (!anyCarriers("AF", "DL", "KL", "VS")) {
     return;
   }
 

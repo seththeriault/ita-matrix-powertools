@@ -10,7 +10,7 @@ const dlEditions = [
 ];
 
 function printDL() {
-  if (!anyCarriers("DL")) {
+  if (!anyCarriers("AF", "DL", "KL", "VS")) {
     return;
   }
 
