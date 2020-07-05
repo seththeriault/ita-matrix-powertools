@@ -1,4 +1,4 @@
-import { printNotification, monthnumberToName } from "../../utils";
+import { printNotification, monthnumberToName, to2digits } from "../../utils";
 import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
@@ -10,7 +10,7 @@ function printVS() {
   var createUrl = function() {
     var pax = validatePax({
       maxPaxcount: 9,
-      countInf: false,
+      countInf: true,
       childAsAdult: 12,
       sepInfSeat: false,
       childMinAge: 2
@@ -26,7 +26,6 @@ function printVS() {
     url += `&paxCounts[2]=${pax.infSeat}`;
     url += `&paxCounts[3]=${pax.infLap}`;
     url += `&exitCountry=US`;
-    url += `&price=${currentItin.price}`;
     url += `&currencyCd=${currentItin.cur || "USD"}`;
 
     const fares = [];
@@ -44,7 +43,7 @@ function printVS() {
           seg.carrier,
           seg.fnr,
           monthnumberToName(seg.dep.month),
-          seg.dep.day,
+          to2digits(seg.dep.day),
           seg.dep.year,
           time
         ];

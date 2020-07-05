@@ -1,6 +1,5 @@
-import mptSettings, { getForcedCabin } from "../../settings/appSettings";
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
-import { printNotification, monthnumberToName } from "../../utils";
+import { printNotification, monthnumberToName, to2digits } from "../../utils";
 import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
@@ -14,14 +13,7 @@ function printDL() {
     return;
   }
 
-  /* Steppo: What about farebasis?
-   * What about segmentskipping? */
   var createUrl = function(edition) {
-    // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-    // Defaults for cabin identifiers for DL pricing engine; exceptions handled later
-    var cabins = ["MAIN", "DPPS", "BU", "FIRST"];
-    var mincabin = 3;
-    var farebases = new Array();
     var pax = validatePax({
       maxPaxcount: 9,
       countInf: true,
@@ -33,74 +25,44 @@ function printDL() {
       printNotification("Error: Failed to validate Passengers in printDL");
       return;
     }
+    let url = `http://${edition[0]}.delta.com/air-shopping/priceTripAction.action?ftw_reroute=true&tripType=multiCity&`;
+    url += `paxCounts[0]=${pax.adults}`;
+    url += `&paxCounts[1]=${pax.children.length}`;
+    url += `&paxCounts[2]=${pax.infSeat}`;
+    url += `&paxCounts[3]=${pax.infLap}`;
+    url += "&currencyCd=" + (currentItin.cur == "EUR" ? "EUR" : "USD");
+    url += "&exitCountry=" + edition[1];
 
-    var deltaURL =
-      "http://" +
-      edition[0] +
-      ".delta.com/air-shopping/priceTripAction.action?ftw_reroute=true&tripType=multiCity";
-    deltaURL += "&currencyCd=" + (currentItin.cur == "EUR" ? "EUR" : "USD");
-    deltaURL += "&exitCountry=" + edition[1];
-    var segcounter = 0;
-    for (var i = 0; i < currentItin.itin.length; i++) {
-      // walks each leg
-      for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
-        //walks each segment of leg
-        deltaURL +=
-          "&itinSegment[" +
-          segcounter.toString() +
-          "]=" +
-          i.toString() +
-          ":" +
-          currentItin.itin[i].seg[j].bookingclass;
-        deltaURL +=
-          ":" +
-          currentItin.itin[i].seg[j].orig +
-          ":" +
-          currentItin.itin[i].seg[j].dest +
-          ":" +
-          currentItin.itin[i].seg[j].carrier +
-          ":" +
-          currentItin.itin[i].seg[j].fnr;
-        deltaURL +=
-          ":" +
-          monthnumberToName(currentItin.itin[i].seg[j].dep.month) +
-          ":" +
-          (currentItin.itin[i].seg[j].dep.day < 10 ? "0" : "") +
-          currentItin.itin[i].seg[j].dep.day +
-          ":" +
-          currentItin.itin[i].seg[j].dep.year +
-          ":0";
-        farebases.push(currentItin.itin[i].seg[j].farebase);
-        if (currentItin.itin[i].seg[j].cabin < mincabin) {
-          mincabin = currentItin.itin[i].seg[j].cabin;
-        }
-        // Exceptions to cabin identifiers for pricing
-        switch (currentItin.itin[i].seg[j].bookingclass) {
-          // Basic Economy fares
-          case "E":
-            cabins[0] = "BASIC-ECONOMY";
-            break;
-          // Comfort+ fares
-          case "W":
-            cabins[1] = "DCP";
-            break;
-          default:
-        }
-        segcounter++;
-      }
-    }
-    deltaURL +=
-      "&cabin=" +
-      cabins[mptSettings.cabin === "Auto" ? mincabin : getForcedCabin()];
-    deltaURL += "&fareBasis=" + farebases.join(":");
-    //deltaURL += "&price=0";
-    deltaURL +=
-      "&numOfSegments=" +
-      segcounter.toString() +
-      "&paxCount=" +
-      (pax.adults + pax.children.length + pax.infLap);
-    deltaURL += "&vendorRedirectFlag=true&vendorID=Google";
-    return deltaURL;
+    const fares = [];
+
+    let segnum = 0;
+    currentItin.itin.forEach((itin, legnum) => {
+      itin.seg.forEach(seg => {
+        const hour = seg.dep.time24.split(":")[0];
+        const time = hour + (+hour < 12 ? "A" : "P");
+        const values = [
+          legnum,
+          seg.bookingclass,
+          seg.orig,
+          seg.dest,
+          seg.carrier,
+          seg.fnr,
+          monthnumberToName(seg.dep.month),
+          to2digits(seg.dep.day),
+          seg.dep.year,
+          time
+        ];
+        url += `&itinSegment[${segnum}]=${values.join(":")}`;
+
+        fares.push(seg.farebase);
+        segnum++;
+      });
+    });
+
+    url += `&fareBasis=${fares.join(":")}`;
+    url += `&numOfSegments=${segnum}`;
+
+    return url;
   };
   // get edition
   var edition = mptUserSettings.dlEdition.split("_");
