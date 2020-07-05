@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.49.0
+// @version 0.50.0
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -116,7 +116,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 51);
+/******/ 	return __webpack_require__(__webpack_require__.s = 52);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -638,93 +638,12 @@ function dayDiff(startDate, endDate) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return registeredSettings; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return registerSetting; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return saveUserSettings; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return loadUserSettings; });
-/* harmony import */ var _appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-
-
-const defaultSettings = {
-  timeformat: "12h", // replaces times on resultpage - valid: 12h / 24h
-  language: "en", // replaces several items on resultpage - valid: en / de
-  linkFontsize: 100, // fontsize of links - valid: 50-200
-  showAllAirlines: 0, // shows all airline links regardless of search results
-
-  // booleans to toggle specific settings:
-  enableDeviders: 1, // Print deviders in links after group (airlines/otas/other stuff) - valid: 0 / 1
-  enableInlineMode: 1, // enables inline mode - valid: 0 / 1
-  enableEditormode: 0, // prevents the script from automatically parsing the itinerary - valid: 0 / 1
-  enableIMGautoload: 0, // enables images to auto load - valid: 0 / 1
-  enableFarerules: 1, // enables fare rule opening in new window - valid: 0 / 1
-  enablePricebreakdown: 1, // enables price breakdown - valid: 0 / 1
-  enableDarkmode: 0, // enables dark mode - valid: 0 / 1
-  enablePlanefinder: 1, // enables Planefinder - click on flight numbers to open Planefinder for this flight - valid: 0 / 1
-  enableSeatguru: 1, // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
-  enableWheretocredit: 1, // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
-
-  enableAffiliates: 1
-};
-
-const registeredSettings = {};
-
-/**
- * Registers a link
- * @param {string} name
- * @param {string} id
- * @param {{ name: string, value: string }[]} values
- * @param {string} defaultValue
- */
-function registerSetting(name, id, values, defaultValue) {
-  registeredSettings[id] = { name, values };
-  defaultSettings[id] = defaultValue;
-}
-
-async function saveUserSettings(settings = defaultSettings) {
-  switch (_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].scriptEngine) {
-    case 0:
-      localStorage.setItem("mptUserSettings", JSON.stringify(settings));
-      break;
-    case 1:
-      await GM.setValue("mptUserSettings", JSON.stringify(settings));
-      break;
-  }
-}
-
-async function loadUserSettings() {
-  let gmSavedUserSettings;
-  switch (_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].scriptEngine) {
-    case 0:
-      gmSavedUserSettings = localStorage.getItem("mptUserSettings");
-      break;
-    case 1:
-      gmSavedUserSettings = await GM.getValue("mptUserSettings");
-      break;
-  }
-  console.log("mptSavedUserSettings: " + gmSavedUserSettings);
-  if (!gmSavedUserSettings || typeof gmSavedUserSettings !== "string") return;
-
-  /** @type typeof defaultSettings */
-  const savedUserSettings = JSON.parse(gmSavedUserSettings);
-  if (!savedUserSettings) return;
-
-  Object.assign(defaultSettings, savedUserSettings);
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (defaultSettings);
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "register", function() { return register; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "allCarriers", function() { return allCarriers; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "anyCarriers", function() { return anyCarriers; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validatePax", function() { return validatePax; });
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _settings_paxSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
 /* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
@@ -809,6 +728,87 @@ function validatePax(config) {
 
 
 /***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return registeredSettings; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return registerSetting; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return saveUserSettings; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return loadUserSettings; });
+/* harmony import */ var _appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+
+
+const defaultSettings = {
+  timeformat: "12h", // replaces times on resultpage - valid: 12h / 24h
+  language: "en", // replaces several items on resultpage - valid: en / de
+  linkFontsize: 100, // fontsize of links - valid: 50-200
+  showAllAirlines: 0, // shows all airline links regardless of search results
+
+  // booleans to toggle specific settings:
+  enableDeviders: 1, // Print deviders in links after group (airlines/otas/other stuff) - valid: 0 / 1
+  enableInlineMode: 1, // enables inline mode - valid: 0 / 1
+  enableEditormode: 0, // prevents the script from automatically parsing the itinerary - valid: 0 / 1
+  enableIMGautoload: 0, // enables images to auto load - valid: 0 / 1
+  enableFarerules: 1, // enables fare rule opening in new window - valid: 0 / 1
+  enablePricebreakdown: 1, // enables price breakdown - valid: 0 / 1
+  enableDarkmode: 0, // enables dark mode - valid: 0 / 1
+  enablePlanefinder: 1, // enables Planefinder - click on flight numbers to open Planefinder for this flight - valid: 0 / 1
+  enableSeatguru: 1, // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
+  enableWheretocredit: 1, // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
+
+  enableAffiliates: 1
+};
+
+const registeredSettings = {};
+
+/**
+ * Registers a link
+ * @param {string} name
+ * @param {string} id
+ * @param {{ name: string, value: string }[]} values
+ * @param {string} defaultValue
+ */
+function registerSetting(name, id, values, defaultValue) {
+  registeredSettings[id] = { name, values };
+  defaultSettings[id] = defaultValue;
+}
+
+async function saveUserSettings(settings = defaultSettings) {
+  switch (_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].scriptEngine) {
+    case 0:
+      localStorage.setItem("mptUserSettings", JSON.stringify(settings));
+      break;
+    case 1:
+      await GM.setValue("mptUserSettings", JSON.stringify(settings));
+      break;
+  }
+}
+
+async function loadUserSettings() {
+  let gmSavedUserSettings;
+  switch (_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].scriptEngine) {
+    case 0:
+      gmSavedUserSettings = localStorage.getItem("mptUserSettings");
+      break;
+    case 1:
+      gmSavedUserSettings = await GM.getValue("mptUserSettings");
+      break;
+  }
+  console.log("mptSavedUserSettings: " + gmSavedUserSettings);
+  if (!gmSavedUserSettings || typeof gmSavedUserSettings !== "string") return;
+
+  /** @type typeof defaultSettings */
+  const savedUserSettings = JSON.parse(gmSavedUserSettings);
+  if (!savedUserSettings) return;
+
+  Object.assign(defaultSettings, savedUserSettings);
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (defaultSettings);
+
+
+/***/ }),
 /* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -824,7 +824,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.49.0",
+  version: "0.50.0",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -1238,7 +1238,7 @@ const de = {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return printLinksContainer; });
 /* unused harmony export printImage */
 /* unused harmony export getSidebarContainer */
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _settings_itaSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
 /* harmony import */ var _settings_translations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
@@ -1251,7 +1251,7 @@ const de = {
 /** @type {{ [key: string]: (() => { url: string, title: string, img?: string, desc?: string, extra?: string, target?: string })[]}} */
 const links = {};
 
-__webpack_require__(3);
+__webpack_require__(2);
 
 var skimlinks = document.createElement("script");
 skimlinks.setAttribute(
@@ -1441,7 +1441,7 @@ module.exports = JSON.parse("{\"AAA\":\"Pacific/Tahiti\",\"AAB\":\"Australia/Bri
 
 var map = {
 	"./airlines/aa.js": 12,
-	"./airlines/aaSabre.js": 50,
+	"./airlines/aaSabre.js": 51,
 	"./airlines/ac.js": 13,
 	"./airlines/af.js": 14,
 	"./airlines/as.js": 15,
@@ -1462,24 +1462,25 @@ var map = {
 	"./airlines/qf.js": 30,
 	"./airlines/qr.js": 31,
 	"./airlines/tk.js": 32,
-	"./index.js": 3,
-	"./meta/googleFlights.js": 33,
-	"./meta/jetcost.js": 34,
-	"./meta/kayak.js": 35,
-	"./meta/momondo.js": 36,
-	"./meta/skyscanner.js": 37,
-	"./meta/tripadvisor.js": 38,
-	"./otas/cheapoair.js": 39,
-	"./otas/edestinos.js": 40,
-	"./otas/edreams.js": 41,
-	"./otas/etraveli.js": 42,
-	"./otas/expedia.js": 43,
-	"./otas/flightnetwork.js": 44,
-	"./otas/hop2.js": 45,
-	"./otas/lucky2go.js": 46,
-	"./otas/priceline.js": 47,
-	"./other/gcm.js": 48,
-	"./other/wheretocredit.js": 49
+	"./airlines/vs.js": 33,
+	"./index.js": 2,
+	"./meta/googleFlights.js": 34,
+	"./meta/jetcost.js": 35,
+	"./meta/kayak.js": 36,
+	"./meta/momondo.js": 37,
+	"./meta/skyscanner.js": 38,
+	"./meta/tripadvisor.js": 39,
+	"./otas/cheapoair.js": 40,
+	"./otas/edestinos.js": 41,
+	"./otas/edreams.js": 42,
+	"./otas/etraveli.js": 43,
+	"./otas/expedia.js": 44,
+	"./otas/flightnetwork.js": 45,
+	"./otas/hop2.js": 46,
+	"./otas/lucky2go.js": 47,
+	"./otas/priceline.js": 48,
+	"./other/gcm.js": 49,
+	"./other/wheretocredit.js": 50
 };
 
 
@@ -1508,9 +1509,9 @@ webpackContext.id = 11;
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -1699,10 +1700,10 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _settings_translations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(0);
 /* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7);
 
@@ -1935,9 +1936,9 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 
 
@@ -1960,7 +1961,7 @@ const editions = [
 const cabins = ["ECONOMY", "W", "C", "F"];
 
 function print() {
-  if (!Object(___WEBPACK_IMPORTED_MODULE_3__["anyCarriers"])("AF", "KL")) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_3__["anyCarriers"])("AF", "DL", "KL", "VS")) {
     return;
   }
 
@@ -2040,7 +2041,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 
 
@@ -2115,9 +2116,9 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("airlines", printAS);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -2267,9 +2268,9 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 
 
@@ -2622,9 +2623,9 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7);
 
 
@@ -2780,9 +2781,9 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 
 
@@ -2796,7 +2797,7 @@ const dlEditions = [
 ];
 
 function printDL() {
-  if (!Object(___WEBPACK_IMPORTED_MODULE_3__["anyCarriers"])("DL")) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_3__["anyCarriers"])("AF", "DL", "KL", "VS")) {
     return;
   }
 
@@ -2930,9 +2931,9 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
 
@@ -3147,7 +3148,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2);
 
 
 
@@ -3224,9 +3225,9 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "b"])("airli
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -3460,9 +3461,9 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 
 
@@ -3483,7 +3484,7 @@ const klEditions = [
 const cabins = ["M", "W", "C", "F"];
 
 function printKL() {
-  if (!Object(___WEBPACK_IMPORTED_MODULE_3__["anyCarriers"])("KL")) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_3__["anyCarriers"])("AF", "DL", "KL", "VS")) {
     return;
   }
 
@@ -3571,9 +3572,9 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -3696,9 +3697,9 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7);
 
 
@@ -3910,9 +3911,9 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 
 
@@ -4041,9 +4042,9 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7);
 
 
@@ -4105,8 +4106,8 @@ Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", printOA);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -4238,7 +4239,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 
 
@@ -4345,9 +4346,9 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("airlines", printPS);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 
 
@@ -4552,7 +4553,7 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
 
@@ -4613,9 +4614,9 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("airlines", print);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _print_amadeus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7);
 
 
@@ -4677,7 +4678,93 @@ Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", printTK);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
+
+
+
+
+function printVS() {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_1__["anyCarriers"])("AF", "DL", "KL", "VS")) {
+    return;
+  }
+
+  var createUrl = function() {
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePax"])({
+      maxPaxcount: 9,
+      countInf: false,
+      childAsAdult: 12,
+      sepInfSeat: false,
+      childMinAge: 2
+    });
+    if (!pax) {
+      Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "i"])("Error: Failed to validate Passengers in printVS");
+      return;
+    }
+    let url =
+      "https://www.virginatlantic.com/air-shopping/priceTripAction.action?";
+    url += `paxCounts[0]=${pax.adults}`;
+    url += `&paxCounts[1]=${pax.children.length}`;
+    url += `&paxCounts[2]=${pax.infSeat}`;
+    url += `&paxCounts[3]=${pax.infLap}`;
+    url += `&exitCountry=US`;
+    url += `&price=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].price}`;
+    url += `&currencyCd=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].cur || "USD"}`;
+
+    const fares = [];
+
+    let segnum = 0;
+    _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.forEach((itin, legnum) => {
+      itin.seg.forEach(seg => {
+        const hour = seg.dep.time24.split(":")[0];
+        const time = hour + (+hour < 12 ? "A" : "P");
+        const values = [
+          legnum,
+          seg.bookingclass,
+          seg.orig,
+          seg.dest,
+          seg.carrier,
+          seg.fnr,
+          Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* monthnumberToName */ "h"])(seg.dep.month),
+          seg.dep.day,
+          seg.dep.year,
+          time
+        ];
+        url += `&itinSegment[${segnum}]=${values.join(":")}`;
+
+        fares.push(seg.farebase);
+        segnum++;
+      });
+    });
+
+    url += `&fareBasis=${fares.join(":")}`;
+    url += `&numOfSegments=${segnum}`;
+
+    return url;
+  };
+
+  var url = createUrl();
+  if (!url) {
+    return;
+  }
+
+  return {
+    url,
+    title: "Virgin Atlantic"
+  };
+}
+
+Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("airlines", printVS);
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
@@ -4736,12 +4823,12 @@ Object(___WEBPACK_IMPORTED_MODULE_0__["register"])("meta", print);
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
@@ -4868,14 +4955,14 @@ Object(___WEBPACK_IMPORTED_MODULE_0__["register"])("meta", print);
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
 
@@ -5022,14 +5109,14 @@ Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("meta", () => print(1));
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
 
@@ -5170,14 +5257,14 @@ Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("meta", () => print(1));
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
 
@@ -5288,14 +5375,14 @@ Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("meta", () => print(1));
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1);
 
@@ -5444,13 +5531,13 @@ Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("meta", () => print(1));
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
@@ -5530,14 +5617,14 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", printCheapOair);
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
 
@@ -5677,13 +5764,13 @@ Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("otas", print);
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
 
@@ -5831,13 +5918,13 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", () => printEdreams("T
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 
 
@@ -5960,14 +6047,14 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", printEtraveli);
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -6098,13 +6185,13 @@ Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("otas", printExpedia);
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 
 
@@ -6205,13 +6292,13 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", printFN);
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
 
@@ -6291,14 +6378,14 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", print);
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
@@ -6433,13 +6520,13 @@ Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("otas", printLucky2go);
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 
 
@@ -6528,13 +6615,13 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", printPriceline);
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 
 
 
@@ -6568,13 +6655,13 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("other", printGCM);
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 
 
 
@@ -6595,7 +6682,7 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("other", printWheretocredit);
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6603,13 +6690,13 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("other", printWheretocredit);
 __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./src/settings/userSettings.js
-var userSettings = __webpack_require__(2);
+var userSettings = __webpack_require__(3);
 
 // EXTERNAL MODULE: ./src/utils.js
 var utils = __webpack_require__(1);
 
 // EXTERNAL MODULE: ./src/links/index.js
-var links = __webpack_require__(3);
+var links = __webpack_require__(2);
 
 // EXTERNAL MODULE: ./src/parse/itin.js
 var itin = __webpack_require__(0);
@@ -9963,7 +10050,7 @@ Object(userSettings["c" /* registerSetting */])(
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9974,7 +10061,7 @@ __webpack_require__.r(__webpack_exports__);
 var appSettings = __webpack_require__(4);
 
 // EXTERNAL MODULE: ./src/settings/userSettings.js
-var userSettings = __webpack_require__(2);
+var userSettings = __webpack_require__(3);
 
 // EXTERNAL MODULE: ./src/settings/itaSettings.js
 var itaSettings = __webpack_require__(5);

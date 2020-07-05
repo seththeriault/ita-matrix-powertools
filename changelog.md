@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.50] - 2020-07-05
+
+Edited by IAkH
+
+- added Virgin Atlantic link (thanks @CosmicGirl!)
+- show Air France, Delta, KLM and Virgin Atlantic links for each airline
+
 ## [0.49] - 2020-07-03
 
 Edited by IAkH
