@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.50.0
+// @version 0.50.1
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -824,7 +824,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.50.0",
+  version: "0.50.1",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -2780,12 +2780,10 @@ Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
-
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
 
 
 
@@ -2797,19 +2795,12 @@ const dlEditions = [
 ];
 
 function printDL() {
-  if (!Object(___WEBPACK_IMPORTED_MODULE_3__["anyCarriers"])("AF", "DL", "KL", "VS")) {
+  if (!Object(___WEBPACK_IMPORTED_MODULE_2__["anyCarriers"])("AF", "DL", "KL", "VS")) {
     return;
   }
 
-  /* Steppo: What about farebasis?
-   * What about segmentskipping? */
   var createUrl = function(edition) {
-    // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-    // Defaults for cabin identifiers for DL pricing engine; exceptions handled later
-    var cabins = ["MAIN", "DPPS", "BU", "FIRST"];
-    var mincabin = 3;
-    var farebases = new Array();
-    var pax = Object(___WEBPACK_IMPORTED_MODULE_3__["validatePax"])({
+    var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
       maxPaxcount: 9,
       countInf: true,
       childAsAdult: 12,
@@ -2817,82 +2808,52 @@ function printDL() {
       childMinAge: 2
     });
     if (!pax) {
-      Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "i"])("Error: Failed to validate Passengers in printDL");
+      Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "i"])("Error: Failed to validate Passengers in printDL");
       return;
     }
+    let url = `http://${edition[0]}.delta.com/air-shopping/priceTripAction.action?ftw_reroute=true&tripType=multiCity&`;
+    url += `paxCounts[0]=${pax.adults}`;
+    url += `&paxCounts[1]=${pax.children.length}`;
+    url += `&paxCounts[2]=${pax.infSeat}`;
+    url += `&paxCounts[3]=${pax.infLap}`;
+    url += "&currencyCd=" + (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].cur == "EUR" ? "EUR" : "USD");
+    url += "&exitCountry=" + edition[1];
 
-    var deltaURL =
-      "http://" +
-      edition[0] +
-      ".delta.com/air-shopping/priceTripAction.action?ftw_reroute=true&tripType=multiCity";
-    deltaURL += "&currencyCd=" + (_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].cur == "EUR" ? "EUR" : "USD");
-    deltaURL += "&exitCountry=" + edition[1];
-    var segcounter = 0;
-    for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin.length; i++) {
-      // walks each leg
-      for (var j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg.length; j++) {
-        //walks each segment of leg
-        deltaURL +=
-          "&itinSegment[" +
-          segcounter.toString() +
-          "]=" +
-          i.toString() +
-          ":" +
-          _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].bookingclass;
-        deltaURL +=
-          ":" +
-          _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].orig +
-          ":" +
-          _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dest +
-          ":" +
-          _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].carrier +
-          ":" +
-          _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].fnr;
-        deltaURL +=
-          ":" +
-          Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* monthnumberToName */ "h"])(_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dep.month) +
-          ":" +
-          (_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dep.day < 10 ? "0" : "") +
-          _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dep.day +
-          ":" +
-          _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].dep.year +
-          ":0";
-        farebases.push(_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].farebase);
-        if (_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].cabin < mincabin) {
-          mincabin = _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].cabin;
-        }
-        // Exceptions to cabin identifiers for pricing
-        switch (_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].itin[i].seg[j].bookingclass) {
-          // Basic Economy fares
-          case "E":
-            cabins[0] = "BASIC-ECONOMY";
-            break;
-          // Comfort+ fares
-          case "W":
-            cabins[1] = "DCP";
-            break;
-          default:
-        }
-        segcounter++;
-      }
-    }
-    deltaURL +=
-      "&cabin=" +
-      cabins[_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cabin === "Auto" ? mincabin : Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getForcedCabin */ "c"])()];
-    deltaURL += "&fareBasis=" + farebases.join(":");
-    //deltaURL += "&price=0";
-    deltaURL +=
-      "&numOfSegments=" +
-      segcounter.toString() +
-      "&paxCount=" +
-      (pax.adults + pax.children.length + pax.infLap);
-    deltaURL += "&vendorRedirectFlag=true&vendorID=Google";
-    return deltaURL;
+    const fares = [];
+
+    let segnum = 0;
+    _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.forEach((itin, legnum) => {
+      itin.seg.forEach(seg => {
+        const hour = seg.dep.time24.split(":")[0];
+        const time = hour + (+hour < 12 ? "A" : "P");
+        const values = [
+          legnum,
+          seg.bookingclass,
+          seg.orig,
+          seg.dest,
+          seg.carrier,
+          seg.fnr,
+          Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* monthnumberToName */ "h"])(seg.dep.month),
+          Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "j"])(seg.dep.day),
+          seg.dep.year,
+          time
+        ];
+        url += `&itinSegment[${segnum}]=${values.join(":")}`;
+
+        fares.push(seg.farebase);
+        segnum++;
+      });
+    });
+
+    url += `&fareBasis=${fares.join(":")}`;
+    url += `&numOfSegments=${segnum}`;
+
+    return url;
   };
   // get edition
-  var edition = _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].dlEdition.split("_");
+  var edition = _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].dlEdition.split("_");
   if (edition.length != 2) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "i"])("Error:Invalid Delta-Edition");
+    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "i"])("Error:Invalid Delta-Edition");
     return;
   }
   var url = createUrl(edition);
@@ -2921,8 +2882,8 @@ function printDL() {
   };
 }
 
-Object(___WEBPACK_IMPORTED_MODULE_3__["register"])("airlines", printDL);
-Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_1__[/* registerSetting */ "c"])("Delta", "dlEdition", dlEditions, "www_us");
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("airlines", printDL);
+Object(_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* registerSetting */ "c"])("Delta", "dlEdition", dlEditions, "www_us");
 
 
 /***/ }),
@@ -4693,7 +4654,7 @@ function printVS() {
   var createUrl = function() {
     var pax = Object(___WEBPACK_IMPORTED_MODULE_1__["validatePax"])({
       maxPaxcount: 9,
-      countInf: false,
+      countInf: true,
       childAsAdult: 12,
       sepInfSeat: false,
       childMinAge: 2
@@ -4709,7 +4670,6 @@ function printVS() {
     url += `&paxCounts[2]=${pax.infSeat}`;
     url += `&paxCounts[3]=${pax.infLap}`;
     url += `&exitCountry=US`;
-    url += `&price=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].price}`;
     url += `&currencyCd=${_parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].cur || "USD"}`;
 
     const fares = [];
@@ -4727,7 +4687,7 @@ function printVS() {
           seg.carrier,
           seg.fnr,
           Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* monthnumberToName */ "h"])(seg.dep.month),
-          seg.dep.day,
+          Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "j"])(seg.dep.day),
           seg.dep.year,
           time
         ];
@@ -6592,18 +6552,11 @@ function printPriceline() {
     Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* printNotification */ "i"])("Error: Failed to validate Passengers in printPriceline");
     return;
   }
-  pricelineurl +=
-    "/desktop/details/R_" +
-    searchparam +
-    "_" +
-    (pax.adults + pax.children.length + pax.infLap) +
-    "_USD0.00_1-1-1?num-adults=" +
-    pax.adults +
-    "&num-children=" +
+  pricelineurl += `/details/R_${searchparam}_${pax.adults +
     pax.children.length +
-    "&num-infants=" +
-    pax.infLap +
-    "&num-youths=0";
+    pax.infLap}_USD0.00?num-adults=${pax.adults}&num-youths=0&num-children=${
+    pax.children.length
+  }&num-infants=${pax.infLap}`;
 
   return {
     url: pricelineurl,
