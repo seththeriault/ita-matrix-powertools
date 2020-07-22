@@ -62,18 +62,11 @@ function printPriceline() {
     printNotification("Error: Failed to validate Passengers in printPriceline");
     return;
   }
-  pricelineurl +=
-    "/desktop/details/R_" +
-    searchparam +
-    "_" +
-    (pax.adults + pax.children.length + pax.infLap) +
-    "_USD0.00_1-1-1?num-adults=" +
-    pax.adults +
-    "&num-children=" +
+  pricelineurl += `/details/R_${searchparam}_${pax.adults +
     pax.children.length +
-    "&num-infants=" +
-    pax.infLap +
-    "&num-youths=0";
+    pax.infLap}_USD0.00?num-adults=${pax.adults}&num-youths=0&num-children=${
+    pax.children.length
+  }&num-infants=${pax.infLap}`;
 
   return {
     url: pricelineurl,
