@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.50.1
+// @version 0.50.2
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -824,7 +824,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.50.1",
+  version: "0.50.2",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -6554,9 +6554,9 @@ function printPriceline() {
   }
   pricelineurl += `/details/R_${searchparam}_${pax.adults +
     pax.children.length +
-    pax.infLap}_USD0.00?num-adults=${pax.adults}&num-youths=0&num-children=${
-    pax.children.length
-  }&num-infants=${pax.infLap}`;
+    pax.infLap}_USD0.00?refid=COUK100109861&num-adults=${
+    pax.adults
+  }&num-youths=0&num-children=${pax.children.length}&num-infants=${pax.infLap}`;
 
   return {
     url: pricelineurl,
