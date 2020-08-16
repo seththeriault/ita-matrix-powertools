@@ -4,23 +4,61 @@ import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const editions = [
-  { name: "expedia.com", host: "expedia.com" },
-  { name: "orbitz.com", host: "orbitz.com" },
-  { name: "expedia.ca", host: "expedia.ca" },
-  { name: "expedia.de", host: "expedia.de" },
-  { name: "expedia.it", host: "expedia.it" },
-  { name: "expedia.es", host: "expedia.es" },
-  { name: "expedia.co.uk", host: "expedia.co.uk" },
-  { name: "expedia.dk", host: "expedia.dk" },
-  { name: "expedia.mx", host: "expedia.mx" },
-  { name: "expedia.fi", host: "expedia.fi" },
-  { name: "expedia.fr", host: "expedia.fr" },
-  { name: "expedia.no", host: "expedia.no" },
-  { name: "expedia.nl", host: "expedia.nl" },
-  { name: "expedia.ch", host: "expedia.ch" },
-  { name: "expedia.se", host: "expedia.se" },
-  { name: "expedia.at", host: "expedia.at" },
-  { name: "expedia.co.jp", host: "expedia.co.jp" }
+  { name: "expedia.at", host: "www.expedia.at" },
+  { name: "expedia.be", host: "www.expedia.be" },
+  { name: "expedia.ca", host: "www.expedia.ca" },
+  { name: "expedia.ch", host: "www.expedia.ch" },
+  { name: "expedia.co.id", host: "www.expedia.co.id" },
+  { name: "expedia.co.in", host: "www.expedia.co.in" },
+  { name: "expedia.co.jp", host: "www.expedia.co.jp" },
+  { name: "expedia.co.kr", host: "www.expedia.co.kr" },
+  { name: "expedia.co.nz", host: "www.expedia.co.nz" },
+  { name: "expedia.co.th", host: "www.expedia.co.th" },
+  { name: "expedia.co.uk", host: "www.expedia.co.uk" },
+  { name: "expedia.com", host: "www.expedia.com" },
+  { name: "expedia.com.au", host: "www.expedia.com.au" },
+  { name: "expedia.com.br", host: "www.expedia.com.br" },
+  { name: "expedia.com.hk", host: "www.expedia.com.hk" },
+  { name: "expedia.com.my", host: "www.expedia.com.my" },
+  { name: "expedia.com.ph", host: "www.expedia.com.ph" },
+  { name: "expedia.com.sg", host: "www.expedia.com.sg" },
+  { name: "expedia.com.tw", host: "www.expedia.com.tw" },
+  { name: "expedia.de", host: "www.expedia.de" },
+  { name: "expedia.dk", host: "www.expedia.dk" },
+  { name: "expedia.es", host: "www.expedia.es" },
+  { name: "expedia.fr", host: "www.expedia.fr" },
+  { name: "expedia.ie", host: "www.expedia.ie" },
+  { name: "expedia.it", host: "www.expedia.it" },
+  { name: "expedia.mx", host: "www.expedia.mx" },
+  { name: "expedia.nl", host: "www.expedia.nl" },
+  { name: "expedia.no", host: "www.expedia.no" },
+  { name: "expedia.se", host: "www.expedia.se" }
+];
+
+const editions2 = [
+  { name: "cheaptickets.com", host: "www.cheaptickets.com" },
+  { name: "ebookers.ch", host: "www.ebookers.ch" },
+  { name: "ebookers.com", host: "www.ebookers.com" },
+  { name: "ebookers.de", host: "www.ebookers.de" },
+  { name: "ebookers.fi", host: "www.ebookers.fi" },
+  { name: "ebookers.fr", host: "www.ebookers.fr" },
+  { name: "ebookers.ie", host: "www.ebookers.ie" },
+  { name: "hotels.com", host: "travel.hotels.com" },
+  { name: "hotels.com (ca)", host: "travel.ca.hotels.com" },
+  { name: "hotels.com (fr)", host: "travel.fr.hotels.com" },
+  { name: "hotels.com (jp)", host: "travel.jp.hotels.com" },
+  { name: "hotels.com (no)", host: "travel.no.hotels.com" },
+  { name: "hotels.com (se)", host: "travel.se.hotels.com" },
+  { name: "hotels.com (uk)", host: "travel.uk.hotels.com" },
+  { name: "hotwire.com", host: "vacation.hotwire.com" },
+  { name: "lastminute.co.nz", host: "www.lastminute.co.nz" },
+  { name: "lastminute.com.au", host: "www.lastminute.com.au" },
+  { name: "mrjet.se", host: "www.mrjet.se" },
+  { name: "orbitz.com", host: "www.orbitz.com" },
+  { name: "travelocity.ca", host: "www.travelocity.ca" },
+  { name: "travelocity.com", host: "www.travelocity.com" },
+  { name: "wotif.co.nz", host: "www.wotif.co.nz" },
+  { name: "wotif.com", host: "www.wotif.com" }
 ];
 
 function printExpedia() {
@@ -87,7 +125,7 @@ function printExpedia() {
     }
     // Build the URL:
     let baseUrl =
-      "https://www." +
+      "https://" +
       expediaBase +
       "/Flight-Search-Details?action=dl&trip=MultipleDestination";
     // Add travel class to URL:
@@ -102,7 +140,7 @@ function printExpedia() {
   };
   var ExpediaUrl = ExpediaCreateUrl("expedia.com");
   var container =
-    ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+    ' <span class="pt-hover-container">[+]<span class="pt-hover-menu-flex"><div style="margin-right: 1rem;">';
   container += editions
     .map(function(obj, i) {
       return (
@@ -114,7 +152,19 @@ function printExpedia() {
       );
     })
     .join("<br/>");
-  container += "</span></span>";
+  container += "</div><div>";
+  container += editions2
+    .map(function(obj, i) {
+      return (
+        '<a href="' +
+        ExpediaCreateUrl(obj.host) +
+        '" target="_blank">' +
+        obj.name +
+        "</a>"
+      );
+    })
+    .join("<br/>");
+  container += "</div></span></span>";
 
   return {
     url: ExpediaUrl,
