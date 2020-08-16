@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.51.0
+// @version 0.51.1
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -116,7 +116,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 54);
+/******/ 	return __webpack_require__(__webpack_require__.s = 53);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -824,7 +824,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.51.0",
+  version: "0.51.1",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -1441,7 +1441,7 @@ module.exports = JSON.parse("{\"AAA\":\"Pacific/Tahiti\",\"AAB\":\"Australia/Bri
 
 var map = {
 	"./airlines/aa.js": 12,
-	"./airlines/aaSabre.js": 53,
+	"./airlines/aaSabre.js": 52,
 	"./airlines/ac.js": 13,
 	"./airlines/af.js": 14,
 	"./airlines/as.js": 15,
@@ -1476,13 +1476,12 @@ var map = {
 	"./otas/etraveli.js": 43,
 	"./otas/expedia.js": 44,
 	"./otas/flightnetwork.js": 45,
-	"./otas/flyus.js": 46,
-	"./otas/hop2.js": 47,
-	"./otas/lucky2go.js": 48,
-	"./otas/priceline.js": 49,
-	"./otas/travix.js": 50,
-	"./other/gcm.js": 51,
-	"./other/wheretocredit.js": 52
+	"./otas/hop2.js": 46,
+	"./otas/lucky2go.js": 47,
+	"./otas/priceline.js": 48,
+	"./otas/travix.js": 49,
+	"./other/gcm.js": 50,
+	"./other/wheretocredit.js": 51
 };
 
 
@@ -6025,6 +6024,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const editions = [
+  { name: "euro.expedia.net", host: "euro.expedia.net" },
   { name: "expedia.at", host: "www.expedia.at" },
   { name: "expedia.be", host: "www.expedia.be" },
   { name: "expedia.ca", host: "www.expedia.ca" },
@@ -6047,6 +6047,7 @@ const editions = [
   { name: "expedia.de", host: "www.expedia.de" },
   { name: "expedia.dk", host: "www.expedia.dk" },
   { name: "expedia.es", host: "www.expedia.es" },
+  { name: "expedia.fi", host: "www.expedia.fi" },
   { name: "expedia.fr", host: "www.expedia.fr" },
   { name: "expedia.ie", host: "www.expedia.ie" },
   { name: "expedia.it", host: "www.expedia.it" },
@@ -6310,86 +6311,6 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", printFN);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
-/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
-
-
-
-
-
-
-const cabins = ["Economy", "PremiumEconomy", "Business", "First"];
-
-function print() {
-  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
-    maxPaxcount: 9,
-    countInf: true,
-    childAsAdult: 12,
-    sepInfSeat: false,
-    childMinAge: 2
-  });
-  if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "i"])("Error: Failed to validate Passengers in edestinos");
-    return;
-  }
-
-  var createUrl = function() {
-    const cur = _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].cur || "USD";
-    let url = `https://www.flyus.com/checkout/fulfilment/gfs?PointOfSaleCountry=&UserCurrency=${cur}&DisplayedPrice=${
-      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].price
-    }&DisplayedPriceCurrency=${cur}&UserLanguage=${_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language ||
-      "en"}&TripType=${Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getTripType */ "c"])("OneWay", "RoundTrip", "MultiCity")}`;
-    url += "&UserLanguage=" + _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language || false;
-    url += "&Adult=" + pax.adults;
-    url += "&Child=" + pax.children.length;
-    url += "&InfantLap=" + pax.infLap;
-
-    let j = 0;
-    _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.forEach((itin, i) => {
-      const slices = [];
-
-      itin.seg.forEach(seg => {
-        j++;
-        slices.push(j);
-
-        url += `&Cabin${j}=` + cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_4__[/* getCabin */ "b"])(seg.cabin)];
-        url += `&Carrier${j}=` + seg.carrier;
-        url += `&Origin${j}=` + seg.orig;
-        url += `&Destination${j}=` + seg.dest;
-        url += `&BookingCode${j}=` + seg.bookingclass;
-        url += `&FlightNumber${j}=` + seg.fnr;
-        url += `&DepartureDate${j}=${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "j"])(
-          seg.dep.month
-        )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "j"])(seg.dep.day)}`;
-        url += `&FareBasis${j}=` + seg.farebase;
-      });
-
-      url += `&Slice${i + 1}=` + slices.join(",");
-    });
-
-    return url;
-  };
-
-  var url = createUrl();
-
-  return {
-    url,
-    title: "Flyus",
-  };
-}
-
-Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("otas", print);
-
-
-/***/ }),
-/* 47 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
@@ -6471,7 +6392,7 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", print);
 
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6613,7 +6534,7 @@ Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("otas", printLucky2go);
 
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6701,7 +6622,7 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", printPriceline);
 
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7036,7 +6957,7 @@ Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("otas", () => print("BudgetAi
 
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7076,7 +6997,7 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("other", printGCM);
 
 
 /***/ }),
-/* 52 */
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7103,7 +7024,7 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("other", printWheretocredit);
 
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10471,7 +10392,7 @@ Object(userSettings["c" /* registerSetting */])(
 
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
