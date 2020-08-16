@@ -4,6 +4,7 @@ import { validatePax, register } from "..";
 import { currentItin } from "../../parse/itin";
 
 const editions = [
+  { name: "euro.expedia.net", host: "euro.expedia.net" },
   { name: "expedia.at", host: "www.expedia.at" },
   { name: "expedia.be", host: "www.expedia.be" },
   { name: "expedia.ca", host: "www.expedia.ca" },
@@ -26,6 +27,7 @@ const editions = [
   { name: "expedia.de", host: "www.expedia.de" },
   { name: "expedia.dk", host: "www.expedia.dk" },
   { name: "expedia.es", host: "www.expedia.es" },
+  { name: "expedia.fi", host: "www.expedia.fi" },
   { name: "expedia.fr", host: "www.expedia.fr" },
   { name: "expedia.ie", host: "www.expedia.ie" },
   { name: "expedia.it", host: "www.expedia.it" },
