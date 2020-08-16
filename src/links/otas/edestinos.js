@@ -100,6 +100,7 @@ function print() {
         url += `&DepartureDate${j}=${seg.dep.year}-${to2digits(
           seg.dep.month
         )}-${to2digits(seg.dep.day)}`;
+        url += `&FareBasis${j}=` + seg.farebase;
       });
 
       url += `&Slice${i + 1}=` + slices.join(",");
