@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.50.2
+// @version 0.51.0
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -116,7 +116,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 52);
+/******/ 	return __webpack_require__(__webpack_require__.s = 54);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -824,7 +824,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.50.2",
+  version: "0.51.0",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -1441,7 +1441,7 @@ module.exports = JSON.parse("{\"AAA\":\"Pacific/Tahiti\",\"AAB\":\"Australia/Bri
 
 var map = {
 	"./airlines/aa.js": 12,
-	"./airlines/aaSabre.js": 51,
+	"./airlines/aaSabre.js": 53,
 	"./airlines/ac.js": 13,
 	"./airlines/af.js": 14,
 	"./airlines/as.js": 15,
@@ -1476,11 +1476,13 @@ var map = {
 	"./otas/etraveli.js": 43,
 	"./otas/expedia.js": 44,
 	"./otas/flightnetwork.js": 45,
-	"./otas/hop2.js": 46,
-	"./otas/lucky2go.js": 47,
-	"./otas/priceline.js": 48,
-	"./other/gcm.js": 49,
-	"./other/wheretocredit.js": 50
+	"./otas/flyus.js": 46,
+	"./otas/hop2.js": 47,
+	"./otas/lucky2go.js": 48,
+	"./otas/priceline.js": 49,
+	"./otas/travix.js": 50,
+	"./other/gcm.js": 51,
+	"./other/wheretocredit.js": 52
 };
 
 
@@ -5689,6 +5691,7 @@ function print() {
         url += `&DepartureDate${j}=${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "j"])(
           seg.dep.month
         )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "j"])(seg.dep.day)}`;
+        url += `&FareBasis${j}=` + seg.farebase;
       });
 
       url += `&Slice${i + 1}=` + slices.join(",");
@@ -6022,23 +6025,61 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const editions = [
-  { name: "expedia.com", host: "expedia.com" },
-  { name: "orbitz.com", host: "orbitz.com" },
-  { name: "expedia.ca", host: "expedia.ca" },
-  { name: "expedia.de", host: "expedia.de" },
-  { name: "expedia.it", host: "expedia.it" },
-  { name: "expedia.es", host: "expedia.es" },
-  { name: "expedia.co.uk", host: "expedia.co.uk" },
-  { name: "expedia.dk", host: "expedia.dk" },
-  { name: "expedia.mx", host: "expedia.mx" },
-  { name: "expedia.fi", host: "expedia.fi" },
-  { name: "expedia.fr", host: "expedia.fr" },
-  { name: "expedia.no", host: "expedia.no" },
-  { name: "expedia.nl", host: "expedia.nl" },
-  { name: "expedia.ch", host: "expedia.ch" },
-  { name: "expedia.se", host: "expedia.se" },
-  { name: "expedia.at", host: "expedia.at" },
-  { name: "expedia.co.jp", host: "expedia.co.jp" }
+  { name: "expedia.at", host: "www.expedia.at" },
+  { name: "expedia.be", host: "www.expedia.be" },
+  { name: "expedia.ca", host: "www.expedia.ca" },
+  { name: "expedia.ch", host: "www.expedia.ch" },
+  { name: "expedia.co.id", host: "www.expedia.co.id" },
+  { name: "expedia.co.in", host: "www.expedia.co.in" },
+  { name: "expedia.co.jp", host: "www.expedia.co.jp" },
+  { name: "expedia.co.kr", host: "www.expedia.co.kr" },
+  { name: "expedia.co.nz", host: "www.expedia.co.nz" },
+  { name: "expedia.co.th", host: "www.expedia.co.th" },
+  { name: "expedia.co.uk", host: "www.expedia.co.uk" },
+  { name: "expedia.com", host: "www.expedia.com" },
+  { name: "expedia.com.au", host: "www.expedia.com.au" },
+  { name: "expedia.com.br", host: "www.expedia.com.br" },
+  { name: "expedia.com.hk", host: "www.expedia.com.hk" },
+  { name: "expedia.com.my", host: "www.expedia.com.my" },
+  { name: "expedia.com.ph", host: "www.expedia.com.ph" },
+  { name: "expedia.com.sg", host: "www.expedia.com.sg" },
+  { name: "expedia.com.tw", host: "www.expedia.com.tw" },
+  { name: "expedia.de", host: "www.expedia.de" },
+  { name: "expedia.dk", host: "www.expedia.dk" },
+  { name: "expedia.es", host: "www.expedia.es" },
+  { name: "expedia.fr", host: "www.expedia.fr" },
+  { name: "expedia.ie", host: "www.expedia.ie" },
+  { name: "expedia.it", host: "www.expedia.it" },
+  { name: "expedia.mx", host: "www.expedia.mx" },
+  { name: "expedia.nl", host: "www.expedia.nl" },
+  { name: "expedia.no", host: "www.expedia.no" },
+  { name: "expedia.se", host: "www.expedia.se" }
+];
+
+const editions2 = [
+  { name: "cheaptickets.com", host: "www.cheaptickets.com" },
+  { name: "ebookers.ch", host: "www.ebookers.ch" },
+  { name: "ebookers.com", host: "www.ebookers.com" },
+  { name: "ebookers.de", host: "www.ebookers.de" },
+  { name: "ebookers.fi", host: "www.ebookers.fi" },
+  { name: "ebookers.fr", host: "www.ebookers.fr" },
+  { name: "ebookers.ie", host: "www.ebookers.ie" },
+  { name: "hotels.com", host: "travel.hotels.com" },
+  { name: "hotels.com (ca)", host: "travel.ca.hotels.com" },
+  { name: "hotels.com (fr)", host: "travel.fr.hotels.com" },
+  { name: "hotels.com (jp)", host: "travel.jp.hotels.com" },
+  { name: "hotels.com (no)", host: "travel.no.hotels.com" },
+  { name: "hotels.com (se)", host: "travel.se.hotels.com" },
+  { name: "hotels.com (uk)", host: "travel.uk.hotels.com" },
+  { name: "hotwire.com", host: "vacation.hotwire.com" },
+  { name: "lastminute.co.nz", host: "www.lastminute.co.nz" },
+  { name: "lastminute.com.au", host: "www.lastminute.com.au" },
+  { name: "mrjet.se", host: "www.mrjet.se" },
+  { name: "orbitz.com", host: "www.orbitz.com" },
+  { name: "travelocity.ca", host: "www.travelocity.ca" },
+  { name: "travelocity.com", host: "www.travelocity.com" },
+  { name: "wotif.co.nz", host: "www.wotif.co.nz" },
+  { name: "wotif.com", host: "www.wotif.com" }
 ];
 
 function printExpedia() {
@@ -6105,7 +6146,7 @@ function printExpedia() {
     }
     // Build the URL:
     let baseUrl =
-      "https://www." +
+      "https://" +
       expediaBase +
       "/Flight-Search-Details?action=dl&trip=MultipleDestination";
     // Add travel class to URL:
@@ -6120,7 +6161,7 @@ function printExpedia() {
   };
   var ExpediaUrl = ExpediaCreateUrl("expedia.com");
   var container =
-    ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+    ' <span class="pt-hover-container">[+]<span class="pt-hover-menu-flex"><div style="margin-right: 1rem;">';
   container += editions
     .map(function(obj, i) {
       return (
@@ -6132,7 +6173,19 @@ function printExpedia() {
       );
     })
     .join("<br/>");
-  container += "</span></span>";
+  container += "</div><div>";
+  container += editions2
+    .map(function(obj, i) {
+      return (
+        '<a href="' +
+        ExpediaCreateUrl(obj.host) +
+        '" target="_blank">' +
+        obj.name +
+        "</a>"
+      );
+    })
+    .join("<br/>");
+  container += "</div></span></span>";
 
   return {
     url: ExpediaUrl,
@@ -6257,6 +6310,86 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", printFN);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
+/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
+
+
+
+
+
+
+const cabins = ["Economy", "PremiumEconomy", "Business", "First"];
+
+function print() {
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
+    maxPaxcount: 9,
+    countInf: true,
+    childAsAdult: 12,
+    sepInfSeat: false,
+    childMinAge: 2
+  });
+  if (!pax) {
+    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "i"])("Error: Failed to validate Passengers in edestinos");
+    return;
+  }
+
+  var createUrl = function() {
+    const cur = _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].cur || "USD";
+    let url = `https://www.flyus.com/checkout/fulfilment/gfs?PointOfSaleCountry=&UserCurrency=${cur}&DisplayedPrice=${
+      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].price
+    }&DisplayedPriceCurrency=${cur}&UserLanguage=${_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language ||
+      "en"}&TripType=${Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getTripType */ "c"])("OneWay", "RoundTrip", "MultiCity")}`;
+    url += "&UserLanguage=" + _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language || false;
+    url += "&Adult=" + pax.adults;
+    url += "&Child=" + pax.children.length;
+    url += "&InfantLap=" + pax.infLap;
+
+    let j = 0;
+    _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.forEach((itin, i) => {
+      const slices = [];
+
+      itin.seg.forEach(seg => {
+        j++;
+        slices.push(j);
+
+        url += `&Cabin${j}=` + cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_4__[/* getCabin */ "b"])(seg.cabin)];
+        url += `&Carrier${j}=` + seg.carrier;
+        url += `&Origin${j}=` + seg.orig;
+        url += `&Destination${j}=` + seg.dest;
+        url += `&BookingCode${j}=` + seg.bookingclass;
+        url += `&FlightNumber${j}=` + seg.fnr;
+        url += `&DepartureDate${j}=${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "j"])(
+          seg.dep.month
+        )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "j"])(seg.dep.day)}`;
+        url += `&FareBasis${j}=` + seg.farebase;
+      });
+
+      url += `&Slice${i + 1}=` + slices.join(",");
+    });
+
+    return url;
+  };
+
+  var url = createUrl();
+
+  return {
+    url,
+    title: "Flyus",
+  };
+}
+
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("otas", print);
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
@@ -6338,7 +6471,7 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", print);
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6480,7 +6613,7 @@ Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("otas", printLucky2go);
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6568,7 +6701,342 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("otas", printPriceline);
 
 
 /***/ }),
-/* 49 */
+/* 50 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
+/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
+/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
+
+
+
+
+
+
+const travix = [
+  {
+    name: "CheapTickets.nl",
+    value: "www.cheaptickets.nl",
+    pos: "NL",
+    cur: "EUR"
+  },
+  {
+    name: "CheapTickets.be",
+    value: "www.cheaptickets.be",
+    pos: "BE",
+    cur: "EUR"
+  },
+  {
+    name: "CheapTickets.de",
+    value: "www.cheaptickets.de",
+    pos: "DE",
+    cur: "EUR"
+  },
+  {
+    name: "CheapTickets.ch",
+    value: "www.cheaptickets.ch",
+    pos: "CH",
+    cur: "CHF"
+  },
+  {
+    name: "CheapTickets.sg",
+    value: "www.cheaptickets.sg",
+    pos: "SG",
+    cur: "SGD"
+  },
+  {
+    name: "CheapTickets.co.th",
+    value: "www.cheaptickets.co.th",
+    pos: "TH",
+    cur: "THB"
+  },
+  {
+    name: "CheapTickets.hk",
+    value: "www.cheaptickets.hk",
+    pos: "HK",
+    cur: "HKD"
+  },
+  {
+    name: "Vliegwinkel.nl",
+    value: "www.vliegwinkel.nl",
+    pos: "NL",
+    cur: "EUR"
+  },
+  {
+    name: "Vayama Argentina",
+    value: "www.vayama.com/es_ar",
+    pos: "AR",
+    cur: "ARS"
+  },
+  {
+    name: "Vayama Chile",
+    value: "www.vayama.com/es_cl",
+    pos: "CL",
+    cur: "CLP"
+  },
+  {
+    name: "Vayama Colombia",
+    value: "www.vayama.com/es_co",
+    pos: "CO",
+    cur: "COP"
+  },
+  { name: "Vayama Ireland", value: "www.vayama.ie", pos: "IE", cur: "EUR" },
+  {
+    name: "Vayama Mexico",
+    value: "www.vayama.com/es_mx",
+    pos: "MX",
+    cur: "MXN"
+  },
+  {
+    name: "Vayama Panama",
+    value: "www.vayama.com/es_pa",
+    pos: "PA",
+    cur: "USD"
+  },
+  { name: "Vayama USA", value: "www.vayama.com", pos: "US", cur: "USD" },
+  {
+    name: "Flugladen Austria",
+    value: "www.flugladen.at",
+    pos: "AT",
+    cur: "EUR"
+  },
+  {
+    name: "Flugladen Deutschland",
+    value: "www.flugladen.de",
+    pos: "DE",
+    cur: "EUR"
+  }
+];
+
+const budgetairs = [
+  {
+    name: "BudgetAir Australia",
+    value: "www.budgetair.com/en_au",
+    pos: "AU",
+    cur: "AUD"
+  },
+  {
+    name: "BudgetAir Belgium",
+    value: "www.budgetair.be",
+    pos: "BE",
+    cur: "EUR"
+  },
+  {
+    name: "BudgetAir Canada",
+    value: "www.budgetair.com/en_ca",
+    pos: "CA",
+    cur: "CAD"
+  },
+  {
+    name: "BudgetAir Denmark",
+    value: "www.budgetair.dk",
+    pos: "DK",
+    cur: "DKK"
+  },
+  {
+    name: "BudgetAir France",
+    value: "www.budgetair.fr",
+    pos: "FR",
+    cur: "EUR"
+  },
+  { name: "BudgetAir India", value: "www.budgetair.in", pos: "IN", cur: "INR" },
+  {
+    name: "BudgetAir Indonesia",
+    value: "www.budgetair.com/id_id",
+    pos: "ID",
+    cur: "IDR"
+  },
+  { name: "BudgetAir Italy", value: "www.budgetair.it", pos: "IT", cur: "EUR" },
+  {
+    name: "BudgetAir Japan",
+    value: "www.budgetair.com/jp",
+    pos: "JP",
+    cur: "JPY"
+  },
+  {
+    name: "BudgetAir Korea",
+    value: "www.budgetair.com/ko_kr",
+    pos: "KR",
+    cur: "KRW"
+  },
+  {
+    name: "BudgetAir Latvia",
+    value: "www.budgetair.lv",
+    pos: "LV",
+    cur: "EUR"
+  },
+  {
+    name: "BudgetAir Malaysia",
+    value: "www.budgetair.com/en_my",
+    pos: "MY",
+    cur: "MYR"
+  },
+  {
+    name: "BudgetAir Netherlands",
+    value: "www.budgetair.nl",
+    pos: "NL",
+    cur: "EUR"
+  },
+  {
+    name: "BudgetAir New Zealand",
+    value: "www.budgetair.com/en_nz",
+    pos: "NZ",
+    cur: "NZD"
+  },
+  {
+    name: "BudgetAir Philippines",
+    value: "www.budgetair.com/en_ph",
+    pos: "PH",
+    cur: "PHP"
+  },
+  {
+    name: "BudgetAir Poland",
+    value: "www.budgetair.com/pl_pl",
+    pos: "PL",
+    cur: "PLN"
+  },
+  {
+    name: "BudgetAir Portugal",
+    value: "www.budgetair.pt",
+    pos: "PT",
+    cur: "EUR"
+  },
+  {
+    name: "BudgetAir Saudi Arabia",
+    value: "www.budgetair.com/en_sa",
+    pos: "SA",
+    cur: "SAR"
+  },
+  {
+    name: "BudgetAir South Africa",
+    value: "www.budgetair.com/en_za",
+    pos: "ZA",
+    cur: "ZAR"
+  },
+  { name: "BudgetAir Spain", value: "www.budgetair.es", pos: "ES", cur: "EUR" },
+  {
+    name: "BudgetAir Sweden",
+    value: "www.budgetair.se",
+    pos: "SE",
+    cur: "SEK"
+  },
+  {
+    name: "BudgetAir Arab Emirates",
+    value: "www.budgetair.com/en_ae",
+    pos: "AE",
+    cur: "AED"
+  },
+  {
+    name: "BudgetAir Taiwan",
+    value: "www.budgetair.com.tw",
+    pos: "TW",
+    cur: "TWD"
+  },
+  {
+    name: "BudgetAir Turkey",
+    value: "www.budgetair.com/tr_tr",
+    pos: "TR",
+    cur: "TRY"
+  },
+  {
+    name: "BudgetAir United Kingdom",
+    value: "www.budgetair.co.uk",
+    pos: "GB",
+    cur: "GBP"
+  },
+  {
+    name: "BudgetAir Vietnam",
+    value: "www.budgetair.com/vn",
+    pos: "VN",
+    cur: "VND"
+  }
+];
+
+const cabins = ["Economy", "PremiumEconomy", "Business", "First"];
+
+function print(displayName, editions, startValue) {
+  var pax = Object(___WEBPACK_IMPORTED_MODULE_2__["validatePax"])({
+    maxPaxcount: 9,
+    countInf: true,
+    childAsAdult: 12,
+    sepInfSeat: false,
+    childMinAge: 2
+  });
+  if (!pax) {
+    Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "i"])("Error: Failed to validate Passengers in edestinos");
+    return;
+  }
+
+  var createUrl = function(host, pos, cur) {
+    let url = `https://${host}/checkout/googleflights?PointOfSaleCountry=${pos}&UserCurrency=${cur}&DisplayedPrice=${
+      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].price
+    }&DisplayedPriceCurrency=${cur}&UserLanguage=${_settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language ||
+      "en"}&TripType=${Object(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* getTripType */ "c"])("OneWay", "RoundTrip", "MultiCity")}`;
+    url += "&UserLanguage=" + _settings_userSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].language || false;
+    url += "&Adult=" + pax.adults;
+    url += "&Child=" + pax.children.length;
+    url += "&InfantLap=" + pax.infLap;
+
+    let j = 0;
+    _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.forEach((itin, i) => {
+      const slices = [];
+
+      itin.seg.forEach(seg => {
+        j++;
+        slices.push(j);
+
+        url += `&Cabin${j}=` + cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_4__[/* getCabin */ "b"])(seg.cabin)];
+        url += `&Carrier${j}=` + seg.carrier;
+        url += `&Origin${j}=` + seg.orig;
+        url += `&Destination${j}=` + seg.dest;
+        url += `&BookingCode${j}=` + seg.bookingclass;
+        url += `&FlightNumber${j}=` + seg.fnr;
+        url += `&DepartureDate${j}=${seg.dep.year}-${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "j"])(
+          seg.dep.month
+        )}-${Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "j"])(seg.dep.day)}`;
+        url += `&FareBasis${j}=` + seg.farebase;
+      });
+
+      url += `&Slice${i + 1}=` + slices.join(",");
+    });
+
+    return url;
+  };
+
+  var startEdition = editions.find(e => e.value === startValue);
+  var url = createUrl(startEdition.value, startEdition.pos, startEdition.cur);
+  var extra =
+    ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+  extra += editions
+    .map(function(obj, i) {
+      return (
+        '<a href="' +
+        createUrl(obj.value, obj.pos, obj.cur) +
+        '" target="_blank">' +
+        obj.name +
+        "</a>"
+      );
+    })
+    .join("<br/>");
+  extra += "</span></span>";
+
+  return {
+    url,
+    title: displayName,
+    extra
+  };
+}
+
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("otas", () => print("Vayama", travix, "www.vayama.com"));
+Object(___WEBPACK_IMPORTED_MODULE_2__["register"])("otas", () => print("BudgetAir", budgetairs, "www.budgetair.nl"));
+
+
+/***/ }),
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6608,7 +7076,7 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("other", printGCM);
 
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6635,7 +7103,7 @@ Object(___WEBPACK_IMPORTED_MODULE_1__["register"])("other", printWheretocredit);
 
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10003,7 +10471,7 @@ Object(userSettings["c" /* registerSetting */])(
 
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11299,7 +11767,7 @@ function injectCss() {
     style = document.createElement("style");
   style.type = "text/css";
 
-  css += `body.dark-mode, body.dark-mode input[type='text'], body.dark-mode input[type='radio'], body.dark-mode textarea, body.dark-mode select, body.dark-mode button, body.dark-mode .powertoolsimage, body.dark-mode .pt-hover-menu { background-color: #121212; color: #f5f5f5; }`;
+  css += `body.dark-mode, body.dark-mode input[type='text'], body.dark-mode input[type='radio'], body.dark-mode textarea, body.dark-mode select, body.dark-mode button, body.dark-mode .powertoolsimage, body.dark-mode .pt-hover-menu, body.dark-mode .pt-hover-menu-flex { background-color: #121212; color: #f5f5f5; }`;
   css += `body.dark-mode .${itaSettings["a" /* default */].resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: #1f1f1f; }`;
   css +=
     "body.dark-mode img.logo, body.dark-mode img[src^='data'] { filter: hue-rotate(180deg) brightness(.93) invert(1); }";
@@ -11310,8 +11778,9 @@ function injectCss() {
   css +=
     "body.dark-mode .pt-textlink a { text-decoration: none; color: #f5f5f5; }";
   css +=
-    ".pt-hover-menu { position:absolute; padding: 8px; z-index: 1; background-color: #FFF; border: 1px solid #808080; display:none; }";
+    ".pt-hover-menu, .pt-hover-menu-flex { position:absolute; padding: 8px; z-index: 1; background-color: #FFF; border: 1px solid #808080; display:none; }";
   css += ".pt-hover-container:hover .pt-hover-menu { display:inline; }";
+  css += ".pt-hover-container:hover .pt-hover-menu-flex { display:flex; }";
   css += ".pt-textlink a { text-decoration: none; color: black; }";
   css += `.${itaSettings["a" /* default */].resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: #f2f2f2; }`;
   css +=

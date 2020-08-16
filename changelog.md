@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.50.3] - 2020-08-15
+
+Edited by IAkH
+
+- added CheapTickets, BudgetAir, Vayama, Vliegwinkel and Flugladen urls
+- added additional Expedia family urls
+
 ## [0.50.2] - 2020-07-05
 
 Edited by IAkH
