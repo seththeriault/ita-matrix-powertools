@@ -57,12 +57,16 @@ export function exRE(str, re) {
   return ret;
 }
 
+export function padChars(str, chars) {
+  return (chars + str).slice(chars.length * -1);
+}
+
 export function to2digits(str) {
-  return ("00" + str).slice(-2);
+  return padChars(str, "00");
 }
 
 export function to4digits(str) {
-  return ("0000" + str).slice(-4);
+  return padChars(str, "0000");
 }
 
 export function to4digitTime(time) {
