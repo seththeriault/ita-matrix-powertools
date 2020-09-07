@@ -1,4 +1,9 @@
-import { printNotification, monthnumberToName, to2digits } from "../../utils";
+import {
+  printNotification,
+  monthnumberToName,
+  to2digits,
+  to4digits
+} from "../../utils";
 import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
@@ -34,14 +39,15 @@ function printVS() {
     currentItin.itin.forEach((itin, legnum) => {
       itin.seg.forEach(seg => {
         const hour = seg.dep.time24.split(":")[0];
-        const time = hour + (+hour < 12 ? "A" : "P");
+        const time =
+          to2digits(+hour - (+hour < 12 ? 0 : 12)) + (+hour < 12 ? "A" : "P");
         const values = [
           legnum,
           seg.bookingclass,
           seg.orig,
           seg.dest,
           seg.carrier,
-          seg.fnr,
+          to4digits(seg.fnr),
           monthnumberToName(seg.dep.month),
           to2digits(seg.dep.day),
           seg.dep.year,

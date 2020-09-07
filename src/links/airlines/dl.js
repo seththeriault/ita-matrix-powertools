@@ -1,5 +1,10 @@
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
-import { printNotification, monthnumberToName, to2digits } from "../../utils";
+import {
+  printNotification,
+  monthnumberToName,
+  to2digits,
+  to4digits
+} from "../../utils";
 import { validatePax, register, anyCarriers } from "..";
 import { currentItin } from "../../parse/itin";
 
@@ -25,11 +30,8 @@ function printDL() {
       printNotification("Error: Failed to validate Passengers in printDL");
       return;
     }
-    let url = `http://${edition[0]}.delta.com/air-shopping/priceTripAction.action?ftw_reroute=true&tripType=multiCity&`;
-    url += `paxCounts[0]=${pax.adults}`;
-    url += `&paxCounts[1]=${pax.children.length}`;
-    url += `&paxCounts[2]=${pax.infSeat}`;
-    url += `&paxCounts[3]=${pax.infLap}`;
+    let url = `https://${edition[0]}.delta.com/flight-search/search?dispatchMethod=priceItin&tripType=multiCity&`;
+    url += `paxCount=${pax.adults + pax.children.length}`;
     url += "&currencyCd=" + (currentItin.cur == "EUR" ? "EUR" : "USD");
     url += "&exitCountry=" + edition[1];
 
@@ -39,14 +41,15 @@ function printDL() {
     currentItin.itin.forEach((itin, legnum) => {
       itin.seg.forEach(seg => {
         const hour = seg.dep.time24.split(":")[0];
-        const time = hour + (+hour < 12 ? "A" : "P");
+        const time =
+          to2digits(+hour - (+hour < 12 ? 0 : 12)) + (+hour < 12 ? "A" : "P");
         const values = [
           legnum,
           seg.bookingclass,
           seg.orig,
           seg.dest,
           seg.carrier,
-          seg.fnr,
+          to4digits(seg.fnr),
           monthnumberToName(seg.dep.month),
           to2digits(seg.dep.day),
           seg.dep.year,
