@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.51.1
+// @version 0.51.2
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -511,6 +511,7 @@ function trimStr(x) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return clearNotification; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return printNotification; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return exRE; });
+/* unused harmony export padChars */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return to2digits; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return to4digits; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return to4digitTime; });
@@ -578,12 +579,16 @@ function exRE(str, re) {
   return ret;
 }
 
+function padChars(str, chars) {
+  return (chars + str).slice(chars.length * -1);
+}
+
 function to2digits(str) {
-  return ("00" + str).slice(-2);
+  return padChars(str, "00");
 }
 
 function to4digits(str) {
-  return ("0000" + str).slice(-4);
+  return padChars(str, "0000");
 }
 
 function to4digitTime(time) {
@@ -824,7 +829,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.51.1",
+  version: "0.51.2",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -2812,11 +2817,8 @@ function printDL() {
       Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* printNotification */ "i"])("Error: Failed to validate Passengers in printDL");
       return;
     }
-    let url = `http://${edition[0]}.delta.com/air-shopping/priceTripAction.action?ftw_reroute=true&tripType=multiCity&`;
-    url += `paxCounts[0]=${pax.adults}`;
-    url += `&paxCounts[1]=${pax.children.length}`;
-    url += `&paxCounts[2]=${pax.infSeat}`;
-    url += `&paxCounts[3]=${pax.infLap}`;
+    let url = `https://${edition[0]}.delta.com/flight-search/search?dispatchMethod=priceItin&tripType=multiCity&`;
+    url += `paxCount=${pax.adults + pax.children.length}`;
     url += "&currencyCd=" + (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].cur == "EUR" ? "EUR" : "USD");
     url += "&exitCountry=" + edition[1];
 
@@ -2826,14 +2828,15 @@ function printDL() {
     _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.forEach((itin, legnum) => {
       itin.seg.forEach(seg => {
         const hour = seg.dep.time24.split(":")[0];
-        const time = hour + (+hour < 12 ? "A" : "P");
+        const time =
+          Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "j"])(+hour - (+hour < 12 ? 0 : 12)) + (+hour < 12 ? "A" : "P");
         const values = [
           legnum,
           seg.bookingclass,
           seg.orig,
           seg.dest,
           seg.carrier,
-          seg.fnr,
+          Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to4digits */ "l"])(seg.fnr),
           Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* monthnumberToName */ "h"])(seg.dep.month),
           Object(_utils__WEBPACK_IMPORTED_MODULE_1__[/* to2digits */ "j"])(seg.dep.day),
           seg.dep.year,
@@ -4679,14 +4682,15 @@ function printVS() {
     _parse_itin__WEBPACK_IMPORTED_MODULE_2__[/* currentItin */ "a"].itin.forEach((itin, legnum) => {
       itin.seg.forEach(seg => {
         const hour = seg.dep.time24.split(":")[0];
-        const time = hour + (+hour < 12 ? "A" : "P");
+        const time =
+          Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "j"])(+hour - (+hour < 12 ? 0 : 12)) + (+hour < 12 ? "A" : "P");
         const values = [
           legnum,
           seg.bookingclass,
           seg.orig,
           seg.dest,
           seg.carrier,
-          seg.fnr,
+          Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to4digits */ "l"])(seg.fnr),
           Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* monthnumberToName */ "h"])(seg.dep.month),
           Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* to2digits */ "j"])(seg.dep.day),
           seg.dep.year,

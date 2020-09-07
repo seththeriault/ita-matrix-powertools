@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.51.2] - 2020-09-06
+
+Edited by IAkH
+
+- fixed Delta passenger counts (and stopped supporting infants in lap)
+
 ## [0.51.1] - 2020-08-15
 
 Edited by IAkH
