@@ -7,6 +7,15 @@ export function manageState() {
   loadState();
 
   window.addEventListener("hashchange", clearState, false);
+  window.addEventListener(
+    "popstate",
+    () => {
+      // window.history.replaceState does not trigger hashchange so we need to dispatch it manually
+      if (window.location.hash)
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+    },
+    false
+  );
 
   var _setItem = Storage.prototype.setItem;
   Storage.prototype.setItem = function(key, value) {
