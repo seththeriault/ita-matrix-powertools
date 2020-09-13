@@ -13,6 +13,17 @@ module.exports = {
   optimization: {
     minimize: false
   },
+  module: {
+    rules: [
+      {
+        test: /JSONCrush\.js$/,
+        loader: "exports-loader",
+        options: {
+          exports: ["JSONCrush", "JSONUncrush"]
+        }
+      }
+    ]
+  },
   plugins: [
     new webpack.BannerPlugin({
       banner: replace(

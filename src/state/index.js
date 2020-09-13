@@ -1,3 +1,5 @@
+import { JSONCrush, JSONUncrush } from "../../node_modules/JSONCrush/JSONCrush";
+
 let originalSetItem;
 
 export function manageState() {
@@ -15,7 +17,7 @@ function loadState() {
   const search = new URLSearchParams(window.location.search.slice(1));
   const savedState = search && search.get("mpt:state");
   if (savedState) {
-    const { search, sessionState } = JSON.parse(atob(savedState));
+    const { search, sessionState } = JSON.parse(JSONUncrush(savedState));
     if (search) window.localStorage["savedSearch.0"] = search;
     if (sessionState) window.localStorage["savedSessionState"] = sessionState;
   }
@@ -29,9 +31,8 @@ function getState() {
 }
 
 function saveStateToUrl() {
-  const searchParams = new URLSearchParams(window.location.search.slice(1));
   const currentState = getState();
-  setQueryStringParameter("mpt:state", btoa(JSON.stringify(currentState)));
+  setQueryStringParameter("mpt:state", JSONCrush(JSON.stringify(currentState)));
 }
 
 function setQueryStringParameter(name, value) {

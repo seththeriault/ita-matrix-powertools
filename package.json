@@ -4,6 +4,7 @@
   "description": "Adds new features and builds fare purchase links for ITA Matrix",
   "main": "ita-matrix-powertools.user.js",
   "scripts": {
+    "install": "napa KilledByAPixel/JSONCrush:JSONCrush",
     "authors": "bash scripts/authors.sh",
     "prettier": "pretty-quick --staged",
     "type-check": "tsc",
@@ -28,7 +29,9 @@
     "@types/greasemonkey": "^4.0.0",
     "@types/webpack-env": "^1.15.0",
     "@wext/shipit": "github:adamhwang/wext-shipit",
+    "exports-loader": "^1.1.0",
     "husky": "^4.2.1",
+    "napa": "^3.0.0",
     "path": "^0.12.7",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",
