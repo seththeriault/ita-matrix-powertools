@@ -18,8 +18,21 @@ function loadState() {
   const savedState = search && search.get("mpt:state");
   if (savedState) {
     const { search, sessionState } = JSON.parse(JSONUncrush(savedState));
-    if (search) window.localStorage["savedSearch.0"] = search;
+    if (search) updateSavedSearch(search);
     if (sessionState) window.localStorage["savedSessionState"] = sessionState;
+  }
+}
+
+function updateSavedSearch(search) {
+  const len = 6;
+  let searches = [];
+  for (let i = 0; i < len; i++) {
+    const savedSearch = window.localStorage[`savedSearch.${i}`];
+    if (savedSearch) searches.push(savedSearch);
+  }
+  searches = [search, ...searches.filter(s => s !== search)];
+  for (let i = 0; i < Math.min(len, search.length); i++) {
+    window.localStorage[`savedSearch.${i}`] = searches[i];
   }
 }
 
