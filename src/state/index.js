@@ -6,6 +6,8 @@ export function manageState() {
   if (!window.localStorage || !window.history) return;
   loadState();
 
+  window.addEventListener("hashchange", clearState, false);
+
   var _setItem = Storage.prototype.setItem;
   Storage.prototype.setItem = function(key, value) {
     _setItem.apply(this, arguments);
@@ -43,6 +45,13 @@ function getState() {
   };
 }
 
+function clearState() {
+  if (window.location.hash.indexOf("search:research") === -1) return;
+  const search = new URLSearchParams(window.location.search);
+  search.delete("mpt:state");
+  replaceState(search);
+}
+
 function saveStateToUrl() {
   const currentState = getState();
   setQueryStringParameter("mpt:state", JSONCrush(JSON.stringify(currentState)));
@@ -51,6 +60,10 @@ function saveStateToUrl() {
 function setQueryStringParameter(name, value) {
   const search = new URLSearchParams(window.location.search);
   search.set(name, value);
+  replaceState(search);
+}
+
+function replaceState(search) {
   window.history.replaceState(
     {},
     "",
