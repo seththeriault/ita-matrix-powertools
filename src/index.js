@@ -8,6 +8,7 @@ import { readItinerary } from "./parse/itin";
 import { render, cleanUp } from "./print";
 import { createUsersettings } from "./print/settings";
 import { bindDarkmode } from "./print/darkmode";
+import { manageState } from "./state";
 
 /**************************************** Start Script *****************************************/
 
@@ -15,6 +16,7 @@ import { bindDarkmode } from "./print/darkmode";
 (async () => {
   await loadUserSettings();
   createUsersettings();
+  manageState();
   injectCss();
   bindDarkmode();
 
