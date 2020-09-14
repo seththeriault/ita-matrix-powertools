@@ -55,7 +55,7 @@ function getState() {
 }
 
 function clearState() {
-  if (window.location.hash.indexOf("search:research") === -1) return;
+  if (window.location.hash.indexOf("search:") === -1) return;
   const search = new URLSearchParams(window.location.search);
   search.delete("mpt:state");
   replaceState(search);
