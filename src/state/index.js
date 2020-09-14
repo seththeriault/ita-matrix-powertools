@@ -14,7 +14,6 @@ export function manageState() {
   loadState();
   window.addEventListener("click", loadState, false);
 
-  window.addEventListener("hashchange", pageChanged, false);
   // window.history.replaceState does not trigger hashchange so we need to dispatch it manually
   window.addEventListener("popstate", dispatchHashChange, false);
 
@@ -23,6 +22,7 @@ export function manageState() {
   XMLHttpRequest.prototype.open = function(method, url) {
     if ((url || "").toLowerCase().endsWith("/search")) {
       const search = window.localStorage["savedSearch.0"];
+      saveStateToUrl({ search });
       this.addEventListener("load", () =>
         saveStateToUrl({
           search,
@@ -37,10 +37,6 @@ export function manageState() {
 function dispatchHashChange() {
   if (window.location.hash)
     window.dispatchEvent(new HashChangeEvent("hashchange"));
-}
-
-function pageChanged() {
-  if (window.location.hash.indexOf("search:") > -1) saveStateToUrl();
 }
 
 function loadState() {
