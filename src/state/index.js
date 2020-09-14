@@ -58,7 +58,7 @@ function updateSavedSearch(search) {
     if (savedSearch) searches.push(savedSearch);
   }
   searches = [search, ...searches.filter(s => s !== search)];
-  for (let i = 0; i < Math.min(len, search.length); i++) {
+  for (let i = 0; i < Math.min(len, searches.length); i++) {
     window.localStorage[`savedSearch.${i}`] = searches[i];
   }
 }
