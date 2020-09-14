@@ -85,6 +85,10 @@ export function createUsersettings() {
     '<div id="mptenableEditormode">Editor mode: <label style="cursor:pointer;">' +
     printSettingsvalue("enableEditormode") +
     "</label></div>";
+  str +=
+    '<div id="mptenableMultiSearch">Multi-search & share (experimental): <label style="cursor:pointer;">' +
+    printSettingsvalue("enableMultiSearch") +
+    "</label></div>";
   str += '</div><div style="float:left;width:33%">';
   str +=
     '<div id="mptenableAffiliates" title="Enables affiliate links to support the development of ITA Matrix Powertools">Support this tool: <label style="cursor:pointer;">' +
@@ -143,6 +147,9 @@ export function createUsersettings() {
   };
   document.getElementById("mptenableEditormode").onclick = function() {
     toggleSettings("enableEditormode");
+  };
+  document.getElementById("mptenableMultiSearch").onclick = function() {
+    toggleSettings("enableMultiSearch");
   };
   document.getElementById("mptenableIMGautoload").onclick = function() {
     toggleSettings("enableIMGautoload");

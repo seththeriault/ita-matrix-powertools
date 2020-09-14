@@ -1,7 +1,10 @@
 import { JSONCrush, JSONUncrush } from "../../node_modules/JSONCrush/JSONCrush";
 
+import userSettings from "../settings/userSettings";
+
 export function manageState() {
   if (
+    !userSettings.enableMultiSearch ||
     !window.localStorage ||
     !window.history ||
     !XMLHttpRequest ||
