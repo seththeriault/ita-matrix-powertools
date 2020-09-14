@@ -9,6 +9,7 @@ export function manageState() {
   )
     return;
   loadState();
+  window.addEventListener("click", loadState, false);
 
   window.addEventListener("hashchange", pageChanged, false);
   window.addEventListener(
