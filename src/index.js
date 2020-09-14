@@ -35,19 +35,23 @@ import { manageState } from "./state";
 })(); // end async for GM4
 
 function startScript() {
-  if (window.location.href !== mptSettings.laststatus) {
-    setTimeout(function() {
-      reset();
-      cleanUp();
-      getPageLang();
-    }, 0);
-    mptSettings.laststatus = window.location.href;
-  }
-  if (mptSettings.scriptrunning === 1) {
-    setTimeout(function() {
-      startScript();
-    }, 500);
-  }
+  pageChanged();
+  window.addEventListener(
+    "hashchange",
+    () => {
+      if (window.location.hash !== mptSettings.laststatus) {
+        pageChanged();
+      }
+    },
+    false
+  );
+}
+
+function pageChanged() {
+  reset();
+  cleanUp();
+  getPageLang();
+  mptSettings.laststatus = window.location.hash;
 }
 
 /**************************************** Get Language *****************************************/
