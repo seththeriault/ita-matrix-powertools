@@ -1,12 +1,16 @@
 import { JSONCrush, JSONUncrush } from "../../node_modules/JSONCrush/JSONCrush";
 
-let originalSetItem;
-
 export function manageState() {
-  if (!window.localStorage || !window.history) return;
+  if (
+    !window.localStorage ||
+    !window.history ||
+    !XMLHttpRequest ||
+    !XMLHttpRequest.prototype
+  )
+    return;
   loadState();
 
-  window.addEventListener("hashchange", clearState, false);
+  window.addEventListener("hashchange", pageChanged, false);
   window.addEventListener(
     "popstate",
     () => {
@@ -17,11 +21,24 @@ export function manageState() {
     false
   );
 
-  var _setItem = Storage.prototype.setItem;
-  Storage.prototype.setItem = function(key, value) {
-    _setItem.apply(this, arguments);
-    if (key === "savedSessionState") saveStateToUrl();
+  // save session after searches
+  const originalOpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function(method, url) {
+    if ((url || "").toLowerCase().endsWith("/search")) {
+      const search = window.localStorage["savedSearch.0"];
+      this.addEventListener("load", () =>
+        saveStateToUrl({
+          search,
+          sessionState: window.localStorage["savedSessionState"]
+        })
+      );
+    }
+    originalOpen.apply(this, arguments);
   };
+}
+
+function pageChanged() {
+  if (window.location.hash.indexOf("search:") > -1) saveStateToUrl();
 }
 
 function loadState() {
@@ -47,28 +64,11 @@ function updateSavedSearch(search) {
   }
 }
 
-function getState() {
-  return {
-    search: window.localStorage["savedSearch.0"],
-    sessionState: window.localStorage["savedSessionState"]
-  };
-}
-
-function clearState() {
-  if (window.location.hash.indexOf("search:") === -1) return;
-  const search = new URLSearchParams(window.location.search);
-  search.delete("mpt:state");
-  replaceState(search);
-}
-
-function saveStateToUrl() {
-  const currentState = getState();
-  setQueryStringParameter("mpt:state", JSONCrush(JSON.stringify(currentState)));
-}
-
-function setQueryStringParameter(name, value) {
-  const search = new URLSearchParams(window.location.search);
-  search.set(name, value);
+function saveStateToUrl(currentState) {
+  const search = new URLSearchParams(window.location.search.slice(1));
+  if (currentState)
+    search.set("mpt:state", JSONCrush(JSON.stringify(currentState)));
+  else search.delete("mpt:state");
   replaceState(search);
 }
 
