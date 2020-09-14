@@ -12,15 +12,8 @@ export function manageState() {
   window.addEventListener("click", loadState, false);
 
   window.addEventListener("hashchange", pageChanged, false);
-  window.addEventListener(
-    "popstate",
-    () => {
-      // window.history.replaceState does not trigger hashchange so we need to dispatch it manually
-      if (window.location.hash)
-        window.dispatchEvent(new HashChangeEvent("hashchange"));
-    },
-    false
-  );
+  // window.history.replaceState does not trigger hashchange so we need to dispatch it manually
+  window.addEventListener("popstate", dispatchHashChange, false);
 
   // save session after searches
   const originalOpen = XMLHttpRequest.prototype.open;
@@ -36,6 +29,11 @@ export function manageState() {
     }
     originalOpen.apply(this, arguments);
   };
+}
+
+function dispatchHashChange() {
+  if (window.location.hash)
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
 }
 
 function pageChanged() {
