@@ -18,7 +18,7 @@ export function createUsersettings() {
   settingscontainer.innerHTML =
     '<div style="display:inline-block;float:left;cursor:pointer;" id="passengerVisToggler">Passengers (<label id="mtpPaxCount">1a</label>)</div><div id="mptStartparse" class="invis" style="margin-left:20px;display:none;cursor:pointer">Editor-Mode:Parse!</div><div id="mtpNotification" style="margin-left:50px;display:inline-block;"></div><div style="display:inline-block;float:right;"><div id="settingsVisToggler" style="display:inline-block;cursor:pointer;">Settings</div> (v' +
     mptSettings.version +
-    ') <div id="mptCabintoggler" style="display:inline-block;">(Cabin: <label id="mptCabinMode" style="width:30px;text-align:center;cursor:pointer;display:inline-block">Auto</label>)</div></div><div id="mptSettings" class="invis" style="display:none;border-top: 1px dotted grey;"></div><div id="mptPassengers" class="invis" style="display:none;border-top: 1px dotted grey;"></div>';
+    ') <div id="mptCabintoggler" style="display:inline-block;">(Cabin: <span id="mptcabin"><label style="width:30px;text-align:center;cursor:pointer;display:inline-block">Auto</label></span>)</div></div><div id="mptSettings" class="invis" style="display:none;border-top: 1px dotted grey;"></div><div id="mptPassengers" class="invis" style="display:none;border-top: 1px dotted grey;"></div>';
   var target = document.getElementById("contentwrapper");
   target.parentElement.insertBefore(settingscontainer, target);
   document.getElementById("settingsVisToggler").onclick = function() {
@@ -346,8 +346,6 @@ function toggleSettings(target) {
         } else if (mptSettings.cabin === "F") {
           mptSettings.cabin = "Auto";
         }
-        document.getElementById("mptCabinMode").innerHTML = mptSettings.cabin;
-
         // refresh links
         printLinksContainer();
         break;
@@ -418,6 +416,8 @@ function printSettingsvalue(target) {
       return mptUserSettings.language;
     case "linkFontsize":
       return mptUserSettings.linkFontsize.toString();
+    case "cabin":
+      return mptSettings.cabin;
     default:
       return boolToEnabled(mptUserSettings[target]);
   }
