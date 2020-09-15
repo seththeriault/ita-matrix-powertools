@@ -9,7 +9,7 @@ const links = {};
 
 require("../links");
 
-var skimlinks = document.createElement("script");
+const skimlinks = document.createElement("script");
 skimlinks.setAttribute(
   "src",
   "https://s.skimresources.com/js/122783X1611548.skimlinks.js"
@@ -27,11 +27,12 @@ export function registerLink(type, factory) {
 export function printLinksContainer() {
   // do nothing if editor mode is active
   if (findtargets("editoritem").length > 0) {
-    return false;
+    return;
   }
 
   // empty outputcontainer
   const div = getSidebarContainer();
+  if (!div) return;
   div.innerHTML = "";
 
   //  S&D powertool items
@@ -78,14 +79,14 @@ function bindLinkClicks() {
 
 // Inline Stuff
 function printUrlInline(link) {
-  var item = `<li class="powertoolsitem">${printLink(link)}</li>`;
+  const item = `<li class="powertoolsitem">${printLink(link)}</li>`;
   const container = getSidebarContainer();
-  container.insertAdjacentHTML("beforeend", item);
+  container && container.insertAdjacentHTML("beforeend", item);
 }
 
 export function printImage(link) {
-  const div = getSidebarContainer();
-  const imgLink =
+  const container = getSidebarContainer();
+  const item =
     (link.url
       ? '<a href="' + link.url + '" target="_blank" class="powertoolsitem">'
       : "") +
@@ -96,16 +97,17 @@ export function printImage(link) {
     "/>" +
     (link.url ? "</a>" : "");
   if (mptUserSettings.enableIMGautoload == 1) {
-    div.insertAdjacentHTML("beforeend", imgLink);
+    container && container.insertAdjacentHTML("beforeend", item);
   } else {
-    var id = Math.random().toString();
-    div.insertAdjacentHTML(
-      "beforeend",
-      `<div id="${id}" class="powertoolsitem powertoolsimage"><span>${link.title}</span></div>`
-    );
+    const id = Math.random().toString();
+    container &&
+      container.insertAdjacentHTML(
+        "beforeend",
+        `<div id="${id}" class="powertoolsitem powertoolsimage"><span>${link.title}</span></div>`
+      );
 
     document.getElementById(id).addEventListener("click", function() {
-      this.outerHTML = imgLink;
+      this.outerHTML = item;
     });
   }
 }
@@ -120,7 +122,10 @@ export function getSidebarContainer() {
 }
 
 function createUrlContainerInline() {
-  var newdiv = document.createElement("div");
+  const target = findtarget(classSettings.resultpage.mcDiv, 1);
+  if (!target) return;
+
+  const newdiv = document.createElement("div");
   newdiv.classList.add(classSettings.resultpage.mcDiv);
   newdiv.classList.add(`powertoolslinkinlinecontainer`);
   newdiv.innerHTML =
@@ -129,19 +134,17 @@ function createUrlContainerInline() {
     '">Powertools</div><ul id="powertoolslinkcontainer" class="' +
     classSettings.resultpage.mcLinkList +
     '"></ul>';
-  findtarget(classSettings.resultpage.mcDiv, 1).parentElement.appendChild(
-    newdiv
-  );
+  target.parentElement.appendChild(newdiv);
   return document.getElementById("powertoolslinkcontainer");
 }
 
 // Printing Stuff
 function printUrl(link) {
-  var item = `<div class="powertoolsitem" style="margin:5px 0px 10px 0px">${printLink(
+  const item = `<div class="powertoolsitem" style="margin:5px 0px 10px 0px">${printLink(
     link
   )}</div>`;
   const container = getSidebarContainer();
-  container.insertAdjacentHTML("beforeend", item);
+  container && container.insertAdjacentHTML("beforeend", item);
 }
 
 function printLink(link) {
@@ -164,22 +167,22 @@ function printLink(link) {
 }
 
 function createUrlContainer() {
-  var newdiv = document.createElement("div");
+  const target = findtarget(classSettings.resultpage.milagecontainer, 1);
+  if (!target) return;
+
+  const newdiv = document.createElement("div");
   newdiv.setAttribute("id", "powertoolslinkcontainer");
   newdiv.setAttribute("style", "margin:15px 0px 0px 10px");
-  return findtarget(classSettings.resultpage.milagecontainer, 1).appendChild(
-    newdiv
-  );
+  return target.appendChild(newdiv);
 }
 
 function printSeperator() {
-  var container = getSidebarContainer();
-  if (container) {
+  const container = getSidebarContainer();
+  container &&
     container.insertAdjacentHTML(
       "beforeend",
       mptUserSettings.enableInlineMode
         ? '<hr class="powertoolsitem"/>'
         : "<hr/>"
     );
-  }
 }
