@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.52] - 2020-09-15
+
+Edited by IAkH
+
+- added multi-tab/window searches
+- added deeplinks directly to calendar and search results (for userscript and browser extensions)
+- auto-detect passengers and cabin class from search
+- improved page change detection performance
+
 ## [0.51.2] - 2020-09-06
 
 Edited by IAkH
