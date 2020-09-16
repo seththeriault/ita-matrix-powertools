@@ -9,6 +9,7 @@ const dir = path.resolve(__dirname, "../webext");
 // Copy content scripts and icons
 const webextFiles = [
   ...manifest["content_scripts"].map(scripts => scripts.js).flat(),
+  ...manifest["web_accessible_resources"].flat(),
   ...Object.keys(manifest.icons).map(key => manifest.icons[key])
 ];
 
