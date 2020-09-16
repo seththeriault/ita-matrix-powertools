@@ -274,6 +274,9 @@ export function createUsersettings() {
   };
   document.getElementById("mtpConfirmPax").onclick = function() {
     processPassengers();
+    toggleVis(document.getElementById("mptPassengers"));
+    // reload links
+    printLinksContainer();
   };
 }
 
@@ -363,7 +366,7 @@ function toggleSettings(target) {
   saveUserSettings();
 }
 
-function processPassengers() {
+export function processPassengers() {
   var paxText = "";
   var e = document.getElementById("numAdults");
   mtpPassengerConfig.adults = Number(e.options[e.selectedIndex].value);
@@ -387,9 +390,6 @@ function processPassengers() {
         "i"
       : "");
   document.getElementById("mtpPaxCount").innerHTML = paxText;
-  toggleVis(document.getElementById("mptPassengers"));
-  // reload links
-  printLinksContainer();
 }
 
 function processChild(target) {
