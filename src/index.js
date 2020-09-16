@@ -24,12 +24,7 @@ import { manageState } from "./state";
     if (mptSettings.scriptEngine === 0) {
       startScript();
     } else {
-      // execute language detection and afterwards functions for current page
-      if (typeof window.addEventListener !== "undefined") {
-        window.addEventListener("load", () => startScript(), false);
-      } else {
-        window.onload = () => startScript();
-      }
+      window.addEventListener("load", () => startScript(), false);
     }
   }
 })(); // end async for GM4
@@ -50,24 +45,22 @@ function startScript() {
 function pageChanged() {
   reset();
   cleanUp();
-  getPageLang();
+  setTimeout(function() {
+    getPage();
+  }, 200);
   mptSettings.laststatus = window.location.hash;
 }
 
-/**************************************** Get Language *****************************************/
-function getPageLang() {
+/********************************************* Get page ***********************************************/
+function getPage() {
   if (window.location.href.indexOf("view-details") != -1) {
-    setTimeout(function() {
-      fePS();
-    }, 200);
+    resultPage();
   } else if (
     window.location.href.indexOf("#search:") != -1 ||
     window.location.href == "https://matrix.itasoftware.com/" ||
-    window.location.href == "https://matrix.itasoftware.com/"
+    !window.location.hash
   ) {
-    setTimeout(function() {
-      startPage();
-    }, 200);
+    startPage();
   }
 }
 /********************************************* Start page *********************************************/
@@ -88,7 +81,7 @@ function startPage() {
 /********************************************* Result page *********************************************/
 
 //Primary function for extracting flight data from ITA/Matrix
-function fePS() {
+function resultPage() {
   // try to get content
   const itin = findTargetSetVersion(settings => settings.resultpage.itin, 1);
   if (!itin) {
@@ -105,7 +98,7 @@ function fePS() {
       return false;
     }
     setTimeout(function() {
-      fePS();
+      resultPage();
     }, 200);
     return false;
   }
