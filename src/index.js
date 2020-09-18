@@ -9,6 +9,7 @@ import { render, cleanUp } from "./print";
 import { createUsersettings } from "./print/settings";
 import { bindDarkmode } from "./print/darkmode";
 import { manageState } from "./state";
+import { renderHistory } from "./print/history";
 
 /**************************************** Start Script *****************************************/
 
@@ -70,6 +71,7 @@ function startPage() {
     printNotification("Error: Unable to find content on start page.");
     return false;
   } else {
+    renderHistory();
     // apply style-fix
     const target = findtarget(classSettings.startpage.maindiv, 1);
     target.children[0].children[0].children[0].children[0].setAttribute(
