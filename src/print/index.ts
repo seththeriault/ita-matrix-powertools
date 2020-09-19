@@ -104,14 +104,13 @@ function addEditor() {
 }
 
 function removeEditor() {
-  for (var i = 0; i < currentItin.itin.length; i++) {
-    for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
-      var target = findItinTarget(i + 1, j + 1, "cabin").firstElementChild;
-      var cabin =
-        target.firstElementChild.options[target.firstElementChild.selectedIndex]
-          .value;
-      var bc = target.firstElementChild.nextElementSibling.value;
-      var str = cabin + " (" + bc + ")";
+  for (let i = 0; i < currentItin.itin.length; i++) {
+    for (let j = 0; j < currentItin.itin[i].seg.length; j++) {
+      const target = findItinTarget(i + 1, j + 1, "cabin").firstElementChild
+        .firstElementChild as HTMLSelectElement;
+      const cabin = target.options[target.selectedIndex].value;
+      const bc = (target.nextElementSibling as HTMLInputElement).value;
+      const str = cabin + " (" + bc + ")";
       target.innerHTML = str;
     }
   }

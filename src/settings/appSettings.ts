@@ -53,11 +53,11 @@ export function reset() {
   const itaSeniors = itaPax["5"] || 0;
   const itaYouths = itaPax["6"] || 0;
 
-  let e = document.getElementById("numAdults");
-  e.value = Math.min(9, itaAdults + itaSeniors + itaYouths);
-  e = document.getElementById("numInfantsLap");
+  let e = document.getElementById("numAdults") as HTMLSelectElement;
+  e.value = Math.min(9, itaAdults + itaSeniors + itaYouths).toString();
+  e = document.getElementById("numInfantsLap") as HTMLSelectElement;
   e.value = itaInfantLap;
-  e = document.getElementById("numInfantsSeat");
+  e = document.getElementById("numInfantsSeat") as HTMLSelectElement;
   e.value = itaInfantSeat;
 
   const ages = [
@@ -65,7 +65,7 @@ export function reset() {
     ...new Array(itaChildren).fill(11)
   ];
   for (let i = 1; i <= 8; i++) {
-    e = document.getElementById("child" + i + "age");
+    e = document.getElementById("child" + i + "age") as HTMLSelectElement;
     e.value = ages[i - 1] || -1;
   }
 
