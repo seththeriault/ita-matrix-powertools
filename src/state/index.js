@@ -44,12 +44,12 @@ function loadState() {
   const savedState = search && search.get("mpt:state");
   if (savedState) {
     const { search, sessionState } = JSON.parse(JSONUncrush(savedState));
-    if (search) updateSavedSearch(search);
+    if (search) updateCurrentSearch(search);
     if (sessionState) window.localStorage["savedSessionState"] = sessionState;
   }
 }
 
-function updateSavedSearch(search) {
+export function updateCurrentSearch(search) {
   const len = 6;
   let searches = [];
   for (let i = 0; i < len; i++) {
