@@ -62,7 +62,8 @@ function buildContainer() {
         left: "20px",
         bottom: "20px",
         paddingRight: "20px",
-        borderRight: "1px dashed grey"
+        borderRight: "1px dashed grey",
+        overflowY: "auto"
       }}
     >
       <p>History</p>
