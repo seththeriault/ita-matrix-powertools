@@ -4,7 +4,7 @@
   "description": "Adds new features and builds fare purchase links for ITA Matrix",
   "main": "ita-matrix-powertools.user.js",
   "scripts": {
-    "install": "napa adamhwang/JSONCrush:JSONCrush",
+    "install": "napa",
     "authors": "bash scripts/authors.sh",
     "prettier": "pretty-quick --staged",
     "type-check": "tsc --noEmit",
@@ -19,6 +19,9 @@
   "dependencies": {
     "date-fns": "^2.9.0",
     "date-fns-tz": "^1.0.10"
+  },
+  "napa": {
+    "JSONCrush": "KilledByAPixel/JSONCrush#29a6042e7417fde317e60ba2ae54f1384f612c4b"
   },
   "husky": {
     "hooks": {
