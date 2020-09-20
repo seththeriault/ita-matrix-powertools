@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.53] - 2020-09-15
+
+Edited by IAkH
+
+- added search history
+- improved shareable link generation performance
+
 ## [0.52] - 2020-09-15
 
 Edited by IAkH
