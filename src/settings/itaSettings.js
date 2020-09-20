@@ -4,7 +4,8 @@ import { findtarget } from "../utils";
 const itaSettings = [
   {
     startpage: {
-      maindiv: "KIR33AB-w-d" //Container of main content. Unfortunately id "contentwrapper" is used twice
+      maindiv: "KIR33AB-w-d", //Container of main content. Unfortunately id "contentwrapper" is used twice
+      tabBarItem: "gwt-TabBarItem-wrapper" // Round trip, One-way and Multi-city tab wrapper class
     },
     resultpage: {
       itin: "KIR33AB-v-d", //Container with headline: "Itinerary"
@@ -23,7 +24,8 @@ const itaSettings = [
   },
   {
     startpage: {
-      maindiv: "IR6M2QD-w-d" //Container of main content. Unfortunately id "contentwrapper" is used twice
+      maindiv: "IR6M2QD-w-d", //Container of main content. Unfortunately id "contentwrapper" is used twice
+      tabBarItem: "gwt-TabBarItem-wrapper" // Round trip, One-way and Multi-city tab wrapper class
     },
     resultpage: {
       itin: "IR6M2QD-v-d", //Container with headline: "Itinerary"

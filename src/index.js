@@ -72,6 +72,7 @@ function startPage() {
     return false;
   } else {
     renderHistory();
+    fixSearchTab();
     // apply style-fix
     const target = findtarget(classSettings.startpage.maindiv, 1);
     target.children[0].children[0].children[0].children[0].setAttribute(
@@ -79,6 +80,29 @@ function startPage() {
       "top"
     );
   }
+}
+
+function fixSearchTab() {
+  // ITA doesn't always set the correct search tab on hash nav
+  if (!window.location.hash.startsWith("#search:research=")) return;
+
+  const search = JSON.parse(localStorage["savedSearch.0"]);
+  if (!window.location.hash.endsWith(search[1])) return;
+
+  const searchIndexes = {
+    MULTI_CITY: 2,
+    ONE_WAY: 1,
+    ROUND_TRIP: 0 // default - can ignore
+  };
+  const searchIndex = searchIndexes[search[2]];
+  if (!searchIndex) return;
+
+  const tabBarItems = window.document.querySelectorAll(
+    `.${classSettings.startpage.tabBarItem}`
+  );
+  tabBarItems[searchIndex] &&
+    tabBarItems[searchIndex].firstElementChild &&
+    tabBarItems[searchIndex].firstElementChild.click();
 }
 /********************************************* Result page *********************************************/
 
