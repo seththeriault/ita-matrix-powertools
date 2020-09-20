@@ -5,7 +5,7 @@ import de from "date-fns/esm/locale/de";
 
 import userSettings, { saveUserSettings } from "../settings/userSettings";
 import { getCabinFromITA } from "../settings/appSettings";
-import { updateCurrentSearch } from "../state";
+import { updateCurrentSearch, stateEnabled, getStateUrl } from "../state";
 
 const MAX_HISTORY_LENGTH = 100;
 
@@ -83,11 +83,7 @@ function buildContainer() {
               <a
                 style={{ cursor: "pointer", display: "block", margin: "1em 0" }}
                 onClick={e => changeSearch(e, search[1], h.savedSearch)}
-                href={
-                  window.location.pathname +
-                  window.location.search +
-                  `#search:research=${search[1]}`
-                }
+                href={getSearchUrl(this, search[1], h.savedSearch)}
               >
                 {(search[3][7] || []).map(s => `${s[5]}-${s[3]}`).join(" ")} (
                 {getCabinFromITA(search[3][8])})
@@ -99,7 +95,13 @@ function buildContainer() {
   ) as HTMLDivElement;
 }
 
+function getHash(key) {
+  return `#search:research=${key}`;
+}
+
 function changeSearch(e: MouseEvent, key: string, savedSearch: string) {
+  if (stateEnabled()) return; // stateful URL will handle everything
+
   updateCurrentSearch(savedSearch);
 
   if (
@@ -112,6 +114,18 @@ function changeSearch(e: MouseEvent, key: string, savedSearch: string) {
     return;
   }
   e.preventDefault();
-  window.location.hash = `#search:research=${key}`;
+  window.location.hash = getHash(key);
   window.location.reload(true);
+}
+
+function getSearchUrl(obj, key: string, search: string) {
+  if (stateEnabled()) {
+    return getStateUrl({ search }, getHash(key));
+  } else {
+    return (
+      window.location.pathname +
+      window.location.search +
+      `#search:research=${key}`
+    );
+  }
 }

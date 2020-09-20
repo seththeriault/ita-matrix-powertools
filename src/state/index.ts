@@ -2,15 +2,17 @@ import { JSONCrush, JSONUncrush } from "../../node_modules/JSONCrush/JSONCrush";
 
 import userSettings from "../settings/userSettings";
 
+export function stateEnabled() {
+  return (
+    userSettings.enableMultiSearch &&
+    window.localStorage &&
+    window.history &&
+    window.XMLHttpRequest?.prototype?.open
+  );
+}
+
 export function manageState() {
-  if (
-    !userSettings.enableMultiSearch ||
-    !window.localStorage ||
-    !window.history ||
-    !XMLHttpRequest ||
-    !XMLHttpRequest.prototype
-  )
-    return;
+  if (!stateEnabled()) return;
   loadState();
   window.addEventListener("click", loadState, false);
 
@@ -21,12 +23,12 @@ export function manageState() {
   const originalOpen = XMLHttpRequest.prototype.open;
   XMLHttpRequest.prototype.open = function(method, url) {
     if ((url || "").toLowerCase().endsWith("/search")) {
-      const search = window.localStorage["savedSearch.0"];
+      const search = JSON.parse(window.localStorage["savedSearch.0"]);
       saveStateToUrl({ search });
       this.addEventListener("load", () =>
         saveStateToUrl({
           search,
-          sessionState: window.localStorage["savedSessionState"]
+          sessionState: JSON.parse(window.localStorage["savedSessionState"])
         })
       );
     }
@@ -44,8 +46,15 @@ function loadState() {
   const savedState = search && search.get("mpt:state");
   if (savedState) {
     const { search, sessionState } = JSON.parse(JSONUncrush(savedState));
-    if (search) updateCurrentSearch(search);
-    if (sessionState) window.localStorage["savedSessionState"] = sessionState;
+    if (search)
+      updateCurrentSearch(
+        typeof search === "string" ? search : JSON.stringify(search)
+      );
+    if (sessionState)
+      window.localStorage["savedSessionState"] =
+        typeof sessionState === "string"
+          ? sessionState
+          : JSON.stringify(sessionState);
   }
 }
 
@@ -62,20 +71,19 @@ export function updateCurrentSearch(search) {
   }
 }
 
-function saveStateToUrl(currentState) {
+export function getStateUrl(state, hash) {
   const search = new URLSearchParams(window.location.search.slice(1));
-  if (currentState)
-    search.set("mpt:state", JSONCrush(JSON.stringify(currentState)));
-  else search.delete("mpt:state");
-  replaceState(search);
+  if (state) {
+    // JSONCrush maxSubstringLength ~ 10 appeared to be optimal
+    // https://github.com/KilledByAPixel/JSONCrush/pull/9
+    search.set("mpt:state", JSONCrush(JSON.stringify(state), 10));
+  } else search.delete("mpt:state");
+  return decodeURIComponent(
+    `${window.location.pathname}?${search}` + (hash || "")
+  );
 }
 
-function replaceState(search) {
-  window.history.replaceState(
-    {},
-    "",
-    decodeURIComponent(
-      `${window.location.pathname}?${search}` + (window.location.hash || "")
-    )
-  );
+function saveStateToUrl(currentState) {
+  const url = getStateUrl(currentState, window.location.hash);
+  window.history.replaceState({}, "", url);
 }
