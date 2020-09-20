@@ -1,5 +1,6 @@
 import { clearNotification } from "../utils";
 import { processPassengers } from "../print/settings";
+import { removeHistory } from "../print/history";
 
 // General settings
 const appSettings = {
@@ -25,39 +26,25 @@ export function reset() {
 
   // reset pax and cabin
   const search = JSON.parse(window.localStorage["savedSearch.0"] || "{}");
-  const x = search["3"] || {};
+  const x = search[3] || {};
 
-  const itaCabin = x["8"];
-  switch (itaCabin) {
-    case "FIRST":
-      appSettings.cabin = "F";
-      break;
-    case "BUSINESS":
-      appSettings.cabin = "C";
-      break;
-    case "PREMIUM-COACH":
-      appSettings.cabin = "Y+";
-      break;
-    default:
-      appSettings.cabin = "Y";
-      break;
-  }
+  appSettings.cabin = getCabinFromITA(x[8]);
   document.getElementById("mptcabin").firstElementChild.innerHTML =
     appSettings.cabin;
 
-  const itaPax = x["5"] || {};
-  const itaAdults = itaPax["1"] || 1;
-  const itaChildren = itaPax["2"] || 0;
-  const itaInfantLap = itaPax["3"] || 0;
-  const itaInfantSeat = itaPax["4"] || 0;
-  const itaSeniors = itaPax["5"] || 0;
-  const itaYouths = itaPax["6"] || 0;
+  const itaPax = x[5] || {};
+  const itaAdults = itaPax[1] || 1;
+  const itaChildren = itaPax[2] || 0;
+  const itaInfantLap = itaPax[3] || 0;
+  const itaInfantSeat = itaPax[4] || 0;
+  const itaSeniors = itaPax[5] || 0;
+  const itaYouths = itaPax[6] || 0;
 
-  let e = document.getElementById("numAdults");
-  e.value = Math.min(9, itaAdults + itaSeniors + itaYouths);
-  e = document.getElementById("numInfantsLap");
+  let e = document.getElementById("numAdults") as HTMLSelectElement;
+  e.value = Math.min(9, itaAdults + itaSeniors + itaYouths).toString();
+  e = document.getElementById("numInfantsLap") as HTMLSelectElement;
   e.value = itaInfantLap;
-  e = document.getElementById("numInfantsSeat");
+  e = document.getElementById("numInfantsSeat") as HTMLSelectElement;
   e.value = itaInfantSeat;
 
   const ages = [
@@ -65,11 +52,26 @@ export function reset() {
     ...new Array(itaChildren).fill(11)
   ];
   for (let i = 1; i <= 8; i++) {
-    e = document.getElementById("child" + i + "age");
+    e = document.getElementById("child" + i + "age") as HTMLSelectElement;
     e.value = ages[i - 1] || -1;
   }
 
   processPassengers();
+
+  removeHistory();
+}
+
+export function getCabinFromITA(itaCabin: string) {
+  switch (itaCabin) {
+    case "FIRST":
+      return "F";
+    case "BUSINESS":
+      return "C";
+    case "PREMIUM-COACH":
+      return "Y+";
+    default:
+      return "Y";
+  }
 }
 
 export function getCabin(autoCabin) {

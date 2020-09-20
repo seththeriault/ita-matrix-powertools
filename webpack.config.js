@@ -16,6 +16,13 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.tsx?$/,
+        use: [
+          { loader: "ts-loader", options: { onlyCompileBundledFiles: true } }
+        ],
+        exclude: /node_modules/
+      },
+      {
         test: /JSONCrush\.js$/,
         loader: "exports-loader",
         options: {
@@ -37,5 +44,8 @@ module.exports = {
         return res;
       }, {})
     )
-  ]
+  ],
+  resolve: {
+    extensions: [".tsx", ".ts", ".js", ".json"]
+  }
 };

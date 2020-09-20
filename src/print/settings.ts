@@ -94,6 +94,10 @@ export function createUsersettings() {
     '<div id="mptenableAffiliates" title="Enables affiliate links to support the development of ITA Matrix Powertools">Support this tool: <label style="cursor:pointer;">' +
     printSettingsvalue("enableAffiliates") +
     "</label></div>";
+  str +=
+    '<div id="mptenableHistory">Search history (experimental): <label style="cursor:pointer;">' +
+    printSettingsvalue("enableHistory") +
+    "</label></div>";
   str += '</div><div style="float:left;width:33%">';
   str +=
     '<div id="mptenableWheretocredit">Enable WhereToCredit: <label style="cursor:pointer;">' +
@@ -150,6 +154,9 @@ export function createUsersettings() {
   };
   document.getElementById("mptenableMultiSearch").onclick = function() {
     toggleSettings("enableMultiSearch");
+  };
+  document.getElementById("mptenableHistory").onclick = function() {
+    toggleSettings("enableHistory");
   };
   document.getElementById("mptenableIMGautoload").onclick = function() {
     toggleSettings("enableIMGautoload");
@@ -367,18 +374,17 @@ function toggleSettings(target) {
 }
 
 export function processPassengers() {
-  var paxText = "";
-  var e = document.getElementById("numAdults");
+  let e = document.getElementById("numAdults") as HTMLSelectElement;
   mtpPassengerConfig.adults = Number(e.options[e.selectedIndex].value);
-  e = document.getElementById("numInfantsLap");
+  e = document.getElementById("numInfantsLap") as HTMLSelectElement;
   mtpPassengerConfig.infantsLap = Number(e.options[e.selectedIndex].value);
-  e = document.getElementById("numInfantsSeat");
+  e = document.getElementById("numInfantsSeat") as HTMLSelectElement;
   mtpPassengerConfig.infantsSeat = Number(e.options[e.selectedIndex].value);
   mtpPassengerConfig.cAges = new Array();
-  for (var i = 1; i <= 8; i++) {
+  for (let i = 1; i <= 8; i++) {
     processChild("child" + i + "age");
   }
-  paxText =
+  const paxText =
     mtpPassengerConfig.adults +
     "a" +
     (mtpPassengerConfig.cAges.length > 0
@@ -393,9 +399,8 @@ export function processPassengers() {
 }
 
 function processChild(target) {
-  var e = document.getElementById(target);
-  var tmp = 0;
-  tmp = Number(e.options[e.selectedIndex].value);
+  const e = document.getElementById(target) as HTMLSelectElement;
+  const tmp = Number(e.options[e.selectedIndex].value);
   if (tmp >= 2) {
     mtpPassengerConfig.cAges.push(tmp);
   }

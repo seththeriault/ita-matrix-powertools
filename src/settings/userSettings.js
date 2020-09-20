@@ -15,9 +15,13 @@ const defaultSettings = {
   enablePricebreakdown: 1, // enables price breakdown - valid: 0 / 1
   enableDarkmode: 0, // enables dark mode - valid: 0 / 1
   enableMultiSearch: 1, // enables supporting multiple searches and search linking
+  enableHistory: 1, // enables search history
   enablePlanefinder: 1, // enables Planefinder - click on flight numbers to open Planefinder for this flight - valid: 0 / 1
   enableSeatguru: 1, // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
   enableWheretocredit: 1, // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
+
+  /** @type {{ ts: string, savedSearch: string}[]} history */
+  history: [], // search history
 
   enableAffiliates: 1
 };

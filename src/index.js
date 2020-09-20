@@ -9,6 +9,7 @@ import { render, cleanUp } from "./print";
 import { createUsersettings } from "./print/settings";
 import { bindDarkmode } from "./print/darkmode";
 import { manageState } from "./state";
+import { renderHistory } from "./print/history";
 
 /**************************************** Start Script *****************************************/
 
@@ -70,6 +71,8 @@ function startPage() {
     printNotification("Error: Unable to find content on start page.");
     return false;
   } else {
+    renderHistory();
+    fixSearchTab();
     // apply style-fix
     const target = findtarget(classSettings.startpage.maindiv, 1);
     target.children[0].children[0].children[0].children[0].setAttribute(
@@ -77,6 +80,29 @@ function startPage() {
       "top"
     );
   }
+}
+
+function fixSearchTab() {
+  // ITA doesn't always set the correct search tab on hash nav
+  if (!window.location.hash.startsWith("#search:research=")) return;
+
+  const search = JSON.parse(localStorage["savedSearch.0"]);
+  if (!window.location.hash.endsWith(search[1])) return;
+
+  const searchIndexes = {
+    MULTI_CITY: 2,
+    ONE_WAY: 1,
+    ROUND_TRIP: 0 // default - can ignore
+  };
+  const searchIndex = searchIndexes[search[2]];
+  if (!searchIndex) return;
+
+  const tabBarItems = window.document.querySelectorAll(
+    `.${classSettings.startpage.tabBarItem}`
+  );
+  tabBarItems[searchIndex] &&
+    tabBarItems[searchIndex].firstElementChild &&
+    tabBarItems[searchIndex].firstElementChild.click();
 }
 /********************************************* Result page *********************************************/
 
@@ -126,6 +152,8 @@ function injectCss() {
     style = document.createElement("style");
   style.type = "text/css";
 
+  css += `@media only screen and (max-width: ${984 +
+    261 * 2}px) { body.show-history { padding-left: 261px; } }`; // max-width + history-width * 2 for centered content
   css += `body.dark-mode, body.dark-mode input[type='text'], body.dark-mode input[type='radio'], body.dark-mode textarea, body.dark-mode select, body.dark-mode button, body.dark-mode .powertoolsimage, body.dark-mode .pt-hover-menu, body.dark-mode .pt-hover-menu-flex { background-color: #121212; color: #f5f5f5; }`;
   css += `body.dark-mode .${classSettings.resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: #1f1f1f; }`;
   css +=

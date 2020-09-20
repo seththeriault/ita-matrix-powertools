@@ -2,7 +2,7 @@ import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification } from "../../utils";
 import { validatePax, register, anyCarriers } from "..";
 import { currentItin, isOneway } from "../../parse/itin";
-import { zonedTimeToUtc } from "date-fns-tz";
+import zonedTimeToUtc from "date-fns-tz/esm/zonedTimeToUtc";
 import apTimeZones from "../../json/timezones.json";
 
 const aaSabreEditions = [
