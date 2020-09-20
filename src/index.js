@@ -128,6 +128,8 @@ function injectCss() {
     style = document.createElement("style");
   style.type = "text/css";
 
+  css += `@media only screen and (max-width: ${984 +
+    261 * 2}px) { body.show-history { padding-left: 261px; } }`; // max-width + history-width * 2 for centered content
   css += `body.dark-mode, body.dark-mode input[type='text'], body.dark-mode input[type='radio'], body.dark-mode textarea, body.dark-mode select, body.dark-mode button, body.dark-mode .powertoolsimage, body.dark-mode .pt-hover-menu, body.dark-mode .pt-hover-menu-flex { background-color: #121212; color: #f5f5f5; }`;
   css += `body.dark-mode .${classSettings.resultpage.mcDiv}.powertoolslinkinlinecontainer { background-color: #1f1f1f; }`;
   css +=

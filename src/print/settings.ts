@@ -94,6 +94,10 @@ export function createUsersettings() {
     '<div id="mptenableAffiliates" title="Enables affiliate links to support the development of ITA Matrix Powertools">Support this tool: <label style="cursor:pointer;">' +
     printSettingsvalue("enableAffiliates") +
     "</label></div>";
+  str +=
+    '<div id="mptenableHistory">Search history (experimental): <label style="cursor:pointer;">' +
+    printSettingsvalue("enableHistory") +
+    "</label></div>";
   str += '</div><div style="float:left;width:33%">';
   str +=
     '<div id="mptenableWheretocredit">Enable WhereToCredit: <label style="cursor:pointer;">' +
@@ -150,6 +154,9 @@ export function createUsersettings() {
   };
   document.getElementById("mptenableMultiSearch").onclick = function() {
     toggleSettings("enableMultiSearch");
+  };
+  document.getElementById("mptenableHistory").onclick = function() {
+    toggleSettings("enableHistory");
   };
   document.getElementById("mptenableIMGautoload").onclick = function() {
     toggleSettings("enableIMGautoload");

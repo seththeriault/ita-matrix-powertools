@@ -11,19 +11,24 @@ const MAX_HISTORY_LENGTH = 100;
 
 let container: HTMLDivElement;
 
+function showHistory() {
+  return userSettings.enableHistory && window.Storage?.prototype?.setItem;
+}
+
 export function renderHistory() {
+  if (!showHistory()) return;
   subscribeSearchChanges();
   container = renderHistoryContainer();
 }
 
 export function removeHistory() {
   container?.parentNode?.removeChild(container);
-  document.body.style.paddingLeft = "0";
+  document.body.classList.remove("show-history");
 }
 
 function subscribeSearchChanges() {
-  var _setItem = Storage.prototype.setItem;
-  Storage.prototype.setItem = function(key, value) {
+  var _setItem = window.Storage.prototype.setItem;
+  window.Storage.prototype.setItem = function(key, value) {
     _setItem.apply(this, arguments);
     if (key !== "savedSearch.0") return;
 
@@ -41,7 +46,7 @@ function subscribeSearchChanges() {
 
 function renderHistoryContainer() {
   const container = buildContainer();
-  document.body.style.paddingLeft = "241px";
+  document.body.classList.add("show-history");
   document.body.append(container);
   return container;
 }
