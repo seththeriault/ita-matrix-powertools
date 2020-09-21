@@ -4,8 +4,7 @@ import { removeHistory } from "../print/history";
 
 // General settings
 const appSettings = {
-  scriptEngine:
-    typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
+  isUserscript: !(typeof GM === "undefined" || typeof GM.info === "undefined"), // is using tamper or greasemonkey
   itaLanguage: "en",
   version: __VERSION__,
   retrycount: 1,

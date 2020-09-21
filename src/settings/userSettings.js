@@ -41,27 +41,18 @@ export function registerSetting(name, id, values, defaultValue) {
 }
 
 export async function saveUserSettings(settings = defaultSettings) {
-  switch (appSettings.scriptEngine) {
-    case 0:
-      localStorage.setItem("mptUserSettings", JSON.stringify(settings));
-      break;
-    case 1:
-      await GM.setValue("mptUserSettings", JSON.stringify(settings));
-      break;
-  }
+  if (appSettings.isUserscript)
+    await GM.setValue("mptUserSettings", JSON.stringify(settings));
+  else localStorage.setItem("mptUserSettings", JSON.stringify(settings));
 }
 
 export async function loadUserSettings() {
   let gmSavedUserSettings;
-  switch (appSettings.scriptEngine) {
-    case 0:
-      gmSavedUserSettings = localStorage.getItem("mptUserSettings");
-      break;
-    case 1:
-      gmSavedUserSettings = await GM.getValue("mptUserSettings");
-      break;
-  }
-  console.log("mptSavedUserSettings: " + gmSavedUserSettings);
+  if (appSettings.isUserscript)
+    gmSavedUserSettings = await GM.getValue("mptUserSettings");
+  else gmSavedUserSettings = localStorage.getItem("mptUserSettings");
+
+  console.dir(gmSavedUserSettings);
   if (!gmSavedUserSettings || typeof gmSavedUserSettings !== "string") return;
 
   /** @type typeof defaultSettings */
