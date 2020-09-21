@@ -18,7 +18,9 @@ function showHistory() {
 export function renderHistory() {
   if (!showHistory()) return;
   subscribeSearchChanges();
-  container = renderHistoryContainer();
+  if (userSettings.history?.length) {
+    container = renderHistoryContainer();
+  }
 }
 
 export function removeHistory() {
