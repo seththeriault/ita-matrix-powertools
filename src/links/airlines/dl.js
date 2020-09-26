@@ -30,10 +30,11 @@ function printDL() {
       printNotification("Error: Failed to validate Passengers in printDL");
       return;
     }
-    let url = `https://${edition[0]}.delta.com/flight-search/search?dispatchMethod=priceItin&tripType=multiCity&`;
-    url += `paxCount=${pax.adults + pax.children.length}`;
-    url += "&currencyCd=" + (currentItin.cur == "EUR" ? "EUR" : "USD");
-    url += "&exitCountry=" + edition[1];
+    let url = `https://${edition[0]}.delta.com/flight-search/search?tripType=multiCity`;
+    url += `&paxCount=${pax.adults + pax.children.length}`;
+    url += "&price=" + currentItin.price;
+    url += "&currencyCd=" + currentItin.cur;
+    url += "&exitCountry=" + edition[1].toUpperCase();
 
     const fares = [];
 
@@ -49,7 +50,7 @@ function printDL() {
           seg.orig,
           seg.dest,
           seg.carrier,
-          to4digits(seg.fnr),
+          seg.fnr,
           monthnumberToName(seg.dep.month),
           to2digits(seg.dep.day),
           seg.dep.year,
