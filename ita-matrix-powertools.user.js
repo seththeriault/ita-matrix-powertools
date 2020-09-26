@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.53.0
+// @version 0.53.1
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -522,6 +522,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "monthnameToNumber", function() { return monthnameToNumber; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toDate", function() { return toDate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dayDiff", function() { return dayDiff; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "waitFor", function() { return waitFor; });
 function findtarget(className, nth) {
   return document.getElementsByClassName(className)[(nth || 1) - 1];
 }
@@ -638,6 +639,9 @@ function toDate(dateLike) {
 function dayDiff(startDate, endDate) {
   return Math.floor((endDate.getTime() - startDate.getTime()) / 86400000);
 }
+
+const waitFor = delay =>
+  new Promise(resolve => setTimeout(resolve, delay));
 
 
 /***/ }),
@@ -789,27 +793,18 @@ function registerSetting(name, id, values, defaultValue) {
 }
 
 async function saveUserSettings(settings = defaultSettings) {
-  switch (_appSettings__WEBPACK_IMPORTED_MODULE_0___default.a.scriptEngine) {
-    case 0:
-      localStorage.setItem("mptUserSettings", JSON.stringify(settings));
-      break;
-    case 1:
-      await GM.setValue("mptUserSettings", JSON.stringify(settings));
-      break;
-  }
+  if (_appSettings__WEBPACK_IMPORTED_MODULE_0___default.a.isUserscript)
+    await GM.setValue("mptUserSettings", JSON.stringify(settings));
+  else localStorage.setItem("mptUserSettings", JSON.stringify(settings));
 }
 
 async function loadUserSettings() {
   let gmSavedUserSettings;
-  switch (_appSettings__WEBPACK_IMPORTED_MODULE_0___default.a.scriptEngine) {
-    case 0:
-      gmSavedUserSettings = localStorage.getItem("mptUserSettings");
-      break;
-    case 1:
-      gmSavedUserSettings = await GM.getValue("mptUserSettings");
-      break;
-  }
-  console.log("mptSavedUserSettings: " + gmSavedUserSettings);
+  if (_appSettings__WEBPACK_IMPORTED_MODULE_0___default.a.isUserscript)
+    gmSavedUserSettings = await GM.getValue("mptUserSettings");
+  else gmSavedUserSettings = localStorage.getItem("mptUserSettings");
+
+  console.dir(gmSavedUserSettings);
   if (!gmSavedUserSettings || typeof gmSavedUserSettings !== "string") return;
 
   /** @type typeof defaultSettings */
@@ -842,9 +837,9 @@ var settings_1 = __webpack_require__(20);
 var history_1 = __webpack_require__(21);
 // General settings
 var appSettings = {
-    scriptEngine: typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1,
+    isUserscript: !(typeof GM === "undefined" || typeof GM.info === "undefined"),
     itaLanguage: "en",
-    version: "0.53.0",
+    version: "0.53.1",
     retrycount: 1,
     laststatus: "",
     scriptrunning: 1,
@@ -3243,6 +3238,42 @@ function boolToEnabled(value) {
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -3270,6 +3301,7 @@ var de_1 = __webpack_require__(69);
 var userSettings_1 = __webpack_require__(3);
 var appSettings_1 = __webpack_require__(4);
 var state_1 = __webpack_require__(22);
+var utils_1 = __webpack_require__(1);
 var MAX_HISTORY_LENGTH = 100;
 var container;
 function showHistory() {
@@ -3277,10 +3309,13 @@ function showHistory() {
     return userSettings_1["default"].enableHistory && ((_b = (_a = window.Storage) === null || _a === void 0 ? void 0 : _a.prototype) === null || _b === void 0 ? void 0 : _b.setItem);
 }
 function renderHistory() {
+    var _a;
     if (!showHistory())
         return;
     subscribeSearchChanges();
-    container = renderHistoryContainer();
+    if ((_a = userSettings_1["default"].history) === null || _a === void 0 ? void 0 : _a.length) {
+        container = renderHistoryContainer();
+    }
 }
 exports.renderHistory = renderHistory;
 function removeHistory() {
@@ -3306,15 +3341,7 @@ function subscribeSearchChanges() {
     };
 }
 function renderHistoryContainer() {
-    var container = buildContainer();
-    document.body.classList.add("show-history");
-    document.body.append(container);
-    return container;
-}
-function buildContainer() {
-    var _this = this;
-    var lastDistance;
-    return (dom_chef_1["default"].createElement("div", { style: {
+    var container = (dom_chef_1["default"].createElement("div", { style: {
             position: "fixed",
             width: "200px",
             top: "20px",
@@ -3322,27 +3349,62 @@ function buildContainer() {
             bottom: "20px",
             paddingRight: "20px",
             borderRight: "1px dashed grey",
-            overflowY: "auto"
+            overflowY: "auto",
+            display: "none"
         } },
-        dom_chef_1["default"].createElement("p", null, "History"),
-        userSettings_1["default"].history
-            .sort(function (a, b) { return new Date(b.ts).getTime() - new Date(a.ts).getTime(); })
-            .map(function (h) {
-            var search = JSON.parse(h.savedSearch);
-            var distance = formatDistanceToNow_1["default"](new Date(h.ts), {
-                locale: userSettings_1["default"].language === "de" ? de_1["default"] : en_US_1["default"],
-                addSuffix: true
+        dom_chef_1["default"].createElement("p", null, "History")));
+    document.body.classList.add("show-history");
+    document.body.append(container);
+    (function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var lastDistance, t0;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        t0 = performance.now();
+                        return [4 /*yield*/, userSettings_1["default"].history
+                                .sort(function (a, b) { return new Date(b.ts).getTime() - new Date(a.ts).getTime(); })
+                                .reduce(function (last, h) { return __awaiter(_this, void 0, void 0, function () {
+                                var search, distance, label, t1;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4 /*yield*/, last];
+                                        case 1:
+                                            _a.sent();
+                                            search = JSON.parse(h.savedSearch);
+                                            distance = formatDistanceToNow_1["default"](new Date(h.ts), {
+                                                locale: userSettings_1["default"].language === "de" ? de_1["default"] : en_US_1["default"],
+                                                addSuffix: true
+                                            });
+                                            label = distance !== lastDistance ? dom_chef_1["default"].createElement("div", null, distance) : null;
+                                            lastDistance = distance;
+                                            label && container.appendChild(label);
+                                            container.appendChild(dom_chef_1["default"].createElement("a", { style: { cursor: "pointer", display: "block", margin: "1em 0" }, onClick: function (e) { return changeSearch(e, search[1], h.savedSearch); }, href: getSearchUrl(this, search[1], h.savedSearch) },
+                                                (search[3][7] || []).map(function (s) { return s[5] + "-" + s[3]; }).join(" "),
+                                                " (",
+                                                appSettings_1.getCabinFromITA(search[3][8]),
+                                                ")"));
+                                            t1 = performance.now();
+                                            if (!(t1 - t0 > 100)) return [3 /*break*/, 3];
+                                            return [4 /*yield*/, utils_1.waitFor(0)];
+                                        case 2:
+                                            _a.sent();
+                                            t0 = t1;
+                                            _a.label = 3;
+                                        case 3: return [2 /*return*/];
+                                    }
+                                });
+                            }); }, Promise.resolve(undefined))];
+                    case 1:
+                        _a.sent();
+                        container.style.display = "block";
+                        return [2 /*return*/];
+                }
             });
-            var label = distance !== lastDistance ? dom_chef_1["default"].createElement("div", null, distance) : null;
-            lastDistance = distance;
-            return (dom_chef_1["default"].createElement(dom_chef_1["default"].Fragment, null,
-                label,
-                dom_chef_1["default"].createElement("a", { style: { cursor: "pointer", display: "block", margin: "1em 0" }, onClick: function (e) { return changeSearch(e, search[1], h.savedSearch); }, href: getSearchUrl(_this, search[1], h.savedSearch) },
-                    (search[3][7] || []).map(function (s) { return s[5] + "-" + s[3]; }).join(" "),
-                    " (",
-                    appSettings_1.getCabinFromITA(search[3][8]),
-                    ")")));
-        })));
+        });
+    })();
+    return container;
 }
 function getHash(key) {
     return "#search:research=" + key;
@@ -4859,10 +4921,11 @@ function printDL() {
       Object(_utils__WEBPACK_IMPORTED_MODULE_1__["printNotification"])("Error: Failed to validate Passengers in printDL");
       return;
     }
-    let url = `https://${edition[0]}.delta.com/flight-search/search?dispatchMethod=priceItin&tripType=multiCity&`;
-    url += `paxCount=${pax.adults + pax.children.length}`;
-    url += "&currencyCd=" + (_parse_itin__WEBPACK_IMPORTED_MODULE_3__["currentItin"].cur == "EUR" ? "EUR" : "USD");
-    url += "&exitCountry=" + edition[1];
+    let url = `https://${edition[0]}.delta.com/flight-search/search?tripType=multiCity`;
+    url += `&paxCount=${pax.adults + pax.children.length}`;
+    url += "&price=" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__["currentItin"].price;
+    url += "&currencyCd=" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__["currentItin"].cur;
+    url += "&exitCountry=" + edition[1].toUpperCase();
 
     const fares = [];
 
@@ -4878,7 +4941,7 @@ function printDL() {
           seg.orig,
           seg.dest,
           seg.carrier,
-          Object(_utils__WEBPACK_IMPORTED_MODULE_1__["to4digits"])(seg.fnr),
+          seg.fnr,
           Object(_utils__WEBPACK_IMPORTED_MODULE_1__["monthnumberToName"])(seg.dep.month),
           Object(_utils__WEBPACK_IMPORTED_MODULE_1__["to2digits"])(seg.dep.day),
           seg.dep.year,
@@ -13456,7 +13519,7 @@ var print_history = __webpack_require__(21);
   bindDarkmode();
 
   if (window.top === window.self) {
-    if (appSettings_default.a.scriptEngine === 0) {
+    if (!appSettings_default.a.isUserscript) {
       startScript();
     } else {
       window.addEventListener("load", () => startScript(), false);
