@@ -6,6 +6,7 @@ import de from "date-fns/esm/locale/de";
 import userSettings, { saveUserSettings } from "../settings/userSettings";
 import { getCabinFromITA } from "../settings/appSettings";
 import { updateCurrentSearch, stateEnabled, getStateUrl } from "../state";
+import { waitFor } from "../utils";
 
 const MAX_HISTORY_LENGTH = 100;
 
@@ -47,15 +48,7 @@ function subscribeSearchChanges() {
 }
 
 function renderHistoryContainer() {
-  const container = buildContainer();
-  document.body.classList.add("show-history");
-  document.body.append(container);
-  return container;
-}
-
-function buildContainer() {
-  let lastDistance;
-  return (
+  const container: HTMLDivElement = (
     <div
       style={{
         position: "fixed",
@@ -65,37 +58,54 @@ function buildContainer() {
         bottom: "20px",
         paddingRight: "20px",
         borderRight: "1px dashed grey",
-        overflowY: "auto"
+        overflowY: "auto",
+        display: "none"
       }}
     >
       <p>History</p>
-      {userSettings.history
-        .sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())
-        .map(h => {
-          const search = JSON.parse(h.savedSearch);
-          const distance = formatDistanceToNow(new Date(h.ts), {
-            locale: userSettings.language === "de" ? de : enUS,
-            addSuffix: true
-          });
-          const label =
-            distance !== lastDistance ? <div>{distance}</div> : null;
-          lastDistance = distance;
-          return (
-            <>
-              {label}
-              <a
-                style={{ cursor: "pointer", display: "block", margin: "1em 0" }}
-                onClick={e => changeSearch(e, search[1], h.savedSearch)}
-                href={getSearchUrl(this, search[1], h.savedSearch)}
-              >
-                {(search[3][7] || []).map(s => `${s[5]}-${s[3]}`).join(" ")} (
-                {getCabinFromITA(search[3][8])})
-              </a>
-            </>
-          );
-        })}
     </div>
-  ) as HTMLDivElement;
+  );
+  document.body.classList.add("show-history");
+  document.body.append(container);
+
+  (async function() {
+    let lastDistance;
+    let t0 = performance.now();
+    await userSettings.history
+      .sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())
+      .reduce(async (last, h) => {
+        await last;
+
+        const search = JSON.parse(h.savedSearch);
+        const distance = formatDistanceToNow(new Date(h.ts), {
+          locale: userSettings.language === "de" ? de : enUS,
+          addSuffix: true
+        });
+        const label = distance !== lastDistance ? <div>{distance}</div> : null;
+        lastDistance = distance;
+
+        label && container.appendChild(label);
+        container.appendChild(
+          <a
+            style={{ cursor: "pointer", display: "block", margin: "1em 0" }}
+            onClick={e => changeSearch(e, search[1], h.savedSearch)}
+            href={getSearchUrl(this, search[1], h.savedSearch)}
+          >
+            {(search[3][7] || []).map(s => `${s[5]}-${s[3]}`).join(" ")} (
+            {getCabinFromITA(search[3][8])})
+          </a>
+        );
+
+        const t1 = performance.now();
+        if (t1 - t0 > 100) {
+          await waitFor(0);
+          t0 = t1;
+        }
+      }, Promise.resolve(undefined));
+    container.style.display = "block";
+  })();
+
+  return container;
 }
 
 function getHash(key) {
