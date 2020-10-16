@@ -9,7 +9,8 @@ const matrixCurrencies = [
   { p: /\€/, c: "EUR" },
   { p: /\£/, c: "GBP" },
   { p: /CA\$/, c: "CAD" },
-  { p: /RS\./, c: "INR" }
+  { p: /RS\./, c: "INR" },
+  { p: /\₩/, c: "KRW" }
 ];
 
 export function readItinerary() {
@@ -203,7 +204,7 @@ export function readItinerary() {
   }
   currentItin = {
     itin: itin,
-    price: Number(milepaxprice[3].replace(/\,/, "")),
+    price: Number(milepaxprice[3].replace(/[^\d\.]/g, "")),
     numPax: Number(milepaxprice[1]),
     carriers: carrieruarray,
     cur: itinCur,
