@@ -3,7 +3,7 @@ import mtpPassengerConfig from "../settings/paxSettings";
 import { registerLink } from "../print/links";
 import { currentItin } from "../parse/itin";
 
-const req = require.context("./", true, /.js$/);
+const req = require.context("./", true, /.[jt]s$/);
 
 req.keys().forEach(req);
 
