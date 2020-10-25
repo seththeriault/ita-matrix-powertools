@@ -11,7 +11,12 @@ module.exports = {
     path: __dirname
   },
   optimization: {
-    minimize: false
+    minimize: false,
+    moduleIds: "named",
+    chunkIds: "named",
+    mangleExports: false,
+    usedExports: true,
+    sideEffects: true
   },
   module: {
     rules: [
