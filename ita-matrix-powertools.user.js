@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.53.2
+// @version 0.53.3
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -2050,7 +2050,11 @@ function subscribeSearchChanges() {
             return;
         const _a = JSON.parse(value), { "12": _ } = _a, search = __rest(_a, ["12"]);
         userSettings.default.history = [
-            { ts: new Date().toISOString(), savedSearch: value },
+            {
+                ts: new Date().toISOString(),
+                savedSearch: value,
+                url: getSearchUrl(search[1], value)
+            },
             ...userSettings.default.history.filter(h => {
                 const _a = JSON.parse(h.savedSearch), { "12": _ } = _a, hist = __rest(_a, ["12"]);
                 return JSON.stringify(hist) !== JSON.stringify(search);
@@ -2087,12 +2091,19 @@ function renderHistoryContainer() {
             });
             const label = distance !== lastDistance ? dom_chef.createElement("div", null, distance) : null;
             lastDistance = distance;
+            if (!h.url)
+                h.url = getSearchUrl(search[1], h.savedSearch);
+            const linkText = `${(search[3][7] || [])
+                .map(s => `${s[5]}-${s[3]}`)
+                .join(" ")} (${(0,appSettings.getCabinFromITA)(search[3][8])})`;
             label && container.appendChild(label);
-            container.appendChild(dom_chef.createElement("a", { style: { cursor: "pointer", display: "block", margin: "1em 0" }, onClick: e => changeSearch(e, search[1], h.savedSearch), href: getSearchUrl(this, search[1], h.savedSearch) },
-                (search[3][7] || []).map(s => `${s[5]}-${s[3]}`).join(" "),
-                " (",
-                (0,appSettings.getCabinFromITA)(search[3][8]),
-                ")"));
+            container.appendChild(dom_chef.createElement("a", { style: {
+                    cursor: "pointer",
+                    display: "block",
+                    margin: "1em 0",
+                    overflowX: "hidden",
+                    textOverflow: "ellipsis"
+                }, onClick: e => changeSearch(e, search[1], h.savedSearch), href: h.url, title: linkText }, linkText));
             const t1 = performance.now();
             if (t1 - t0 > 100) {
                 await (0,utils.waitFor)(0);
@@ -2122,7 +2133,7 @@ function changeSearch(e, key, savedSearch) {
     window.location.hash = getHash(key);
     window.location.reload(true);
 }
-function getSearchUrl(obj, key, search) {
+function getSearchUrl(key, search) {
     if ((0,state.stateEnabled)()) {
         return (0,state.getStateUrl)({ search }, getHash(key));
     }
@@ -3169,7 +3180,7 @@ function boolToEnabled(value) {
 const appSettings = {
     isUserscript: !(typeof GM === "undefined" || typeof GM.info === "undefined"),
     itaLanguage: "en",
-    version: "0.53.2",
+    version: "0.53.3",
     retrycount: 1,
     laststatus: "",
     scriptrunning: 1,
@@ -13033,7 +13044,7 @@ const defaultSettings = {
   enableSeatguru: 1, // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
   enableWheretocredit: 1, // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
 
-  /** @type {{ ts: string, savedSearch: string}[]} history */
+  /** @type {{ ts: string, savedSearch: string, url: string }[]} history */
   history: [], // search history
 
   enableAffiliates: 1
@@ -13384,7 +13395,7 @@ var print_history = __webpack_require__("./src/print/history.tsx");
   bindDarkmode();
 
   if (window.top === window.self) {
-    if (!appSettings.default.isUserscript) {
+    if (!appSettings.default.isUserscript || document.readyState == "complete") {
       startScript();
     } else {
       window.addEventListener("load", () => startScript(), false);

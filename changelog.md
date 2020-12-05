@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.53.3] - 2020-12-04
+
+Edited by IAkH
+
+- search history performance improvements
+- fixed loading issue in new tabs (userscript)
+
 ## [0.53.1] - 2020-09-26
 
 Edited by IAkH
