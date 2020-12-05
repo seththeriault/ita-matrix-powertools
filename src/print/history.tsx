@@ -37,7 +37,11 @@ function subscribeSearchChanges() {
 
     const { "12": _, ...search } = JSON.parse(value);
     userSettings.history = [
-      { ts: new Date().toISOString(), savedSearch: value },
+      {
+        ts: new Date().toISOString(),
+        savedSearch: value,
+        url: getSearchUrl(search[1], value)
+      },
       ...userSettings.history.filter(h => {
         const { "12": _, ...hist } = JSON.parse(h.savedSearch);
         return JSON.stringify(hist) !== JSON.stringify(search);
@@ -84,12 +88,14 @@ function renderHistoryContainer() {
         const label = distance !== lastDistance ? <div>{distance}</div> : null;
         lastDistance = distance;
 
+        if (!h.url) h.url = getSearchUrl(search[1], h.savedSearch);
+
         label && container.appendChild(label);
         container.appendChild(
           <a
             style={{ cursor: "pointer", display: "block", margin: "1em 0" }}
             onClick={e => changeSearch(e, search[1], h.savedSearch)}
-            href={getSearchUrl(this, search[1], h.savedSearch)}
+            href={h.url}
           >
             {(search[3][7] || []).map(s => `${s[5]}-${s[3]}`).join(" ")} (
             {getCabinFromITA(search[3][8])})
@@ -131,7 +137,7 @@ function changeSearch(e: MouseEvent, key: string, savedSearch: string) {
   window.location.reload(true);
 }
 
-function getSearchUrl(obj, key: string, search: string) {
+function getSearchUrl(key: string, search: string) {
   if (stateEnabled()) {
     return getStateUrl({ search }, getHash(key));
   } else {

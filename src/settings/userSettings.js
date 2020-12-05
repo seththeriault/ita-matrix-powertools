@@ -20,7 +20,7 @@ const defaultSettings = {
   enableSeatguru: 1, // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
   enableWheretocredit: 1, // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
 
-  /** @type {{ ts: string, savedSearch: string}[]} history */
+  /** @type {{ ts: string, savedSearch: string, url: string }[]} history */
   history: [], // search history
 
   enableAffiliates: 1
