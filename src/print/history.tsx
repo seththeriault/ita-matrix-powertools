@@ -90,15 +90,25 @@ function renderHistoryContainer() {
 
         if (!h.url) h.url = getSearchUrl(search[1], h.savedSearch);
 
+        const linkText = `${(search[3][7] || [])
+          .map(s => `${s[5]}-${s[3]}`)
+          .join(" ")} (${getCabinFromITA(search[3][8])})`;
+
         label && container.appendChild(label);
         container.appendChild(
           <a
-            style={{ cursor: "pointer", display: "block", margin: "1em 0" }}
+            style={{
+              cursor: "pointer",
+              display: "block",
+              margin: "1em 0",
+              overflowX: "hidden",
+              textOverflow: "ellipsis"
+            }}
             onClick={e => changeSearch(e, search[1], h.savedSearch)}
             href={h.url}
+            title={linkText}
           >
-            {(search[3][7] || []).map(s => `${s[5]}-${s[3]}`).join(" ")} (
-            {getCabinFromITA(search[3][8])})
+            {linkText}
           </a>
         );
 
