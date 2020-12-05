@@ -22,7 +22,7 @@ import { renderHistory } from "./print/history";
   bindDarkmode();
 
   if (window.top === window.self) {
-    if (!mptSettings.isUserscript) {
+    if (!mptSettings.isUserscript || document.readyState == "complete") {
       startScript();
     } else {
       window.addEventListener("load", () => startScript(), false);
